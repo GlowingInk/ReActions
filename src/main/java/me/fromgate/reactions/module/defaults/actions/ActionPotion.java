@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionPotion extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         String str = potionEffect(context.getPlayer(), params);
         return !str.isEmpty();
     }

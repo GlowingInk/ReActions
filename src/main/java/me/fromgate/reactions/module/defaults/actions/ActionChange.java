@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ActionChange extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         // TODO: Error message
         return context.setChangeable(params.getString("key", params.getString("id")),
                 params.getString("value", ""));

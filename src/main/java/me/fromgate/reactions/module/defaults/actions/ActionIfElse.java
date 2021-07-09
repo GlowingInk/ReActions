@@ -40,67 +40,9 @@ public class ActionIfElse extends Action {
     }
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {
-			/*
-			TODO: Meh, not really good - does not support multiply checks
-			String condition = params.getParam("if", "");
-			Param ifParams = new Param(condition);
-			// "=", ">", ">=", "<", "<=", "boolean", "equals", "ignorecase", "regex"
-			ConditionType type = ConditionType.getByName(ifParams.getParam("type", "equals"));
-			String val1 = ifParams.getParam("val1", ifParams.getParam("regex", "unknown));
-			String val2 = ifParams.getParam("val2", "unknown");
-
-			boolean result = false;
-			if(type.isNumeric()) {
-				double val1Num = 0;
-				double val2Num = 0;
-				if(Util.FLOAT.matcher(val1).matches() && Util.FLOAT.matcher(val2).matches()) {
-					val1Num = Double.valueOf(val1);
-					val2Num = Double.valueOf(val2);
-				}
-				switch(type) {
-					EQUAL:
-						result = val1Num == val2Num;
-						break;
-					MORE:
-						result = val1Num > val2Num;
-						break;
-					MORE_OR_EQUAL:
-						result = val1Num >= val2Num;
-						break;
-					LESS:
-						result = val1Num < val2Num;
-						break;
-					LESS_OR_EQUAL:
-						result = val1Num <= val2Num;
-						break;
-				}
-			} else {
-				switch(type) {
-					BOOLEAN:
-						boolean checkTo = val2.equalsIgnoreCase("true") || val2.equalsIgnoreCase("on");
-						result = checkTo && (val1.equalsIgnoreCase("true") || val1.equalsIgnoreCase("on"));
-						break;
-					S_EQUALS:
-						result = val1.equals(val2);
-						break;
-					IGNORE_CASE:
-						result = val1.equalsIgnoreCase(val2);
-						break;
-					REGEX:
-						result = val2.matches(val1);
-						break;
-				}
-			}
-
-			String strResult = (result) ? params.getParam("then", "") : params.getParam("else", "");
-			if (!executeActivator(p, condition, strResult) && !executeActions(p, strResult))
-				context.setTempVariable("ifelseresult" + params.getParam("suffix", ""), strResult);
-
-			return true;
-			*/
             final ScriptContext scriptContext = new SimpleScriptContext();
             scriptContext.setBindings(new SimpleBindings(), ScriptContext.ENGINE_SCOPE);
 

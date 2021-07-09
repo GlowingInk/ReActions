@@ -78,7 +78,7 @@ public class ActionLog extends Action {
     }
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         if (params.containsAny("prefix", "color", "file")) {
             String plg_name = ReActions.getPlugin().getDescription().getName();
             boolean prefix = params.getBoolean("prefix", true);

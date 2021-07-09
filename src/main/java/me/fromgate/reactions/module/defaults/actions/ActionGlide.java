@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ActionGlide extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         if (params.contains("player"))
             player = Utils.getPlayerExact(params.getString("player"));

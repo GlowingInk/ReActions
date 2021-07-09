@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionMobSpawn extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         MobSpawn.mobSpawn(context.getPlayer(), params);
         return true;
     }

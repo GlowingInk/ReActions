@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 @Alias("CHAT")
 public class ActionChatMessage extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         if (context.getPlayer() != null) {
             String msg = params.toString();
             msg = msg.replaceFirst("^[\\s/]+", "");

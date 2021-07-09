@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionVelocity extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Vector v = setPlayerVelocity(context.getPlayer(), params);
         return v != null;
     }

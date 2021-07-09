@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ActionResponse extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         if (player == null)
             Bukkit.getConsoleSender().sendMessage(params.toString());

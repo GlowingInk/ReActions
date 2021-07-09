@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionDamage extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         double damage = params.getInteger("damage", params.getInteger("param-line", 0));
         if (params.contains("player"))

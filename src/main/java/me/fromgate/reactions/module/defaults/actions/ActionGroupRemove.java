@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionGroupRemove extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         String param = params.getString("param-line", "");
         if (RaVault.playerInGroup(player, param))

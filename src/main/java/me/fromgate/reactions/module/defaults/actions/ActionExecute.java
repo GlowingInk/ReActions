@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionExecute extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         String id = params.getString("activator", "");
         if (id.isEmpty()) return false;
         return StoragesManager.triggerExec(context.getPlayer(), params, context.getVariables());

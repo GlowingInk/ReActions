@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ActionWeToolControl extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         boolean isToolControl = params.getBoolean("value", params.getBoolean("param-line", false));
         if (params.contains("player"))

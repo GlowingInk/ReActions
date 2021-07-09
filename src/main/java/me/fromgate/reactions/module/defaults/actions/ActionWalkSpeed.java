@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ActionWalkSpeed extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         double speed = params.getInteger("speed", params.getInteger("param-line", 0));
         if (params.contains("player"))

@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionBroadcast extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         for (Player pl : Bukkit.getOnlinePlayers()) {
             Msg.printMessage(pl, params.toString());
         }

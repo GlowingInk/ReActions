@@ -44,7 +44,7 @@ public class ActionClearRegion extends Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         String region = params.getString("region", "");
         String type = params.getString("type", "all");
         if (region.isEmpty()) return false;

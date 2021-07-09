@@ -38,7 +38,7 @@ import java.util.Map;
 public class ActionMoneyPay extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         if (!RaEconomics.isEconomyFound()) return false;
         if (params.size() == 0) return false;

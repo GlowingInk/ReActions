@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionCancelEvent extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         return context.setChangeable(Storage.CANCEL_EVENT, params.getBoolean("param-line", false));
     }
 

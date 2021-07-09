@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionBack extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         return PushBack.teleportToPrev(context.getPlayer(), params.getInteger("param-line", 1));
     }
 

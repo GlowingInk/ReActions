@@ -38,7 +38,7 @@ public class ActionVar extends Action {
     private final boolean personalVar;
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player p = context.getPlayer();
 
         String player = (p != null && this.personalVar) ? p.getName() : "";

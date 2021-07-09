@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 @Alias("JUMP")
 public class ActionVelocityJump extends Action {
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         Msg.logOnce("velocity-jump-warning", "&cWarning! VELOCITY_JUMP action is under construction. In next version of plugin it could be changed, renamed or removed!");
         String locStr = params.getString("loc", "");

@@ -44,7 +44,7 @@ import java.util.Set;
 public class ActionMessage extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         sendMessage(context.getPlayer(), params);
         return true;
     }

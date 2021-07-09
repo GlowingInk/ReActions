@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionGroupAdd extends Action {
 
     @Override
-    protected boolean execute(RaContext context, Parameters params) {
+    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         return RaVault.playerAddGroup(context.getPlayer(), params.getString("param-line", ""));
     }
 
