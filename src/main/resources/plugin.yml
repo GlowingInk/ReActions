@@ -6,12 +6,14 @@ website: http://fromgate.me
 author: fromgate, fromgate@gmail.com
 softdepend: [Vault,WorldGuard,WorldEdit,ProtocolLib,PlaceholderAPI]
 description: Simplest scripting engine for Bukkit
+libraries:
+  - 'org.mozilla:rhino-engine:1.7.13'
 commands:
-  react:
-    aliases: [ra,rea,reactions]
+  reactions:
+    aliases: [ra,rea,react]
     description: Main command of ReActions
-    usage: /react help
+    usage: /<command> help
   exec:
     aliases: [run]
     description: Execute EXEC-activator
-    usage: /exec <ActivatorId> [player:<PlayerSelector>] [delay:<Time>]
+    usage: /<command> <ActivatorId> [player:<PlayerSelector>] [delay:<Time>]

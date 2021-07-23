@@ -4,7 +4,7 @@ import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.message.RaDebug;
 import org.bukkit.entity.Player;
 
-@CmdDefine(command = "react", description = Msg.CMD_DEBUG, permission = "reactions.debug",
+@CmdDefine(command = "reactions", description = Msg.CMD_DEBUG, permission = "reactions.debug",
         subCommands = {"debug", "off|true|false"}, allowConsole = false, shortDescription = "&3/react debug [true|false|off]")
 public class CmdDebug extends Cmd {
     @Override

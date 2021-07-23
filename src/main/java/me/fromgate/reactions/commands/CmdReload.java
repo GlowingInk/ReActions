@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import java.io.File;
 import java.util.Locale;
 
-@CmdDefine(command = "react", description = Msg.CMD_RELOAD, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_RELOAD, permission = "reactions.config",
         subCommands = {"reload"}, allowConsole = true, shortDescription = "&3/react reload [galcdvtm] [groupId]")
 public class CmdReload extends Cmd {
 

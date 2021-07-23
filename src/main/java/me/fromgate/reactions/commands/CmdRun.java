@@ -4,7 +4,7 @@ import me.fromgate.reactions.module.defaults.StoragesManager;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 
-@CmdDefine(command = "react", description = Msg.CMD_RUN, permission = "reactions.run",
+@CmdDefine(command = "reactions", description = Msg.CMD_RUN, permission = "reactions.run",
         subCommands = {"run"}, allowConsole = true, shortDescription = "&3/react run <ExecActivator> [TargetPlayer] [Delay]")
 public class CmdRun extends Cmd {
     @Override

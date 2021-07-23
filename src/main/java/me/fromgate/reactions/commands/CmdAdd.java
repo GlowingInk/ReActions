@@ -9,7 +9,7 @@ import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CmdDefine(command = "react", description = Msg.CMD_ADD, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_ADD, permission = "reactions.config",
         subCommands = {"add"}, allowConsole = true,
         shortDescription = "&3/react add <Id> [f <flag> <param> | <a|r> <action> <param>]")
 public class CmdAdd extends Cmd {

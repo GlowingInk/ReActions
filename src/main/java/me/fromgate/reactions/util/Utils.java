@@ -196,11 +196,10 @@ public class Utils {
     }
 
     /**
-     * Actually {@link Bukkit#getPlayerExact(String)}, but *not* deprecated
-     *
      * @param name Nickname of player
      * @return Player with specified name or null
      */
+    @Deprecated
     public Player getPlayerExact(String name) {
         if (name != null)
             for (Player player : Bukkit.getOnlinePlayers())

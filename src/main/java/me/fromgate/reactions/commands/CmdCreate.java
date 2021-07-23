@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Locale;
 
-@CmdDefine(command = "react", description = Msg.CMD_CREATE, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_CREATE, permission = "reactions.config",
         subCommands = {"create"}, allowConsole = true,
         shortDescription = "&3/react create <loc|timer|menu|activatorType> <id> [param]")
 public class CmdCreate extends Cmd {

@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-@CmdDefine(command = "react", description = Msg.CMD_INFO, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_INFO, permission = "reactions.config",
         subCommands = {"info"}, allowConsole = true, shortDescription = "&3/react info <activator> [f|a|r]")
 public class CmdInfo extends Cmd {
     @Override

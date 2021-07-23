@@ -11,7 +11,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CmdDefine(command = "react", description = Msg.CMD_REMOVE, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_REMOVE, permission = "reactions.config",
         subCommands = {"remove|rmv|del|delete"}, allowConsole = true, shortDescription = "&3/react remove [loc|activator] <id>")
 public class CmdRemove extends Cmd {
 

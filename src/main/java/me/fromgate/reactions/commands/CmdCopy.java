@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 import java.util.Locale;
 
-@CmdDefine(command = "react", description = Msg.CMD_COPY, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_COPY, permission = "reactions.config",
         subCommands = {"copy"}, allowConsole = true, shortDescription = "&3/react copy [f|a|r] <source> <destination>")
 public class CmdCopy extends Cmd {
     @Override

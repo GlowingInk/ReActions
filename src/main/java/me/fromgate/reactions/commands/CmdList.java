@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-@CmdDefine(command = "react", description = Msg.CMD_LIST, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.CMD_LIST, permission = "reactions.config",
         subCommands = {"list"}, allowConsole = true, shortDescription = "&3/react list [loc|group|type] [page]")
 public class CmdList extends Cmd {
 

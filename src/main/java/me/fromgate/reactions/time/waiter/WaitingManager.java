@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+// TODO Recode from scratch
 public class WaitingManager {
 
     private static Set<WaitTask> tasks;
@@ -56,7 +57,7 @@ public class WaitingManager {
             WaitTask t = new WaitTask(cfg, key);
             tasks.add(t);
         }
-        Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), WaitingManager::refresh, 30, 900);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), WaitingManager::refresh, 1, 1);
     }
 
     public static void refreshPlayer(Player player) {
@@ -99,11 +100,11 @@ public class WaitingManager {
         }, 1);
     }
 
-    public static int getTimeLimit() {
-        return (int) (timeLimit / 3600000);
+    public static long getTimeLimit() {
+        return timeLimit;
     }
 
-    public static void setTimeLimit(int hours) {
-        timeLimit = hours * 3600000;
+    public static void setTimeLimit(long ms) {
+        timeLimit = ms;
     }
 }

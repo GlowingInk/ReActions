@@ -69,7 +69,7 @@ public class BlockClickActivator extends Activator implements Locatable {
         BlockClickStorage bce = (BlockClickStorage) event;
         if (bce.getBlock() == null) return false;
         if (!isActivatorBlock(bce.getBlock())) return false;
-        return !click.checkRight(bce.isLeftClick());
+        return click.checkRight(!bce.isLeftClick());
     }
 
     private boolean isActivatorBlock(Block block) {

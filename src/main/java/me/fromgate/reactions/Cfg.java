@@ -41,7 +41,7 @@ public class Cfg {
         config.set("general.player-move-event.use-task", playerMoveTaskUse);
         config.set("general.player-move-event.task-tick", playerMoveTaskTick);
         config.set("general.placeholder-limit", ReActions.getPlaceholders().getCountLimit());
-        config.set("general.waiter-hours-limit", WaitingManager.getTimeLimit());
+        config.set("general.waiter-hours-limit", WaitingManager.getTimeLimit() / 3600000L);
         config.set("reactions.activators.god.enable", godActivatorEnable);
         config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
@@ -69,7 +69,7 @@ public class Cfg {
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
         playerMoveTaskTick = config.getInt("general.player-move-event.task-tick", 5);
         ReActions.getPlaceholders().setCountLimit(config.getInt("general.placeholder-limit", 127));
-        WaitingManager.setTimeLimit(config.getInt("general.waiter-hours-limit", 720));
+        WaitingManager.setTimeLimit(config.getLong("general.waiter-hours-limit", 4380) * 3600000L);
         godActivatorEnable = config.getBoolean("reactions.activators.god.enable", true);
         godActivatorCheckTicks = config.getInt("reactions.activators.god.recheck-ticks", 10);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 
 
-@CmdDefine(command = "react", description = Msg.CMD_SET, permission = "reactions.config", subCommands = {"set"}, allowConsole = true, shortDescription = "&3/react set delay|var id:<id> player:<player> delay:<time>")
+@CmdDefine(command = "reactions", description = Msg.CMD_SET, permission = "reactions.config", subCommands = {"set"}, allowConsole = true, shortDescription = "&3/react set delay|var id:<id> player:<player> delay:<time>")
 public class CmdSet extends Cmd {
 
     @Override

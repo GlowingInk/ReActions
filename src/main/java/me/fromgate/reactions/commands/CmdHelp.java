@@ -8,7 +8,7 @@ import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 
-@CmdDefine(command = "react", description = Msg.HLP_THISHELP, permission = "reactions.config",
+@CmdDefine(command = "reactions", description = Msg.HLP_THISHELP, permission = "reactions.config",
         subCommands = {"help|hlp"}, allowConsole = true, shortDescription = "&3/react help [command]")
 public class CmdHelp extends Cmd {
     @Override
