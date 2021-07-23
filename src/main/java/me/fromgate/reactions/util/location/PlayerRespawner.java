@@ -24,7 +24,7 @@ package me.fromgate.reactions.util.location;
 
 import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.defaults.storages.RespawnStorage;
+import me.fromgate.reactions.module.basics.storages.RespawnStorage;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.Location;

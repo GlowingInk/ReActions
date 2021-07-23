@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions;
 
-import me.fromgate.reactions.module.defaults.StoragesManager;
+import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;

@@ -3,7 +3,7 @@ package me.fromgate.reactions.time.waiter;
 import lombok.Getter;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
-import me.fromgate.reactions.module.defaults.actions.Actions;
+import me.fromgate.reactions.module.basics.actions.Actions;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.Bukkit;

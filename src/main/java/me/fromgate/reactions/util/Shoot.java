@@ -23,7 +23,7 @@
 package me.fromgate.reactions.util;
 
 import lombok.experimental.UtilityClass;
-import me.fromgate.reactions.module.defaults.StoragesManager;
+import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.math.Rng;
