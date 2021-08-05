@@ -53,15 +53,32 @@ public class ItemStoragesManager {
 
     private void setFutureItemHoldCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);
+
         if (player == null || !player.isOnline() || player.isDead()) return;
-        ItemStack item = player.getInventory().getItemInMainHand();
-        if (!ItemUtils.isExist(item)) return;
+
+        ItemStack mainHandItem = player.getInventory().getItemInMainHand();
+        ItemStack offHandItem = player.getInventory().getItemInOffHand();
+
+        boolean mainHandItemExist = isItemHoldProcessable(mainHandItem, itemStr);
+        boolean offHandItemExist = isItemHoldProcessable(offHandItem, itemStr);
+
+        if (!mainHandItemExist && !offHandItemExist) return;
         String rg = "ih-" + itemStr;
         if (!StoragesManager.isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return;
-        if (!ItemUtils.compareItemStr(item, itemStr)) return;
-        ItemHoldStorage ihe = new ItemHoldStorage(player, item, true);
-        ReActions.getActivators().activate(ihe);
+
+        if (mainHandItemExist) processItemHoldActivator(player, mainHandItem);
+        if (offHandItemExist) processItemHoldActivator(player, offHandItem);
 
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20 * Cfg.itemHoldRecheck);
+    }
+
+    private void processItemHoldActivator(Player player, ItemStack item) {
+        ItemHoldStorage ihe = new ItemHoldStorage(player, item, true);
+        ReActions.getActivators().activate(ihe);
+    }
+
+    private boolean isItemHoldProcessable(ItemStack item, String itemStr) {
+        if (!ItemUtils.isExist(item)) return false;
+        return ItemUtils.compareItemStr(item, itemStr);
     }
 }
