@@ -30,17 +30,15 @@
 
 package me.fromgate.reactions.util.item;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.parameter.Parameters;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import org.bukkit.*;
 import org.bukkit.FireworkEffect.Builder;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,13 +57,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /*
@@ -301,13 +293,17 @@ public class VirtualItem extends ItemStack {
         this.setItemMeta(pm);
     }
 
-    @SuppressWarnings("deprecation")
     private void setSkull(String owner) {
         if (Utils.isStringEmpty(owner))
             return;
         if (this.getItemMeta() instanceof SkullMeta) {
             SkullMeta sm = (SkullMeta) this.getItemMeta();
-            sm.setOwner(owner);
+
+            PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID(), null);
+
+            playerProfile.setProperty(new ProfileProperty("textures", SkullUtils.getSkinUrlByName(owner)));
+            sm.setPlayerProfile(playerProfile);
+
             this.setItemMeta(sm);
         }
     }
