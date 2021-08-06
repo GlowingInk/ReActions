@@ -65,8 +65,7 @@ public class ItemHoldActivator extends Activator /*implements Manageable*/ {
         }
         ItemHoldStorage ie = (ItemHoldStorage) event;
 
-        if (ie.isMainHand() && !hand.checkMain(ie.isMainHand())) return false;
-        if (!ie.isMainHand() && !hand.checkOff(!ie.isMainHand())) return false;
+        if (!hand.checkMain(ie.isMainHand())) return false;
 
         return ItemUtils.compareItemStr(ie.getItem(), this.itemStr);
     }
