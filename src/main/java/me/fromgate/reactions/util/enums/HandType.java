@@ -6,7 +6,16 @@ public enum HandType {
     ANY;
 
     public static HandType getByName(String clickStr) {
-        if (clickStr.equalsIgnoreCase("off")) return HandType.OFF;
+        /*
+        If we parse this Yaml ...
+        hand: off
+        ... we get this:
+        'hand': false
+        In order to use the string 'off' as a key, you need to wrap it with quotes:
+        hand: 'off'
+        http://yaml.org/type/bool.html
+         */
+        if (clickStr.equalsIgnoreCase("off") || clickStr.equalsIgnoreCase("false")) return HandType.OFF;
         if (clickStr.equalsIgnoreCase("any")) return HandType.ANY;
         return HandType.MAIN;
     }
