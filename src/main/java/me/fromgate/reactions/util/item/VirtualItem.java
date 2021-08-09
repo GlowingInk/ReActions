@@ -310,7 +310,7 @@ public class VirtualItem extends ItemStack {
         if (this.getItemMeta() instanceof SkullMeta) {
             SkullMeta sm = (SkullMeta) this.getItemMeta();
 
-            PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID(), null);
+            PlayerProfile playerProfile = Bukkit.createProfile(UUID.nameUUIDFromBytes(owner.getBytes()), owner);
 
             playerProfile.setProperty(new ProfileProperty("textures", SkullUtils.getSkinUrlByName(owner)));
             sm.setPlayerProfile(playerProfile);
