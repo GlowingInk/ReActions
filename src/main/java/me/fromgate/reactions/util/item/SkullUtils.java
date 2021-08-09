@@ -41,7 +41,8 @@ public class SkullUtils {
         try {
             URL url = new URL(link);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-
+            conn.setConnectTimeout(3000)
+            ;
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
             StringBuilder inputLine = new StringBuilder();
