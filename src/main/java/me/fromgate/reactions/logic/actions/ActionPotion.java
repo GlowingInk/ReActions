@@ -25,6 +25,7 @@ package me.fromgate.reactions.logic.actions;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -67,20 +68,29 @@ public class ActionPotion extends Action {
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);
         }
-        PotionType ptype;
-        try {
-            ptype = PotionType.valueOf(peffstr.toUpperCase(Locale.ENGLISH));
-        } catch (IllegalArgumentException e){
-            return "";
-        }
-        PotionEffectType pef = ptype.getEffectType();
-        if (pef == null) {
-            return "";
-        }
+        PotionEffectType pef = getPotionEffectType(peffstr);
+
         PotionEffect pe = new PotionEffect(pef, duration, amplifier, ambient);
         if (p.hasPotionEffect(pef)) p.removePotionEffect(pef);
         p.addPotionEffect(pe);
         return pe.getType().getName() + ":" + pe.getAmplifier();
+    }
+
+    private PotionEffectType getPotionEffectType(String potionEffect){
+        PotionType ptype;
+        PotionEffectType pef = PotionEffectType.getByName(potionEffect);
+
+        if (pef == null) {
+            try {
+                ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ENGLISH));
+                pef = ptype.getEffectType();
+            }
+            catch (IllegalArgumentException e) {
+                Msg.logMessage("Unknown potion type name: " + potionEffect);
+            }
+        }
+
+        return pef;
     }
 
 
