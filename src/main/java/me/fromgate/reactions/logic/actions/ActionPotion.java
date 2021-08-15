@@ -29,6 +29,9 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
+
+import java.util.Locale;
 
 public class ActionPotion extends Action {
 
@@ -64,8 +67,16 @@ public class ActionPotion extends Action {
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);
         }
-        PotionEffectType pef = PotionEffectType.getByName(peffstr);
-        if (pef == null) return "";
+        PotionType ptype;
+        try {
+            ptype = PotionType.valueOf(peffstr.toUpperCase(Locale.ENGLISH));
+        } catch (IllegalArgumentException e){
+            return "";
+        }
+        PotionEffectType pef = ptype.getEffectType();
+        if (pef == null) {
+            return "";
+        }
         PotionEffect pe = new PotionEffect(pef, duration, amplifier, ambient);
         if (p.hasPotionEffect(pef)) p.removePotionEffect(pef);
         p.addPotionEffect(pe);
