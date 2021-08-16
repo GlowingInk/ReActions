@@ -76,16 +76,14 @@ public class ActionPotion extends Action {
         return pe.getType().getName() + ":" + pe.getAmplifier();
     }
 
-    private PotionEffectType getPotionEffectType(String potionEffect){
-        PotionType ptype;
+    private static PotionEffectType getPotionEffectType(String potionEffect) {
         PotionEffectType pef = PotionEffectType.getByName(potionEffect);
 
         if (pef == null) {
             try {
-                ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ENGLISH));
+                PotionType ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ENGLISH));
                 pef = ptype.getEffectType();
-            }
-            catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 Msg.logMessage("Unknown potion type name: " + potionEffect);
             }
         }
