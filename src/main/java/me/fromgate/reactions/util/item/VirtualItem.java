@@ -56,6 +56,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -361,6 +362,19 @@ public class VirtualItem extends ItemStack {
         ItemMeta im = this.getItemMeta();
         if (im.hasLore()) return im.getLore();
         return null;
+    }
+
+    @Override
+    public boolean isSimilar(@Nullable ItemStack stack) {
+        if (stack == null) return false;
+
+        if (this.getEnchantments().isEmpty()) {
+            ItemStack clonedStack = stack.clone();
+            clonedStack.getEnchantments().forEach((enchantment, integer) -> clonedStack.removeEnchantment(enchantment));
+            return super.isSimilar(clonedStack);
+        }
+
+        return super.isSimilar(stack);
     }
 
     public void setLore(String loreStr) {
