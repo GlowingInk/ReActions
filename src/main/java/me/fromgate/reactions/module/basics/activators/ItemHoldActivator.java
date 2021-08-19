@@ -28,6 +28,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.enums.HandType;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
@@ -38,21 +39,24 @@ import org.bukkit.configuration.ConfigurationSection;
 public class ItemHoldActivator extends Activator /*implements Manageable*/ {
     // TODO: Store VirtualItem
     private final String itemStr;
-    // TODO: Hand option
+    private final HandType hand;
 
-    private ItemHoldActivator(ActivatorLogic base, String item) {
+    private ItemHoldActivator(ActivatorLogic base, String item, HandType hand) {
         super(base);
         this.itemStr = item;
+        this.hand = hand;
     }
 
     public static ItemHoldActivator create(ActivatorLogic base, Parameters param) {
         String item = param.getString("item", "");
-        return new ItemHoldActivator(base, item);
+        HandType hand = HandType.getByName(param.getString("hand", "ANY"));
+        return new ItemHoldActivator(base, item, hand);
     }
 
     public static ItemHoldActivator load(ActivatorLogic base, ConfigurationSection cfg) {
         String item = cfg.getString("item", "");
-        return new ItemHoldActivator(base, item);
+        HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
+        return new ItemHoldActivator(base, item, hand);
     }
 
     @Override
@@ -62,18 +66,25 @@ public class ItemHoldActivator extends Activator /*implements Manageable*/ {
             return false;
         }
         ItemHoldStorage ie = (ItemHoldStorage) event;
+
+        if (!hand.checkMain(ie.isMainHand())) return false;
+
         return ItemUtils.compareItemStr(ie.getItem(), this.itemStr);
     }
 
     @Override
     public void saveOptions(ConfigurationSection cfg) {
         cfg.set("item", itemStr);
+        cfg.set("hand", hand.name());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (").append(this.itemStr).append(")");
+        sb.append(" (");
+        sb.append(this.itemStr);
+        sb.append("; hand:").append(hand);
+        sb.append(")");
         return sb.toString();
     }
 

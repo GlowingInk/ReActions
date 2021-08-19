@@ -27,11 +27,15 @@ import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.potion.PotionType;
+
+import java.util.Locale;
 
 @Alias("POTION_EFFECT")
 public class ActionPotion extends Action {
@@ -75,12 +79,28 @@ public class ActionPotion extends Action {
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);
         }
-        PotionEffectType pef = PotionEffectType.getByName(peffstr);
-        if (pef == null) return "";
+        PotionEffectType pef = getPotionEffectType(peffstr);
+        if  (pef == null) return "";
+
         PotionEffect pe = new PotionEffect(pef, duration, amplifier, ambient);
         if (p.hasPotionEffect(pef)) p.removePotionEffect(pef);
         p.addPotionEffect(pe);
         return pe.getType().getName() + ":" + pe.getAmplifier();
+    }
+
+    private static PotionEffectType getPotionEffectType(String potionEffect) {
+        PotionEffectType pef = PotionEffectType.getByName(potionEffect);
+
+        if (pef == null) {
+            try {
+                PotionType ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ENGLISH));
+                pef = ptype.getEffectType();
+            } catch (IllegalArgumentException e) {
+                Msg.logMessage("Unknown potion type name: " + potionEffect);
+            }
+        }
+
+        return pef;
     }
 
 

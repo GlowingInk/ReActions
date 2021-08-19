@@ -58,6 +58,7 @@ public class ItemHoldStorage extends Storage {
             tempVars.put("item", vItem.toString());
             tempVars.put("item-str", vItem.toDisplayString());
         }
+        tempVars.put("hand", mainHand ? "MAIN" : "OFF");
         return tempVars;
     }
 }
