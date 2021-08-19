@@ -69,6 +69,7 @@ public class ActionPotion extends Action {
             ambient = params.getBoolean("ambient", false);
         }
         PotionEffectType pef = getPotionEffectType(peffstr);
+        if  (pef == null) return "";
 
         PotionEffect pe = new PotionEffect(pef, duration, amplifier, ambient);
         if (p.hasPotionEffect(pef)) p.removePotionEffect(pef);
