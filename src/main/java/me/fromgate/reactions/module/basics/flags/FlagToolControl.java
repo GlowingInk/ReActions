@@ -1,4 +1,4 @@
-package me.fromgate.reactions.module.basics.flags.worldedit;
+package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.logic.activity.flags.Flag;

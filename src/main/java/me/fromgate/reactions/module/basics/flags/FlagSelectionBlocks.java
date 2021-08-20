@@ -20,29 +20,42 @@
  *
  */
 
-package me.fromgate.reactions.module.basics.flags.worldedit;
+package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: WorldEdit module
-/**
- * Created by MaxDikiy on 11/10/2017.
- */
-public class FlagSuperPickaxe extends Flag {
+@Alias("WE_SEL_BLOCKS")
+public class FlagSelectionBlocks extends Flag {
     @Override
     protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
-        return Boolean.parseBoolean(params.toString()) == RaWorldEdit.hasSuperPickAxe(player);
+        int selectionBlocks = RaWorldEdit.getArea(player);
+        Vector minPoint = RaWorldEdit.getMinimumPoint(player);
+        Vector maxPoint = RaWorldEdit.getMaximumPoint(player);
+        context.setVariable("minpoint", (minPoint == null) ? "" : minPoint.toString());
+        context.setVariable("minX", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockX()));
+        context.setVariable("minY", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockY()));
+        context.setVariable("minZ", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockZ()));
+        context.setVariable("maxpoint", (maxPoint == null) ? "" : maxPoint.toString());
+        context.setVariable("maxX", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockX()));
+        context.setVariable("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
+        context.setVariable("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
+        context.setVariable("selblocks", Integer.toString(selectionBlocks));
+        return NumberUtils.isInteger(params.toString()) && selectionBlocks <= Integer.parseInt(params.toString());
     }
 
     @Override
     public @NotNull String getName() {
-        return "WE_SUPERPICKAXE";
+        return "WE_SELECTION";
     }
 
     @Override

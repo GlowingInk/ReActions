@@ -1,5 +1,6 @@
 package me.fromgate.reactions.module;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
@@ -53,6 +54,46 @@ import me.fromgate.reactions.module.basics.actions.ActionWait;
 import me.fromgate.reactions.module.basics.actions.ActionWalkSpeed;
 import me.fromgate.reactions.module.basics.actions.ActionWeSuperPickaxe;
 import me.fromgate.reactions.module.basics.actions.ActionWeToolControl;
+import me.fromgate.reactions.module.basics.flags.FlagBiome;
+import me.fromgate.reactions.module.basics.flags.FlagBlock;
+import me.fromgate.reactions.module.basics.flags.FlagChance;
+import me.fromgate.reactions.module.basics.flags.FlagCheckOnline;
+import me.fromgate.reactions.module.basics.flags.FlagCompare;
+import me.fromgate.reactions.module.basics.flags.FlagDelay;
+import me.fromgate.reactions.module.basics.flags.FlagDirection;
+import me.fromgate.reactions.module.basics.flags.FlagExecuteStop;
+import me.fromgate.reactions.module.basics.flags.FlagExperience;
+import me.fromgate.reactions.module.basics.flags.FlagFlagSet;
+import me.fromgate.reactions.module.basics.flags.FlagFlySpeed;
+import me.fromgate.reactions.module.basics.flags.FlagFoodLevel;
+import me.fromgate.reactions.module.basics.flags.FlagGamemode;
+import me.fromgate.reactions.module.basics.flags.FlagGreaterLower;
+import me.fromgate.reactions.module.basics.flags.FlagGroup;
+import me.fromgate.reactions.module.basics.flags.FlagHealth;
+import me.fromgate.reactions.module.basics.flags.FlagHeldSlot;
+import me.fromgate.reactions.module.basics.flags.FlagItem;
+import me.fromgate.reactions.module.basics.flags.FlagLevel;
+import me.fromgate.reactions.module.basics.flags.FlagLightLevel;
+import me.fromgate.reactions.module.basics.flags.FlagMoney;
+import me.fromgate.reactions.module.basics.flags.FlagOnline;
+import me.fromgate.reactions.module.basics.flags.FlagPerm;
+import me.fromgate.reactions.module.basics.flags.FlagPowered;
+import me.fromgate.reactions.module.basics.flags.FlagPvp;
+import me.fromgate.reactions.module.basics.flags.FlagRegex;
+import me.fromgate.reactions.module.basics.flags.FlagRegion;
+import me.fromgate.reactions.module.basics.flags.FlagRegionInRadius;
+import me.fromgate.reactions.module.basics.flags.FlagSQL;
+import me.fromgate.reactions.module.basics.flags.FlagSelectionBlocks;
+import me.fromgate.reactions.module.basics.flags.FlagState;
+import me.fromgate.reactions.module.basics.flags.FlagSuperPickaxe;
+import me.fromgate.reactions.module.basics.flags.FlagTime;
+import me.fromgate.reactions.module.basics.flags.FlagTimerActive;
+import me.fromgate.reactions.module.basics.flags.FlagToolControl;
+import me.fromgate.reactions.module.basics.flags.FlagVar;
+import me.fromgate.reactions.module.basics.flags.FlagWalkBlock;
+import me.fromgate.reactions.module.basics.flags.FlagWalkSpeed;
+import me.fromgate.reactions.module.basics.flags.FlagWeather;
+import me.fromgate.reactions.module.basics.flags.FlagWorld;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.selectors.Selector;
 import org.jetbrains.annotations.NotNull;
@@ -162,7 +203,67 @@ public class BasicModule implements Module {
     @Override
     public @NotNull Collection<Flag> getFlags() {
         // TODO
-        return Module.super.getFlags();
+        return List.of(
+                new FlagGroup(),
+                new FlagPerm(),
+                new FlagTime(),
+                new FlagItem(FlagItem.Type.HAND),
+                new FlagItem(FlagItem.Type.INVENTORY),
+                new FlagItem(FlagItem.Type.WEAR),
+                new FlagItem(FlagItem.Type.OFFHAND),
+                new FlagBlock(),
+                new FlagMoney(),
+                new FlagChance(),
+                new FlagPvp(),
+                new FlagOnline(),
+                new FlagDelay(true),
+                new FlagDelay(false),
+                new FlagState(),
+                new FlagRegion(FlagRegion.Type.REGION),
+                new FlagRegion(FlagRegion.Type.REGION_PLAYERS),
+                new FlagRegion(FlagRegion.Type.REGION_MEMBER),
+                new FlagRegion(FlagRegion.Type.REGION_OWNER),
+                new FlagRegion(FlagRegion.Type.REGION_STATE),
+                new FlagGamemode(),
+                new FlagFoodLevel(),
+                new FlagExperience(),
+                new FlagLevel(),
+                new FlagHealth(),
+                new FlagPowered(),
+                new FlagWorld(),
+                new FlagBiome(),
+                new FlagLightLevel(),
+                new FlagWalkBlock(),
+                new FlagDirection(),
+                new FlagFlagSet(ReActions.getActivities()),
+                new FlagExecuteStop(),
+                new FlagVar(FlagVar.Type.EXIST, false),
+                new FlagVar(FlagVar.Type.COMPARE, false),
+                new FlagVar(FlagVar.Type.GREATER, false),
+                new FlagVar(FlagVar.Type.LOWER, false),
+                new FlagVar(FlagVar.Type.MATCH, false),
+                new FlagVar(FlagVar.Type.EXIST, true),
+                new FlagVar(FlagVar.Type.COMPARE, true),
+                new FlagVar(FlagVar.Type.GREATER, true),
+                new FlagVar(FlagVar.Type.LOWER, true),
+                new FlagVar(FlagVar.Type.MATCH, true),
+                new FlagCompare(),
+                new FlagGreaterLower(true),
+                new FlagGreaterLower(false),
+                new FlagWeather(),
+                new FlagTimerActive(),
+                new FlagSQL(true),
+                new FlagSQL(false),
+                new FlagFlySpeed(),
+                new FlagWalkSpeed(),
+                new FlagSelectionBlocks(),
+                new FlagSuperPickaxe(),
+                new FlagToolControl(),
+                new FlagRegionInRadius(),
+                new FlagCheckOnline(),
+                new FlagRegex(),
+                new FlagHeldSlot()
+        );
     }
 
     @Override

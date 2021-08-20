@@ -20,7 +20,7 @@
  *
  */
 
-package me.fromgate.reactions.module.basics.flags.worldedit;
+package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.worldguard.WGBridge7x;
 import me.fromgate.reactions.logic.activity.flags.Flag;
