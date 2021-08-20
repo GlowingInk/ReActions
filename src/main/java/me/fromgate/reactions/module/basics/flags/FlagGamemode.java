@@ -22,20 +22,33 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagGamemode implements OldFlag {
-
+@Alias({"GM", "GAME_MODE"})
+public class FlagGamemode extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        Player player = context.getPlayer();
-        if (player != null)
-            return player.getGameMode() == Utils.getEnum(GameMode.class, param);
-        return false;
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        return context.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, params.toString());
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "GAMEMODE";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

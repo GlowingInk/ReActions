@@ -22,21 +22,31 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagWalkBlock implements OldFlag {
-
+public class FlagWalkBlock extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         Block walk = player.getLocation().getBlock();
         if (!walk.getType().isSolid()) walk = walk.getLocation().subtract(0, 0.1, 0).getBlock();
         // TODO: Use Parameters
-        return walk.getType() == VirtualItem.fromString(param).getType();
+        return walk.getType() == VirtualItem.fromMap(params.getMap()).getType();
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "WALK_BLOCK";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
 }

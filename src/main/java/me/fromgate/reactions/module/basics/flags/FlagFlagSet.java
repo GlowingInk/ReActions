@@ -22,18 +22,62 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FlagFlagSet implements OldFlag {
+// TODO: Rewrite
+@Alias("FLAGS_OR")
+public class FlagFlagSet extends Flag {
 
     private static final Pattern BRACES = Pattern.compile("(^\\{\\s*)|(\\s*}$)");
     private static final Pattern BRACES_GROUP = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
+
+    private final ActivitiesRegistry registry;
+
+    public FlagFlagSet(ActivitiesRegistry registry) {
+        this.registry = registry;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        List<String> flagList = parseParamsList(params.toString());
+        if (flagList.isEmpty()) return false;
+        for (String flagStr : flagList) {
+            boolean negative = flagStr.startsWith("!");
+            if (negative) flagStr = flagStr.replaceFirst("!", "");
+            String[] fnv = flagStr.split(":", 2);
+            if (fnv.length != 2) continue;
+            Flag flag = registry.getFlag(fnv[0]);
+            if (flag != null && negative != flag.check(context, BRACES.matcher(fnv[1]).replaceAll(""))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "FLAG_SET";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 
     private static String hideBkts(String s) {
         int count = 0;
@@ -51,22 +95,6 @@ public class FlagFlagSet implements OldFlag {
             r.append(a);
         }
         return r.toString();
-    }
-
-    @Override
-    public boolean checkFlag(RaContext context, String param) {
-        List<String> flagList = parseParamsList(param);
-        if (flagList.isEmpty()) return false;
-        for (String flagStr : flagList) {
-            boolean negative = flagStr.startsWith("!");
-            if (negative) flagStr = flagStr.replaceFirst("!", "");
-            String[] fnv = flagStr.split(":", 2);
-            if (fnv.length != 2) continue;
-            if (Flags.checkFlag(context, fnv[0], BRACES.matcher(fnv[1]).replaceAll(""), negative)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private List<String> parseParamsList(String param) {

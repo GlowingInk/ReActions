@@ -23,16 +23,33 @@
 package me.fromgate.reactions.module.basics.flags.worldedit;
 
 import me.fromgate.reactions.externals.worldguard.WGBridge7x;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagRegionInRadius implements OldFlag {
+public class FlagRegionInRadius extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         int radius = 0;
-        if (!param.isEmpty()) radius = Integer.parseInt(param);
+        if (!params.toString().isEmpty()) radius = Integer.parseInt(params.toString());
         return WGBridge7x.checkRegionInRadius(player, radius);
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "REGION_IN_RADIUS";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
     }
 }

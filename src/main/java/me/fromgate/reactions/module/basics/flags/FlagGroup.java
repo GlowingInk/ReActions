@@ -23,16 +23,33 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.RaVault;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import org.bukkit.entity.Player;
+import me.fromgate.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagGroup implements OldFlag {
+// TODO: Vault module
+@Alias("VAULT_GROUP")
+public class FlagGroup extends Flag {
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        Player player = context.getPlayer();
-        return RaVault.playerInGroup(player, param);
+    public @NotNull String getName() {
+        return "GROUP";
     }
 
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        return RaVault.playerInGroup(context.getPlayer(), params.toString());
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

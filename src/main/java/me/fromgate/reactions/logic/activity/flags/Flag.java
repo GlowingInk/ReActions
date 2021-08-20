@@ -14,6 +14,8 @@ public abstract class Flag {
         );
     }
 
+    protected abstract boolean check(@NotNull RaContext context, @NotNull Parameters params);
+
     @NotNull
     public abstract String getName();
 
@@ -27,6 +29,4 @@ public abstract class Flag {
     protected boolean isParameterized() {
         return true;
     }
-
-    protected abstract boolean check(@NotNull RaContext context, @NotNull Parameters params);
 }

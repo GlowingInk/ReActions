@@ -22,16 +22,31 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagWorld implements OldFlag {
-
+public class FlagWorld extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
-        return player.getWorld().getName().equals(param);
+        return player.getWorld().getName().equals(params.toString());
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "WORLD";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

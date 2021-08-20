@@ -20,20 +20,38 @@
  *
  */
 
-package me.fromgate.reactions.module.basics.flags;
+package me.fromgate.reactions.module.basics.flags.worldedit;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagXP implements OldFlag {
-
+// TODO: WorldEdit module
+/**
+ * Created by MaxDikiy on 11/10/2017.
+ */
+public class FlagSuperPickaxe extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
-        if (!NumberUtils.isInteger(param)) return false;
-        return player.getTotalExperience() >= Integer.parseInt(param);
+        return Boolean.parseBoolean(params.toString()) == RaWorldEdit.hasSuperPickAxe(player);
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "WE_SUPERPICKAXE";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

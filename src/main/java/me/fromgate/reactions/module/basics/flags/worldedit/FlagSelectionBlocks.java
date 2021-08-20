@@ -23,15 +23,20 @@
 package me.fromgate.reactions.module.basics.flags.worldedit;
 
 import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagSelectionBlocks implements OldFlag {
+// TODO: WorldEdit module
+@Alias("WE_SEL_BLOCKS")
+public class FlagSelectionBlocks extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         int selectionBlocks = RaWorldEdit.getArea(player);
         Vector minPoint = RaWorldEdit.getMinimumPoint(player);
@@ -45,6 +50,21 @@ public class FlagSelectionBlocks implements OldFlag {
         context.setVariable("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
         context.setVariable("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
         context.setVariable("selblocks", Integer.toString(selectionBlocks));
-        return NumberUtils.isInteger(param) && selectionBlocks <= Integer.parseInt(param);
+        return NumberUtils.isInteger(params.toString()) && selectionBlocks <= Integer.parseInt(params.toString());
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "WE_SELECTION";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
     }
 }

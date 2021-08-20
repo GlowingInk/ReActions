@@ -22,26 +22,38 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagDirection implements OldFlag {
+public class FlagDirection extends Flag {
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
-        return isPlayerDirected(player, param);
-    }
-
-    private boolean isPlayerDirected(Player p, String dirstr) {
-        Direction d1 = Direction.getByName(dirstr);
+        Direction d1 = Direction.getByName(params.toString());
         if (d1 == null) return false;
-        Direction d2 = Direction.getByYaw(p);
+        Direction d2 = Direction.getByYaw(player);
         if (d2 == null) return false;
         return (d1 == d2);
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "DIRECTION";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 
     private enum Direction {
         SOUTH,

@@ -22,7 +22,8 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -30,13 +31,13 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagPowered implements OldFlag {
-
+@Alias("POWER")
+public class FlagPowered extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        Parameters params = Parameters.fromString(param);
-        String locStr = params.contains("loc") ? params.getString("loc", "") : param;
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        String locStr = params.getString("loc", params.toString());
         if (locStr.isEmpty()) return false;
         Location loc = LocationUtils.parseLocation(locStr, null);
         if (loc == null) return false;
@@ -47,4 +48,13 @@ public class FlagPowered implements OldFlag {
         return b.isBlockIndirectlyPowered();
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "BLOCK_POWERED";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
 }

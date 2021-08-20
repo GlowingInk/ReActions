@@ -22,14 +22,31 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagPerm implements OldFlag {
-
+@Alias({"PERM", "HAS_PERMISSION"})
+public class FlagPerm extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        return context.getPlayer().hasPermission(param);
+    public @NotNull String getName() {
+        return "PERMISSION";
     }
 
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        return context.getPlayer().hasPermission(params.toString());
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

@@ -24,25 +24,40 @@ package me.fromgate.reactions.module.basics.flags;
 
 import lombok.AllArgsConstructor;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class FlagVar implements OldFlag {
+public class FlagVar extends Flag {
     private final Type flagType;
     private final boolean personalVar;
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    public @NotNull String getName() {
+        return switch (flagType) {
+            case EXIST -> personalVar ? "VAR_PLAYER_EXIST" : "VAR_EXIST";
+            case COMPARE -> personalVar ? "VAR_PLAYER_COMPARE" : "VAR_COMPARE";
+            case GREATER -> personalVar ? "VAR_PLAYER_GREATER" : "VAR_GREATER";
+            case LOWER -> personalVar ? "VAR_PLAYER_LOWER" : "VAR_LOWER";
+            case MATCH -> personalVar ? "VAR_PLAYER_MATCH" : "VAR_MATCH";
+        };
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
-        Parameters params = Parameters.fromString(param, "param-line");
         String variableId;
         String value;
         String playerName = this.personalVar && (player != null) ? player.getName() : "";
-
 
         if (params.contains("id")) {
             variableId = params.getString("id", "");

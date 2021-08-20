@@ -22,23 +22,33 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagPvp implements OldFlag {
+// TODO: Rework a bit
+public class FlagPvp extends Flag {
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         if (!player.hasMetadata("reactions-pvp-time")) return false;
-        Parameters params = Parameters.fromString(param, "time");
-        String timeStr = params.getString("time");
+        String timeStr = params.getString("time", params.toString());
         long delay = TimeUtils.parseTime(timeStr);
         if (delay == 0) return false;
         return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").get(0).asLong()) < delay);
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "PVP";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
 }

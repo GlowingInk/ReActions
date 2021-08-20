@@ -22,15 +22,30 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagTimerActive implements OldFlag {
-
+public class FlagTimerActive extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        return TimersManager.isTimerWorking(param);
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        return TimersManager.isTimerWorking(params.toString());
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "TIMER_ACTIVE";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

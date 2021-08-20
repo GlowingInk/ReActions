@@ -22,18 +22,35 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagFoodLevel implements OldFlag {
-
+@Alias({"FOODLEVEL", "FOOD"})
+public class FlagFoodLevel extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
-        if (!NumberUtils.isInteger(param)) return false;
-        return player.getFoodLevel() >= Integer.parseInt(param);
+        if (!NumberUtils.isInteger(params.toString())) return false;
+        return player.getFoodLevel() >= Integer.parseInt(params.toString());
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "FOOD_LEVEL";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

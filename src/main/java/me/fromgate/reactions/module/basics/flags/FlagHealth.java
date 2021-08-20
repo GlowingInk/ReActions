@@ -22,16 +22,34 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagHealth implements OldFlag {
+@Alias("HP")
+public class FlagHealth extends Flag {
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        Player player = context.getPlayer();
+        return NumberUtils.FLOAT.matcher(params.toString()).matches() && player.getHealth() >= Double.parseDouble(params.toString());
+    }
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        Player player = context.getPlayer();
-        return NumberUtils.FLOAT.matcher(param).matches() && player.getHealth() >= Double.parseDouble(param);
+    public @NotNull String getName() {
+        return "HEALTH";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
     }
 }

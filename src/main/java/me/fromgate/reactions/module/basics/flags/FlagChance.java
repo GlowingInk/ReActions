@@ -22,20 +22,37 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
+import me.fromgate.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagChance implements OldFlag {
-
+@Alias("PROBABILITY")
+public class FlagChance extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        context.setVariable("CHANCE", param + "%");
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        context.setVariable("chance", params + "%");
         double d = 50;
-        if (NumberUtils.isFloat(param)) d = Double.parseDouble(param);
+        if (NumberUtils.isFloat(params.toString())) d = Double.parseDouble(params.toString());
         d = Math.max(Math.min(d, 100), 0);
         return Rng.percentChance(d);
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "CHANCE";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

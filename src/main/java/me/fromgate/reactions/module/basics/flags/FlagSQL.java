@@ -24,19 +24,19 @@ package me.fromgate.reactions.module.basics.flags;
 
 import lombok.AllArgsConstructor;
 import me.fromgate.reactions.SQLManager;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class FlagSQL implements OldFlag {
+public class FlagSQL extends Flag {
     // TODO: Make it safer
     private final boolean check;
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         if (!SQLManager.isEnabled()) return false;
-        Parameters params = Parameters.fromString(param);
         if (!params.containsEvery("value", "select", "from") &&
                 !(params.contains("query"))) return false;
         String value = params.getString("value", "");
@@ -54,4 +54,13 @@ public class FlagSQL implements OldFlag {
         else return SQLManager.isSelectResultEmpty(query);
     }
 
+    @Override
+    public @NotNull String getName() {
+        return check ? "SQL_CHECK" : "SQL_RESULT";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
 }

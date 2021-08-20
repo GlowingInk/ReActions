@@ -20,20 +20,39 @@
  *
  */
 
-package me.fromgate.reactions.module.basics.flags.worldedit;
+package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by MaxDikiy on 11/10/2017.
- */
-public class FlagSuperPickAxe implements OldFlag {
+@Alias("EXEC_STOP")
+public class FlagExecuteStop extends Flag {
+
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        // TODO Custom ActivatorType to handle exec stopping
         Player player = context.getPlayer();
-        return Boolean.parseBoolean(param) == RaWorldEdit.hasSuperPickAxe(player);
+        Msg.logOnce("flagexecstopnotworking", "Sorry, but flag EXECUTE_STOP doesn't work yet.");
+        return false; // ReActions.getActivators().isStopped(player, param, false);
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "EXECUTE_STOP";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
     }
 }

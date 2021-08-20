@@ -23,18 +23,31 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.RaEconomics;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagMoney implements OldFlag {
+// TODO: Vault module
+@Alias({"VAULT_MONEY", "BALANCE"})
+public class FlagMoney extends Flag {
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    public @NotNull String getName() {
+        return "MONEY";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         if (!RaEconomics.isEconomyFound()) return false;
-        Parameters params = Parameters.fromString(param, "amount");
         String amountStr = params.getString("amount", "a");
         if (!NumberUtils.isFloat(amountStr)) return false;
         double amount = Double.parseDouble(amountStr);

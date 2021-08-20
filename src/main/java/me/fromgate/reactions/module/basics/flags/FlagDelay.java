@@ -23,26 +23,25 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import lombok.AllArgsConstructor;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class FlagDelay implements OldFlag {
+public class FlagDelay extends Flag {
 
     private final boolean globalDelay;
-
     @Override
-    public boolean checkFlag(RaContext context, String param) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
         String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
-        String id = param;
+        String id = params.toString();
 
-        Parameters params = Parameters.fromString(param);
         if (params.contains("id")) {
             id = params.getString("id");
             updateTime = TimeUtils.parseTime(params.getString("set-delay", params.getString("set-time", "0")));
@@ -53,4 +52,13 @@ public class FlagDelay implements OldFlag {
         return result;
     }
 
+    @Override
+    public @NotNull String getName() {
+        return globalDelay ? "DELAY" : "DELAY_PLAYER";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return !globalDelay;
+    }
 }

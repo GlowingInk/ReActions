@@ -28,7 +28,7 @@ import me.fromgate.reactions.logic.activity.flags.OldFlag;
 import me.fromgate.reactions.logic.activity.flags.StoredFlag;
 import me.fromgate.reactions.module.basics.flags.worldedit.FlagRegionInRadius;
 import me.fromgate.reactions.module.basics.flags.worldedit.FlagSelectionBlocks;
-import me.fromgate.reactions.module.basics.flags.worldedit.FlagSuperPickAxe;
+import me.fromgate.reactions.module.basics.flags.worldedit.FlagSuperPickaxe;
 import me.fromgate.reactions.module.basics.flags.worldedit.FlagToolControl;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
@@ -74,7 +74,7 @@ public enum Flags {
     REGION_STATE("rgstate", new FlagRegion(FlagRegion.Type.REGION_STATE)),
     GAMEMODE("gm", new FlagGamemode(), true),
     FOODLEVEL("food", new FlagFoodLevel(), true),
-    XP("xp", new FlagXP(), true),
+    XP("xp", new FlagExperience(), true),
     LEVEL("level", new FlagLevel(), true),
     HEALTH("hp", new FlagHealth(), true),
     POWER("powered", new FlagPowered()),
@@ -84,7 +84,7 @@ public enum Flags {
     WALK_BLOCK("walk", new FlagWalkBlock(), true),
     DIRECTION("dir", new FlagDirection(), true),
     FLAG_SET("flagset", new FlagFlagSet()),
-    EXECUTE_STOP("stopped", new FlagExecStop()),
+    EXECUTE_STOP("stopped", new FlagExecuteStop()),
     VAR_EXIST("varexist", new FlagVar(FlagVar.Type.EXIST, false)),
     VAR_COMPARE("varcmp", new FlagVar(FlagVar.Type.COMPARE, false)),
     VAR_GREATER("vargrt", new FlagVar(FlagVar.Type.GREATER, false)),
@@ -112,7 +112,7 @@ public enum Flags {
     FLY_SPEED("flyspeed", new FlagFlySpeed(), true),
     WALK_SPEED("walkspeed", new FlagWalkSpeed(), true),
     WE_SEL_BLOCKS("selblocks", new FlagSelectionBlocks(), true),
-    WE_SUPERPICKAXE("superpickaxe", new FlagSuperPickAxe(), true),
+    WE_SUPERPICKAXE("superpickaxe", new FlagSuperPickaxe(), true),
     WE_TOOLCONTROL("toolcontrol", new FlagToolControl(), true),
     REGION_IN_RADIUS("regioninradius", new FlagRegionInRadius(), true),
     CHECK_ONLINE("checkonline", new FlagCheckOnline()),

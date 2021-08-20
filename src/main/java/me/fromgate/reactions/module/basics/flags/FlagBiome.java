@@ -22,20 +22,32 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.block.Biome;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagBiome implements OldFlag {
+public class FlagBiome extends Flag {
 
     @Override
-    public boolean checkFlag(RaContext context, String param) {
-        Player player = context.getPlayer();
-        if (player != null)
-            return player.getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, param);
-        return false;
+    public @NotNull String getName() {
+        return "BIOME";
     }
 
+    @Override
+    public boolean requiresPlayer() {
+        return true;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        return context.getPlayer().getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, params.toString());
+    }
+
+    @Override
+    protected boolean isParameterized() {
+        return false;
+    }
 }

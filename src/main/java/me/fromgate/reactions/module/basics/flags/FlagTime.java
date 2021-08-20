@@ -22,16 +22,29 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class FlagTime implements OldFlag {
+public class FlagTime extends Flag {
 
     @Override
-    public boolean checkFlag(RaContext context, String time) {
+    public @NotNull String getName() {
+        return "TIME";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    @Override
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        String time = params.toString();
         Player player = context.getPlayer();
         saveTempVar(context, time);
         long currentTime = Bukkit.getWorlds().get(0).getTime();
@@ -67,7 +80,7 @@ public class FlagTime implements OldFlag {
                     else result.append(", ").append(tmp);
                 }
         }
-        context.setVariable("TIME", result.toString());
+        context.setVariable("time", result.toString());
     }
 }
 

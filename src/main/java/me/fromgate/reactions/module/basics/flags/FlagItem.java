@@ -23,7 +23,7 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import lombok.AllArgsConstructor;
-import me.fromgate.reactions.logic.activity.flags.OldFlag;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -31,15 +31,17 @@ import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 @AllArgsConstructor
-public class FlagItem implements OldFlag {
+public class FlagItem extends Flag {
     private final Type flagType;
 
     @Override
-    public boolean checkFlag(RaContext context, String itemStr) {
+    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+        String itemStr = params.toString();
         Player player = context.getPlayer();
         switch (flagType) {
             case HAND:
@@ -96,6 +98,21 @@ public class FlagItem implements OldFlag {
         if (vi == null) return false;
 
         return vi.compare(itemStr);
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return switch (flagType) {
+            case HAND -> "ITEM";
+            case OFFHAND -> "ITEM_OFFHAND";
+            case INVENTORY -> "ITEM_INVENTORY";
+            case WEAR -> "ITEM_WEAR";
+        };
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
     }
 
     public enum Type {
