@@ -4,7 +4,7 @@ import lombok.Getter;
 import me.fromgate.reactions.externals.worldedit.WeSelection;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.WeSelectionActivator;
+import me.fromgate.reactions.module.basics.activators.WESelectionActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -25,7 +25,7 @@ public class WeSelectionRegionStorage extends Storage {
 
     @Override
     public Class<? extends Activator> getType() {
-        return WeSelectionActivator.class;
+        return WESelectionActivator.class;
     }
 
     @Override

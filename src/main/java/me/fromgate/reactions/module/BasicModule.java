@@ -54,6 +54,49 @@ import me.fromgate.reactions.module.basics.actions.ActionWait;
 import me.fromgate.reactions.module.basics.actions.ActionWalkSpeed;
 import me.fromgate.reactions.module.basics.actions.ActionWeSuperPickaxe;
 import me.fromgate.reactions.module.basics.actions.ActionWeToolControl;
+import me.fromgate.reactions.module.basics.activators.BlockBreakActivator;
+import me.fromgate.reactions.module.basics.activators.BlockClickActivator;
+import me.fromgate.reactions.module.basics.activators.ButtonActivator;
+import me.fromgate.reactions.module.basics.activators.CommandActivator;
+import me.fromgate.reactions.module.basics.activators.CuboidActivator;
+import me.fromgate.reactions.module.basics.activators.DamageActivator;
+import me.fromgate.reactions.module.basics.activators.DamageByBlockActivator;
+import me.fromgate.reactions.module.basics.activators.DamageByMobActivator;
+import me.fromgate.reactions.module.basics.activators.DeathActivator;
+import me.fromgate.reactions.module.basics.activators.DoorActivator;
+import me.fromgate.reactions.module.basics.activators.DropActivator;
+import me.fromgate.reactions.module.basics.activators.EntityClickActivator;
+import me.fromgate.reactions.module.basics.activators.ExecActivator;
+import me.fromgate.reactions.module.basics.activators.FlightActivator;
+import me.fromgate.reactions.module.basics.activators.GameModeActivator;
+import me.fromgate.reactions.module.basics.activators.GodActivator;
+import me.fromgate.reactions.module.basics.activators.InventoryClickActivator;
+import me.fromgate.reactions.module.basics.activators.ItemClickActivator;
+import me.fromgate.reactions.module.basics.activators.ItemConsumeActivator;
+import me.fromgate.reactions.module.basics.activators.ItemHeldActivator;
+import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
+import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
+import me.fromgate.reactions.module.basics.activators.JoinActivator;
+import me.fromgate.reactions.module.basics.activators.LeverActivator;
+import me.fromgate.reactions.module.basics.activators.MessageActivator;
+import me.fromgate.reactions.module.basics.activators.MobClickActivator;
+import me.fromgate.reactions.module.basics.activators.MobDamageActivator;
+import me.fromgate.reactions.module.basics.activators.MobKillActivator;
+import me.fromgate.reactions.module.basics.activators.PickupItemActivator;
+import me.fromgate.reactions.module.basics.activators.PlateActivator;
+import me.fromgate.reactions.module.basics.activators.PvpKillActivator;
+import me.fromgate.reactions.module.basics.activators.QuitActivator;
+import me.fromgate.reactions.module.basics.activators.RegionActivator;
+import me.fromgate.reactions.module.basics.activators.RegionEnterActivator;
+import me.fromgate.reactions.module.basics.activators.RegionLeaveActivator;
+import me.fromgate.reactions.module.basics.activators.RespawnActivator;
+import me.fromgate.reactions.module.basics.activators.SignActivator;
+import me.fromgate.reactions.module.basics.activators.SneakActivator;
+import me.fromgate.reactions.module.basics.activators.TeleportActivator;
+import me.fromgate.reactions.module.basics.activators.VariableActivator;
+import me.fromgate.reactions.module.basics.activators.WEChangeActivator;
+import me.fromgate.reactions.module.basics.activators.WESelectionActivator;
+import me.fromgate.reactions.module.basics.activators.WeatherChangeActivator;
 import me.fromgate.reactions.module.basics.flags.FlagBiome;
 import me.fromgate.reactions.module.basics.flags.FlagBlock;
 import me.fromgate.reactions.module.basics.flags.FlagChance;
@@ -101,6 +144,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
+import static me.fromgate.reactions.logic.activators.ActivatorsManager.typeOf;
+
 public class BasicModule implements Module {
     @Override
     public @NotNull String getName() {
@@ -114,8 +159,53 @@ public class BasicModule implements Module {
 
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes() {
-        // TODO
-        return Module.super.getActivatorTypes();
+        return List.of(
+                typeOf(ExecActivator.class, "EXEC", ExecActivator::create, ExecActivator::load),
+                typeOf(ButtonActivator.class, "BUTTON", ButtonActivator::create, ButtonActivator::load, true),
+                typeOf(PlateActivator.class, "PLATE", PlateActivator::create, PlateActivator::load, true),
+                typeOf(TeleportActivator.class, "TELEPORT", TeleportActivator::create, TeleportActivator::load),
+                typeOf(CommandActivator.class, "COMMAND", CommandActivator::create, CommandActivator::load),
+                typeOf(MessageActivator.class, "MESSAGE", MessageActivator::create, MessageActivator::load),
+                typeOf(PvpKillActivator.class, "PVP_KILL", PvpKillActivator::create, PvpKillActivator::load),
+                typeOf(DeathActivator.class, "DEATH", DeathActivator::create, DeathActivator::load),
+                typeOf(RespawnActivator.class, "RESPAWN", RespawnActivator::create, RespawnActivator::load),
+                typeOf(LeverActivator.class, "LEVER", LeverActivator::create, LeverActivator::load, true),
+                typeOf(DoorActivator.class, "DOOR", DoorActivator::create, DoorActivator::load, true),
+                typeOf(JoinActivator.class, "JOIN", JoinActivator::create, JoinActivator::load),
+                typeOf(QuitActivator.class, "QUIT", QuitActivator::create, QuitActivator::load),
+                typeOf(MobClickActivator.class, "MOB_CLICK", MobClickActivator::create, MobClickActivator::load),
+                typeOf(MobKillActivator.class, "MOB_KILL", MobKillActivator::create, MobKillActivator::load),
+                typeOf(MobDamageActivator.class, "MOB_DAMAGE", MobDamageActivator::create, MobDamageActivator::load),
+                typeOf(ItemClickActivator.class, "ITEM_CLICK", ItemClickActivator::create, ItemClickActivator::load),
+                typeOf(ItemConsumeActivator.class, "ITEM_CONSUME", ItemConsumeActivator::create, ItemConsumeActivator::load),
+                typeOf(ItemHoldActivator.class, "ITEM_HOLD", ItemHoldActivator::create, ItemHoldActivator::load),
+                typeOf(ItemHeldActivator.class, "ITEM_HELD", ItemHeldActivator::create, ItemHeldActivator::load),
+                typeOf(ItemWearActivator.class, "ITEM_WEAR", ItemWearActivator::create, ItemWearActivator::load),
+                typeOf(SignActivator.class, "SIGN", SignActivator::create, SignActivator::load, true),
+                typeOf(BlockClickActivator.class, "BLOCK_CLICK", BlockClickActivator::create, BlockClickActivator::load, true),
+                typeOf(InventoryClickActivator.class, "INVENTORY_CLICK", InventoryClickActivator::create, InventoryClickActivator::load),
+                typeOf(DropActivator.class, "DROP", DropActivator::create, DropActivator::load),
+                typeOf(PickupItemActivator.class, "PICKUP_ITEM", PickupItemActivator::create, PickupItemActivator::load),
+                typeOf(FlightActivator.class, "FLIGHT", FlightActivator::create, FlightActivator::load),
+                typeOf(EntityClickActivator.class, "ENTITY_CLICK", EntityClickActivator::create, EntityClickActivator::load),
+                typeOf(BlockBreakActivator.class, "BLOCK_BREAK", BlockBreakActivator::create, BlockBreakActivator::load, true),
+                typeOf(SneakActivator.class, "SNEAK", SneakActivator::create, SneakActivator::load),
+                typeOf(DamageActivator.class, "DAMAGE", DamageActivator::create, DamageActivator::load),
+                typeOf(DamageByMobActivator.class, "DAMAGE_BY_MOB", DamageByMobActivator::create, DamageByMobActivator::load),
+                typeOf(DamageByBlockActivator.class, "DAMAGE_BY_BLOCK", DamageByBlockActivator::create, DamageByBlockActivator::load),
+                typeOf(VariableActivator.class, "VARIABLE", VariableActivator::create, VariableActivator::load),
+                typeOf(GameModeActivator.class, "GAMEMODE", GameModeActivator::create, GameModeActivator::load),
+                typeOf(GodActivator.class, "GOD", GodActivator::create, GodActivator::load),
+                typeOf(CuboidActivator.class, "CUBOID", CuboidActivator::create, CuboidActivator::load),
+                typeOf(WeatherChangeActivator.class, "WEATHER_CHANGE", WeatherChangeActivator::create, WeatherChangeActivator::load),
+                /* WorldGuard */
+                typeOf(RegionActivator.class, "REGION", RegionActivator::create, RegionActivator::load),
+                typeOf(RegionEnterActivator.class, "REGION_ENTER", RegionEnterActivator::create, RegionEnterActivator::load),
+                typeOf(RegionLeaveActivator.class, "REGION_LEAVE", RegionLeaveActivator::create, RegionLeaveActivator::load),
+                /* WorldEdit */
+                typeOf(WESelectionActivator.class, "WE_SELECTION", WESelectionActivator::create, WESelectionActivator::load),
+                typeOf(WEChangeActivator.class, "WE_CHANGE", WEChangeActivator::create, WEChangeActivator::load)
+        );
     }
 
     @Override

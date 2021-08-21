@@ -4,7 +4,7 @@ package me.fromgate.reactions.module.basics.storages;
 import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.WeChangeActivator;
+import me.fromgate.reactions.module.basics.activators.WEChangeActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -31,7 +31,7 @@ public class WeChangeStorage extends Storage {
 
     @Override
     public Class<? extends Activator> getType() {
-        return WeChangeActivator.class;
+        return WEChangeActivator.class;
     }
 
     @Override

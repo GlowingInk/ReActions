@@ -8,6 +8,7 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.WeChangeStorage;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -15,27 +16,28 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Locale;
 
-public class WeChangeActivator extends Activator {
+@Alias("WECHANGE")
+public class WEChangeActivator extends Activator {
 
     private final Material blockType;
     private final String region;
 
-    private WeChangeActivator(ActivatorLogic base, Material blockType, String region) {
+    private WEChangeActivator(ActivatorLogic base, Material blockType, String region) {
         super(base);
         this.blockType = blockType;
         this.region = region;
     }
 
-    public static WeChangeActivator create(ActivatorLogic base, Parameters param) {
+    public static WEChangeActivator create(ActivatorLogic base, Parameters param) {
         Material blockType = ItemUtils.getMaterial(param.getString("blocktype"));
         String region = param.getString("region", "");
-        return new WeChangeActivator(base, blockType, region);
+        return new WEChangeActivator(base, blockType, region);
     }
 
-    public static WeChangeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static WEChangeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
         Material blockType = ItemUtils.getMaterial(cfg.getString("block-type"));
         String region = cfg.getString("region", "");
-        return new WeChangeActivator(base, blockType, region);
+        return new WEChangeActivator(base, blockType, region);
     }
 
     @Override

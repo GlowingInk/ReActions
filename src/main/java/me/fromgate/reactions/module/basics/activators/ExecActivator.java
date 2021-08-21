@@ -3,9 +3,11 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
+@Alias("EXE")
 public class ExecActivator extends Activator {
     private ExecActivator(ActivatorLogic base) {
         super(base);

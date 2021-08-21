@@ -225,7 +225,11 @@ public class ActivatorsManager {
         List<String> registeredNames = new ArrayList<>();
         registeredNames.add(name);
         typesAliases.put(name, type);
-        for (String alias : Utils.getAliases(type)) {
+        String[] aliases = Utils.getAliases(type);
+        if (aliases == null) {
+            aliases = Utils.getAliases(type.getType());
+        }
+        for (String alias : aliases) {
             typesAliases.computeIfAbsent(alias.toUpperCase(Locale.ENGLISH), key -> {
                 registeredNames.add(key);
                 return type;

@@ -5,33 +5,35 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.WeSelectionRegionStorage;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class WeSelectionActivator extends Activator {
+@Alias({"WE_SELECTION_REGION", "WESELECTION"})
+public class WESelectionActivator extends Activator {
     private final int maxBlocks;
     private final int minBlocks;
     private final String typeSelection;
 
-    private WeSelectionActivator(ActivatorLogic base, int maxBlocks, int minBlocks, String typeSelection) {
+    private WESelectionActivator(ActivatorLogic base, int maxBlocks, int minBlocks, String typeSelection) {
         super(base);
         this.maxBlocks = maxBlocks;
         this.minBlocks = minBlocks;
         this.typeSelection = typeSelection;
     }
 
-    public static WeSelectionActivator create(ActivatorLogic base, Parameters param) {
+    public static WESelectionActivator create(ActivatorLogic base, Parameters param) {
         int minBlocks = param.getInteger("minblocks", 0);
         int maxBlocks = param.getInteger("maxblocks", Integer.MAX_VALUE);
         String typeSelection = param.getString("type", "ANY");
-        return new WeSelectionActivator(base, minBlocks, maxBlocks, typeSelection);
+        return new WESelectionActivator(base, minBlocks, maxBlocks, typeSelection);
     }
 
-    public static WeSelectionActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static WESelectionActivator load(ActivatorLogic base, ConfigurationSection cfg) {
         int minBlocks = cfg.getInt("min-blocks", 0);
         int maxBlocks = cfg.getInt("max-blocks", Integer.MAX_VALUE);
         String typeSelection = cfg.getString("type", "ANY");
-        return new WeSelectionActivator(base, minBlocks, maxBlocks, typeSelection);
+        return new WESelectionActivator(base, minBlocks, maxBlocks, typeSelection);
     }
 
     @Override
