@@ -27,6 +27,7 @@ import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.actions.Stopper;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.activity.flags.StoredFlag;
@@ -43,16 +44,11 @@ import java.util.function.BiConsumer;
 
 @Getter
 public final class ActivatorLogic {
-    @NotNull
-    private String group;
-    @NotNull
-    private final String name;
-    @NotNull
-    private final List<StoredFlag> flags;
-    @NotNull
-    private final List<StoredAction> actions;
-    @NotNull
-    private final List<StoredAction> reactions;
+    private @NotNull String group;
+    private final @NotNull String name;
+    private final @NotNull List<StoredFlag> flags;
+    private final @NotNull List<StoredAction> actions;
+    private final @NotNull List<StoredAction> reactions;
 
     public ActivatorLogic(@NotNull String name, @Nullable String group) {
         this.name = name;
@@ -124,13 +120,18 @@ public final class ActivatorLogic {
     }
 
     private static void executeActions(RaContext context, List<StoredAction> actions, boolean hasPlayer) {
-        for (StoredAction action : actions) {
-            // TODO Stopper (WAIT action)
-            if (action.getAction().requiresPlayer() && hasPlayer) {
+        for (int i = 0; i < actions.size(); i++) {
+            StoredAction action = actions.get(i);
+            // TODO: Microoptimization - check if hasPlayer and separate iteration
+            if (hasPlayer || !action.getAction().requiresPlayer()) {
                 String params = action.hasPlaceholders() ?
                                 ReActions.getPlaceholders().parsePlaceholders(context, action.getParameters()) : // TODO Placeholders DI
                                 action.getParameters();
-                action.getAction().execute(context, params);
+                if (action.getAction().execute(context, params) && action.getAction() instanceof Stopper stopAction) {
+                    // TODO: Stopper (WAIT action)
+                    stopAction.stop(context, action.getParameters(), actions.subList(i, actions.size()));
+                    break;
+                }
             }
         }
     }
@@ -138,7 +139,7 @@ public final class ActivatorLogic {
     /**
      * Add flag to activator
      *
-     * @param flag  Flag to add
+     * @param flag Flag to add
      * @param param Parameters of flag
      * @param inverted Is indentation needed
      */
@@ -242,7 +243,7 @@ public final class ActivatorLogic {
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && (this == obj || (obj instanceof ActivatorLogic logic && logic.name.equalsIgnoreCase(name)));
+        return this == obj || (obj instanceof ActivatorLogic logic && logic.name.equalsIgnoreCase(name));
     }
 
     @Override
