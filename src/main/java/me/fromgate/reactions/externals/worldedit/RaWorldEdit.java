@@ -24,6 +24,7 @@ import org.bukkit.plugin.Plugin;
  */
 
 @UtilityClass
+@Deprecated
 public class RaWorldEdit {
     private boolean connected = false;
     private WorldEditPlugin worldedit = null;

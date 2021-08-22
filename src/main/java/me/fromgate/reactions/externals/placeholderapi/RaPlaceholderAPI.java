@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @UtilityClass
+@Deprecated
 public class RaPlaceholderAPI {
 
     private boolean enabled = false;

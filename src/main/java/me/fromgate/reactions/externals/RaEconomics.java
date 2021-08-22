@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @UtilityClass
+@Deprecated
 public class RaEconomics {
     public boolean isEconomyFound() {
         return RaVault.isEconomyConnected();

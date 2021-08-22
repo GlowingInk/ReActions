@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 @UtilityClass
+@Deprecated
 public class RaProtocolLib {
     private final Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"\\}");
     private final Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");

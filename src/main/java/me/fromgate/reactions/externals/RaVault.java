@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @UtilityClass
+@Deprecated
 public class RaVault {
     private boolean vault_perm = false;
     private boolean vault_eco = false;

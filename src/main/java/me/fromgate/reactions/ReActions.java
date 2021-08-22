@@ -9,6 +9,8 @@ import org.bukkit.plugin.Plugin;
 import java.util.Objects;
 
 @UtilityClass
+// TODO: This is a temporary solution - makes everything to be in one place rather than one-by-one singletones
+// Probably will eventually be replaced with Guise
 public class ReActions {
     private Platform platform;
 
