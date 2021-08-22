@@ -29,4 +29,9 @@ public abstract class Flag {
     protected boolean isParameterized() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

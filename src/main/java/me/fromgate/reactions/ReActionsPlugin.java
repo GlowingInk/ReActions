@@ -100,6 +100,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     }
 
     @Override
+    public ActivitiesRegistry getActivities() {
+        return activitiesRegistry;
+    }
+
+    @Override
     public PlaceholdersManager getPlaceholders() {
         return placeholdersManager;
     }

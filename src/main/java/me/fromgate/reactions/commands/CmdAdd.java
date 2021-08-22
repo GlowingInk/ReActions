@@ -2,8 +2,8 @@ package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.module.basics.actions.Actions;
-import me.fromgate.reactions.module.basics.flags.Flags;
+import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
@@ -70,25 +70,28 @@ public class CmdAdd extends Cmd {
     }
 
     private boolean addAction(Activator activator, String act, String param) {
-        if (Actions.isValid(act)) {
-            activator.getLogic().addAction(act, param);
+        Action action = ReActions.getActivities().getAction(act);
+        if (action != null) {
+            activator.getLogic().addAction(action, param);
             return true;
         }
         return false;
     }
 
     private boolean addReaction(Activator activator, String act, String param) {
-        if (Actions.isValid(act)) {
-            activator.getLogic().addReaction(act, param);
+        Action action = ReActions.getActivities().getAction(act);
+        if (action != null) {
+            activator.getLogic().addReaction(action, param);
             return true;
         }
         return false;
     }
 
     private boolean addFlag(Activator activator, String fl, String param) {
-        if (Flags.isValid(fl.replaceFirst("!", ""))) {
-            // TODO: все эти проверки вынести в соответствующие классы
-            activator.getLogic().addFlag(fl, param);
+        boolean invert = fl.startsWith("!");
+        Flag flag = ReActions.getActivities().getFlag(invert ? fl.substring(1) : fl);
+        if (flag != null) {
+            activator.getLogic().addFlag(flag, param, invert);
             return true;
         }
         return false;

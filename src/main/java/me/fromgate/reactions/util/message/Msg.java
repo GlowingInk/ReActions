@@ -22,10 +22,6 @@
 
 package me.fromgate.reactions.util.message;
 
-import me.fromgate.reactions.module.basics.actions.Actions;
-import me.fromgate.reactions.module.basics.activators.OldActivatorType;
-import me.fromgate.reactions.module.basics.flags.Flags;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -553,7 +549,6 @@ public enum Msg {
         initMessages();
         if (save) saveMessages();
         LNG_CONFIG.debug(Msg.values().length, language, true, debugMode);
-        testRequiredMessages();
     }
 
     private static void initMessages() {
@@ -563,28 +558,6 @@ public enum Msg {
                 key.initMessage(lng.get(key.name().toLowerCase(Locale.ENGLISH)));
             } else if (!(language.equalsIgnoreCase("default") || language.equalsIgnoreCase("english"))) {
                 Msg.LNG_TRANSLATION_NOT_FOUND.log(key.name());
-            }
-        }
-    }
-
-    private static void testRequiredMessages() {
-        String key;
-        for (OldActivatorType activator : OldActivatorType.values()) {
-            key = "ACTIVATOR_" + activator.name().toUpperCase(Locale.ENGLISH);
-            if (!exists(key)) {
-                Msg.LNG_MISSED_ACTIVATOR_DESC.log(key);
-            }
-        }
-        for (Actions action : Actions.values()) {
-            key = "ACTION_" + action.name().toUpperCase(Locale.ENGLISH);
-            if (!exists(key)) {
-                Msg.LNG_FAIL_ACTION_DESC.log(key);
-            }
-        }
-        for (Flags flag : Flags.values()) {
-            key = "FLAG_" + flag.name().toUpperCase(Locale.ENGLISH);
-            if (!exists(key)) {
-                Msg.LNG_FAIL_FLAG_DESC.log(key);
             }
         }
     }

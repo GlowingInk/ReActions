@@ -29,6 +29,14 @@ public class Parameters implements Iterable<String> {
     }
 
     @NotNull
+    public static Parameters noParse(@NotNull String str, @NotNull String defKey) {
+        Map<String, String> params = new CaseInsensitiveMap<>();
+        params.put(defKey, str);
+        params.put("param-line", str);
+        return new Parameters(str, params);
+    }
+
+    @NotNull
     public static Parameters fromMap(@NotNull Map<String, String> map) {
         StringBuilder bld = new StringBuilder();
         Map<String, String> params = new CaseInsensitiveMap<>(map);

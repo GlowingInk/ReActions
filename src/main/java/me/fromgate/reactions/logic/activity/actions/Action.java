@@ -5,8 +5,6 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Action {
-
-    // TODO Return String to mimic "setMessageParam" behaviour?
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         return execute(
                 context,
@@ -16,6 +14,7 @@ public abstract class Action {
         );
     }
 
+    // Maybe remove it in favor of execute(RaContext, String)?..
     protected abstract boolean execute(@NotNull RaContext context, @NotNull Parameters params);
 
     @NotNull
@@ -30,5 +29,10 @@ public abstract class Action {
 
     protected boolean isParameterized() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

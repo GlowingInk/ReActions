@@ -1,5 +1,6 @@
 package me.fromgate.reactions.module.basics.actions;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.module.basics.StoragesManager;
@@ -101,17 +102,17 @@ public class ActionIfElse extends Action {
         for (String actionKey : params.keySet()) {
             if (!((actionKey.toLowerCase(Locale.ENGLISH)).startsWith("action"))) continue;
             if (params.isEmpty() || !params.toString().contains("=")) continue;
-            String action = params.getString(actionKey);
+            String actionStr = params.getString(actionKey);
 
-            String flag = action.substring(0, action.indexOf("="));
-            String param = action.substring(action.indexOf("=") + 1);
+            String name = actionStr.substring(0, actionStr.indexOf("="));
+            String param = actionStr.substring(actionStr.indexOf("=") + 1);
             // TODO
-            actions.add(new StoredAction(Actions.getValidName(flag), param));
+            Action action = ReActions.getActivities().getAction(name);
+            if (action == null) continue;
+            actions.add(new StoredAction(action, param));
         }
-
-        if (actions.isEmpty()) return false;
-        Actions.executeActions(context, actions, true);
-        actions.clear();
+        if (!actions.isEmpty())
+            actions.forEach(action -> action.getAction().execute(context, action.getParameters()));
         return true;
     }
 

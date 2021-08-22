@@ -9,9 +9,7 @@ import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
 import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
 import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
 import me.fromgate.reactions.util.item.ItemUtils;
-import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,9 +19,8 @@ import java.util.UUID;
  * To manage some item-related activators
  */
 @UtilityClass
+// TODO: Move to custom ActivatorTypes
 public class ItemStoragesManager {
-    // TODO: Recode.
-
     private void setFutureItemWearCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) return;
@@ -36,7 +33,6 @@ public class ItemStoragesManager {
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20 * Cfg.itemWearRecheck);
     }
 
-    // TODO Move to custom ActivatorType
     public void triggerItemWear(Player player) {
         final UUID playerId = player.getUniqueId();
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
@@ -71,7 +67,7 @@ public class ItemStoragesManager {
         if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, true);
         if (offHandItemExist) processItemHoldActivator(player, offHandItem, false);
 
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20 * Cfg.itemHoldRecheck);
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20L * Cfg.itemHoldRecheck);
     }
 
     private void processItemHoldActivator(Player player, ItemStack item, boolean mainHand) {
