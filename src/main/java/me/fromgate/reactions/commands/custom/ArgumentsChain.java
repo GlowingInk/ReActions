@@ -7,7 +7,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
     private final int priority;
 
     public ArgumentsChain(String chain, ConfigurationSection argSection) {
-        execs = new HashMap<>();
+        execs = new EnumMap<>(ExecType.class);
         loadExecs(argSection);
         arguments = new ArrayList<>();
         consoleAllowed = argSection.getBoolean("console_allowed", true);

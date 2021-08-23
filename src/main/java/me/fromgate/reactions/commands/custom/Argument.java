@@ -3,6 +3,7 @@ package me.fromgate.reactions.commands.custom;
 import lombok.Getter;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
 
@@ -16,7 +17,7 @@ import java.util.Set;
  * One part of arguments chain.
  */
 public class Argument {
-    private static final List<String> NUMBERS = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+    private static final List<String> NUMBERS = List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     private final String argument;
     private final Set<String> multiple;
@@ -61,7 +62,7 @@ public class Argument {
      */
     public ExecType check(String arg) {
         return switch (type) {
-            case PLAYER -> Utils.getPlayerExact(arg) != null ? ExecType.DEFAULT : ExecType.OFFLINE;
+            case PLAYER -> Bukkit.getPlayerExact(arg) != null ? ExecType.DEFAULT : ExecType.OFFLINE;
             case TEXT -> argument.equalsIgnoreCase(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
             case MULTIPLE_TEXT -> multiple.contains(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
             case INTEGER -> NumberUtils.INT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_INTEGER;
@@ -78,15 +79,9 @@ public class Argument {
      */
     public void tabComplete(List<String> complete, String arg) {
         switch (type) {
-            case PLAYER -> {
-                StringUtil.copyPartialMatches(arg, Utils.getPlayersList(), complete);
-                return;
-            }
-            case TEXT, MULTIPLE_TEXT -> {
-                StringUtil.copyPartialMatches(arg, multiple, complete);
-                return;
-            }
-            case INTEGER, FLOAT -> StringUtil.copyPartialMatches(arg, NUMBERS, complete);
+            case PLAYER -> StringUtil.copyPartialMatches(arg, Utils.getPlayersList(), complete);
+            case TEXT, MULTIPLE_TEXT -> StringUtil.copyPartialMatches(arg, multiple, complete);
+            case INTEGER, FLOAT -> complete.addAll(NUMBERS);
         }
     }
 

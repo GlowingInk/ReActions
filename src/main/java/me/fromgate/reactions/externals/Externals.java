@@ -5,8 +5,7 @@ import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import org.bukkit.Bukkit;
 
-// TODO: Externals system looks terrible
-// Maybe external jar modules, that will be registered from folder?
+@Deprecated
 public class Externals {
     public static void init() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
