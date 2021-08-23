@@ -1,9 +1,10 @@
-package me.fromgate.reactions.module;
+package me.fromgate.reactions.module.basics;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.module.Module;
 import me.fromgate.reactions.module.basics.actions.ActionBack;
 import me.fromgate.reactions.module.basics.actions.ActionBlockFill;
 import me.fromgate.reactions.module.basics.actions.ActionBlockSet;

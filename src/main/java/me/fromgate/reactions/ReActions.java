@@ -7,6 +7,7 @@ import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @UtilityClass
 // TODO: This is a temporary solution - makes everything to be in one place rather than one-by-one singletones
@@ -42,6 +43,10 @@ public class ReActions {
         return platform.getVariables();
     }
 
+    public Logger getLogger() {
+        return platform.getLogger();
+    }
+
     public Plugin getPlugin() {
         return platform.getPlugin();
     }
@@ -51,6 +56,7 @@ public class ReActions {
         ActivitiesRegistry getActivities();
         PlaceholdersManager getPlaceholders();
         VariablesManager getVariables();
+        Logger getLogger();
         Plugin getPlugin();
         // TODO: Selectors
     }
