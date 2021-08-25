@@ -10,6 +10,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -99,7 +100,7 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     }
 
     @Override
-    public final List<String> tabComplete(CommandSender sender, String cmd, String[] args, Location loc) {
+    public final @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String cmd, String[] args, Location loc) {
         List<String> complete = new ArrayList<>();
         if (!tab) return complete;
         if (sender instanceof ConsoleCommandSender && !consoleAllowed) return complete;
@@ -110,13 +111,13 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     }
 
     @Override
-    public final boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public final boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
         executeCommand(sender, args);
         return true;
     }
 
     @Override
-    public final Plugin getPlugin() {
+    public final @NotNull Plugin getPlugin() {
         return ReActions.getPlugin();
     }
 

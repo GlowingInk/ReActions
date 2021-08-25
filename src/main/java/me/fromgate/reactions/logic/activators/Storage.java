@@ -63,9 +63,9 @@ public abstract class Storage {
         changeables = prepareChangeables();
     }
 
-    // TODO Maybe register Storage class in ActivatorsManager instead?
     public abstract Class<? extends Activator> getType();
 
+    // TODO: dynamicVariables Supplier<String> for expensive calculations? E.g. CommandStorage
     protected Map<String, String> prepareVariables() {
         return Collections.emptyMap();
     }

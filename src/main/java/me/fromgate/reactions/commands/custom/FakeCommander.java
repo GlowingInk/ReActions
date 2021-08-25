@@ -13,7 +13,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,9 +36,8 @@ public class FakeCommander {
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "commands.yml");
         YamlConfiguration cfg = new YamlConfiguration();
         if (!FileUtils.loadCfg(cfg, f, "Failed to load commands")) return;
-        CommandMap commandMap = getCommandMap();
+        CommandMap commandMap = Bukkit.getCommandMap();
         unregisterAll(/*commandMap*/);
-        if (commandMap == null) return;
         for (String cmdKey : cfg.getKeys(false)) {
             ConfigurationSection cmdSection = cfg.getConfigurationSection(cmdKey);
             String command = cmdSection.getString("command");
@@ -53,29 +51,19 @@ public class FakeCommander {
         }
     }
 
-    private CommandMap getCommandMap() {
-        try {
-            final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            commandMapField.setAccessible(true);
-            return (CommandMap) commandMapField.get(Bukkit.getServer());
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException exception) {
-            exception.printStackTrace();
-            return null;
-        }
-    }
-
-    public boolean raiseRaCommand(CommandStorage storage) {
+    public boolean raiseRaCommand(CommandStorage storage, boolean activated) {
         RaCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ENGLISH));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
-        if (exec != null) StoragesManager.triggerExec(storage.getSender(), exec, storage.getVariables());
+        if (exec != null) {
+            if (!activated) storage.init();
+            StoragesManager.triggerExec(storage.getSender(), exec, storage.getVariables());
+        }
         // It's not activator - context will not be generated
         return raCmd.isOverride();
     }
 
-    // @SuppressWarnings("unchecked")
     private void unregisterAll(/*CommandMap commandMap*/) {
-        if (commands.isEmpty()) return;
 		/*
 		TODO: Command unregister
 		try {

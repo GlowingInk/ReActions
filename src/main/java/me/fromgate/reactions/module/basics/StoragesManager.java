@@ -125,8 +125,8 @@ public class StoragesManager {
 
     public boolean triggerPrecommand(Player player, CommandSender sender, String fullCommand) {
         CommandStorage storage = new CommandStorage(player, sender, fullCommand);
-        ReActions.getActivators().activate(storage);
-        return storage.getChangeables().get(Storage.CANCEL_EVENT).asBoolean() | FakeCommander.raiseRaCommand(storage);
+        boolean activated = ReActions.getActivators().activate(storage);
+        return storage.getChangeables().get(Storage.CANCEL_EVENT).asBoolean() | FakeCommander.raiseRaCommand(storage, activated);
     }
 
     public boolean triggerMobClick(Player player, LivingEntity mob) {

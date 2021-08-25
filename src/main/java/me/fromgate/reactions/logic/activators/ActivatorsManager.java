@@ -245,12 +245,14 @@ public class ActivatorsManager {
         activatorsNames.get(id).executeActivator(storage);
     }
 
-    public void activate(@NotNull Storage storage) {
+    public boolean activate(@NotNull Storage storage) {
         ActivatorType type = types.get(storage.getType());
         if (!type.isEmpty()) {
             storage.init();
             type.activate(storage);
+            return true;
         }
+        return false;
     }
 
     @Nullable
