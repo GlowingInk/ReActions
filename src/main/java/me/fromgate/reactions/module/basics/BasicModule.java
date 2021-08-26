@@ -70,11 +70,11 @@ public class BasicModule implements Module {
                 typeOf(GodActivator.class, "GOD", GodActivator::create, GodActivator::load),
                 typeOf(CuboidActivator.class, "CUBOID", CuboidActivator::create, CuboidActivator::load),
                 typeOf(WeatherChangeActivator.class, "WEATHER_CHANGE", WeatherChangeActivator::create, WeatherChangeActivator::load),
-                /* WorldGuard */
+                // WorldGuard
                 typeOf(RegionActivator.class, "REGION", RegionActivator::create, RegionActivator::load),
                 typeOf(RegionEnterActivator.class, "REGION_ENTER", RegionEnterActivator::create, RegionEnterActivator::load),
                 typeOf(RegionLeaveActivator.class, "REGION_LEAVE", RegionLeaveActivator::create, RegionLeaveActivator::load),
-                /* WorldEdit */
+                // WorldEdit
                 typeOf(WESelectionActivator.class, "WE_SELECTION", WESelectionActivator::create, WESelectionActivator::load),
                 typeOf(WEChangeActivator.class, "WE_CHANGE", WEChangeActivator::create, WEChangeActivator::load)
         );
@@ -90,8 +90,6 @@ public class BasicModule implements Module {
                 new ActionSound(),
                 new ActionPotion(),
                 new ActionPotionRemove(),
-                new ActionGroupAdd(),
-                new ActionGroupRemove(),
                 new ActionMessage(),
                 new ActionResponse(),
                 new ActionChatMessage(),
@@ -110,8 +108,6 @@ public class BasicModule implements Module {
                 new ActionCommand(ActionCommand.Type.OP),
                 new ActionCommand(ActionCommand.Type.CONSOLE),
                 new ActionCommand(ActionCommand.Type.CHAT),
-                new ActionMoneyPay(),
-                new ActionMoneyGive(),
                 new ActionDelay(true),
                 new ActionDelay(false),
                 new ActionBack(),
@@ -119,10 +115,8 @@ public class BasicModule implements Module {
                 new ActionExecute(),
                 new ActionExecStop(),
                 new ActionExecUnstop(),
-                new ActionClearRegion(),
                 new ActionHeal(),
                 new ActionBlockSet(),
-                new ActionBlockFill(),
                 new ActionSignSet(),
                 new ActionPowerSet(),
                 new ActionShoot(),
@@ -156,17 +150,24 @@ public class BasicModule implements Module {
                 new ActionWalkSpeed(),
                 new ActionFlySpeed(),
                 new ActionIfElse(),
-                new ActionWeToolControl(),
-                new ActionWeSuperPickaxe(),
-                new ActionClearRadius()
+                new ActionClearRadius(),
+                // Vault
+                new ActionMoneyPay(),
+                new ActionMoneyGive(),
+                new ActionGroupAdd(),
+                new ActionGroupRemove(),
+                // WorldGuard
+                new ActionClearRegion(),
+                new ActionBlockFill(),
+                // WorldEdit
+                new ActionWEToolControl(),
+                new ActionWESuperPickaxe()
         );
     }
 
     @Override
     public @NotNull Collection<Flag> getFlags() {
         return List.of(
-                new FlagGroup(),
-                new FlagPerm(),
                 new FlagTime(),
                 new FlagItem(FlagItem.Type.HAND),
                 new FlagItem(FlagItem.Type.INVENTORY),
@@ -217,13 +218,18 @@ public class BasicModule implements Module {
                 new FlagSQL(false),
                 new FlagFlySpeed(),
                 new FlagWalkSpeed(),
-                new FlagSelectionBlocks(),
-                new FlagSuperPickaxe(),
-                new FlagToolControl(),
-                new FlagRegionInRadius(),
                 new FlagCheckOnline(),
                 new FlagRegex(),
-                new FlagHeldSlot()
+                new FlagHeldSlot(),
+                // Vault
+                new FlagGroup(),
+                new FlagPerm(),
+                // WorldGuard
+                new FlagRegionInRadius(),
+                // WorldEdit
+                new FlagSelectionBlocks(),
+                new FlagSuperPickaxe(),
+                new FlagToolControl()
         );
     }
 
@@ -231,13 +237,15 @@ public class BasicModule implements Module {
     public @NotNull Collection<Placeholder> getPlaceholders() {
         return List.of(
                 new PlaceholderPlayer(),
-                new PlaceholderMoney(),
                 new PlaceholderRandom(),
                 new PlaceholderTime(),
                 new PlaceholderCalc(),
                 new PlaceholderActivator(),
                 new PlaceholderVariable(),
-                (context, key, text) -> context.getVariable(key), // Temporary variables,
+                (context, key, text) -> context.getVariable(key), // Temporary variables
+                // Vault
+                new PlaceholderMoney(),
+                // PAPI
                 new PlaceholderPAPI()
     );
     }

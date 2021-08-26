@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 18/10/2017.
  */
-public class ActionWeToolControl extends Action {
+public class ActionWEToolControl extends Action {
     @Override
     protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
         Player player = context.getPlayer();
