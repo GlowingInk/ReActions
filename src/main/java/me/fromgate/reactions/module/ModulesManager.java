@@ -14,14 +14,26 @@ public class ModulesManager {
     private final ClassLoader classLoader;
     private final File folder;
 
-    public ModulesManager(ReActions.Platform platform, File folder, ClassLoader classLoader) {
+    private boolean loaded;
+
+    public ModulesManager(ReActions.Platform platform, ClassLoader classLoader) {
         this.platform = platform;
-        this.folder = new File(folder, File.separator + "modules");
+        this.folder = new File(platform.getPlugin().getDataFolder(), File.separator + "modules");
         this.classLoader = classLoader;
-        loadModules();
     }
 
-    private void loadModules() {
+    public void registerModule(Module module) {
+        // TODO: Count loaded
+        module.getActions().forEach(platform.getActivities()::registerAction);
+        module.getFlags().forEach(platform.getActivities()::registerFlag);
+        module.getActivatorTypes().forEach(platform.getActivators()::registerType);
+        module.getPlaceholders().forEach(platform.getPlaceholders()::registerPlaceholder);
+        module.getSelectors().forEach(SelectorsManager::registerSelector);
+        platform.getLogger().info("Loaded module " + module.getName() + " (" + String.join(", ", module.getAuthors()) + ")");
+    }
+
+    public void loadModules() {
+        if (loaded) throw new IllegalStateException("Modules from folder are already loaded!");
         folder.mkdirs();
         for (File file : folder.listFiles()) {
             if (!file.getName().endsWith(".jar")) {
@@ -38,7 +50,7 @@ public class ModulesManager {
                     try {
                         Class<?> clazz = classLoader.loadClass(name.substring(0, name.lastIndexOf('.')).replace('/', '.'));
                         if (Module.class.isAssignableFrom(clazz)) {
-                            loadModule((Module) clazz.getConstructor().newInstance());
+                            registerModule((Module) clazz.getConstructor().newInstance());
                             break;
                         }
                     } catch (NoClassDefFoundError | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
@@ -51,15 +63,6 @@ public class ModulesManager {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void loadModule(Module module) {
-        // TODO: Count loaded
-        module.getActions().forEach(platform.getActivities()::registerAction);
-        module.getFlags().forEach(platform.getActivities()::registerFlag);
-        module.getActivatorTypes().forEach(platform.getActivators()::registerType);
-        module.getPlaceholders().forEach(platform.getPlaceholders()::register);
-        module.getSelectors().forEach(SelectorsManager::addSelector);
-        platform.getLogger().info("Loaded module " + module.getName() + " (" + String.join(", ", module.getAuthors()) + ")");
+        loaded = true;
     }
 }

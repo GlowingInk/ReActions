@@ -15,15 +15,15 @@ public class SelectorsManager {
     public static void init() {
         selectors = new HashSet<>();
         keys = new HashSet<>();
-        addSelector(new PlayerSelector());
-        addSelector(new WorldSelector());
-        addSelector(new LocSelector());
-        addSelector(new GroupSelector());
-        addSelector(new PermSelector());
-        addSelector(new RegionSelector());
+        registerSelector(new PlayerSelector());
+        registerSelector(new WorldSelector());
+        registerSelector(new LocSelector());
+        registerSelector(new GroupSelector());
+        registerSelector(new PermSelector());
+        registerSelector(new RegionSelector());
     }
 
-    public static void addSelector(Selector selector) {
+    public static void registerSelector(Selector selector) {
         if (selector == null) return;
         if (selector.getKey() == null) return;
         selectors.add(selector);

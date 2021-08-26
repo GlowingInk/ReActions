@@ -14,21 +14,13 @@ public class PlaceholdersManager {
 
     @Getter
     @Setter
-    private int countLimit = 127;
+    private int countLimit;
 
     public PlaceholdersManager() {
-        register(new PlaceholderPlayer());
-        register(new PlaceholderMoney());
-        register(new PlaceholderRandom());
-        register(new PlaceholderTime());
-        register(new PlaceholderCalc());
-        register(new PlaceholderActivator());
-        register(new PlaceholderVariable());
-        register((c,p,t) -> c.getVariable(p)); // Temporary variables
-        register(new PlaceholderPAPI());
+        countLimit = 127;
     }
 
-    public boolean register(Placeholder ph) {
+    public boolean registerPlaceholder(Placeholder ph) {
         if(ph == null) return false;
         return InternalParsers.EQUAL.put(ph) || InternalParsers.PREFIXED.put(ph) || InternalParsers.SIMPLE.put(ph);
     }

@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+// TODO: Remove statics
 @UtilityClass
 // TODO: Move to Commander.. but recode it first ;D
 public class FakeCommander {

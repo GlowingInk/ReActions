@@ -1,5 +1,6 @@
-package me.fromgate.reactions.placeholders;
+package me.fromgate.reactions.module.basics.placeholders;
 
+import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -12,8 +13,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 // TODO: Split to different classes
@@ -25,62 +26,34 @@ public class PlaceholderPlayer implements Placeholder.Prefixed {
 
     private static final Set<Material> NON_SOLID;
     static {
-        Set<Material> nonSolid = new HashSet<>();
+        Set<Material> nonSolid = EnumSet.noneOf(Material.class);
         for (Material mat : Material.values())
             if (!mat.isSolid()) nonSolid.add(mat);
-        NON_SOLID = Collections.unmodifiableSet(EnumSet.copyOf(nonSolid));
+        NON_SOLID = Collections.unmodifiableSet(nonSolid);
     }
 
     @Override
     public String processPlaceholder(RaContext context, String key, String param) {
         Player player = context.getPlayer();
         if (player == null) return null;
-        switch (key) {
-            case "player":
-            case "player_name":
-                return player.getName();
-            case "health":
-                return Double.toString(player.getHealth());
-            case "player_inv":
-            case "invplayer":
-                return getPlayerInventory(player, param);
-            case "player_item_hand":
-            case "itemplayer":
-                return getPlayerItemInHand(player, false);
-            case "player_item_offhand":
-            case "offitemplayer":
-                return getPlayerItemInHand(player, true);
-            case "player_display":
-            case "dplayer":
-                return player.getDisplayName();
-            case "player_loc":
-                return LocationUtils.locationToString(player.getLocation());
-            case "player_loc_death":
-            case "deathpoint":
-                Location loc = PlayerRespawner.getLastDeathPoint(player);
-                if (loc == null) loc = player.getLocation();
-                return LocationUtils.locationToString(loc);
-            case "player_loc_eye":
-                return LocationUtils.locationToString(player.getEyeLocation());
-            case "player_loc_view":
-                return LocationUtils.locationToString(getViewLocation(player, false));
-            case "player_loc_view_solid":
-                return LocationUtils.locationToString(getViewLocation(player, true));
-            case "player_level":
-            case "level":
-                return Integer.toString(player.getLevel());
-            case "player_uuid":
-            case "player_id":
-            case "uuid":
-                return player.getUniqueId().toString();
-            case "player_ip":
-            case "ip_address":
-                return player.getAddress().getAddress().getHostAddress();
-            case "player_held_slot":
-            case "slot":
-                return Integer.toString(player.getInventory().getHeldItemSlot());
-        }
-        return null;
+        return switch (key) {
+            case "player", "player_name" -> player.getName();
+            case "health" -> Double.toString(player.getHealth());
+            case "player_inv", "invplayer" -> getPlayerInventory(player, param);
+            case "player_item_hand", "itemplayer" -> getPlayerItemInHand(player, false);
+            case "player_item_offhand", "offitemplayer" -> getPlayerItemInHand(player, true);
+            case "player_display", "dplayer" -> player.getDisplayName();
+            case "player_loc" -> LocationUtils.locationToString(player.getLocation());
+            case "player_loc_death", "deathpoint" -> LocationUtils.locationToString(Optional.of(PlayerRespawner.getLastDeathPoint(player)).orElse(player.getLocation()));
+            case "player_loc_eye" -> LocationUtils.locationToString(player.getEyeLocation());
+            case "player_loc_view" -> LocationUtils.locationToString(getViewLocation(player, false));
+            case "player_loc_view_solid" -> LocationUtils.locationToString(getViewLocation(player, true));
+            case "player_level", "level" -> Integer.toString(player.getLevel());
+            case "player_uuid", "player_id", "uuid" -> player.getUniqueId().toString();
+            case "player_ip", "ip_address" -> player.getAddress().getAddress().getHostAddress();
+            case "player_held_slot", "slot" -> Integer.toString(player.getInventory().getHeldItemSlot());
+            default -> null;
+        };
     }
 
     /**

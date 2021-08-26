@@ -14,7 +14,6 @@ public class NumberUtils {
     public Pattern INT = Pattern.compile("-?\\d+");
     public Pattern INT_NONZERO_POSITIVE = Pattern.compile("[1-9]\\d*");
     public Pattern INT_NONZERO = Pattern.compile("-?[1-9]\\d*");
-    public Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
     // Float
     public Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
     public Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");

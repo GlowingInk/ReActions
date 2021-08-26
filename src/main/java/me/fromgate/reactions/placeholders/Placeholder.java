@@ -7,11 +7,13 @@ public interface Placeholder {
     /**
      * Process this placeholder
      * @param context Context of activation
-     * @param ph Key of placeholder(e.g. %var:test% - var) in lower case
+     * @param key Key of placeholder(e.g. %var:test% - var) in lower case
      * @param text Text of placeholder(e.g. %var:test% - test)
      * @return Processed placeholder
      */
-    String processPlaceholder(RaContext context, String ph, String text);
+    String processPlaceholder(RaContext context, String key, String text);
+
+    // TODO: boolean requiresPlayer
 
     interface Equal extends Placeholder {
         /**

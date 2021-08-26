@@ -3,6 +3,7 @@ package me.fromgate.reactions;
 import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
+import me.fromgate.reactions.module.ModulesManager;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import org.bukkit.plugin.Plugin;
 
@@ -59,5 +60,6 @@ public class ReActions {
         Logger getLogger();
         Plugin getPlugin();
         // TODO: Selectors
+        ModulesManager getModules();
     }
 }

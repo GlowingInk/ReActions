@@ -1,6 +1,6 @@
 package me.fromgate.reactions.logic.activators;
 
-import me.fromgate.reactions.ReActionsPlugin;
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.util.RaGenerator;
@@ -45,9 +45,9 @@ public class ActivatorsManager {
     private final Map<String, Activator> activatorsNames;
     private final Map<String, Set<Activator>> activatorsGroups;
 
-    public ActivatorsManager(@NotNull ReActionsPlugin react, @NotNull ActivitiesRegistry activity) {
-        plugin = react;
-        actsFolder = new File(react.getDataFolder(), "Activators");
+    public ActivatorsManager(@NotNull ReActions.Platform react, @NotNull ActivitiesRegistry activity) {
+        plugin = react.getPlugin();
+        actsFolder = new File(plugin.getDataFolder(), "Activators");
         logger = react.getLogger();
         search = new Search();
         this.activity = activity;

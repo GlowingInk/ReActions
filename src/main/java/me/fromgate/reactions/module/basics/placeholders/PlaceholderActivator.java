@@ -1,5 +1,6 @@
-package me.fromgate.reactions.placeholders;
+package me.fromgate.reactions.module.basics.placeholders;
 
+import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 

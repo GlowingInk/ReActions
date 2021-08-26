@@ -35,6 +35,8 @@ import me.fromgate.reactions.holders.LocationHolder;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
+import me.fromgate.reactions.module.ModulesManager;
+import me.fromgate.reactions.module.basics.BasicModule;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.Delayer;
@@ -53,6 +55,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivatorsManager activatorsManager;
     private PlaceholdersManager placeholdersManager;
     private VariablesManager variablesManager;
+    private ModulesManager modulesManager;
 
     @Override
     public void onLoad() {
@@ -60,6 +63,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.placeholdersManager = new PlaceholdersManager();
         this.activitiesRegistry = new ActivitiesRegistry();
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry);
+        this.modulesManager = new ModulesManager(this, getClassLoader());
         ReActions.setPlatform(this);
     }
 
@@ -91,6 +95,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
 
+        modulesManager.registerModule(new BasicModule());
         new MetricsLite(this, 1894);
     }
 
@@ -117,5 +122,10 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public Plugin getPlugin() {
         return this;
+    }
+
+    @Override
+    public ModulesManager getModules() {
+        return modulesManager;
     }
 }

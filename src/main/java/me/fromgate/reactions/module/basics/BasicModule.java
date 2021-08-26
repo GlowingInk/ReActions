@@ -138,6 +138,14 @@ import me.fromgate.reactions.module.basics.flags.FlagWalkBlock;
 import me.fromgate.reactions.module.basics.flags.FlagWalkSpeed;
 import me.fromgate.reactions.module.basics.flags.FlagWeather;
 import me.fromgate.reactions.module.basics.flags.FlagWorld;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderActivator;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderCalc;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderMoney;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderPAPI;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderPlayer;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderRandom;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderTime;
+import me.fromgate.reactions.module.basics.placeholders.PlaceholderVariable;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.selectors.Selector;
 import org.jetbrains.annotations.NotNull;
@@ -293,7 +301,6 @@ public class BasicModule implements Module {
 
     @Override
     public @NotNull Collection<Flag> getFlags() {
-        // TODO
         return List.of(
                 new FlagGroup(),
                 new FlagPerm(),
@@ -359,8 +366,17 @@ public class BasicModule implements Module {
 
     @Override
     public @NotNull Collection<Placeholder> getPlaceholders() {
-        // TODO
-        return Module.super.getPlaceholders();
+        return List.of(
+                new PlaceholderPlayer(),
+                new PlaceholderMoney(),
+                new PlaceholderRandom(),
+                new PlaceholderTime(),
+                new PlaceholderCalc(),
+                new PlaceholderActivator(),
+                new PlaceholderVariable(),
+                (context, key, text) -> context.getVariable(key), // Temporary variables,
+                new PlaceholderPAPI()
+    );
     }
 
     @Override
