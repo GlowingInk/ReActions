@@ -1,7 +1,6 @@
 package me.fromgate.reactions.module;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.selectors.SelectorsManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class ModulesManager {
         module.getFlags().forEach(platform.getActivities()::registerFlag);
         module.getActivatorTypes().forEach(platform.getActivators()::registerType);
         module.getPlaceholders().forEach(platform.getPlaceholders()::registerPlaceholder);
-        module.getSelectors().forEach(SelectorsManager::registerSelector);
+        module.getSelectors().forEach(platform.getSelectors()::registerSelector);
         platform.getLogger().info("Loaded module " + module.getName() + " (" + String.join(", ", module.getAuthors()) + ")");
     }
 

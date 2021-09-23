@@ -5,14 +5,14 @@ import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.module.ModulesManager;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
+import me.fromgate.reactions.selectors.SelectorsManager;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
 import java.util.logging.Logger;
 
 @UtilityClass
-// TODO: This is a temporary solution - makes everything to be in one place rather than one-by-one singletones
-// Probably will eventually be replaced with Guise
+// TODO: This is a temporary solution, will be removed after 14.0.0 ASAP
 public class ReActions {
     private Platform platform;
 
@@ -24,6 +24,8 @@ public class ReActions {
         Objects.requireNonNull(platform.getActivators(), "ActivatorsManager cannot be null.");
         Objects.requireNonNull(platform.getPlaceholders(), "PlaceholdersManager cannot be null.");
         Objects.requireNonNull(platform.getVariables(), "VariablesManager cannot be null.");
+        Objects.requireNonNull(platform.getSelectors(), "SelectorsManager cannot be null.");
+        Objects.requireNonNull(platform.getModules(), "ModulesManager cannot be null.");
         Objects.requireNonNull(platform.getPlugin(), "Plugin cannot be null.");
         ReActions.platform = platform;
     }
@@ -44,6 +46,14 @@ public class ReActions {
         return platform.getVariables();
     }
 
+    public SelectorsManager getSelectors() {
+        return platform.getSelectors();
+    }
+
+    public ModulesManager getModules() {
+        return platform.getModules();
+    }
+
     public Logger getLogger() {
         return platform.getLogger();
     }
@@ -57,9 +67,9 @@ public class ReActions {
         ActivitiesRegistry getActivities();
         PlaceholdersManager getPlaceholders();
         VariablesManager getVariables();
+        SelectorsManager getSelectors();
+        ModulesManager getModules();
         Logger getLogger();
         Plugin getPlugin();
-        // TODO: Selectors
-        ModulesManager getModules();
     }
 }

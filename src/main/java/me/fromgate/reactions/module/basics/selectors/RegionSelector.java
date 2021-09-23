@@ -1,16 +1,22 @@
-package me.fromgate.reactions.selectors;
+package me.fromgate.reactions.module.basics.selectors;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
+import me.fromgate.reactions.selectors.Selector;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@SelectorDefine(key = "region")
 public class RegionSelector implements Selector {
 
     @Override
-    public Set<Player> selectPlayers(String regionStr) {
+    public @NotNull String getName() {
+        return "region";
+    }
+
+    @Override
+    public @NotNull Set<Player> getPlayers(String regionStr) {
         Set<Player> players = new HashSet<>();
         if (!RaWorldGuard.isConnected()) return players;
         if (regionStr.isEmpty()) return players;

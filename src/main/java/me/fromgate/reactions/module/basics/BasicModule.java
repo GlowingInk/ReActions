@@ -9,6 +9,7 @@ import me.fromgate.reactions.module.basics.actions.*;
 import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.module.basics.flags.*;
 import me.fromgate.reactions.module.basics.placeholders.*;
+import me.fromgate.reactions.module.basics.selectors.*;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.selectors.Selector;
 import org.jetbrains.annotations.NotNull;
@@ -247,12 +248,19 @@ public class BasicModule implements Module {
                 new PlaceholderMoney(),
                 // PAPI
                 new PlaceholderPAPI()
-    );
+        );
     }
 
     @Override
     public @NotNull Collection<Selector> getSelectors() {
         // TODO
-        return Module.super.getSelectors();
+        return List.of(
+                new PlayerSelector(),
+                new WorldSelector(),
+                new LocSelector(),
+                new GroupSelector(),
+                new PermSelector(),
+                new RegionSelector()
+        );
     }
 }

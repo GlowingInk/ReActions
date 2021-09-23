@@ -1,15 +1,12 @@
 package me.fromgate.reactions.selectors;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface Selector {
-    default String getKey() {
-        if (!this.getClass().isAnnotationPresent(SelectorDefine.class)) return null;
-        SelectorDefine sd = this.getClass().getAnnotation(SelectorDefine.class);
-        return sd.key();
-    }
+    @NotNull String getName();
 
-    Set<Player> selectPlayers(String param);
+    @NotNull Collection<Player> getPlayers(String param);
 }

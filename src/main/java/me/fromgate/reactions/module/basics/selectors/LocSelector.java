@@ -1,17 +1,23 @@
-package me.fromgate.reactions.selectors;
+package me.fromgate.reactions.module.basics.selectors;
 
+import me.fromgate.reactions.selectors.Selector;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@SelectorDefine(key = "loc")
 public class LocSelector implements Selector {
     @Override
-    public Set<Player> selectPlayers(String param) {
+    public @NotNull String getName() {
+        return "loc";
+    }
+
+    @Override
+    public @NotNull Set<Player> getPlayers(String param) {
         Set<Player> players = new HashSet<>();
         if (param.isEmpty()) return players;
         Parameters params = Parameters.fromString(param, "loc");

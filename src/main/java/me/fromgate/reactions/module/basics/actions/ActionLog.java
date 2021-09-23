@@ -24,7 +24,6 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -110,7 +109,7 @@ public class ActionLog extends Action {
 
     private String removeParams(String message) {
         StringBuilder sb = new StringBuilder("(?i)(");
-        sb.append(String.join("|", SelectorsManager.getAllKeys()));
+        sb.append(String.join("|", ReActions.getSelectors().getAllKeys()));
         sb.append("|hide|prefix|color|file):(\\{.*\\}|\\S+)\\s{0,1}");
         return message.replaceAll(sb.toString(), "");
 

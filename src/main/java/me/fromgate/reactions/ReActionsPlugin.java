@@ -36,7 +36,7 @@ import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.module.ModulesManager;
-import me.fromgate.reactions.module.basics.BasicModule;
+import me.fromgate.reactions.module.basics.*;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.Delayer;
@@ -55,6 +55,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivatorsManager activatorsManager;
     private PlaceholdersManager placeholdersManager;
     private VariablesManager variablesManager;
+    private SelectorsManager selectorsManager;
     private ModulesManager modulesManager;
 
     @Override
@@ -63,6 +64,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.placeholdersManager = new PlaceholdersManager();
         this.activitiesRegistry = new ActivitiesRegistry();
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry);
+        this.selectorsManager = new SelectorsManager();
         this.modulesManager = new ModulesManager(this, getClassLoader());
         ReActions.setPlatform(this);
     }
@@ -79,7 +81,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         TimersManager.init();
         this.activatorsManager.loadGroup("", false);
         FakeCommander.init();
-        SelectorsManager.init();
         Externals.init();
         RaVault.init();
         WaitingManager.init();
@@ -117,6 +118,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public VariablesManager getVariables() {
         return variablesManager;
+    }
+
+    @Override
+    public SelectorsManager getSelectors() {
+        return selectorsManager;
     }
 
     @Override

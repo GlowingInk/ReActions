@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +52,7 @@ public class ActionRegex extends Action {
 
     // TODO: Remove it somehow
     private String removeParams(String message) {
-        String sb = "(?i)(" + String.join("|", SelectorsManager.getAllKeys()) +
+        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) +
                 "|hide|regex|prefix):(\\{.*\\}|\\S+)\\s?";
         return message.replaceAll(sb, "");
 

@@ -6,9 +6,7 @@ import me.fromgate.reactions.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -16,21 +14,17 @@ public class ActivitiesRegistry {
 
     private final Map<String, Action> actionByName;
     private final Map<String, Flag> flagByName;
-    private final List<Action> actions;
-    private final List<Flag> flags;
 
     public ActivitiesRegistry() {
         actionByName = new HashMap<>();
         flagByName = new HashMap<>();
-        actions = new ArrayList<>();
-        flags = new ArrayList<>();
     }
 
     public void registerAction(@NotNull Action action) {
         if (actionByName.containsKey(action.getName().toUpperCase(Locale.ENGLISH))) {
             throw new IllegalStateException("Action '" + action.getName().toUpperCase(Locale.ENGLISH) + "' is already registered!");
         }
-        actions.add(action);
+        actionByName.put(action.getName().toUpperCase(Locale.ENGLISH), action);
         for (String alias : Utils.getAliases(action)) {
             actionByName.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), action);
         }
@@ -40,7 +34,7 @@ public class ActivitiesRegistry {
         if (flagByName.containsKey(flag.getName().toUpperCase(Locale.ENGLISH))) {
             throw new IllegalStateException("Flag '" + flag.getName().toUpperCase(Locale.ENGLISH) + "' is already registered!");
         }
-        flags.add(flag);
+        flagByName.put(flag.getName().toUpperCase(Locale.ENGLISH), flag);
         for (String alias : Utils.getAliases(flag)) {
             flagByName.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), flag);
         }

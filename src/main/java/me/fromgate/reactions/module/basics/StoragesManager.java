@@ -29,49 +29,8 @@ import me.fromgate.reactions.commands.custom.FakeCommander;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ExecActivator;
-import me.fromgate.reactions.module.basics.activators.MessageActivator;
-import me.fromgate.reactions.module.basics.activators.SignActivator;
-import me.fromgate.reactions.module.basics.storages.BlockBreakStorage;
-import me.fromgate.reactions.module.basics.storages.BlockClickStorage;
-import me.fromgate.reactions.module.basics.storages.ButtonStorage;
-import me.fromgate.reactions.module.basics.storages.CommandStorage;
-import me.fromgate.reactions.module.basics.storages.CuboidStorage;
-import me.fromgate.reactions.module.basics.storages.DamageByBlockStorage;
-import me.fromgate.reactions.module.basics.storages.DamageByMobStorage;
-import me.fromgate.reactions.module.basics.storages.DamageStorage;
-import me.fromgate.reactions.module.basics.storages.DeathStorage;
-import me.fromgate.reactions.module.basics.storages.DoorStorage;
-import me.fromgate.reactions.module.basics.storages.DropStorage;
-import me.fromgate.reactions.module.basics.storages.EntityClickStorage;
-import me.fromgate.reactions.module.basics.storages.ExecStorage;
-import me.fromgate.reactions.module.basics.storages.FlightStorage;
-import me.fromgate.reactions.module.basics.storages.GameModeStorage;
-import me.fromgate.reactions.module.basics.storages.GodStorage;
-import me.fromgate.reactions.module.basics.storages.InventoryClickStorage;
-import me.fromgate.reactions.module.basics.storages.ItemClickStorage;
-import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
-import me.fromgate.reactions.module.basics.storages.ItemHeldStorage;
-import me.fromgate.reactions.module.basics.storages.JoinStorage;
-import me.fromgate.reactions.module.basics.storages.LeverStorage;
-import me.fromgate.reactions.module.basics.storages.MessageStorage;
-import me.fromgate.reactions.module.basics.storages.MobClickStorage;
-import me.fromgate.reactions.module.basics.storages.MobDamageStorage;
-import me.fromgate.reactions.module.basics.storages.MobKillStorage;
-import me.fromgate.reactions.module.basics.storages.PickupItemStorage;
-import me.fromgate.reactions.module.basics.storages.PlateStorage;
-import me.fromgate.reactions.module.basics.storages.ProjectileHitStorage;
-import me.fromgate.reactions.module.basics.storages.PvpKillStorage;
-import me.fromgate.reactions.module.basics.storages.QuitStorage;
-import me.fromgate.reactions.module.basics.storages.RegionEnterStorage;
-import me.fromgate.reactions.module.basics.storages.RegionLeaveStorage;
-import me.fromgate.reactions.module.basics.storages.RegionStorage;
-import me.fromgate.reactions.module.basics.storages.SignStorage;
-import me.fromgate.reactions.module.basics.storages.SneakStorage;
-import me.fromgate.reactions.module.basics.storages.TeleportStorage;
-import me.fromgate.reactions.module.basics.storages.VariableStorage;
-import me.fromgate.reactions.module.basics.storages.WeatherChangeStorage;
-import me.fromgate.reactions.selectors.SelectorsManager;
+import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
@@ -269,11 +228,11 @@ public class StoragesManager {
         final Set<Player> target = new HashSet<>();
 
         if (param.contains("player")) {
-            target.addAll(SelectorsManager.getPlayerList(Parameters.fromString(param.getString("player"), "player")));
+            target.addAll(ReActions.getSelectors().getPlayerList(Parameters.fromString(param.getString("player"), "player")));
         }
-        target.addAll(SelectorsManager.getPlayerList(param));   // Оставляем для совместимости со старым вариантом
+        target.addAll(ReActions.getSelectors().getPlayerList(param));   // Оставляем для совместимости со старым вариантом
 
-        if (target.isEmpty() && !param.containsAny(SelectorsManager.getAllKeys())) target.add(senderPlayer);
+        if (target.isEmpty() && !param.containsAny(ReActions.getSelectors().getAllKeys())) target.add(senderPlayer);
 
         for (int i = 0; i < repeat; i++) {
             Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {

@@ -24,7 +24,6 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
@@ -61,17 +60,17 @@ public class ActionMessage extends Action {
 
     // TODO: Remove it somehow
     private static String removeParams(String message) {
-        String sb = "(?i)(" + String.join("|", SelectorsManager.getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
+        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
         return message.replaceAll(sb, "");
 
     }
 
     private static void sendMessage(Player player, Parameters params) {
         Set<Player> players = new HashSet<>();
-        if (params.containsAny(SelectorsManager.getAllKeys())) {
-            players.addAll(SelectorsManager.getPlayerList(params));
+        if (params.containsAny(ReActions.getSelectors().getAllKeys())) {
+            players.addAll(ReActions.getSelectors().getPlayerList(params));
             if (players.isEmpty() && params.contains("player")) {
-                players.addAll(SelectorsManager.getPlayerList(Parameters.fromString(params.getString("player"))));
+                players.addAll(ReActions.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"))));
             }
         } else if (player != null) {
             players.add(player);

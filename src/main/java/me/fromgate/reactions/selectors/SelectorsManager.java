@@ -1,47 +1,51 @@
 package me.fromgate.reactions.selectors;
 
+import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class SelectorsManager {
-    // TODO Unstatic
+    private final Map<String, Selector> selectorByName;
+    private final List<Selector> selectors;
 
-    private static Set<Selector> selectors;
-    private static Set<String> keys;
-
-    public static void init() {
-        selectors = new HashSet<>();
-        keys = new HashSet<>();
-        registerSelector(new PlayerSelector());
-        registerSelector(new WorldSelector());
-        registerSelector(new LocSelector());
-        registerSelector(new GroupSelector());
-        registerSelector(new PermSelector());
-        registerSelector(new RegionSelector());
+    public SelectorsManager() {
+        selectorByName = new HashMap<>();
+        selectors = new ArrayList<>();
     }
 
-    public static void registerSelector(Selector selector) {
-        if (selector == null) return;
-        if (selector.getKey() == null) return;
+    public void registerSelector(@NotNull Selector selector) {
+        if (selectorByName.containsKey(selector.getName().toLowerCase(Locale.ENGLISH))) {
+            throw new IllegalStateException("Selector '" + selector.getName().toLowerCase(Locale.ENGLISH) + "' is already registered!");
+        }
         selectors.add(selector);
-        keys.add(selector.getKey());
+        selectorByName.put(selector.getName().toLowerCase(Locale.ENGLISH), selector);
+        for (String alias : Utils.getAliases(selector)) {
+            selectorByName.putIfAbsent(alias.toLowerCase(Locale.ENGLISH), selector);
+        }
     }
 
-    public static Set<Player> getPlayerList(Parameters param) {
+    public Set<Player> getPlayerList(Parameters param) {
         Set<Player> players = new HashSet<>();
+        // TODO Optimize
         for (Selector selector : selectors) {
-            String selectorParam = param.getString(selector.getKey());
-            if (selector.getKey().equalsIgnoreCase("loc") && param.contains("radius"))
+            String selectorParam = param.getString(selector.getName());
+            if (selector.getName().equalsIgnoreCase("loc") && param.contains("radius"))
                 selectorParam = "loc:" + selectorParam + " " + "radius:" + param.getString("radius", "1");
-            players.addAll(selector.selectPlayers(selectorParam));
+            players.addAll(selector.getPlayers(selectorParam));
         }
         return players;
     }
 
-    public static Set<String> getAllKeys() {
-        return keys;
+    public Set<String> getAllKeys() {
+        return selectorByName.keySet();
     }
 }

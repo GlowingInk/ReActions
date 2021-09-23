@@ -1,17 +1,23 @@
-package me.fromgate.reactions.selectors;
+package me.fromgate.reactions.module.basics.selectors;
 
+import me.fromgate.reactions.selectors.Selector;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@SelectorDefine(key = "player")
 public class PlayerSelector implements Selector {
 
     @Override
-    public Set<Player> selectPlayers(String param) {
+    public @NotNull String getName() {
+        return "player";
+    }
+
+    @Override
+    public @NotNull Set<Player> getPlayers(String param) {
         Set<Player> players = new HashSet<>();
         if (param.isEmpty()) return players;
         if (param.equalsIgnoreCase("~null")) {
