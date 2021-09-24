@@ -207,8 +207,7 @@ public class ActivatorsManager {
         }
     }
 
-    @NotNull
-    public List<String> registerType(@NotNull ActivatorType type) {
+    public void registerType(@NotNull ActivatorType type) {
         if (types.containsKey(type.getType())) {
             throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered!");
         }
@@ -222,21 +221,13 @@ public class ActivatorsManager {
             }
         }
         types.put(type.getType(), type);
-        List<String> registeredNames = new ArrayList<>();
-        registeredNames.add(name);
-        typesAliases.put(name, type);
         String[] aliases = Utils.getAliases(type);
         if (aliases == null) {
             aliases = Utils.getAliases(type.getType());
         }
         for (String alias : aliases) {
-            typesAliases.computeIfAbsent(alias.toUpperCase(Locale.ENGLISH), key -> {
-                registeredNames.add(key);
-                return type;
-            });
+            typesAliases.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), type);
         }
-        logger.info("Activator type '" + name + "' registered with aliases '" + String.join("', ", registeredNames) + "'");
-        return registeredNames;
     }
 
     @Deprecated

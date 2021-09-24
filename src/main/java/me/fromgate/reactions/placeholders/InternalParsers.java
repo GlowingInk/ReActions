@@ -3,12 +3,12 @@ package me.fromgate.reactions.placeholders;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Default parsers that will be used first
@@ -98,7 +98,7 @@ enum InternalParsers implements Parser {
      * Just tries to check all stored placeholders - all the logic is inside of placeholder itself
      */
     SIMPLE {
-        private final Set<Placeholder> placeholders = new HashSet<>();
+        private final List<Placeholder> placeholders = new ArrayList<>();
 
         @Override
         public boolean put(Placeholder ph) {
@@ -121,7 +121,7 @@ enum InternalParsers implements Parser {
         }
 
         @Override
-        public Set<Placeholder> getPlaceholders() {
+        public Collection<Placeholder> getPlaceholders() {
             return placeholders;
         }
     };

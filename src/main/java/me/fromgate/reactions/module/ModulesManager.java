@@ -1,10 +1,19 @@
 package me.fromgate.reactions.module;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.logic.activators.ActivatorType;
+import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.selectors.Selector;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -22,13 +31,28 @@ public class ModulesManager {
     }
 
     public void registerModule(Module module) {
-        // TODO: Count loaded
-        module.getActions().forEach(platform.getActivities()::registerAction);
-        module.getFlags().forEach(platform.getActivities()::registerFlag);
-        module.getActivatorTypes().forEach(platform.getActivators()::registerType);
-        module.getPlaceholders().forEach(platform.getPlaceholders()::registerPlaceholder);
-        module.getSelectors().forEach(platform.getSelectors()::registerSelector);
-        platform.getLogger().info("Loaded module " + module.getName() + " (" + String.join(", ", module.getAuthors()) + ")");
+        platform.getLogger().info("Registering " + module.getName() + " module (by " + StringUtils.join(module.getAuthors(), ", ") + ")");
+        register("activators", module.getActivatorTypes(), ActivatorType::getName);
+        register("actions", module.getActions(), Action::getName);
+        register("flags", module.getFlags(), Flag::getName);
+        register("placeholders", module.getPlaceholders(), (p) -> p.getClass().getSimpleName());
+        register("selectors", module.getSelectors(), Selector::getName);
+    }
+
+    private <T> void register(String what, Collection<T> values, Function<T, String> toString) {
+        List<String> names = new ArrayList<>(values.size());
+        List<String> failed = new ArrayList<>();
+        for (T type : values) {
+            try {
+                names.add(toString.apply(type));
+            } catch (IllegalStateException e) {
+                failed.add(e.getMessage());
+            }
+        }
+        if (!names.isEmpty()) {
+            platform.getLogger().info("Registered " + names.size() + " " + what + ": " + String.join(", ", names));
+        }
+        failed.forEach(platform.getLogger()::warning);
     }
 
     public void loadModules() {
