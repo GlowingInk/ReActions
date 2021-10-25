@@ -38,15 +38,16 @@ import java.util.Map;
 public class ActionMoneyPay extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (!RaEconomics.isEconomyFound()) return false;
         if (params.size() == 0) return false;
         if (params.size() <= 2) params = parseOldFormat(player, params.toString());
-        String amountStr = params.getString("amount", "");
+        String amountStr = params.getString("amount");
         if (amountStr.isEmpty()) return false;
-        String worldName = params.getString("world", "");
-        String target = params.getString("target", "");
+        String worldName = params.getString("world");
+        String target = params.getString("target");
         String source = params.getString("source", params.getString("player", (player != null ? player.getName() : "")));
         if (source.isEmpty()) return false;
         String message = RaEconomics.debitAccount(source, target, amountStr, worldName);

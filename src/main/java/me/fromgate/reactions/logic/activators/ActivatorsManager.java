@@ -3,10 +3,10 @@ package me.fromgate.reactions.logic.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
-import me.fromgate.reactions.util.RaGenerator;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
 import me.fromgate.reactions.util.parameter.Parameters;
+import me.fromgate.reactions.util.suppliers.RaGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -304,13 +304,13 @@ public class ActivatorsManager {
         @Nullable
         @Override
         public Activator createActivator(@NotNull ActivatorLogic logic, @NotNull Parameters params) {
-            return creator.generate(logic, params);
+            return creator.apply(logic, params);
         }
 
         @Nullable
         @Override
         public Activator loadActivator(@NotNull ActivatorLogic logic, @NotNull ConfigurationSection cfg) {
-            return loader.generate(logic, cfg);
+            return loader.apply(logic, cfg);
         }
 
         @Override

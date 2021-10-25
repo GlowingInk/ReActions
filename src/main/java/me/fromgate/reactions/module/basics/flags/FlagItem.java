@@ -40,22 +40,21 @@ public class FlagItem extends Flag {
     private final Type flagType;
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
-        String itemStr = params.toString();
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         switch (flagType) {
             case HAND:
                 ItemStack inHand = player.getInventory().getItemInMainHand();
                 context.setVariable("item_amount", String.valueOf(inHand.getAmount()));
-                return ItemUtils.compareItemStr(inHand, itemStr, true);
+                return ItemUtils.compareItemStr(inHand, params, true);
             case INVENTORY:
-                return hasItemInInventory(context, itemStr);
+                return hasItemInInventory(context, params);
             case WEAR:
-                return isItemWeared(player, itemStr);
+                return isItemWeared(player, params);
             case OFFHAND:
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
                 context.setVariable("item_amount", String.valueOf(inOffhand.getAmount()));
-                return ItemUtils.compareItemStr(inOffhand, itemStr, true);
+                return ItemUtils.compareItemStr(inOffhand, params, true);
         }
         return false;
     }

@@ -3,7 +3,6 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 @Alias("CHAT")
 public class ActionChatMessage extends Action {
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String params) {
         if (context.getPlayer() != null) {
-            String msg = params.toString();
+            String msg = params;
             msg = msg.replaceFirst("^[\\s/]+", "");
             context.getPlayer().chat(msg);
         }

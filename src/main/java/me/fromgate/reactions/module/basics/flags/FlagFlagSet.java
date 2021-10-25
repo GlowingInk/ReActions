@@ -26,7 +26,6 @@ import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -48,8 +47,8 @@ public class FlagFlagSet extends Flag {
     }
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
-        List<String> flagList = parseParamsList(params.toString());
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
+        List<String> flagList = parseParamsList(params);
         if (flagList.isEmpty()) return false;
         for (String flagStr : flagList) {
             boolean negative = flagStr.startsWith("!");
@@ -71,11 +70,6 @@ public class FlagFlagSet extends Flag {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 

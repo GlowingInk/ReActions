@@ -24,16 +24,15 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagDirection extends Flag {
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        Direction d1 = Direction.getByName(params.toString());
+        Direction d1 = Direction.getByName(params);
         if (d1 == null) return false;
         Direction d2 = Direction.getByYaw(player);
         if (d2 == null) return false;
@@ -48,11 +47,6 @@ public class FlagDirection extends Flag {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 
     private enum Direction {

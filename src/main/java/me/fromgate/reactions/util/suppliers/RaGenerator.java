@@ -1,9 +1,11 @@
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.util.suppliers;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiFunction;
 
 /**
  * Used to generate triggers
@@ -11,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <D> Data class for activators creation
  */
 @FunctionalInterface
-public interface RaGenerator<D> {
+public interface RaGenerator<D> extends BiFunction<ActivatorLogic, D, Activator> {
     /**
      * Generate activator from logic and data container
      *
@@ -19,6 +21,6 @@ public interface RaGenerator<D> {
      * @param data Data container
      * @return Generated activator, or null if failed
      */
-    @Nullable
-    Activator generate(@NotNull ActivatorLogic logic, @NotNull D data);
+    @Override
+    @Nullable Activator apply(@NotNull ActivatorLogic logic, @NotNull D data);
 }

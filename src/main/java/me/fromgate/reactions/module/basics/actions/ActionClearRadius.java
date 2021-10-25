@@ -25,7 +25,8 @@ public class ActionClearRadius extends Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         int radius = params.getInteger("radius", 0);
         String type = params.getString("type", "all");
         if (radius == 0) return false;

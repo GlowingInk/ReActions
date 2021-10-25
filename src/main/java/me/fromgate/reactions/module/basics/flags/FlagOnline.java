@@ -26,7 +26,6 @@ import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,8 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class FlagOnline extends Flag {
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
-        return NumberUtils.isNonzeroInteger(params.toString()) && Integer.parseInt(params.toString()) <= Bukkit.getOnlinePlayers().size();
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
+        return NumberUtils.isNonzeroInteger(params) && Integer.parseInt(params) <= Bukkit.getOnlinePlayers().size();
     }
 
     @Override
@@ -45,11 +44,6 @@ public class FlagOnline extends Flag {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 }

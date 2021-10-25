@@ -10,6 +10,7 @@ import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -33,7 +34,7 @@ public class PlaceholderPlayer implements Placeholder.Prefixed {
     }
 
     @Override
-    public String processPlaceholder(RaContext context, String key, String param) {
+    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         Player player = context.getPlayer();
         if (player == null) return null;
         return switch (key) {
@@ -117,7 +118,7 @@ public class PlaceholderPlayer implements Placeholder.Prefixed {
     }
 
     @Override
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return "player";
     }
 }

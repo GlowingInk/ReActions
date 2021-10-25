@@ -44,8 +44,9 @@ public class ActionClearRegion extends Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        String region = params.getString("region", "");
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        String region = params.getString("region");
         String type = params.getString("type", "all");
         if (region.isEmpty()) return false;
         if (!RaWorldGuard.isConnected()) return false;

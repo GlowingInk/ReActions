@@ -39,11 +39,12 @@ public class ActionSql extends Action {
     private final Type sqlType;
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        String playerName = params.getString("player", "");
-        String varName = params.getString("variable", "");
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        String playerName = params.getString("player");
+        String varName = params.getString("variable");
         int column = params.getInteger("column", 1);
-        String query = params.getString("query", "").trim();
+        String query = params.getString("query").trim();
         switch (sqlType) {
             case SELECT -> { // SELECT to variable
                 if (query.isEmpty()) return false;

@@ -28,7 +28,6 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.TemporaryOp;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -54,10 +53,10 @@ public class ActionCommand extends Action {
     }
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         if (commandAs != Type.CONSOLE && player == null) return false;
-        String commandLine = params.toString();
+        String commandLine = params;
         switch (commandAs) {
             default -> dispatchCommand(false, player, commandLine);
             case OP -> dispatchCommand(true, player, commandLine);
@@ -82,11 +81,6 @@ public class ActionCommand extends Action {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 

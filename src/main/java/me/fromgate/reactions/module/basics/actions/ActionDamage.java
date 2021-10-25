@@ -24,9 +24,9 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Alias;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -35,12 +35,13 @@ import org.jetbrains.annotations.NotNull;
 public class ActionDamage extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        double damage = params.getInteger("damage", params.getInteger("param-line", 0));
+        double damage = params.getInteger("damage", () -> params.getInteger("param-line"));
         if (params.contains("player"))
             // TODO: Selector?
-            player = Utils.getPlayerExact(params.getString("player"));
+            player = Bukkit.getPlayerExact(params.getString("player"));
         return damagePlayer(player, damage);
     }
 

@@ -24,7 +24,8 @@ public class FlagBlock extends Flag {
     }
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         Location loc = LocationUtils.parseLocation(params.getString("loc", ""), player.getLocation());
         if (loc == null) return false;

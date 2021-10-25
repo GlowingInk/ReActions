@@ -6,11 +6,12 @@ import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @Alias({"TIME_INGAME", "curtime", "TIME_SERVER", "servertime"})
 public class PlaceholderTime implements Placeholder.Equal {
     @Override
-    public String processPlaceholder(RaContext context, String key, String param) {
+    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         Player player = context.getPlayer();
         return switch (key) {
             case "time", "time_server", "servertime" -> TimeUtils.fullTimeToString(System.currentTimeMillis(), param.isEmpty() ? "dd-MM-YYYY HH:mm:ss" : param);
@@ -20,7 +21,7 @@ public class PlaceholderTime implements Placeholder.Equal {
     }
 
     @Override
-    public String getId() {
+    public @NotNull String getId() {
         return "time";
     }
 }

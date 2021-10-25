@@ -26,7 +26,6 @@ import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,11 +33,10 @@ import org.jetbrains.annotations.NotNull;
 public class ActionGroupRemove extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        String param = params.getString("param-line", "");
-        if (RaVault.playerInGroup(player, param))
-            return RaVault.playerRemoveGroup(player, param);
+        if (RaVault.playerInGroup(player, params))
+            return RaVault.playerRemoveGroup(player, params);
         return true;
     }
 
@@ -50,10 +48,5 @@ public class ActionGroupRemove extends Action {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 }

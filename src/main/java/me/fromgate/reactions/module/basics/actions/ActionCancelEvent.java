@@ -33,7 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionCancelEvent extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         return context.setChangeable(Storage.CANCEL_EVENT, params.getBoolean("param-line", false));
     }
 
@@ -44,11 +45,6 @@ public class ActionCancelEvent extends Action {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 }

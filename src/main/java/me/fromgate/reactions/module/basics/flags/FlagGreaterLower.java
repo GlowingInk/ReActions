@@ -14,7 +14,8 @@ public class FlagGreaterLower extends Flag {
     private final boolean greater;
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         double paramValue = params.getDouble("param", 0d);
         double value = params.getDouble("value", 0d);
         if (greater) {

@@ -1,6 +1,7 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.util.data.RaContext;
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface Placeholder {
@@ -11,7 +12,7 @@ public interface Placeholder {
      * @param text Text of placeholder(e.g. %var:test% - test)
      * @return Processed placeholder
      */
-    String processPlaceholder(RaContext context, String key, String text);
+    @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text);
 
     // TODO: boolean requiresPlayer
 
@@ -20,7 +21,7 @@ public interface Placeholder {
          * Get all the ids for this placeholder
          * @return Ids of placeholder
          */
-        String getId();
+        @NotNull String getId();
     }
 
     interface Prefixed extends Placeholder {
@@ -28,6 +29,6 @@ public interface Placeholder {
          * Get all the prefixes for this placeholder
          * @return Prefixes of placeholder
          */
-        String getPrefix();
+        @NotNull String getPrefix();
     }
 }

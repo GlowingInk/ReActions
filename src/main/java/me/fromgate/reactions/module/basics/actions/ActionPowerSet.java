@@ -38,8 +38,9 @@ import org.jetbrains.annotations.NotNull;
 public class ActionPowerSet extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        Location loc = LocationUtils.parseLocation(params.getString("loc", ""), null);
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        Location loc = LocationUtils.parseLocation(params.getString("loc"), null);
         if (loc == null) return false;
         Block b = loc.getBlock();
         if (!isPowerBlock(b)) return false;

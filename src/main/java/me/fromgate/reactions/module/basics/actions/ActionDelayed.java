@@ -15,11 +15,12 @@ import org.jetbrains.annotations.NotNull;
 public class ActionDelayed extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         long delay = TimeUtils.parseTime(params.getString("time", "0"));
         if (delay == 0) return false;
 
-        String actionSource = params.getString("action", "");
+        String actionSource = params.getString("action");
         if (actionSource.isEmpty()) return false;
         String actionStr;
         String paramStr = "";

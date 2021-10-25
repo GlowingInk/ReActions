@@ -3,7 +3,7 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.*;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -55,16 +55,17 @@ public class ActionIfElse extends Action {
     }
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {
             final ScriptContext scriptContext = new SimpleScriptContext();
             scriptContext.setBindings(new SimpleBindings(), ScriptContext.ENGINE_SCOPE);
 
-            String condition = params.getString("if", "");
-            String then_ = params.getString("then", "");
-            String else_ = params.getString("else", "");
-            String suffix = params.getString("suffix", "");
+            String condition = params.getString("if");
+            String then_ = params.getString("then");
+            String else_ = params.getString("else");
+            String suffix = params.getString("suffix");
 
             try {
                 boolean result = (boolean) ENGINE.eval(condition, scriptContext);

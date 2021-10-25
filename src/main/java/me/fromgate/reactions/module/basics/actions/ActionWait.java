@@ -16,7 +16,8 @@ public class ActionWait extends Action implements Stopper {
     // TODO Make it actually work...
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         long time = TimeUtils.parseTime(params.getString("time", "0"));
         return time > 0;
     }

@@ -252,7 +252,7 @@ public final class ActivatorLogic {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         StringBuilder sb = new StringBuilder();
         if (!getFlags().isEmpty()) sb.append(" F:").append(getFlags().size());
         if (!getActions().isEmpty()) sb.append(" A:").append(getActions().size());

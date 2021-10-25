@@ -26,19 +26,15 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.message.Msg;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("MSGALL")
 public class ActionBroadcast extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            Msg.printMessage(pl, params.toString());
-        }
+    public boolean execute(@NotNull RaContext context, @NotNull String params) {
+        Bukkit.broadcastMessage(Msg.colorize(params));
         return true;
     }
 
@@ -49,11 +45,6 @@ public class ActionBroadcast extends Action {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 }

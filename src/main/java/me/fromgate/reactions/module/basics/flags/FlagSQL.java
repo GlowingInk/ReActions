@@ -35,7 +35,8 @@ public class FlagSQL extends Flag {
     private final boolean check;
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         if (!SQLManager.isEnabled()) return false;
         if (!params.containsEvery("value", "select", "from") &&
                 !(params.contains("query"))) return false;

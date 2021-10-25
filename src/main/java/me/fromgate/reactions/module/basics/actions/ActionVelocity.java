@@ -35,7 +35,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionVelocity extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Vector v = setPlayerVelocity(context.getPlayer(), params);
         return v != null;
     }
@@ -44,10 +45,10 @@ public class ActionVelocity extends Action {
         String velstr;
         boolean kick = false;
         if (params.contains("param")) {
-            velstr = params.getString("param", "");
+            velstr = params.getString("param");
         } else {
-            velstr = params.getString("vector", "");
-            if (velstr.isEmpty()) velstr = params.getString("direction", "");
+            velstr = params.getString("vector");
+            if (velstr.isEmpty()) velstr = params.getString("direction");
             kick = params.getBoolean("kick", false);
         }
 

@@ -77,12 +77,13 @@ public class ActionLog extends Action {
     }
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         if (params.containsAny("prefix", "color", "file")) {
             String plg_name = ReActions.getPlugin().getDescription().getName();
             boolean prefix = params.getBoolean("prefix", true);
             boolean color = params.getBoolean("color", false);
-            String file = params.getString("file", "");
+            String file = params.getString("file");
             String message = params.getString("text", removeParams(params.toString()));
             if (message.isEmpty()) return false;
             if (file.isEmpty()) {

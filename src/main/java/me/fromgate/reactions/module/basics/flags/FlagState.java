@@ -26,7 +26,6 @@ import me.fromgate.reactions.events.listeners.GodModeListener;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,9 +33,9 @@ import org.jetbrains.annotations.NotNull;
 public class FlagState extends Flag {
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        Posture pt = Posture.getByName(params.toString());
+        Posture pt = Posture.getByName(params);
         if (pt == null) return false;
         switch (pt) {
             case SNEAK:
@@ -60,7 +59,7 @@ public class FlagState extends Flag {
                 return player.isOp();
             case VEHICLE_TYPED:
                 if (!player.isInsideVehicle()) return false;
-                return player.getVehicle().getType().name().equalsIgnoreCase(params.toString().substring(8));
+                return player.getVehicle().getType().name().equalsIgnoreCase(params.substring(8));
             case SPECTATOR_TARGET:
                 return player.getSpectatorTarget() != null;
             case GLIDE:
@@ -80,11 +79,6 @@ public class FlagState extends Flag {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 
     private enum Posture {

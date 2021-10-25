@@ -3,6 +3,9 @@ package me.fromgate.reactions.util.data;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,11 +25,11 @@ public class RaContext {
     // TODO
     private final boolean async;
 
-    public RaContext(String activator, Map<String, String> variables, Map<String, DataValue> changeables, Player player) {
+    public RaContext(@NotNull String activator, @Nullable Map<String, String> variables, @Nullable Map<String, DataValue> changeables, @Nullable Player player) {
         this(activator, variables, changeables, player, false);
     }
 
-    public RaContext(String activator, Map<String, String> variables, Map<String, DataValue> changeables, Player player, boolean async) {
+    public RaContext(@NotNull String activator, @Nullable Map<String, String> variables, @Nullable Map<String, DataValue> changeables, @Nullable Player player, boolean async) {
         this.variables = variables != null ? new HashMap<>(variables) : new HashMap<>();
         this.activatorName = activator;
         if (changeables == null || changeables.isEmpty()) {
@@ -39,23 +42,24 @@ public class RaContext {
         this.async = async;
     }
 
-    public String getVariable(String key) {
+    public @Nullable String getVariable(@NotNull String key) {
         return variables.get(key.toLowerCase(Locale.ENGLISH));
     }
 
-    public String getVariable(String key, String def) {
+    @Contract("_, !null -> !null")
+    public @Nullable String getVariable(@NotNull String key, @Nullable String def) {
         return variables.getOrDefault(key.toLowerCase(Locale.ENGLISH), def);
     }
 
-    public String setVariable(String key, String str) {
+    public @Nullable String setVariable(@NotNull String key, @Nullable String str) {
         return variables.put(key.toLowerCase(Locale.ENGLISH), str);
     }
 
-    public String setVariable(String key, Object obj) {
-        return variables.put(key.toLowerCase(Locale.ENGLISH), obj.toString());
+    public @Nullable String setVariable(@NotNull String key, @Nullable Object obj) {
+        return variables.put(key.toLowerCase(Locale.ENGLISH), String.valueOf(obj));
     }
 
-    public boolean setChangeable(String key, double value) {
+    public boolean setChangeable(@NotNull String key, double value) {
         key = key.toLowerCase(Locale.ENGLISH);
         DataValue dataValue = changeables.get(key);
         if (dataValue == null || !dataValue.set(value)) return false;
@@ -63,7 +67,7 @@ public class RaContext {
         return true;
     }
 
-    public boolean setChangeable(String key, String value) {
+    public boolean setChangeable(@NotNull String key, @NotNull String value) {
         key = key.toLowerCase(Locale.ENGLISH);
         DataValue dataValue = changeables.get(key);
         if (dataValue == null || !dataValue.set(value)) return false;
@@ -71,7 +75,7 @@ public class RaContext {
         return true;
     }
 
-    public boolean setChangeable(String key, boolean value) {
+    public boolean setChangeable(@NotNull String key, boolean value) {
         key = key.toLowerCase(Locale.ENGLISH);
         DataValue dataValue = changeables.get(key);
         if (dataValue == null || !dataValue.set(value)) return false;
@@ -79,7 +83,7 @@ public class RaContext {
         return true;
     }
 
-    public boolean setChangeable(String key, Location value) {
+    public boolean setChangeable(@NotNull String key, @NotNull Location value) {
         key = key.toLowerCase(Locale.ENGLISH);
         DataValue dataValue = changeables.get(key);
         if (dataValue == null || !dataValue.set(value)) return false;

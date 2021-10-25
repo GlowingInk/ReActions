@@ -16,10 +16,11 @@ public class ActionPlayerId extends Action {
 
     @SuppressWarnings("deprecation")
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         String uuid;
         String pName;
 
+        Parameters params = Parameters.fromString(paramsStr);
         String playerParam = params.getString("player");
 
         if (Utils.isStringEmpty(playerParam)) {

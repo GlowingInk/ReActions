@@ -5,11 +5,12 @@ import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.MathEvaluator;
 import me.fromgate.reactions.util.math.NumberUtils;
+import org.jetbrains.annotations.NotNull;
 
 @Alias({"calculate", "expression", "eval"})
 public class PlaceholderCalc implements Placeholder.Prefixed {
     @Override
-    public String processPlaceholder(RaContext context, String key, String param) {
+    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         if(!param.contains("%")) try {
             return NumberUtils.format(MathEvaluator.eval(param));
         } catch (NumberFormatException | ArithmeticException ignore) {
@@ -19,7 +20,7 @@ public class PlaceholderCalc implements Placeholder.Prefixed {
     }
 
     @Override
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return "calc";
     }
 }

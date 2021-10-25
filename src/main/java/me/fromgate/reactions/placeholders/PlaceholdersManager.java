@@ -3,6 +3,7 @@ package me.fromgate.reactions.placeholders;
 import lombok.Getter;
 import lombok.Setter;
 import me.fromgate.reactions.util.data.RaContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,13 +21,12 @@ public class PlaceholdersManager {
         countLimit = 127;
     }
 
-    public boolean registerPlaceholder(Placeholder ph) {
-        if(ph == null) return false;
+    public boolean registerPlaceholder(@NotNull Placeholder ph) {
         return InternalParsers.EQUAL.put(ph) || InternalParsers.PREFIXED.put(ph) || InternalParsers.SIMPLE.put(ph);
     }
 
     public String parsePlaceholders(RaContext context, String text) {
-        if(text == null || text.length() < 3) return text;
+        if (text == null || text.length() < 3) return text;
 
         String oldText;
         int limit = countLimit;
@@ -34,7 +34,7 @@ public class PlaceholdersManager {
             oldText = text;
             text = parseRecursive(text, PLACEHOLDER_GREEDY, context);
             text = parseRecursive(text, PLACEHOLDER_NONGREEDY, context);
-        } while(--limit > 0 && !text.equals(oldText));
+        } while (--limit > 0 && !text.equals(oldText));
 
         return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");
     }
@@ -42,21 +42,21 @@ public class PlaceholdersManager {
     private static String parseRecursive(String text, final Pattern phPattern, final RaContext context) {
         Matcher phMatcher = phPattern.matcher(text);
         // If found at least one
-        if(phMatcher.find()) {
-            StringBuffer buf = new StringBuffer();
-            processIteration(buf, phMatcher, phPattern, context);
-            while(phMatcher.find()) {
-                processIteration(buf, phMatcher, phPattern, context);
+        if (phMatcher.find()) {
+            StringBuilder builder = new StringBuilder();
+            processIteration(builder, phMatcher, phPattern, context);
+            while (phMatcher.find()) {
+                processIteration(builder, phMatcher, phPattern, context);
             }
-            return phMatcher.appendTail(buf).toString();
+            return phMatcher.appendTail(builder).toString();
         }
         return text;
     }
 
     // Just some sh!tty stuff
-    private static void processIteration(StringBuffer buffer, Matcher matcher, Pattern pattern, RaContext context) {
+    private static void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, RaContext context) {
         matcher.appendReplacement(
-                buffer,
+                builder,
                 Matcher.quoteReplacement(
                         InternalParsers.process(
                                 parseRecursive(

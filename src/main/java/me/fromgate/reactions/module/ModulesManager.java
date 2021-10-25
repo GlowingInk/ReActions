@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -32,14 +33,14 @@ public class ModulesManager {
 
     public void registerModule(Module module) {
         platform.getLogger().info("Registering " + module.getName() + " module (by " + StringUtils.join(module.getAuthors(), ", ") + ")");
-        register("activators", module.getActivatorTypes(), ActivatorType::getName);
-        register("actions", module.getActions(), Action::getName);
-        register("flags", module.getFlags(), Flag::getName);
-        register("placeholders", module.getPlaceholders(), (p) -> p.getClass().getSimpleName());
-        register("selectors", module.getSelectors(), Selector::getName);
+        register("activators", module.getActivatorTypes(), ActivatorType::getName, platform.getActivators()::registerType);
+        register("actions", module.getActions(), Action::getName, platform.getActivities()::registerAction);
+        register("flags", module.getFlags(), Flag::getName, platform.getActivities()::registerFlag);
+        register("placeholders", module.getPlaceholders(), (p) -> p.getClass().getSimpleName(), platform.getPlaceholders()::registerPlaceholder);
+        register("selectors", module.getSelectors(), Selector::getName, platform.getSelectors()::registerSelector);
     }
 
-    private <T> void register(String what, Collection<T> values, Function<T, String> toString) {
+    private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {
         List<String> names = new ArrayList<>(values.size());
         List<String> failed = new ArrayList<>();
         for (T type : values) {
@@ -56,6 +57,7 @@ public class ModulesManager {
     }
 
     public void loadModules() {
+        // TODO
         if (loaded) throw new IllegalStateException("Modules from folder are already loaded!");
         folder.mkdirs();
         for (File file : folder.listFiles()) {

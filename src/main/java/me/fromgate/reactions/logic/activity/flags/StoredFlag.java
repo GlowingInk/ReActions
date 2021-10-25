@@ -16,13 +16,11 @@ public class StoredFlag {
         this.placeholders = params.contains("%");
     }
 
-    @NotNull
-    public Flag getFlag() {
+    public @NotNull Flag getFlag() {
         return flag;
     }
 
-    @NotNull
-    public String getParameters() {
+    public @NotNull String getParameters() {
         return params;
     }
 
@@ -35,7 +33,7 @@ public class StoredFlag {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return (inverted ? "!" : "") + flag.getName() + "=" + params;
     }
 }

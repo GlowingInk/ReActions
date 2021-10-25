@@ -37,7 +37,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionTp extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         return teleportPlayer(context, params) != null;
     }
 
@@ -67,7 +68,7 @@ public class ActionTp extends Action {
             context.setVariable("loc-to", LocationUtils.locationToString(loc));
             context.setVariable("loc-to-str", LocationUtils.locationToStringFormatted(loc));
             Teleporter.teleport(player, loc);
-            String playeffect = params.getString("effect", "");
+            String playeffect = params.getString("effect");
             if (!playeffect.isEmpty()) {
                 if (playeffect.equalsIgnoreCase("smoke") && (!params.contains("wind"))) params.put("wind", "all");
             }

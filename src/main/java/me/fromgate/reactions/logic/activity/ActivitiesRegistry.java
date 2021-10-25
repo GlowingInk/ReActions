@@ -40,13 +40,11 @@ public class ActivitiesRegistry {
         }
     }
 
-    @Nullable
-    public Action getAction(@NotNull String name) {
+    public @Nullable Action getAction(@NotNull String name) {
         return actionByName.get(name.toUpperCase(Locale.ENGLISH));
     }
 
-    @Nullable
-    public Flag getFlag(@NotNull String name) {
+    public @Nullable Flag getFlag(@NotNull String name) {
         return flagByName.get(name.toUpperCase(Locale.ENGLISH));
     }
 }

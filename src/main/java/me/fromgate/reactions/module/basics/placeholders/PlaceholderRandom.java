@@ -5,6 +5,7 @@ import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -15,7 +16,7 @@ public class PlaceholderRandom implements Placeholder.Prefixed {
     private static final Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
 
     @Override
-    public String processPlaceholder(RaContext context, String key, String param) {
+    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
 
         if (NumberUtils.INT_POSITIVE.matcher(param).matches())
             return Integer.toString(Rng.nextInt(Integer.parseInt(param)));
@@ -32,7 +33,7 @@ public class PlaceholderRandom implements Placeholder.Prefixed {
     }
 
     @Override
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return "random";
     }
 }

@@ -27,7 +27,6 @@ import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,16 +36,15 @@ public class FlagRegion extends Flag {
     private final Type flagType;
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         if (!RaWorldGuard.isConnected()) return false;
-        String param = params.toString();
         return switch (flagType) {
-            case REGION -> RaWorldGuard.isPlayerInRegion(player, param);
-            case REGION_PLAYERS -> playersInRegion(param);
-            case REGION_MEMBER -> RaWorldGuard.isMember(player, param);
-            case REGION_OWNER -> RaWorldGuard.isOwner(player, param);
-            case REGION_STATE -> RaWorldGuard.isFlagInRegion(player, param);
+            case REGION -> RaWorldGuard.isPlayerInRegion(player, params);
+            case REGION_PLAYERS -> playersInRegion(params);
+            case REGION_MEMBER -> RaWorldGuard.isMember(player, params);
+            case REGION_OWNER -> RaWorldGuard.isOwner(player, params);
+            case REGION_STATE -> RaWorldGuard.isFlagInRegion(player, params);
         };
     }
 

@@ -17,10 +17,11 @@ public class ActionFile extends Action {
     private static final String dir = new File("").getAbsolutePath();
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        String action = params.getString("action", "");
-        String fileName = params.getString("fileName", "");
-        String fileNameTo = params.getString("fileNameTo", "");
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        String action = params.getString("action");
+        String fileName = params.getString("fileName");
+        String fileNameTo = params.getString("fileNameTo");
         if (action.isEmpty() || fileName.isEmpty()) return false;
 
         File file = new File(dir + File.separator + fileName);

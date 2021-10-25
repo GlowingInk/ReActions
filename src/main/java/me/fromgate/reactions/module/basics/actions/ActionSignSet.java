@@ -41,7 +41,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionSignSet extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         // loc:world,x,y,z line1:text line2:text line3:text line4:text clear:1,2,3,4
         String locStr = params.getString("loc", context.getVariable("sign_loc"));
         if (Utils.isStringEmpty(locStr)) return false;
@@ -59,7 +60,7 @@ public class ActionSignSet extends Action {
             sign.setLine(i - 1, ChatColor.translateAlternateColorCodes('&', line));
         }
 
-        String clear = params.getString("clear", "");
+        String clear = params.getString("clear");
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {

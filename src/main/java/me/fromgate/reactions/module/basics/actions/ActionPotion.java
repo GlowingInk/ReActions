@@ -32,8 +32,8 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -41,7 +41,8 @@ import java.util.Locale;
 public class ActionPotion extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         String str = potionEffect(context.getPlayer(), params);
         return !str.isEmpty();
     }
@@ -63,7 +64,7 @@ public class ActionPotion extends Action {
         int amplifier = 1;
         boolean ambient = false;
         if (params.contains("param")) {
-            String param = params.getString("param", "");
+            String param = params.getString("param");
             if (param.isEmpty()) return "";
             if (param.contains("/")) {
                 String[] prm = param.split("/");
@@ -74,7 +75,7 @@ public class ActionPotion extends Action {
                 }
             } else peffstr = param;
         } else {
-            peffstr = params.getString("type", "");
+            peffstr = params.getString("type");
             duration = NumberUtils.safeLongToInt(TimeUtils.timeToTicks(TimeUtils.parseTime(params.getString("time", "3s"))));
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);

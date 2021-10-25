@@ -25,7 +25,6 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias({"PERM", "HAS_PERMISSION"})
@@ -41,12 +40,7 @@ public class FlagPerm extends Flag {
     }
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
-        return context.getPlayer().hasPermission(params.toString());
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
+        return context.getPlayer().hasPermission(params);
     }
 }

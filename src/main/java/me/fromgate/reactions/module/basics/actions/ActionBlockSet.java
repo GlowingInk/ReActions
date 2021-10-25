@@ -39,7 +39,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionBlockSet extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         //String istr = params.getParam("block", "");
         boolean phys = params.getBoolean("physics", false);
         boolean drop = params.getBoolean("drop", false);
@@ -53,7 +54,7 @@ public class ActionBlockSet extends Action {
             }
         }
 
-        Location loc = LocationUtils.parseLocation(params.getString("loc", ""), null);
+        Location loc = LocationUtils.parseLocation(params.getString("loc"), null);
         if (loc == null) return false;
         Block b = loc.getBlock();
 

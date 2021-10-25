@@ -25,13 +25,12 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagTimerActive extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
-        return TimersManager.isTimerWorking(params.toString());
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
+        return TimersManager.isTimerWorking(params);
     }
 
     @Override
@@ -41,11 +40,6 @@ public class FlagTimerActive extends Flag {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 }

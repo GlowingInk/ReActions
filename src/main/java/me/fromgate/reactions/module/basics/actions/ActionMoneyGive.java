@@ -38,20 +38,20 @@ import java.util.Map;
 public class ActionMoneyGive extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (!RaEconomics.isEconomyFound()) return false;
         if (params.isEmpty()) return false;
         if (params.size() <= 2) params = parseOldFormat(player, params.toString());
-        String amountStr = params.getString("amount", "");
+        String amountStr = params.getString("amount");
         if (amountStr.isEmpty()) return false;
-        String worldName = params.getString("world", "");
+        String worldName = params.getString("world");
         String target = params.getString("target", params.getString("player", (player == null ? "" : player.getName())));
         if (target.isEmpty()) return false;
-        String source = params.getString("source", "");
+        String source = params.getString("source");
         String message = RaEconomics.creditAccount(target, source, amountStr, worldName);
-        if (message.isEmpty()) return false;
-        return true;
+        return !message.isEmpty();
     }
 
     @Override

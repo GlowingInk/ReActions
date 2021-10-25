@@ -32,7 +32,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagWalkBlock extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         Block walk = player.getLocation().getBlock();
         if (!walk.getType().isSolid()) walk = walk.getLocation().subtract(0, 0.1, 0).getBlock();

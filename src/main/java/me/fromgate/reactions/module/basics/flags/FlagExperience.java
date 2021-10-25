@@ -26,17 +26,16 @@ import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias({"XP", "EXP"})
 public class FlagExperience extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        if (!NumberUtils.isInteger(params.toString())) return false;
-        return player.getTotalExperience() >= Integer.parseInt(params.toString());
+        if (!NumberUtils.isInteger(params)) return false;
+        return player.getTotalExperience() >= Integer.parseInt(params);
     }
 
     @Override
@@ -47,10 +46,5 @@ public class FlagExperience extends Flag {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 }

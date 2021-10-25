@@ -23,7 +23,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.*;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -33,8 +33,9 @@ import org.jetbrains.annotations.NotNull;
 public class ActionExecute extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        String id = params.getString("activator", "");
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        String id = params.getString("activator");
         if (id.isEmpty()) return false;
         return StoragesManager.triggerExec(context.getPlayer(), params, context.getVariables());
     }

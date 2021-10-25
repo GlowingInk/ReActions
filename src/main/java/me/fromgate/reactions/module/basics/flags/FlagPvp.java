@@ -33,7 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class FlagPvp extends Flag {
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (!player.hasMetadata("reactions-pvp-time")) return false;
         String timeStr = params.getString("time", params.toString());

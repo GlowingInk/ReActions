@@ -37,16 +37,17 @@ public class ActionDelay extends Action {
     private final boolean globalDelay;
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         String timeStr = "";
         String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
         String variableId = "";
         boolean add = false;
         if (params.contains("id") && params.containsAny("delay", "time")) {
-            variableId = params.getString("id", "");
+            variableId = params.getString("id");
             playerName = params.getString("player", playerName);
-            timeStr = params.getString("delay", params.getString("time", ""));
+            timeStr = params.getStringSafe("delay", () -> params.getString("time"));
             add = params.getBoolean("add", false);
         } else {
             String oldFormat = params.toString();

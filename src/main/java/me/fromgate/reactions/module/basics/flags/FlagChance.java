@@ -27,16 +27,15 @@ import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("PROBABILITY")
 public class FlagChance extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         context.setVariable("chance", params + "%");
         double d = 50;
-        if (NumberUtils.isFloat(params.toString())) d = Double.parseDouble(params.toString());
+        if (NumberUtils.isFloat(params)) d = Double.parseDouble(params);
         d = Math.max(Math.min(d, 100), 0);
         return Rng.percentChance(d);
     }
@@ -48,11 +47,6 @@ public class FlagChance extends Flag {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 }

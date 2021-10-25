@@ -43,7 +43,8 @@ import java.util.List;
 public class ActionBlockFill extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         boolean phys = params.getBoolean("physics", false);
         boolean drop = params.getBoolean("drop", false);
         Parameters itemParam = Parameters.fromString(params.getString("block", "AIR"), "type");
@@ -62,7 +63,7 @@ public class ActionBlockFill extends Action {
         Location loc1 = null;
         Location loc2 = null;
 
-        String regionName = params.getString("region", "");
+        String regionName = params.getString("region");
         if (!regionName.isEmpty()) {
             List<Location> locs = RaWorldGuard.getRegionMinMaxLocations(regionName);
             if (locs.size() == 2) {
@@ -70,9 +71,9 @@ public class ActionBlockFill extends Action {
                 loc2 = locs.get(1);
             }
         } else {
-            String locStr = params.getString("loc1", "");
+            String locStr = params.getString("loc1");
             if (!locStr.isEmpty()) loc1 = LocationUtils.parseLocation(locStr, null);
-            locStr = params.getString("loc2", "");
+            locStr = params.getString("loc2");
             if (!locStr.isEmpty()) loc2 = LocationUtils.parseLocation(locStr, null);
         }
         if (loc1 == null || loc2 == null) return false;

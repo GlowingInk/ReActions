@@ -31,7 +31,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionBack extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         return PushBack.teleportToPrev(context.getPlayer(), params.getInteger("param-line", 1));
     }
 
@@ -43,10 +44,5 @@ public class ActionBack extends Action {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 }

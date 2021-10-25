@@ -24,13 +24,12 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagWeather extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         String param = params.toString();
         if (param.equalsIgnoreCase("rain")) return !player.getWorld().isThundering() && player.getWorld().hasStorm();
@@ -45,11 +44,6 @@ public class FlagWeather extends Flag {
 
     @Override
     public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
-    protected boolean isParameterized() {
         return false;
     }
 }

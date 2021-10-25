@@ -43,7 +43,8 @@ import java.util.Set;
 public class ActionMessage extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         sendMessage(context.getPlayer(), params);
         return true;
     }
@@ -77,7 +78,7 @@ public class ActionMessage extends Action {
         }
         if (players.isEmpty()) return;
 
-        String type = params.getString("type", "");
+        String type = params.getString("type");
         String message = params.getString("text", removeParams(params.toString()));
         if (message.isEmpty()) return;
         String annoymentTime = params.getString("hide");

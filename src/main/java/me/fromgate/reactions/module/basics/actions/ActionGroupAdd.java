@@ -26,15 +26,14 @@ import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("GRPADD")
 public class ActionGroupAdd extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        return RaVault.playerAddGroup(context.getPlayer(), params.getString("param-line", ""));
+    public boolean execute(@NotNull RaContext context, @NotNull String params) {
+        return RaVault.playerAddGroup(context.getPlayer(), params);
     }
 
     @Override
@@ -45,10 +44,5 @@ public class ActionGroupAdd extends Action {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 }

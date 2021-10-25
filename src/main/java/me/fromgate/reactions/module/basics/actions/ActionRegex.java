@@ -15,9 +15,10 @@ import java.util.regex.Pattern;
 public class ActionRegex extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
-        String prefix = params.getString("prefix", "");
-        String regex = params.getString("regex", "");
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        String prefix = params.getString("prefix");
+        String regex = params.getString("regex");
         String input = params.getString("input", removeParams(params.toString()));
 
         if (input.isEmpty()) return false;

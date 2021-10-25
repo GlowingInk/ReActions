@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import lombok.AllArgsConstructor;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.module.basics.ItemStoragesManager;
+import me.fromgate.reactions.module.basics.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -50,15 +50,16 @@ public class ActionItems extends Action {
     private final Type actionType;
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
-            case GIVE_ITEM -> giveItemPlayer(context, params.getString("param-line", ""));
+            case GIVE_ITEM -> giveItemPlayer(context, params.toString());
             case REMOVE_ITEM_HAND -> removeItemInHand(context, params);
             case REMOVE_ITEM_OFFHAND -> removeItemInOffHand(context, params);
             case REMOVE_ITEM_INVENTORY -> removeItemInInventory(context, params);
             case DROP_ITEM -> dropItems(context, params);
             case WEAR_ITEM -> wearItem(context, params);
-            case OPEN_INVENTORY -> openInventory(context, params.getString("param-line", ""));
+            case OPEN_INVENTORY -> openInventory(context, params.toString());
             case SET_INVENTORY -> setInventorySlot(context, params);
             case GET_INVENTORY -> getInventorySlot(context, params);
             case UNWEAR_ITEM -> unwearItem(context, params);
@@ -86,20 +87,11 @@ public class ActionItems extends Action {
         return true;
     }
 
-    /**
-     * Реализует действие ITEM_SLOT - установить предмет в определенный слот
-     *
-     * @param context
-     * @param params  - параметры: item - предмет
-     *                slot - слот (Номер слота или helmet, chestplate...)
-     *                exist - что делаем с уже надетым предметов (remove, undress, drop, keep)
-     * @return
-     */
     private boolean setInventorySlot(RaContext context, Parameters params) {
         Player player = context.getPlayer();
-        String itemStr = params.getString("item", "");
+        String itemStr = params.getString("item");
         if (itemStr.isEmpty()) return false;
-        String slotStr = params.getString("slot", "");
+        String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
         if (!NumberUtils.isInteger(slotStr)) return wearItem(context, params);
         int slotNum = Integer.parseInt(slotStr);
@@ -125,7 +117,7 @@ public class ActionItems extends Action {
 
     private boolean getInventorySlot(RaContext context, Parameters params) {
         Player player = context.getPlayer();
-        String slotStr = params.getString("slot", "");
+        String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
         if (!NumberUtils.isInteger(slotStr)) return wearItemView(context, params);
         int slotNum = Integer.parseInt(slotStr);
@@ -155,7 +147,7 @@ public class ActionItems extends Action {
 
     private boolean getItemInOffhand(RaContext context, Parameters params) {
         Player player = context.getPlayer();
-        String itemStr = params.getString("slot", "");
+        String itemStr = params.getString("slot");
         if (itemStr.isEmpty()) return false;
         if (!itemStr.equalsIgnoreCase("offhand")) {
             context.setVariable("item_str", "");
@@ -168,19 +160,9 @@ public class ActionItems extends Action {
         return true;
     }
 
-
-    /**
-     * Реализует действие ITEM_WEAR
-     *
-     * @param context - контекст
-     * @param params  - параметры: item - одеваемый предмет
-     *                slot - слот куда одеваем (helmet, chestplate, leggins, boots, auto)
-     *                exist - что делаем с уже надетым предметов (remove, undress, drop, keep)
-     * @return - возвращает true если удалось нацепить предмет на игрока
-     */
     private boolean wearItem(RaContext context, Parameters params) {
         Player player = context.getPlayer();
-        String itemStr = params.getString("item", "");
+        String itemStr = params.getString("item");
         int slot = -1; //4 - auto, 3 - helmete, 2 - chestplate, 1 - leggins, 0 - boots
         int existDrop = 1; // 0 - remove, 1 - undress, 2 - drop, 3 - keep
         if (itemStr.isEmpty()) itemStr = params.getString("param-line", "");
@@ -208,7 +190,7 @@ public class ActionItems extends Action {
 
     private boolean setItemInOffhand(RaContext context, Parameters params, ItemStack item) {
         Player player = context.getPlayer();
-        String itemStr = params.getString("slot", "");
+        String itemStr = params.getString("slot");
         if (itemStr.isEmpty()) return false;
         if (!itemStr.equalsIgnoreCase("offhand")) return false;
         player.getInventory().setItemInOffHand(item);
@@ -338,11 +320,11 @@ public class ActionItems extends Action {
     public boolean dropItems(RaContext context, Parameters params) {
         Player player = context.getPlayer();
         int radius = params.getInteger("radius", 0);
-        Location loc = LocationUtils.parseLocation(params.getString("loc", ""), player.getLocation());
+        Location loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
         if (loc == null) loc = player.getLocation();
         boolean scatter = params.getBoolean("scatter", true);
         boolean land = params.getBoolean("land", true);
-        List<ItemStack> items = ItemUtils.parseRandomItemsStr(params.getString("item", ""));
+        List<ItemStack> items = ItemUtils.parseRandomItemsStr(params.getString("item"));
         if (items == null || items.isEmpty()) return false;
         if (radius == 0) scatter = false;
         Location l = LocationUtils.getRadiusLocation(loc, radius, land);
@@ -355,19 +337,6 @@ public class ActionItems extends Action {
         return true;
     }
 
-
-    /**
-     * Реализует действие ITEM_UNWEAR [slot:<SlotType>|item:<Item>] [action:remove|drop|undress|
-     * Если указан только слот - снимает любой предмет.
-     * Если только предмет - ищет предмет
-     * Если и слот и предмет - то проверяет наличие предмета в слоте.
-     * <p>
-     * Сохраняет плейсхолдеры: %item%, %item_str%
-     *
-     * @param context — контекст
-     * @param params  — перечень параметров
-     * @return — true - в случае успешной отработки действия
-     */
     private boolean unwearItem(RaContext context, Parameters params) {
         Player player = context.getPlayer();
         int slot = getSlotNum(params.getString("slot"));

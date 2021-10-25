@@ -31,7 +31,8 @@ import org.jetbrains.annotations.NotNull;
 public class ActionShoot extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Shoot.shoot(context.getPlayer(), params);
         return true;
     }

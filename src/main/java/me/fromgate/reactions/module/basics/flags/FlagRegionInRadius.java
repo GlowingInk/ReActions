@@ -25,16 +25,15 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.externals.worldguard.WGBridge7x;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagRegionInRadius extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         int radius = 0;
-        if (!params.toString().isEmpty()) radius = Integer.parseInt(params.toString());
+        if (!params.isEmpty()) radius = Integer.parseInt(params);
         return WGBridge7x.checkRegionInRadius(player, radius);
     }
 
@@ -46,10 +45,5 @@ public class FlagRegionInRadius extends Flag {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 }

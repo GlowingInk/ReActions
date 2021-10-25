@@ -38,7 +38,8 @@ public class ActionVar extends Action {
     private final boolean personalVar;
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player p = context.getPlayer();
 
         String player = (p != null && this.personalVar) ? p.getName() : "";
@@ -47,8 +48,8 @@ public class ActionVar extends Action {
         String value;
 
         if (params.contains("id")) {
-            var = params.getString("id", "");
-            value = params.getString("value", "");
+            var = params.getString("id");
+            value = params.getString("value");
             player = params.getString("player", player);
             if (var.isEmpty()) return false;
         } else {

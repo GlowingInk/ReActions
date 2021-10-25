@@ -34,14 +34,15 @@ import org.jetbrains.annotations.NotNull;
 public class ActionExecStop extends Action {
 
     @Override
-    protected boolean execute(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         // TODO Custom ActivatorType to handle exec stopping
         Msg.logOnce("execstopnotworking", "Sorry, but action EXEC_STOP doesn't work yet.");
         if (true) return true;
         Player p = context.getPlayer();
         String player = params.getString("player", (p == null ? "" : p.getName()));
         if (player.isEmpty()) return false;
-        String activator = params.getString("activator", "");
+        String activator = params.getString("activator");
         if (activator.isEmpty()) return false;
         //ReActions.getActivators().stopExec(player, activator);
         return true;

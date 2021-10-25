@@ -45,7 +45,8 @@ public class FlagMoney extends Flag {
     }
 
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
+    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (!RaEconomics.isEconomyFound()) return false;
         String amountStr = params.getString("amount", "a");

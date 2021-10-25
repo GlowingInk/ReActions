@@ -26,15 +26,14 @@ import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
 @Alias({"GM", "GAME_MODE"})
 public class FlagGamemode extends Flag {
     @Override
-    protected boolean check(@NotNull RaContext context, @NotNull Parameters params) {
-        return context.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, params.toString());
+    public boolean check(@NotNull RaContext context, @NotNull String params) {
+        return context.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, params);
     }
 
     @Override
@@ -45,10 +44,5 @@ public class FlagGamemode extends Flag {
     @Override
     public boolean requiresPlayer() {
         return true;
-    }
-
-    @Override
-    protected boolean isParameterized() {
-        return false;
     }
 }
