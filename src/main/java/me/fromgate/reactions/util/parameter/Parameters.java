@@ -3,15 +3,20 @@ package me.fromgate.reactions.util.parameter;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
 import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.suppliers.NotNullSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
@@ -23,42 +28,11 @@ public class Parameters implements Iterable<String> {
         this.params = params;
     }
 
-    @NotNull
-    public static Parameters noParse(@NotNull String str) {
-        return new Parameters(str, Collections.singletonMap("param-line", str));
-    }
-
-    @NotNull
-    public static Parameters noParse(@NotNull String str, @NotNull String defKey) {
-        Map<String, String> params = new CaseInsensitiveMap<>();
-        params.put(defKey, str);
-        params.put("param-line", str);
-        return new Parameters(str, params);
-    }
-
-    @NotNull
-    public static Parameters fromMap(@NotNull Map<String, String> map) {
-        StringBuilder bld = new StringBuilder();
-        Map<String, String> params = new CaseInsensitiveMap<>(map);
-        params.forEach((k, v) -> {
-            bld.append(k).append(':');
-            if (v.contains(" "))
-                bld.append('{').append(v).append('}');
-            else
-                bld.append(':').append(v);
-            bld.append(' ');
-        });
-        String str = bld.toString();
-        return new Parameters(str.isEmpty() ? str : str.substring(0, str.length() - 1), params);
-    }
-
-    @NotNull
-    public static Parameters fromString(@NotNull String str) {
+    public static @NotNull Parameters fromString(@NotNull String str) {
         return fromString(str, null);
     }
 
-    @NotNull
-    public static Parameters fromString(@NotNull String str, @Nullable String defKey) {
+    public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = new CaseInsensitiveMap<>();
         IterationState state = IterationState.SPACE;
@@ -143,15 +117,44 @@ public class Parameters implements Iterable<String> {
         SPACE, TEXT, COLON, PARAM, BR_PARAM
     }
 
-    @NotNull
-    public String getString(@NotNull String key) {
+    public static @NotNull Parameters noParse(@NotNull String str) {
+        return new Parameters(str, Collections.singletonMap("param-line", str));
+    }
+
+    public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
+        Map<String, String> params = new CaseInsensitiveMap<>();
+        params.put(defKey, str);
+        params.put("param-line", str);
+        return new Parameters(str, params);
+    }
+
+    public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
+        StringBuilder bld = new StringBuilder();
+        Map<String, String> params = new CaseInsensitiveMap<>(map);
+        params.forEach((k, v) -> {
+            bld.append(k).append(':');
+            if (v.contains(" "))
+                bld.append('{').append(v).append('}');
+            else
+                bld.append(':').append(v);
+            bld.append(' ');
+        });
+        String str = bld.toString();
+        return new Parameters(str.isEmpty() ? str : str.substring(0, str.length() - 1), params);
+    }
+
+    // TODO Make @Nullable?
+    public @NotNull String getString(@NotNull String key) {
         return getString(key, "");
     }
 
-    @Nullable
     @Contract("_, !null -> !null")
-    public String getString(String key, String def) {
+    public @Nullable String getString(@NotNull String key, @Nullable String def) {
         return params.getOrDefault(key, def);
+    }
+
+    public @NotNull String getStringSafe(@NotNull String key, @NotNull NotNullSupplier<String> def) {
+        return params.getOrDefault(key, def.get());
     }
 
     public double getDouble(@NotNull String key) {
@@ -162,6 +165,10 @@ public class Parameters implements Iterable<String> {
         return NumberUtils.getDouble(params.get(key), def);
     }
 
+    public double getDouble(@NotNull String key, @NotNull DoubleSupplier def) {
+        return NumberUtils.getDouble(params.get(key), def.getAsDouble());
+    }
+
     public int getInteger(@NotNull String key) {
         return getInteger(key, 0);
     }
@@ -170,25 +177,35 @@ public class Parameters implements Iterable<String> {
         return NumberUtils.getInteger(params.get(key), def);
     }
 
+    public int getInteger(@NotNull String key, @NotNull IntSupplier def) {
+        return NumberUtils.getInteger(params.get(key), def.getAsInt());
+    }
+
     public boolean getBoolean(@NotNull String key) {
         return getBoolean(key, false);
     }
 
     public boolean getBoolean(@NotNull String key, boolean def) {
-        String value = params.get(key);
-        if (Utils.isStringEmpty(value)) return def;
-        if (value.equalsIgnoreCase("true"))
-            return true;
-        if (value.equalsIgnoreCase("false"))
-            return false;
-        return def;
+        return switch (params.get(key).toLowerCase(Locale.ROOT)) {
+            case "true" -> true;
+            case "false" -> false;
+            default -> def;
+        };
+    }
+
+    public boolean getBoolean(@NotNull String key, BooleanSupplier def) {
+        return switch (params.get(key).toLowerCase(Locale.ROOT)) {
+            case "true" -> true;
+            case "false" -> false;
+            default -> def.getAsBoolean();
+        };
     }
 
     public boolean contains(@NotNull String key) {
         return params.containsKey(key);
     }
 
-    public boolean containsEvery(@NotNull String@NotNull ... keys) {
+    public boolean containsEvery(@NotNull String @NotNull ... keys) {
         for (String key : keys) {
             if (!params.containsKey(key)) {
                 return false;
@@ -204,7 +221,7 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    public boolean containsAny(@NotNull String@NotNull ... keys) {
+    public boolean containsAny(@NotNull String @NotNull ... keys) {
         for (String key : keys) {
             if (params.containsKey(key)) return true;
         }
