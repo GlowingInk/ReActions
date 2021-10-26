@@ -61,6 +61,10 @@
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>me.fromgate.reactions.metrics</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <patter>org.quartz</patter>
+                                    <shadedPattern>me.fromgate.reactions.time</shadedPattern>
+                                </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <filters>
