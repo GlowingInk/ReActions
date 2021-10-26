@@ -32,6 +32,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +42,7 @@ import java.util.TreeSet;
 @UtilityClass
 public class Delayer {
     // TODO: I don't like anything here...
+    private final DateFormat HH_MM_SS = new SimpleDateFormat("HH:mm:ss");
 
     private final Map<String, Long> delays = new HashMap<>();
 
@@ -112,8 +115,8 @@ public class Delayer {
         if (!delays.containsKey(fullId)) return null;
         long time = delays.get(fullId);
         String[] times = new String[8];
-        times[0] = TimeUtils.fullTimeToString(time, "dd-MM-YYYY HH:mm:ss");
-        times[1] = TimeUtils.fullTimeToString(time, "HH:mm:ss");
+        times[0] = TimeUtils.fullTimeToString(time);
+        times[1] = TimeUtils.fullTimeToString(time, HH_MM_SS);
         time = time - System.currentTimeMillis();
 
         long sec = time / 1000;

@@ -38,7 +38,7 @@ public class ActionDamage extends Action {
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        double damage = params.getInteger("damage", () -> params.getInteger("param-line"));
+        double damage = params.getInteger("damage", () -> params.getInteger("origin-string"));
         if (params.contains("player"))
             // TODO: Selector?
             player = Bukkit.getPlayerExact(params.getString("player"));

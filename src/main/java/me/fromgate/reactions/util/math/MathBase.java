@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+// TODO: Update to latest EzMath
 @UtilityClass
 public class MathBase {
     private final Map<String, Function> functions = new HashMap<>();

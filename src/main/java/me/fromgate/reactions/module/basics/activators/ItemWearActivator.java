@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
@@ -44,7 +44,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     public static ItemWearActivator create(ActivatorLogic base, Parameters param) {
-        String item = param.getString("item", "param-line");
+        String item = param.getString("item", "origin-string");
         // WearSlot slot = WearSlot.getByName(param.getParam("slot", "any"));
         return new ItemWearActivator(base, item/*, slot*/);
     }

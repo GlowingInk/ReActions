@@ -66,7 +66,7 @@ public class FlagVar extends Flag {
             value = params.getString("value", "");
             playerName = params.getString("player", playerName);
         } else {
-            String[] ln = params.getString("param-line", "").split("/", 2);
+            String[] ln = params.getString("origin-string", "").split("/", 2);
             if (ln.length == 0) return false;
             variableId = ln[0];
             value = (ln.length > 1) ? ln[1] : "";

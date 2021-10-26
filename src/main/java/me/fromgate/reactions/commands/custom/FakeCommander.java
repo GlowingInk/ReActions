@@ -2,8 +2,8 @@ package me.fromgate.reactions.commands.custom;
 
 import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.StoragesManager;
-import me.fromgate.reactions.module.basics.storages.CommandStorage;
+import me.fromgate.reactions.module.basics.*;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Bukkit;
@@ -23,7 +23,7 @@ import java.util.Set;
 
 // TODO: Remove statics
 @UtilityClass
-// TODO: Move to Commander.. but recode it first ;D
+// TODO: Move to Commander
 public class FakeCommander {
     // TODO: Use Brigadier.. somehow
     private final Map<String, RaCommand> commands = new HashMap<>();

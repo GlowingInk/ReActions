@@ -109,7 +109,7 @@ public class Parameters implements Iterable<String> {
             params.put(defKey, bld.toString());
         }
 
-        params.put("param-line", str);
+        params.put("origin-string", str);
         return new Parameters(str, params);
     }
 
@@ -118,13 +118,13 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters noParse(@NotNull String str) {
-        return new Parameters(str, Collections.singletonMap("param-line", str));
+        return new Parameters(str, Collections.singletonMap("origin-string", str));
     }
 
     public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
         Map<String, String> params = new CaseInsensitiveMap<>();
         params.put(defKey, str);
-        params.put("param-line", str);
+        params.put("origin-string", str);
         return new Parameters(str, params);
     }
 

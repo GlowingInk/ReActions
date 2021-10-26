@@ -2,7 +2,7 @@ package me.fromgate.reactions.events.listeners;
 
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -61,7 +61,7 @@ public class GodModeListener implements Listener {
     }
 
     public static void setEventGod(Player player) {
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, player, EntityDamageEvent.DamageCause.CUSTOM, 0);
+        EntityDamageEvent event = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.CUSTOM, 0);
         godCheckEvents.add(event);
         Bukkit.getPluginManager().callEvent(event);
     }

@@ -33,7 +33,6 @@ import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.DataValue;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -319,7 +318,7 @@ public class StoragesManager {
     }
 
     private void setFutureRegionCheck(final String playerName, final String region, boolean repeat) {
-        Player player = Utils.getPlayerExact(playerName);
+        Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) return;
         if (!player.isOnline()) return;
         if (player.isDead()) return;
@@ -357,7 +356,7 @@ public class StoragesManager {
 
     public void triggerVariable(String var, String playerName, String newValue, String prevValue) {
         if (newValue.equalsIgnoreCase(prevValue)) return;
-        Player player = Utils.getPlayerExact(playerName);
+        Player player = Bukkit.getPlayerExact(playerName);
         if (!playerName.isEmpty() && player == null) return;
         VariableStorage ve = new VariableStorage(player, var, newValue, prevValue);
         ReActions.getActivators().activate(ve);

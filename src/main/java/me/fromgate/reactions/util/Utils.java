@@ -34,7 +34,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Contract;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,14 +124,11 @@ public class Utils {
      */
     public boolean isWordInList(String word, String str) {
         String[] ln = str.split(",");
-        if (ln.length > 0)
-            for (String wordInList : ln) {
-                if (wordInList.equalsIgnoreCase(word)) return true;
-            }
+        for (String wordInList : ln) {
+            if (wordInList.equalsIgnoreCase(word)) return true;
+        }
         return false;
     }
-
-    // *************************************
 
     public UUID getUUID(OfflinePlayer player) {
         return Bukkit.getOnlineMode() ?
@@ -142,14 +138,14 @@ public class Utils {
 
     @SuppressWarnings("deprecation")
     public UUID getUUID(String playerName) {
-        Player player = getPlayerExact(playerName);
+        Player player = Bukkit.getPlayerExact(playerName);
         return player == null ?
                 getUUID(Bukkit.getOfflinePlayer(playerName)) :
                 getUUID(player);
     }
 
     /**
-     * Escape java symbols
+     * Escape java symbols (?)
      *
      * @param doco String to escape
      * @return Escaped string
@@ -161,22 +157,10 @@ public class Utils {
         StringBuilder b = new StringBuilder();
         for (char c : doco.toCharArray()) {
             switch (c) {
-                case '\r' -> {
-                    b.append("\\r");
-                    continue;
-                }
-                case '\n' -> {
-                    b.append("\\n");
-                    continue;
-                }
-                case '"' -> {
-                    b.append("\\\"");
-                    continue;
-                }
-                case '\\' -> {
-                    b.append("\\\\");
-                    continue;
-                }
+                case '\r' -> b.append("\\r");
+                case '\n' -> b.append("\\n");
+                case '"' -> b.append("\\\"");
+                case '\\' -> b.append("\\\\");
                 default -> b.append(c);
             }
         }
@@ -196,24 +180,12 @@ public class Utils {
     }
 
     /**
-     * @param name Nickname of player
-     * @return Player with specified name or null
-     */
-    @Deprecated
-    public Player getPlayerExact(String name) {
-        if (name != null)
-            for (Player player : Bukkit.getOnlinePlayers())
-                if (player.getName().equalsIgnoreCase(name)) return player;
-        return null;
-    }
-
-    /**
      * Get list of names of all online players
      *
      * @return List of names
      */
     public List<String> getPlayersList() {
-        List<String> players = new ArrayList<>();
+        List<String> players = new ArrayList<>(Bukkit.getOnlinePlayers().size());
         Bukkit.getOnlinePlayers().forEach(p -> players.add(p.getName()));
         return players;
     }
@@ -246,22 +218,6 @@ public class Utils {
     }
 
     /**
-     * Idk yet
-     */
-    public String implode(String... data) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < data.length - 1; i++) {
-            //data.length - 1 => to not add separator at the end
-            if (!data[i].matches(" *")) {//empty string are ""; " "; "  "; and so on
-                sb.append(data[i]);
-                sb.append(File.separator);
-            }
-        }
-        sb.append(data[data.length - 1].trim());
-        return sb.toString();
-    }
-
-    /**
      * Get any enum by it's name
      *
      * @param <T>   Enum type
@@ -289,12 +245,6 @@ public class Utils {
             }
         }
         return def;
-    }
-
-    public boolean containsValue(String str, String... values) {
-        for (String s : values)
-            if (s.equalsIgnoreCase(str)) return true;
-        return false;
     }
 
     public static String[] getAliases(Class<?> clazz) {

@@ -32,7 +32,7 @@ public class FlagBlock extends Flag {
         String istr = params.getString("block", "");
         if (istr.isEmpty()) return loc.getBlock().getType() != Material.AIR;
         Parameters block = Parameters.fromString(istr);
-        String type = block.getString("type", block.getString("param-line", "AIR"));
+        String type = block.getString("type", block.getString("origin-string", "AIR"));
         return loc.getBlock().getType().name().equalsIgnoreCase(type);
     }
 }

@@ -22,28 +22,16 @@
 
 package me.fromgate.reactions.events.listeners;
 
-import me.fromgate.reactions.module.basics.StoragesManager;
-import me.fromgate.reactions.module.basics.activators.MessageActivator;
+import me.fromgate.reactions.module.basics.*;
+import me.fromgate.reactions.module.basics.activators.*;
 
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 
 public class LogHandler extends StreamHandler {
-
     @Override
     public void publish(LogRecord record) {
         StoragesManager.triggerMessage(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
         super.publish(record);
     }
-
-    @Override
-    public void flush() {
-        super.flush();
-    }
-
-    @Override
-    public void close() throws SecurityException {
-        super.close();
-    }
-
 }

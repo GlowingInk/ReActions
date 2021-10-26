@@ -53,7 +53,7 @@ public class ActionVar extends Action {
             player = params.getString("player", player);
             if (var.isEmpty()) return false;
         } else {
-            String[] ln = params.getString("param-line", "").split("/", 2);
+            String[] ln = params.getString("origin-string", "").split("/", 2);
             if (ln.length == 0) return false;
             var = ln[0];
             value = (ln.length > 1) ? ln[1] : "";

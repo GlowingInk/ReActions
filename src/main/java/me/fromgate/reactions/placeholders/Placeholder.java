@@ -2,6 +2,7 @@ package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
 public interface Placeholder {
@@ -12,7 +13,7 @@ public interface Placeholder {
      * @param text Text of placeholder(e.g. %var:test% - test)
      * @return Processed placeholder
      */
-    @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text);
+    @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text);
 
     // TODO: boolean requiresPlayer
 

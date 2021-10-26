@@ -23,7 +23,7 @@
 package me.fromgate.reactions.time;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.*;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
@@ -242,7 +242,7 @@ public class TimersManager {
             String root = timerType + "." + name + ".";
             for (String key : params.keySet()) {
                 if (key.equalsIgnoreCase("timer-type")) continue;
-                if (key.equalsIgnoreCase("param-line")) continue;
+                if (key.equalsIgnoreCase("origin-string")) continue;
                 cfg.set(root + key, key.equalsIgnoreCase("time") ? params.getString(key).replace("_", " ") : params.getString(key));
             }
         }

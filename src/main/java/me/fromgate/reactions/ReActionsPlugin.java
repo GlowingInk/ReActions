@@ -67,6 +67,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.selectorsManager = new SelectorsManager();
         this.modulesManager = new ModulesManager(this, getClassLoader());
         ReActions.setPlatform(this);
+        modulesManager.registerModule(new BasicModule());
     }
 
     @Override
@@ -96,7 +97,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
 
-        modulesManager.registerModule(new BasicModule());
         new MetricsLite(this, 1894);
     }
 

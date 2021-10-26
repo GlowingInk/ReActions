@@ -15,7 +15,7 @@ public class ActionFlySpeed extends Action {
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        double speed = params.getInteger("speed", () -> params.getInteger("param-line", 0));
+        double speed = params.getInteger("speed", () -> params.getInteger("origin-string", 0));
         if (params.contains("player"))
             player = Bukkit.getPlayerExact(params.getString("player"));
         return flySpeedPlayer(player, speed / 10);
