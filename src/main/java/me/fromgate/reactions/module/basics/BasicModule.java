@@ -31,7 +31,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<ActivatorType> getActivatorTypes() {
+    public @NotNull Collection<ActivatorType> getActivatorTypes(ReActions.Platform platform) {
         return List.of(
                 typeOf(ExecActivator.class, "EXEC", ExecActivator::create, ExecActivator::load),
                 typeOf(ButtonActivator.class, "BUTTON", ButtonActivator::create, ButtonActivator::load, true),
@@ -82,7 +82,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Action> getActions() {
+    public @NotNull Collection<Action> getActions(ReActions.Platform platform) {
         // TODO Split actions one-by-one? Or implement MultiAction?..
         return List.of(
                 new ActionTp(),
@@ -167,7 +167,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Flag> getFlags() {
+    public @NotNull Collection<Flag> getFlags(ReActions.Platform platform) {
         return List.of(
                 new FlagTime(),
                 new FlagItem(FlagItem.Type.HAND),
@@ -235,7 +235,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Placeholder> getPlaceholders() {
+    public @NotNull Collection<Placeholder> getPlaceholders(ReActions.Platform platform) {
         return List.of(
                 new PlaceholderPlayer(),
                 new PlaceholderRandom(),
@@ -252,8 +252,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Selector> getSelectors() {
-        // TODO
+    public @NotNull Collection<Selector> getSelectors(ReActions.Platform platform) {
         return List.of(
                 new PlayerSelector(),
                 new WorldSelector(),

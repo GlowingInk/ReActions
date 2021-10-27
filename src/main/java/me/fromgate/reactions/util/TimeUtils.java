@@ -61,7 +61,7 @@ public class TimeUtils {
     }
 
     public long timeToTicks(long time) {
-        //1000 ms = 20 ticks
+        // 1000 ms = 20 ticks; 50 ms = 1 tick
         return Math.max(1, (time / 50));
     }
 

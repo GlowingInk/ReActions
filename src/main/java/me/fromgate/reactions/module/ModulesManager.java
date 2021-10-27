@@ -33,11 +33,11 @@ public class ModulesManager {
 
     public void registerModule(Module module) {
         platform.getLogger().info("Registering " + module.getName() + " module (by " + StringUtils.join(module.getAuthors(), ", ") + ")");
-        register("activators", module.getActivatorTypes(), ActivatorType::getName, platform.getActivators()::registerType);
-        register("actions", module.getActions(), Action::getName, platform.getActivities()::registerAction);
-        register("flags", module.getFlags(), Flag::getName, platform.getActivities()::registerFlag);
-        register("placeholders", module.getPlaceholders(), (p) -> p.getClass().getSimpleName(), platform.getPlaceholders()::registerPlaceholder);
-        register("selectors", module.getSelectors(), Selector::getName, platform.getSelectors()::registerSelector);
+        register("activators", module.getActivatorTypes(platform), ActivatorType::getName, platform.getActivators()::registerType);
+        register("actions", module.getActions(platform), Action::getName, platform.getActivities()::registerAction);
+        register("flags", module.getFlags(platform), Flag::getName, platform.getActivities()::registerFlag);
+        register("placeholders", module.getPlaceholders(platform), (p) -> p.getClass().getSimpleName(), platform.getPlaceholders()::registerPlaceholder);
+        register("selectors", module.getSelectors(platform), Selector::getName, platform.getSelectors()::registerSelector);
     }
 
     private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {

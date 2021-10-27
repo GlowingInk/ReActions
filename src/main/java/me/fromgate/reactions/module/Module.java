@@ -1,5 +1,6 @@
 package me.fromgate.reactions.module;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
@@ -15,23 +16,23 @@ public interface Module {
 
     @NotNull String @NotNull [] getAuthors();
 
-    default @NotNull Collection<ActivatorType> getActivatorTypes() {
+    default @NotNull Collection<ActivatorType> getActivatorTypes(ReActions.Platform platform) {
         return Collections.emptyList();
     }
 
-    default @NotNull Collection<Action> getActions() {
+    default @NotNull Collection<Action> getActions(ReActions.Platform platform) {
         return Collections.emptyList();
     }
 
-    default @NotNull Collection<Flag> getFlags() {
+    default @NotNull Collection<Flag> getFlags(ReActions.Platform platform) {
         return Collections.emptyList();
     }
 
-    default @NotNull Collection<Placeholder> getPlaceholders() {
+    default @NotNull Collection<Placeholder> getPlaceholders(ReActions.Platform platform) {
         return Collections.emptyList();
     }
 
-    default @NotNull Collection<Selector> getSelectors() {
+    default @NotNull Collection<Selector> getSelectors(ReActions.Platform platform) {
         return Collections.emptyList();
     }
 }
