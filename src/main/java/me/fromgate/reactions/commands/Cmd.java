@@ -1,7 +1,6 @@
 package me.fromgate.reactions.commands;
 
 import lombok.Getter;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,10 +33,6 @@ public abstract class Cmd {
         if (player == null) return this.allowConsole;
         if (this.permission == null || this.permission.isEmpty()) return true;
         return player.hasPermission(this.permission);
-    }
-
-    public boolean isValidCommand() {
-        return !Utils.isStringEmpty(command);
     }
 
     public boolean checkParams(String[] params) {

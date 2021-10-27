@@ -2,7 +2,7 @@ package me.fromgate.reactions.commands.custom;
 
 import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.*;
+import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
@@ -23,9 +23,8 @@ import java.util.Set;
 
 // TODO: Remove statics
 @UtilityClass
-// TODO: Move to Commander
 public class FakeCommander {
-    // TODO: Use Brigadier.. somehow
+    // TODO: Use Paper's async tab completer
     private final Map<String, RaCommand> commands = new HashMap<>();
 
     public void init() {
@@ -38,7 +37,7 @@ public class FakeCommander {
         YamlConfiguration cfg = new YamlConfiguration();
         if (!FileUtils.loadCfg(cfg, f, "Failed to load commands")) return;
         CommandMap commandMap = Bukkit.getCommandMap();
-        unregisterAll(/*commandMap*/);
+        commands.clear();
         for (String cmdKey : cfg.getKeys(false)) {
             ConfigurationSection cmdSection = cfg.getConfigurationSection(cmdKey);
             String command = cmdSection.getString("command");
@@ -64,22 +63,6 @@ public class FakeCommander {
         return raCmd.isOverride();
     }
 
-    private void unregisterAll(/*CommandMap commandMap*/) {
-		/*
-		TODO: Command unregister
-		try {
-			final Field f = commandMap.getClass().getDeclaredField("knownCommands");
-			f.setAccessible(true);
-			Map<String, Command> cmds = (Map<String, Command>) f.get(commandMap);
-			commands.keySet().forEach(cmds::remove);
-			f.set(commandMap, cmds);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-        commands.clear();
-    }
-
     private boolean register(String command, String prefix, List<String> aliases, CommandMap commandMap, RaCommand raCommand, boolean toBukkit) {
         if (Utils.isStringEmpty(command)) return false;
         command = command.toLowerCase(Locale.ENGLISH);
@@ -90,7 +73,6 @@ public class FakeCommander {
         if (toBukkit) commandMap.register(prefix, raCommand);
         commands.put(command, raCommand);
         commands.put(prefix + ":" + command, raCommand);
-        // ReActions.getPlugin().getCommand(raCommand.getName()).setTabCompleter(tabCompleter);
         // Registering aliases
         for (String alias : aliases) {
             if (toBukkit) commandMap.register(alias, prefix, raCommand);

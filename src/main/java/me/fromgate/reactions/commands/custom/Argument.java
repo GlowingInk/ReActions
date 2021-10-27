@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +43,7 @@ public class Argument {
             default:
                 if (argument.contains("|") && !argument.contains("\\|")) {
                     this.type = Type.MULTIPLE_TEXT;
-                    multiple = new HashSet<>(Arrays.asList(argument.split("\\|")));
+                    multiple = new HashSet<>(List.of(argument.split("\\|")));
                 } else {
                     this.type = Type.TEXT;
                     if (argument.startsWith("\\~") || argument.equals("\\*")) argument = argument.substring(1);

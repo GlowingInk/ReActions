@@ -41,6 +41,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
     }
 
     private void loadExecs(ConfigurationSection argSection) {
+        if (argSection == null) return;
         execs.put(ExecType.DEFAULT, argSection.getString("exec"));
         ConfigurationSection errSection = argSection.getConfigurationSection("error");
         if (errSection == null) return;

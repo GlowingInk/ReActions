@@ -22,7 +22,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * Custom implementation of Bukkit's Command just for ReActions - should not be used in other plugins
+ * Custom implementation of Bukkit's Command just for ReActions - not a part of API
  */
 public final class RaCommand extends Command implements PluginIdentifiableCommand {
     private final String permission;
