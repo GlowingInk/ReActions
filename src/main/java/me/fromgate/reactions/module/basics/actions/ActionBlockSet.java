@@ -36,7 +36,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("SET_BLOCK")
-public class ActionBlockSet extends Action {
+public class ActionBlockSet implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

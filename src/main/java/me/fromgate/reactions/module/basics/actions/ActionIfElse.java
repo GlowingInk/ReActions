@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Created by MaxDikiy on 2017-05-17.
  */
-public class ActionIfElse extends Action {
+public class ActionIfElse implements Action {
     // TODO: Maybe use some custom evaluator instead of freaking JS engine?
     private static final ScriptEngine ENGINE;
     static {

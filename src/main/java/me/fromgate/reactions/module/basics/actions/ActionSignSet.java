@@ -38,7 +38,7 @@ import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("SIGN_LINE")
-public class ActionSignSet extends Action {
+public class ActionSignSet implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

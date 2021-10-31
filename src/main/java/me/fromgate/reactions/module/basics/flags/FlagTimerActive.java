@@ -27,7 +27,7 @@ import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagTimerActive extends Flag {
+public class FlagTimerActive implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         return TimersManager.isTimerWorking(params);

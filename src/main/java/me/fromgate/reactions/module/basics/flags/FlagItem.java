@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 @AllArgsConstructor
-public class FlagItem extends Flag {
+public class FlagItem implements Flag {
     private final Type flagType;
 
     @Override

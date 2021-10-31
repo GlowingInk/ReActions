@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 /**
  * Created by MaxDikiy on 5/7/2017.
  */
-public class ActionFile extends Action {
+public class ActionFile implements Action {
     private static final String dir = new File("").getAbsolutePath();
 
     @Override

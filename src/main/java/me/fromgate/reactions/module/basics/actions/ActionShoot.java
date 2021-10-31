@@ -28,7 +28,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionShoot extends Action {
+public class ActionShoot implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

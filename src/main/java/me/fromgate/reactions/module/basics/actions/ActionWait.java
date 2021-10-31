@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ActionWait extends Action implements Stopper {
+public class ActionWait implements Action, Stopper {
 
     // TODO Make it actually work...
 

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by MaxDikiy on 2017-10-04.
  */
 @Alias("CHAT")
-public class ActionChatMessage extends Action {
+public class ActionChatMessage implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {
         if (context.getPlayer() != null) {

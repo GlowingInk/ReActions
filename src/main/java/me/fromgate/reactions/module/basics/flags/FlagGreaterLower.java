@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by MaxDikiy on 10/1/2017.
  */
 @AllArgsConstructor
-public class FlagGreaterLower extends Flag {
+public class FlagGreaterLower implements Flag {
     private final boolean greater;
 
     @Override

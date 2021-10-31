@@ -5,7 +5,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagRegex extends Flag {
+public class FlagRegex implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 18/10/2017.
  */
-public class ActionWESuperPickaxe extends Action {
+public class ActionWESuperPickaxe implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

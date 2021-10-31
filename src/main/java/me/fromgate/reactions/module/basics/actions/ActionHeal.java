@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("HP")
-public class ActionHeal extends Action {
+public class ActionHeal implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

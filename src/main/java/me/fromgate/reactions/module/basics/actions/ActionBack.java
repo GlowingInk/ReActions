@@ -28,7 +28,7 @@ import me.fromgate.reactions.util.location.PushBack;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionBack extends Action {
+public class ActionBack implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

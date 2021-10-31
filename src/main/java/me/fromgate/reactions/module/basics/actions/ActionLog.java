@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-public class ActionLog extends Action {
+public class ActionLog implements Action {
 
     private static final Logger LOGGER = Logger.getLogger("Minecraft");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

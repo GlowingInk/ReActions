@@ -665,15 +665,6 @@ public class VirtualItem extends ItemStack {
             if (m == null) return false;
             typeStr = m.toString();
             if (!compareOrMatch(this.getType().toString(), typeStr, regex)) return false;
-
-			/*
-			if (itemMap.containsKey("color")) {
-				DyeColor dyeColor = parseDyeColor(itemMap.get("color"));
-				if(this.getItemMeta() instanceof Colorable)
-					itemMap.put("data", String.valueOf(dyeColor.getWoolData()));
-
-			}
-			*/
         }
         ItemMeta thisMeta = this.getItemMeta();
         if (itemMap.containsKey("item") || itemMap.containsKey("default-param")) {

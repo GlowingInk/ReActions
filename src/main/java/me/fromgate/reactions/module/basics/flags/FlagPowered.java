@@ -34,7 +34,7 @@ import org.bukkit.block.data.Powerable;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("POWER")
-public class FlagPowered extends Flag {
+public class FlagPowered implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

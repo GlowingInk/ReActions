@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("GRPRMV")
-public class ActionGroupRemove extends Action {
+public class ActionGroupRemove implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {

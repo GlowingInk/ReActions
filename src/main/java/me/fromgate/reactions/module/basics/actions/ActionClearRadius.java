@@ -21,7 +21,7 @@ import java.util.Locale;
  * Created by MaxDikiy on 20/10/2017.
  */
 @Alias("CLEAR_RADIUS")
-public class ActionClearRadius extends Action {
+public class ActionClearRadius implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override

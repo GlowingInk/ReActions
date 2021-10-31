@@ -27,7 +27,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagDirection extends Flag {
+public class FlagDirection implements Flag {
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

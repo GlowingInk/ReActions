@@ -30,7 +30,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagWalkBlock extends Flag {
+public class FlagWalkBlock implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

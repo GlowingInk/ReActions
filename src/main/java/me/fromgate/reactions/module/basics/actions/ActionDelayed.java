@@ -12,7 +12,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("ACTDELAY")
-public class ActionDelayed extends Action {
+public class ActionDelayed implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

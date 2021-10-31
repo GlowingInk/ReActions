@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("SLOT")
-public class FlagHeldSlot extends Flag {
+public class FlagHeldSlot implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

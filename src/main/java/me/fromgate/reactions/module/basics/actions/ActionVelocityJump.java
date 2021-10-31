@@ -35,7 +35,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("JUMP")
-public class ActionVelocityJump extends Action {
+public class ActionVelocityJump implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

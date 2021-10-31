@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 2017-05-16.
  */
-public class ActionWalkSpeed extends Action {
+public class ActionWalkSpeed implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

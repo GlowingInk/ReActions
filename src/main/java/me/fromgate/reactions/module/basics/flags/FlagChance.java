@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.math.Rng;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("PROBABILITY")
-public class FlagChance extends Flag {
+public class FlagChance implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         context.setVariable("chance", params + "%");

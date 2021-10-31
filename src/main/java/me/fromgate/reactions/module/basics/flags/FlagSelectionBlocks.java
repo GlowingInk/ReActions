@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 // TODO: WorldEdit module
 @Alias("WE_SEL_BLOCKS")
-public class FlagSelectionBlocks extends Flag {
+public class FlagSelectionBlocks implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

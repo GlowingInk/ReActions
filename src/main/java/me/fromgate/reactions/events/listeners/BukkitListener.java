@@ -9,15 +9,8 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.ItemStoragesManager;
 import me.fromgate.reactions.module.basics.StoragesManager;
-import me.fromgate.reactions.module.basics.activators.MessageActivator;
-import me.fromgate.reactions.module.basics.activators.SignActivator;
-import me.fromgate.reactions.module.basics.storages.BlockBreakStorage;
-import me.fromgate.reactions.module.basics.storages.DamageStorage;
-import me.fromgate.reactions.module.basics.storages.DropStorage;
-import me.fromgate.reactions.module.basics.storages.InventoryClickStorage;
-import me.fromgate.reactions.module.basics.storages.MessageStorage;
-import me.fromgate.reactions.module.basics.storages.MobDamageStorage;
-import me.fromgate.reactions.module.basics.storages.TeleportStorage;
+import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.TemporaryOp;
@@ -315,7 +308,7 @@ public class BukkitListener implements Listener {
         } else if (event instanceof EntityDamageByBlockEvent evdmg) {
             source = "BLOCK";
             Block blockDamager = evdmg.getDamager();
-            if(blockDamager != null) {
+            if (blockDamager != null) {
                 Map<String, DataValue> changeables = StoragesManager.triggerDamageByBlock(evdmg, blockDamager);
                 event.setDamage(changeables.get(DamageStorage.DAMAGE).asDouble());
                 event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());

@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: Rework a bit
-public class FlagPvp extends Flag {
+public class FlagPvp implements Flag {
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {

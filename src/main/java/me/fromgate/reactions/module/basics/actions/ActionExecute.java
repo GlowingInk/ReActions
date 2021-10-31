@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("RUN")
-public class ActionExecute extends Action {
+public class ActionExecute implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

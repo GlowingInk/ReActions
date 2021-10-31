@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("CANCEL")
-public class ActionCancelEvent extends Action {
+public class ActionCancelEvent implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

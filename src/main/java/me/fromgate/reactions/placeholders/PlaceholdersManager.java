@@ -21,8 +21,8 @@ public class PlaceholdersManager {
         countLimit = 127;
     }
 
-    public boolean registerPlaceholder(@NotNull Placeholder ph) {
-        return InternalParsers.EQUAL.put(ph) || InternalParsers.PREFIXED.put(ph) || InternalParsers.SIMPLE.put(ph);
+    public void registerPlaceholder(@NotNull Placeholder ph) {
+        if (!Parser.Internal.EQUAL.put(ph) && !Parser.Internal.PREFIXED.put(ph)) Parser.Internal.SIMPLE.put(ph);
     }
 
     public String parsePlaceholders(RaContext context, String text) {
@@ -53,12 +53,11 @@ public class PlaceholdersManager {
         return text;
     }
 
-    // Just some sh!tty stuff
     private static void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, RaContext context) {
         matcher.appendReplacement(
                 builder,
                 Matcher.quoteReplacement(
-                        InternalParsers.process(
+                        Parser.process(
                                 parseRecursive(
                                         crop(matcher.group()),
                                         pattern,

@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class FlagVar extends Flag {
+public class FlagVar implements Flag {
     private final Type flagType;
     private final boolean personalVar;
 

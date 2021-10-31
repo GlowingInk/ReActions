@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 5/4/2017.
  */
-public class FlagFlySpeed extends Flag {
+public class FlagFlySpeed implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

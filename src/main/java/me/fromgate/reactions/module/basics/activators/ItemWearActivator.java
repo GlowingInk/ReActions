@@ -86,22 +86,5 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     public boolean isValid() {
         return !Utils.isStringEmpty(item);
     }
-
-	/*
-	public enum WearSlot {
-		HEAD, CHEST, LEGS, FEET, ANY;
-
-		public static WearSlot getByName(String name) {
-			if(Util.isStringEmpty(name)) return ANY;
-			switch(name.toLowerCase(Locale.ENGLISH)) {
-				case "head": return HEAD;
-				case "chest": return CHEST;
-				case "legs": return LEGS;
-				case "feet": return FEET;
-				default: return ANY;
-			}
-		}
-	}
-	*/
 }
 

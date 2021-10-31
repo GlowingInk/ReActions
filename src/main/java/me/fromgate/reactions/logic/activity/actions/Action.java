@@ -3,21 +3,15 @@ package me.fromgate.reactions.logic.activity.actions;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Action {
-    public abstract boolean execute(@NotNull RaContext context, @NotNull String paramsStr);
+public interface Action {
+    boolean execute(@NotNull RaContext context, @NotNull String paramsStr);
 
-    @NotNull
-    public abstract String getName();
+    @NotNull String getName();
 
-    public abstract boolean requiresPlayer();
+    boolean requiresPlayer();
 
     // TODO
-    protected boolean isAsync() {
+    default boolean isAsync() {
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return getName();
     }
 }

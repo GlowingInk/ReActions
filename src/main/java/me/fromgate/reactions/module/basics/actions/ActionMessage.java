@@ -40,7 +40,7 @@ import java.util.Locale;
 import java.util.Set;
 
 @Alias("MSG")
-public class ActionMessage extends Action {
+public class ActionMessage implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
@@ -79,7 +79,7 @@ public class ActionMessage extends Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = params.getString("text", removeParams(params.toString()));
+        String message = params.getStringSafe("text", () -> removeParams(params.toString()));
         if (message.isEmpty()) return;
         String annoymentTime = params.getString("hide");
         for (Player p : players) {

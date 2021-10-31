@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by MaxDikiy on 5/4/2017.
  */
 @Alias("WALKSPEED")
-public class FlagWalkSpeed extends Flag {
+public class FlagWalkSpeed implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

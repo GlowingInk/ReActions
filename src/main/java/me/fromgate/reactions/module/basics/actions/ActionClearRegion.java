@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Alias("RGCLEAR")
-public class ActionClearRegion extends Action {
+public class ActionClearRegion implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override

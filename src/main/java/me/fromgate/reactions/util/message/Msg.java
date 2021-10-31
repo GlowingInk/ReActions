@@ -553,7 +553,7 @@ public enum Msg {
         return sb.toString();
     }
 
-    public static void printLines(Object sender, Collection<String> lines) {
+    private static void printLines(Object sender, Collection<String> lines) {
         for (String l : lines) {
             messenger.print(sender, colorize(l));
         }
@@ -565,11 +565,6 @@ public enum Msg {
 
     public static void printPage(Object sender, Collection<String> lines, Msg title, int pageNum, int linesPerPage, boolean showNum) {
         printPage(sender, lines, title, null, pageNum, linesPerPage, showNum);
-    }
-
-    public static void printPage(Object sender, Collection<String> lines, Msg title, Msg footer, int pageNum, int linesPerPage) {
-        printPage(sender, lines, title, footer, pageNum, linesPerPage, false);
-
     }
 
     public static void printPage(Object sender, Collection<String> lines, Msg title, Msg footer, int pageNum, int linesPerPage, boolean showNum) {
@@ -613,7 +608,6 @@ public enum Msg {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void logOnce(String key, Object... s) {
         if (onceLog.contains(key)) return;
         onceLog.add(key);
@@ -728,8 +722,8 @@ public enum Msg {
                 if (!fullFloat) s = fmt.format(key);
             }
 
-            String from = new StringBuilder("%").append(count).append("%").toString();
-            String to = skipDefaultColors ? s : new StringBuilder("&").append(colors[1]).append(s).append("&").append(colors[0]).toString();
+            String from = "%" + count + "%";
+            String to = skipDefaultColors ? s : "&" + colors[1] + s + "&" + colors[0];
             str = str.replace(from, to);
             count++;
         }

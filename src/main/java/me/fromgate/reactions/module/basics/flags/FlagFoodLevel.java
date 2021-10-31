@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias({"FOODLEVEL", "FOOD"})
-public class FlagFoodLevel extends Flag {
+public class FlagFoodLevel implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

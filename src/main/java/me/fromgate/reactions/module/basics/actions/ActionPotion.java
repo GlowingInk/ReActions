@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 @Alias("POTION_EFFECT")
-public class ActionPotion extends Action {
+public class ActionPotion implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

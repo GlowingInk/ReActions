@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 // TODO: Vault module
 @Alias("VAULT_GROUP")
-public class FlagGroup extends Flag {
+public class FlagGroup implements Flag {
 
     @Override
     public @NotNull String getName() {

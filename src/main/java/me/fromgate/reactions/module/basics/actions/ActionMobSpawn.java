@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("MOB")
-public class ActionMobSpawn extends Action {
+public class ActionMobSpawn implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

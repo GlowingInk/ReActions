@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 @AllArgsConstructor
-public class ActionSql extends Action {
+public class ActionSql implements Action {
     // TODO: More functionality like working with arrays
     private final Type sqlType;
 

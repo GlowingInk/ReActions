@@ -28,7 +28,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
 @Alias({"PERM", "HAS_PERMISSION"})
-public class FlagPerm extends Flag {
+public class FlagPerm implements Flag {
     @Override
     public @NotNull String getName() {
         return "PERMISSION";

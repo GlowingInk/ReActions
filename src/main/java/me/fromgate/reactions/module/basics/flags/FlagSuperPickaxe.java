@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 11/10/2017.
  */
-public class FlagSuperPickaxe extends Flag {
+public class FlagSuperPickaxe implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

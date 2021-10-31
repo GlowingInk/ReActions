@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class ActionVar extends Action {
+public class ActionVar implements Action {
 
     private final Type actType;
     private final boolean personalVar;

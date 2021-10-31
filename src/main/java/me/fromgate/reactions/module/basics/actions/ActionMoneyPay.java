@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Alias("MONEYPAY")
-public class ActionMoneyPay extends Action {
+public class ActionMoneyPay implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

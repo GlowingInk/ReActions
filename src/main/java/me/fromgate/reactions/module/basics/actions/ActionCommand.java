@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class ActionCommand extends Action {
+public class ActionCommand implements Action {
 
     private final Type commandAs;
 

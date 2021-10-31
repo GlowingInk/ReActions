@@ -248,7 +248,7 @@ public class Utils {
     }
 
     public static String[] getAliases(Class<?> clazz) {
-        if(clazz.isAnnotationPresent(Alias.class)) {
+        if (clazz.isAnnotationPresent(Alias.class)) {
             return clazz.getAnnotation(Alias.class).value();
         }
         return EMPTY_ARRAY;

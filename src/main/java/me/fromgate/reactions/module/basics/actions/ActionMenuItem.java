@@ -8,7 +8,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("MENU_ITEM")
-public class ActionMenuItem extends Action {
+public class ActionMenuItem implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

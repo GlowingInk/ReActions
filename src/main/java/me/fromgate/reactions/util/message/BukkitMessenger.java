@@ -23,7 +23,6 @@
 package me.fromgate.reactions.util.message;
 
 import me.fromgate.reactions.Cfg;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -85,12 +84,6 @@ public class BukkitMessenger implements Messenger {
     }
 
     @Override
-    public boolean broadcast(String text) {
-        Bukkit.broadcastMessage(text);
-        return true;
-    }
-
-    @Override
     public boolean log(String text) {
         plugin.getLogger().info(text);
         return true;
@@ -99,15 +92,6 @@ public class BukkitMessenger implements Messenger {
     @Override
     public String clean(String text) {
         return ChatColor.stripColor(text);
-    }
-
-    @Override
-    public boolean tip(Object sender, String text) {
-        Player player = toPlayer(sender);
-        if (player == null)
-            return false;
-        player.sendTitle(null, text, 10, 70, 20);
-        return true;
     }
 
     @Override
@@ -183,9 +167,5 @@ public class BukkitMessenger implements Messenger {
 
     private CommandSender toSender(Object sender) {
         return sender instanceof CommandSender ? (CommandSender) sender : null;
-    }
-
-    private Player toPlayer(Object sender) {
-        return sender instanceof Player ? (Player) sender : null;
     }
 }

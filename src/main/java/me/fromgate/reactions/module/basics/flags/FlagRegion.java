@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 // TODO: WorldGuard module
 @AllArgsConstructor
-public class FlagRegion extends Flag {
+public class FlagRegion implements Flag {
     private final Type flagType;
 
     @Override
@@ -50,7 +50,7 @@ public class FlagRegion extends Flag {
 
     private boolean playersInRegion(String param) {
         String[] split = param.split("/");
-        if(split.length != 2) return false;
+        if (split.length != 2) return false;
         return (NumberUtils.getInteger(split[1], 1) <= RaWorldGuard.countPlayersInRegion(split[0]));
     }
 

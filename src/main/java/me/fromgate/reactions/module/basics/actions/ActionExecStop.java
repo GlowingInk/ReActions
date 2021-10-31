@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("STOP")
-public class ActionExecStop extends Action {
+public class ActionExecStop implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

@@ -29,7 +29,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("GRPADD")
-public class ActionGroupAdd extends Action {
+public class ActionGroupAdd implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {

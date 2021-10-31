@@ -30,7 +30,7 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("ONLINE")
-public class FlagOnline extends Flag {
+public class FlagOnline implements Flag {
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

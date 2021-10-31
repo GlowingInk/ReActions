@@ -1,20 +1,19 @@
 package me.fromgate.reactions.module.basics.actions;
 
+import de.themoep.minedown.adventure.MineDown;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.data.RaContext;
-import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionResponse extends Action {
+import java.util.Objects;
+
+@Alias("RESPOND")
+public class ActionResponse implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {
-        params = Msg.colorize(params);
-        Player player = context.getPlayer();
-        if (player == null)
-            Bukkit.getConsoleSender().sendMessage(params);
-        else player.sendMessage(params);
+        Objects.requireNonNullElseGet(context.getPlayer(), Bukkit::getConsoleSender).sendMessage(new MineDown(params).toComponent());
         return true;
     }
 

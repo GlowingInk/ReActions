@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 5/6/2017.
  */
-public class ActionPlayerId extends Action {
+public class ActionPlayerId implements Action {
 
     @SuppressWarnings("deprecation")
     @Override

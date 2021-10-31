@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 // TODO: Vault module
 @Alias({"VAULT_MONEY", "BALANCE"})
-public class FlagMoney extends Flag {
+public class FlagMoney implements Flag {
     @Override
     public @NotNull String getName() {
         return "MONEY";

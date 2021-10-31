@@ -14,7 +14,7 @@ public class PlaceholderVariable implements Placeholder.Prefixed {
             case "var":
             case "variable":
                 String[] varSplit = text.split("\\.", 2);
-                if(varSplit.length > 1) {
+                if (varSplit.length > 1) {
                     return ReActions.getVariables().getVariable(varSplit[0], varSplit[1]);
                 } else {
                     return ReActions.getVariables().getVariable("", varSplit[0]);

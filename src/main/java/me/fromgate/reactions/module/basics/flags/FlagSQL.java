@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class FlagSQL extends Flag {
+public class FlagSQL implements Flag {
     // TODO: Make it safer
     private final boolean check;
 

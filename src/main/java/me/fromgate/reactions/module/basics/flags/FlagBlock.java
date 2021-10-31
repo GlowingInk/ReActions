@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("BLOCK")
-public class FlagBlock extends Flag {
+public class FlagBlock implements Flag {
 
     @Override
     public @NotNull String getName() {

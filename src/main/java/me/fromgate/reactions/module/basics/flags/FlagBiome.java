@@ -28,7 +28,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagBiome extends Flag {
+public class FlagBiome implements Flag {
 
     @Override
     public @NotNull String getName() {

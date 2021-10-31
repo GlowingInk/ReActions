@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class ActionTimer extends Action {
+public class ActionTimer implements Action {
 
     private final boolean pauseTimer;
 

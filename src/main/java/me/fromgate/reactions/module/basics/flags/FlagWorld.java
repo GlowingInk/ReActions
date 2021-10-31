@@ -26,7 +26,7 @@ import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagWorld extends Flag {
+public class FlagWorld implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         return context.getPlayer().getWorld().getName().equals(params);

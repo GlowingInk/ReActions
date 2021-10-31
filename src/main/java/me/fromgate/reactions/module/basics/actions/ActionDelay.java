@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class ActionDelay extends Action {
+public class ActionDelay implements Action {
 
     private final boolean globalDelay;
 

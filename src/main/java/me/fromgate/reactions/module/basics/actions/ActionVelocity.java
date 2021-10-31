@@ -32,7 +32,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("VECTOR")
-public class ActionVelocity extends Action {
+public class ActionVelocity implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

@@ -30,7 +30,7 @@ import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
 @Alias({"GM", "GAME_MODE"})
-public class FlagGamemode extends Flag {
+public class FlagGamemode implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         return context.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, params);

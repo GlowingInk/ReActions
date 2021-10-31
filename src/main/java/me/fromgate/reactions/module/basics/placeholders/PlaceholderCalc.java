@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlaceholderCalc implements Placeholder.Prefixed {
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-        if(!param.contains("%")) try {
+        if (!param.contains("%")) try {
             return NumberUtils.format(MathEvaluator.eval(param));
         } catch (NumberFormatException | ArithmeticException ignore) {
             // TODO: Error

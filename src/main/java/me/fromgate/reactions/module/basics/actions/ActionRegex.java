@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Created by MaxDikiy on 2017-04-29.
  */
-public class ActionRegex extends Action {
+public class ActionRegex implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

@@ -29,7 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagTime extends Flag {
+public class FlagTime implements Flag {
 
     @Override
     public @NotNull String getName() {

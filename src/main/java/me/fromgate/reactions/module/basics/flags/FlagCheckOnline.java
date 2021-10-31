@@ -5,7 +5,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagCheckOnline extends Flag {
+public class FlagCheckOnline implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         return Bukkit.getPlayerExact(params) != null;

@@ -41,10 +41,12 @@ public class ModulesManager {
     }
 
     private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {
+        if (values.isEmpty()) return;
         List<String> names = new ArrayList<>(values.size());
         List<String> failed = new ArrayList<>();
         for (T type : values) {
             try {
+                register.accept(type);
                 names.add(toString.apply(type));
             } catch (IllegalStateException e) {
                 failed.add(e.getMessage());

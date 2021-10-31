@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import lombok.AllArgsConstructor;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.module.basics.*;
+import me.fromgate.reactions.module.basics.ItemStoragesManager;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -44,9 +44,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+// TODO: Rework
 @AllArgsConstructor
-public class ActionItems extends Action {
-    // TODO: Optimization
+public class ActionItems implements Action {
     private final Type actionType;
 
     @Override

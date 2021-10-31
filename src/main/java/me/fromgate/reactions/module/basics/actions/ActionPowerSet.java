@@ -35,7 +35,7 @@ import org.bukkit.block.data.type.Switch;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("POWER")
-public class ActionPowerSet extends Action {
+public class ActionPowerSet implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("EXEC_STOP")
-public class FlagExecuteStop extends Flag {
+public class FlagExecuteStop implements Flag {
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

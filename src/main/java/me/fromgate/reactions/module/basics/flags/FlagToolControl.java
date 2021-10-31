@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 11/10/2017.
  */
-public class FlagToolControl extends Flag {
+public class FlagToolControl implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

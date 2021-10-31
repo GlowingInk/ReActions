@@ -31,7 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("RMVPOT")
-public class ActionPotionRemove extends Action {
+public class ActionPotionRemove implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {
         String str = removePotionEffect(context.getPlayer(), params);

@@ -27,7 +27,7 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class FlagWeather extends Flag {
+public class FlagWeather implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();

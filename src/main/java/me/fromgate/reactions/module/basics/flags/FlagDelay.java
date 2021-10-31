@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public class FlagDelay extends Flag {
+public class FlagDelay implements Flag {
 
     private final boolean globalDelay;
     @Override

@@ -30,7 +30,7 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 @Alias("MSGALL")
-public class ActionBroadcast extends Action {
+public class ActionBroadcast implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {

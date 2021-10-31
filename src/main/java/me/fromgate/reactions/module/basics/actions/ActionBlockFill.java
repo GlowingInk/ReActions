@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Alias("FILL_BLOCK")
-public class ActionBlockFill extends Action {
+public class ActionBlockFill implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
