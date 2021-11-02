@@ -167,7 +167,7 @@ public class ActionItems implements Action {
         String itemStr = params.getString("item");
         int slot = -1; //4 - auto, 3 - helmete, 2 - chestplate, 1 - leggins, 0 - boots
         int existDrop = 1; // 0 - remove, 1 - undress, 2 - drop, 3 - keep
-        if (itemStr.isEmpty()) itemStr = params.getString("origin-string", "");
+        if (itemStr.isEmpty()) itemStr = params.getString(Parameters.ORIGIN_KEY, "");
         else {
             slot = this.getSlotNum(params.getString("slot", "auto"));
             String existStr = params.getString("exist", "undress");

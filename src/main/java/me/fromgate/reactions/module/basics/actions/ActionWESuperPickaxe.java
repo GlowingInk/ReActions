@@ -16,7 +16,7 @@ public class ActionWESuperPickaxe implements Action {
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        boolean isSP = params.getBoolean("value", () -> params.getBoolean("origin-string", false));
+        boolean isSP = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN_KEY, false));
         if (params.contains("player"))
             player = Bukkit.getPlayerExact(params.getString("player"));
         if (isSP) RaWorldEdit.getSession(player).enableSuperPickAxe();

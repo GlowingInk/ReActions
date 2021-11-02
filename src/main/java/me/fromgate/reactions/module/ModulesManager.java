@@ -4,6 +4,7 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.selectors.Selector;
 import org.apache.commons.lang.StringUtils;
 
@@ -13,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
@@ -36,26 +38,28 @@ public class ModulesManager {
         register("activators", module.getActivatorTypes(platform), ActivatorType::getName, platform.getActivators()::registerType);
         register("actions", module.getActions(platform), Action::getName, platform.getActivities()::registerAction);
         register("flags", module.getFlags(platform), Flag::getName, platform.getActivities()::registerFlag);
-        register("placeholders", module.getPlaceholders(platform), (p) -> p.getClass().getSimpleName(), platform.getPlaceholders()::registerPlaceholder);
+        register("placeholders", module.getPlaceholders(platform), Placeholder::getBasicName, platform.getPlaceholders()::registerPlaceholder);
         register("selectors", module.getSelectors(platform), Selector::getName, platform.getSelectors()::registerSelector);
     }
 
     private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {
         if (values.isEmpty()) return;
         List<String> names = new ArrayList<>(values.size());
-        List<String> failed = new ArrayList<>();
+        List<String> failed = null;
         for (T type : values) {
             try {
                 register.accept(type);
-                names.add(toString.apply(type));
+                names.add(toString.apply(type).toUpperCase(Locale.ROOT));
             } catch (IllegalStateException e) {
+                if (failed == null) failed = new ArrayList<>();
                 failed.add(e.getMessage());
             }
         }
         if (!names.isEmpty()) {
             platform.getLogger().info("Registered " + names.size() + " " + what + ": " + String.join(", ", names));
+        } else if (failed != null) {
+            failed.forEach(platform.getLogger()::warning);
         }
-        failed.forEach(platform.getLogger()::warning);
     }
 
     public void loadModules() {

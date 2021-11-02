@@ -28,7 +28,7 @@ public final class ItemStoragesManager {
         ItemWearStorage iwe = new ItemWearStorage(player);
         if (!iwe.isItemWeared(itemStr)) return;
         ReActions.getActivators().activate(iwe);
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20 * Cfg.itemWearRecheck);
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20L * Cfg.itemWearRecheck);
     }
 
     public static void triggerItemWear(Player player) {

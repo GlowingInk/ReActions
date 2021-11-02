@@ -35,7 +35,7 @@ public class ActionExecute implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        String id = params.getString("activator");
+        String id = params.getStringSafe("activator", () -> params.getString(Parameters.ORIGIN_KEY));
         if (id.isEmpty()) return false;
         return StoragesManager.triggerExec(context.getPlayer(), params, context.getVariables());
     }

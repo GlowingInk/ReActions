@@ -8,13 +8,13 @@ public final class NumberUtils {
     // Byte
     public static Pattern BYTE = Pattern.compile("(2[1-5][1-6]|\\d{1,2})");
     // Integer
-    public static Pattern INT_POSITIVE = Pattern.compile("\\d+");
     public static Pattern INT = Pattern.compile("-?\\d+");
+    public static Pattern INT_POSITIVE = Pattern.compile("\\d+");
     public static Pattern INT_NONZERO_POSITIVE = Pattern.compile("[1-9]\\d*");
     public static Pattern INT_NONZERO = Pattern.compile("-?[1-9]\\d*");
     // Float
-    public static Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
     public static Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
+    public static Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
     public static Pattern FLOAT_WITHZERO = Pattern.compile("^\\d+\\.0$");
 
     private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
@@ -101,6 +101,7 @@ public final class NumberUtils {
      * @param arg2 Second integer
      * @return Array of integers, where first value is minimal
      */
+    @Deprecated
     public static int[] sortedIntPair(int arg1, int arg2) {
         int[] pair = new int[2];
         if (arg1 > arg2) {

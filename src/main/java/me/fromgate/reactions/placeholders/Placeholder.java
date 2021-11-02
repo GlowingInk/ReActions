@@ -4,7 +4,6 @@ import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@FunctionalInterface
 public interface Placeholder {
     /**
      * Process this placeholder
@@ -15,6 +14,8 @@ public interface Placeholder {
      */
     @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text);
 
+    @NotNull String getBasicName();
+
     // TODO: boolean requiresPlayer
 
     interface Equal extends Placeholder {
@@ -23,6 +24,11 @@ public interface Placeholder {
          * @return Ids of placeholder
          */
         @NotNull String getId();
+
+        @Override
+        default @NotNull String getBasicName() {
+            return getId();
+        }
     }
 
     interface Prefixed extends Placeholder {
@@ -31,5 +37,10 @@ public interface Placeholder {
          * @return Prefixes of placeholder
          */
         @NotNull String getPrefix();
+
+        @Override
+        default @NotNull String getBasicName() {
+            return getPrefix();
+        }
     }
 }

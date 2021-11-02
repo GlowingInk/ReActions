@@ -20,6 +20,8 @@ import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
+    public static final String ORIGIN_KEY = "origin-string";
+
     private final String origin;
     private final Map<String, String> params;
 
@@ -110,7 +112,7 @@ public class Parameters implements Iterable<String> {
             params.put(defKey, bld.toString());
         }
 
-        params.put("origin-string", str);
+        params.put(Parameters.ORIGIN_KEY, str);
         return new Parameters(str, params);
     }
 
@@ -119,13 +121,13 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters noParse(@NotNull String str) {
-        return new Parameters(str, Collections.singletonMap("origin-string", str));
+        return new Parameters(str, Collections.singletonMap(Parameters.ORIGIN_KEY, str));
     }
 
     public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
         Map<String, String> params = new CaseInsensitiveMap<>();
         params.put(defKey, str);
-        params.put("origin-string", str);
+        params.put(Parameters.ORIGIN_KEY, str);
         return new Parameters(str, params);
     }
 

@@ -69,7 +69,7 @@ public class FlagVar implements Flag {
             value = params.getString("value", "");
             playerName = params.getString("player", playerName);
         } else {
-            String[] ln = params.getString("origin-string", "").split("/", 2);
+            String[] ln = params.getString(Parameters.ORIGIN_KEY, "").split("/", 2);
             if (ln.length == 0) return false;
             variableId = ln[0];
             value = (ln.length > 1) ? ln[1] : "";

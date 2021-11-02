@@ -242,7 +242,7 @@ public class TimersManager {
             String root = timerType + "." + name + ".";
             for (String key : params.keySet()) {
                 if (key.equalsIgnoreCase("timer-type")) continue;
-                if (key.equalsIgnoreCase("origin-string")) continue;
+                if (key.equalsIgnoreCase(Parameters.ORIGIN_KEY)) continue;
                 cfg.set(root + key, key.equalsIgnoreCase("time") ? params.getString(key).replace("_", " ") : params.getString(key));
             }
         }

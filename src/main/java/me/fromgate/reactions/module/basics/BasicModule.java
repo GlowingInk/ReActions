@@ -83,7 +83,6 @@ public class BasicModule implements Module {
 
     @Override
     public @NotNull Collection<Action> getActions(ReActions.Platform platform) {
-        // TODO Split actions one-by-one? Or implement MultiAction?..
         return List.of(
                 new ActionTp(),
                 new ActionVelocity(),
@@ -114,8 +113,6 @@ public class BasicModule implements Module {
                 new ActionBack(),
                 new ActionMobSpawn(),
                 new ActionExecute(),
-                new ActionExecStop(),
-                new ActionExecUnstop(),
                 new ActionHeal(),
                 new ActionBlockSet(),
                 new ActionSignSet(),
@@ -243,7 +240,7 @@ public class BasicModule implements Module {
                 new PlaceholderCalc(),
                 new PlaceholderActivator(),
                 new PlaceholderVariable(),
-                (context, key, text) -> context.getVariable(key), // Temporary variables
+                new PlaceholderTempVariable(),
                 // Vault
                 new PlaceholderMoney(),
                 // PAPI
