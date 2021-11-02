@@ -1,7 +1,5 @@
 package me.fromgate.reactions.placeholders;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,8 +11,6 @@ public class PlaceholdersManager {
     private static final Pattern PLACEHOLDER_NONGREEDY = Pattern.compile("(?<!&\\\\)%\\S+?%");
     private static final Pattern PLACEHOLDER_RAW = Pattern.compile("&\\\\(%\\S+%)");
 
-    @Getter
-    @Setter
     private int countLimit;
 
     public PlaceholdersManager() {
@@ -38,6 +34,10 @@ public class PlaceholdersManager {
 
         return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");
     }
+
+    public int getCountLimit() {return this.countLimit;}
+
+    public void setCountLimit(int countLimit) {this.countLimit = countLimit; }
 
     private static String parseRecursive(String text, final Pattern phPattern, final RaContext context) {
         Matcher phMatcher = phPattern.matcher(text);

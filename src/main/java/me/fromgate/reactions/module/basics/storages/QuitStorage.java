@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.QuitActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -34,7 +33,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-@Getter
 public class QuitStorage extends Storage {
     public static final String QUIT_MESSAGE = "quit-message";
 
@@ -57,4 +55,6 @@ public class QuitStorage extends Storage {
                 .put(QUIT_MESSAGE, new StringValue(quitMessage))
                 .build();
     }
+
+    public String getQuitMessage() {return this.quitMessage;}
 }

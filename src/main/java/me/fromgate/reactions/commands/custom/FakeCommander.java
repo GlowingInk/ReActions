@@ -1,6 +1,5 @@
 package me.fromgate.reactions.commands.custom;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.module.basics.storages.*;
@@ -22,17 +21,18 @@ import java.util.Map;
 import java.util.Set;
 
 // TODO: Remove statics
-@UtilityClass
-public class FakeCommander {
+public final class FakeCommander {
     // TODO: Use Paper's async tab completer
-    private final Map<String, RaCommand> commands = new HashMap<>();
+    private static final Map<String, RaCommand> commands = new HashMap<>();
 
-    public void init() {
+    private FakeCommander() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void init() {
         ReActions.getPlugin().saveResource("commands.yml", false);
         updateCommands();
     }
 
-    public void updateCommands() {
+    public static void updateCommands() {
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "commands.yml");
         YamlConfiguration cfg = new YamlConfiguration();
         if (!FileUtils.loadCfg(cfg, f, "Failed to load commands")) return;
@@ -51,7 +51,7 @@ public class FakeCommander {
         }
     }
 
-    public boolean raiseRaCommand(CommandStorage storage, boolean activated) {
+    public static boolean raiseRaCommand(CommandStorage storage, boolean activated) {
         RaCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ENGLISH));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
@@ -63,7 +63,7 @@ public class FakeCommander {
         return raCmd.isOverride();
     }
 
-    private boolean register(String command, String prefix, List<String> aliases, CommandMap commandMap, RaCommand raCommand, boolean toBukkit) {
+    private static boolean register(String command, String prefix, List<String> aliases, CommandMap commandMap, RaCommand raCommand, boolean toBukkit) {
         if (Utils.isStringEmpty(command)) return false;
         command = command.toLowerCase(Locale.ENGLISH);
         prefix = Utils.isStringEmpty(prefix) ? command : prefix.toLowerCase(Locale.ENGLISH);
@@ -82,11 +82,11 @@ public class FakeCommander {
         return true;
     }
 
-    private Set<RaCommand> getCommandsSet() {
+    private static Set<RaCommand> getCommandsSet() {
         return new HashSet<>(commands.values());
     }
 
-    public List<String> list() {
+    public static List<String> list() {
         List<String> list = new ArrayList<>();
         for (RaCommand cmd : getCommandsSet()) {
             List<String> sublist = cmd.list();

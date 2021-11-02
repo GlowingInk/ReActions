@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.CommandActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -36,7 +35,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class CommandStorage extends Storage {
 
     private final String label, command;
@@ -93,4 +91,12 @@ public class CommandStorage extends Storage {
     protected Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
+
+    public String getLabel() {return this.label;}
+
+    public String getCommand() {return this.command;}
+
+    public String[] getArgs() {return this.args;}
+
+    public CommandSender getSender() {return this.sender;}
 }

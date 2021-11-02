@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ItemClickActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -36,7 +35,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class ItemClickStorage extends Storage {
 
     private final boolean mainHand;
@@ -69,4 +67,8 @@ public class ItemClickStorage extends Storage {
     protected Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
+
+    public boolean isMainHand() {return this.mainHand;}
+
+    public ItemStack getItem() {return this.item;}
 }

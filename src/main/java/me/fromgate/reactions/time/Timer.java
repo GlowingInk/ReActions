@@ -22,8 +22,6 @@
 
 package me.fromgate.reactions.time;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -35,10 +33,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
 public class Timer {
 
-    @Setter
     private boolean paused;
 
     private final boolean ingameTimer;
@@ -93,4 +89,16 @@ public class Timer {
     public String toString() {
         return params.getString("activator", "Undefined") + " : " + params.getString("time", "Undefined") + (this.isIngameTimer() ? " (ingame)" : " (server)");
     }
+
+    public boolean isPaused() {return this.paused;}
+
+    public boolean isIngameTimer() {return this.ingameTimer;}
+
+    public Parameters getParams() {return this.params;}
+
+    public Set<String> getTimesIngame() {return this.timesIngame;}
+
+    public CronExpression getTimeServer() {return this.timeServer;}
+
+    public void setPaused(boolean paused) {this.paused = paused; }
 }

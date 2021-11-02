@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.MobKillActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.entity.LivingEntity;
@@ -34,7 +33,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class MobKillStorage extends Storage {
 
     private final LivingEntity entity;
@@ -59,4 +57,6 @@ public class MobKillStorage extends Storage {
         tempVars.put("mobname", Utils.isStringEmpty(mobName) ? entity.getType().name() : mobName);
         return tempVars;
     }
+
+    public LivingEntity getEntity() {return this.entity;}
 }

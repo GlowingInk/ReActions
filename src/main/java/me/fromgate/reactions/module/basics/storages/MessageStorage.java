@@ -23,10 +23,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.MessageActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -38,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-@Getter
 public class MessageStorage extends Storage {
     public static final String MESSAGE = "message";
     private static final Pattern NOT_D = Pattern.compile("\\D+");
@@ -97,4 +95,7 @@ public class MessageStorage extends Storage {
                 .build();
     }
 
+    public String getMessage() {return this.message;}
+
+    public MessageActivator getActivator() {return this.activator;}
 }

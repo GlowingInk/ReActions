@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.SignActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -33,7 +32,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class SignStorage extends Storage {
 
     private final boolean leftClick;
@@ -61,4 +59,10 @@ public class SignStorage extends Storage {
         tempVars.put("click", leftClick ? "left" : "right");
         return tempVars;
     }
+
+    public boolean isLeftClick() {return this.leftClick;}
+
+    public Location getLocation() {return this.location;}
+
+    public String[] getSignLines() {return this.signLines;}
 }

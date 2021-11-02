@@ -1,9 +1,8 @@
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ProjectileHitActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -11,7 +10,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 // TODO
-@Getter
 public class ProjectileHitStorage extends Storage {
 
     private final EntityType projType;
@@ -33,4 +31,14 @@ public class ProjectileHitStorage extends Storage {
     public Class<? extends Activator> getType() {
         return ProjectileHitActivator.class;
     }
+
+    public EntityType getProjType() {return this.projType;}
+
+    public Block getBlock() {return this.block;}
+
+    public BlockFace getBlockFace() {return this.blockFace;}
+
+    public Entity getEntity() {return this.entity;}
+
+    public boolean isEntityHit() {return this.entityHit;}
 }

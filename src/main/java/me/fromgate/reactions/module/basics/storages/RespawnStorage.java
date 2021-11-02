@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.RespawnActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.DataValue;
@@ -39,7 +38,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class RespawnStorage extends Storage {
     public static final String RESPAWN_LOCATION = "respawn_loc";
 
@@ -80,4 +78,10 @@ public class RespawnStorage extends Storage {
     protected Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(RESPAWN_LOCATION, new LocationValue(respawnLoc));
     }
+
+    public DeathCause getDeathCause() {return this.deathCause;}
+
+    public LivingEntity getKiller() {return this.killer;}
+
+    public Location getRespawnLoc() {return this.respawnLoc;}
 }

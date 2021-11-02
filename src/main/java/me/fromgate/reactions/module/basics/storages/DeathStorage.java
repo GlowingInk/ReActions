@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.DeathActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.enums.DeathCause;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -34,7 +33,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class DeathStorage extends Storage {
 
     private final LivingEntity killer;
@@ -67,4 +65,8 @@ public class DeathStorage extends Storage {
         }
         return tempVars;
     }
+
+    public LivingEntity getKiller() {return this.killer;}
+
+    public DeathCause getCause() {return this.cause;}
 }

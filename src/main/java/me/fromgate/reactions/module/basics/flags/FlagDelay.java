@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.util.TimeUtils;
@@ -31,10 +30,14 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class FlagDelay implements Flag {
 
     private final boolean globalDelay;
+
+    public FlagDelay(boolean globalDelay) {
+        this.globalDelay = globalDelay;
+    }
+
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.MobClickActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
@@ -37,7 +36,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class MobClickStorage extends Storage {
 
     LivingEntity entity;
@@ -66,4 +64,6 @@ public class MobClickStorage extends Storage {
     protected Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
+
+    public LivingEntity getEntity() {return this.entity;}
 }

@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.logic.activators;
 
-import lombok.Getter;
 import me.fromgate.reactions.util.data.DataValue;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
@@ -33,7 +32,6 @@ import java.util.Map;
 /**
  * Storages are used to transfer some data to activators
  */
-@Getter
 public abstract class Storage {
     public static final String CANCEL_EVENT = "cancel_event";
 
@@ -78,4 +76,11 @@ public abstract class Storage {
         return new RaContext(activator, variables, changeables, player);
     }
 
+    public Player getPlayer() {return this.player;}
+
+    public boolean isAsync() {return this.async;}
+
+    public Map<String, String> getVariables() {return this.variables;}
+
+    public Map<String, DataValue> getChangeables() {return this.changeables;}
 }

@@ -1,16 +1,13 @@
 package me.fromgate.reactions.util.math;
 
-import lombok.experimental.UtilityClass;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 // TODO: Update to latest EzMath
-@UtilityClass
-public class MathBase {
-    private final Map<String, Function> functions = new HashMap<>();
-    private final Map<String, Double> constants = new HashMap<>();
+public final class MathBase {
+    private static final Map<String, Function> functions = new HashMap<>();
+    private static final Map<String, Double> constants = new HashMap<>();
 
     static {
         for (DefaultFunctions func : DefaultFunctions.values())
@@ -27,7 +24,9 @@ public class MathBase {
         MathBase.registerConstant("dmin", Double.MIN_VALUE);
     }
 
-    public boolean registerFunction(String name, Function function) {
+    private MathBase() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean registerFunction(String name, Function function) {
         name = name.toLowerCase(Locale.ENGLISH);
         if (isAllowedName(name) && !functions.containsKey(name)) {
             functions.put(name, function);
@@ -36,7 +35,7 @@ public class MathBase {
         return false;
     }
 
-    public boolean registerConstant(String name, double value) {
+    public static boolean registerConstant(String name, double value) {
         name = name.toLowerCase(Locale.ENGLISH);
         if (isAllowedName(name) && !constants.containsKey(name)) {
             constants.put(name, value);
@@ -45,31 +44,31 @@ public class MathBase {
         return false;
     }
 
-    public Function getFunction(String name) {
+    public static Function getFunction(String name) {
         return functions.get(name);
     }
 
-    public double getConstant(String name) {
+    public static double getConstant(String name) {
         Double value = constants.get(name);
         return value == null ? 0 : value;
     }
 
-    public boolean isNumberChar(char c) {
+    public static boolean isNumberChar(char c) {
         return (c >= '0' && c <= '9') || c == '.';
     }
 
-    public boolean isWordChar(char c) {
+    public static boolean isWordChar(char c) {
         return (c >= 'a' && c <= 'z');
     }
 
-    private boolean isAllowedName(String str) {
+    private static boolean isAllowedName(String str) {
         for (char c : str.toCharArray())
             if (!(isNumberChar(c) && isWordChar(c))) return false;
         return isWordChar(str.charAt(0));
     }
 
     @FunctionalInterface
-    public interface Function {
+    public static interface Function {
         double eval(double a, double... num);
     }
 }

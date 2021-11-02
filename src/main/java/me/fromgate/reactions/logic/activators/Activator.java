@@ -1,12 +1,14 @@
 package me.fromgate.reactions.logic.activators;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import org.bukkit.configuration.ConfigurationSection;
 
-@AllArgsConstructor
 public abstract class Activator {
     protected final ActivatorLogic logic;
+
+    public Activator(ActivatorLogic logic) {
+        this.logic = logic;
+    }
 
     /**
      * Execution of activator

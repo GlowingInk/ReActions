@@ -1,9 +1,8 @@
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ItemHeldActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -17,7 +16,6 @@ import java.util.Map;
 /**
  * Created by MaxDikiy on 2017-11-11.
  */
-@Getter
 public class ItemHeldStorage extends Storage {
 
     private final int newSlot;
@@ -64,4 +62,12 @@ public class ItemHeldStorage extends Storage {
     protected Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
+
+    public int getNewSlot() {return this.newSlot;}
+
+    public int getPreviousSlot() {return this.previousSlot;}
+
+    public ItemStack getNewItem() {return this.newItem;}
+
+    public ItemStack getPreviousItem() {return this.previousItem;}
 }

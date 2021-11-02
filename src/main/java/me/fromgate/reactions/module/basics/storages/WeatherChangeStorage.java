@@ -1,16 +1,14 @@
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.WeatherChangeActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
 
 import java.util.Map;
 
-@Getter
 public class WeatherChangeStorage extends Storage {
     private final String world;
     private final boolean raining;
@@ -38,4 +36,8 @@ public class WeatherChangeStorage extends Storage {
                 .put("weather", raining ? "RAINING" : "CLEAR")
                 .build();
     }
+
+    public String getWorld() {return this.world;}
+
+    public boolean isRaining() {return this.raining;}
 }

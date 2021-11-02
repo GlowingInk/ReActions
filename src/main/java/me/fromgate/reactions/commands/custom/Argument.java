@@ -1,6 +1,5 @@
 package me.fromgate.reactions.commands.custom;
 
-import lombok.Getter;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -104,11 +103,12 @@ public class Argument {
 
     private enum Type {
         TEXT(10), MULTIPLE_TEXT(8), PLAYER(6), INTEGER(3), FLOAT(4), ANY(1);
-        @Getter
         private final int priority;
 
         Type(int priority) {
             this.priority = priority;
         }
+
+        public int getPriority() {return this.priority;}
     }
 }

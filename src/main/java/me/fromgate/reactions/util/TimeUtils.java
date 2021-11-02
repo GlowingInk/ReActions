@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
 
@@ -32,40 +31,41 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@UtilityClass
-public class TimeUtils {
-    private final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+))?");
-    private final Pattern TIME_PRECISE = Pattern.compile("(\\d+)([dhmst]|ms)");
-    private final DateFormat DEF_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+public final class TimeUtils {
+    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+))?");
+    private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)([dhmst]|ms)");
+    private static final DateFormat DEF_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    public String formattedIngameTime() {
+    private TimeUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static String formattedIngameTime() {
         return formattedIngameTime(Bukkit.getWorlds().get(0).getTime(), false);
     }
 
-    public String formattedIngameTime(long time, boolean showms) {
+    public static String formattedIngameTime(long time, boolean showms) {
         return showms && (time < 1000) ?
                 time + "ms" :
                 (long) ((time / 1000D + 6) % 24) + ":" + (long) (60 * (time % 1000D) / 1000);
     }
 
-    public String fullTimeToString(long time, DateFormat format) {
+    public static String fullTimeToString(long time, DateFormat format) {
         return format.format(new Date(time));
     }
 
-    public String fullTimeToString(long time, String format) {
+    public static String fullTimeToString(long time, String format) {
         return fullTimeToString(time, new SimpleDateFormat(format));
     }
 
-    public String fullTimeToString(long time) {
+    public static String fullTimeToString(long time) {
         return fullTimeToString(time, DEF_FORMAT);
     }
 
-    public long timeToTicks(long time) {
+    public static long timeToTicks(long time) {
         // 1000 ms = 20 ticks; 50 ms = 1 tick
         return Math.max(1, (time / 50));
     }
 
-    public long parseTime(String timeStr) {
+    public static long parseTime(String timeStr) {
         if (NumberUtils.isInteger(timeStr)) {
             return Long.parseLong(timeStr) * 1000L;
         }

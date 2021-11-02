@@ -20,19 +20,14 @@
  *
  */
 
-
 package me.fromgate.reactions.util.location;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.text.DecimalFormat;
 
-@Getter
-@AllArgsConstructor
 public class TpLocation {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("####0.##");
@@ -53,6 +48,15 @@ public class TpLocation {
         this.pitch = loc.getPitch();
     }
 
+    public TpLocation(String world, double x, double y, double z, float yaw, float pitch) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
     public Location getLocation() {
         World world = Bukkit.getWorld(this.world);
         return world == null ? new Location(Bukkit.getWorlds().get(0), x, y, z, yaw, pitch) : new Location(world, x, y, z, yaw, pitch);
@@ -71,4 +75,15 @@ public class TpLocation {
     }
 
 
+    public String getWorld() {return this.world;}
+
+    public double getX() {return this.x;}
+
+    public double getY() {return this.y;}
+
+    public double getZ() {return this.z;}
+
+    public float getYaw() {return this.yaw;}
+
+    public float getPitch() {return this.pitch;}
 }

@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -35,9 +34,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-@AllArgsConstructor
 public class FlagItem implements Flag {
     private final Type flagType;
+
+    public FlagItem(Type flagType) {
+        this.flagType = flagType;
+    }
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

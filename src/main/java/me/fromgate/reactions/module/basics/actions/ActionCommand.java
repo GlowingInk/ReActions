@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
@@ -33,10 +32,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class ActionCommand implements Action {
 
     private final Type commandAs;
+
+    public ActionCommand(Type commandAs) {
+        this.commandAs = commandAs;
+    }
 
     private static void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
         Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> {

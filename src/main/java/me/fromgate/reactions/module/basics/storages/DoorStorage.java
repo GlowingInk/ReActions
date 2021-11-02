@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.DoorActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
@@ -38,7 +37,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class DoorStorage extends Storage {
     public static final String DOOR_LOCATION = "door_loc";
 
@@ -73,4 +71,6 @@ public class DoorStorage extends Storage {
     protected Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
+
+    public Block getDoorBlock() {return this.doorBlock;}
 }

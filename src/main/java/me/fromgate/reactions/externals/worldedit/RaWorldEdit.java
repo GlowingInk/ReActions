@@ -12,7 +12,6 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,17 +22,18 @@ import org.bukkit.plugin.Plugin;
  * Created by MaxDikiy on 9/10/2017.
  */
 
-@UtilityClass
 @Deprecated
-public class RaWorldEdit {
-    private boolean connected = false;
-    private WorldEditPlugin worldedit = null;
+public final class RaWorldEdit {
+    private static boolean connected = false;
+    private static WorldEditPlugin worldedit = null;
 
-    public boolean isConnected() {
+    private RaWorldEdit() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean isConnected() {
         return connected;
     }
 
-    public void init() {
+    public static void init() {
         try {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldEdit");
             worldedit = (WorldEditPlugin) plugin;
@@ -45,11 +45,11 @@ public class RaWorldEdit {
         }
     }
 
-    public LocalSession getSession(Player player) {
+    public static LocalSession getSession(Player player) {
         return worldedit.getSession(player);
     }
 
-    public org.bukkit.util.Vector getMinimumPoint(Player player) {
+    public static org.bukkit.util.Vector getMinimumPoint(Player player) {
         if (isConnected()) return null;
         Region r = null;
         try {
@@ -61,7 +61,7 @@ public class RaWorldEdit {
         return new org.bukkit.util.Vector(v.getX(), v.getY(), v.getZ());
     }
 
-    public org.bukkit.util.Vector getMaximumPoint(Player player) {
+    public static org.bukkit.util.Vector getMaximumPoint(Player player) {
         if (isConnected()) return null;
         Region r = null;
         try {
@@ -73,19 +73,19 @@ public class RaWorldEdit {
         return new org.bukkit.util.Vector(v.getX(), v.getY(), v.getZ());
     }
 
-    public Region getRegion(Player player) throws IncompleteRegionException {
+    public static Region getRegion(Player player) throws IncompleteRegionException {
         RegionSelector rs = getRegionSelector(player);
         if (rs == null) return null;
         return rs.getRegion();
     }
 
-    public RegionSelector getRegionSelector(Player player) {
+    public static RegionSelector getRegionSelector(Player player) {
         LocalSession session = worldedit.getSession(player);
         if (session == null) return null;
         return session.getRegionSelector(BukkitAdapter.adapt(player.getWorld()));
     }
 
-    public Region getSelection(Player player) {
+    public static Region getSelection(Player player) {
         LocalSession session = worldedit.getSession(player);
         if (session == null) return null;
         try {
@@ -95,22 +95,22 @@ public class RaWorldEdit {
         }
     }
 
-    public boolean hasSuperPickAxe(Player player) {
+    public static boolean hasSuperPickAxe(Player player) {
         return isConnected() && getSession(player).hasSuperPickAxe();
     }
 
     @SuppressWarnings("deprecation")
-    public boolean isToolControl(Player player) {
+    public static boolean isToolControl(Player player) {
         return isConnected() && getSession(player).isToolControlEnabled();
     }
 
-    public int getArea(Player player) {
+    public static int getArea(Player player) {
         Region selection = getSelection(player);
         if (selection == null) return 0;
         return selection.getArea();
     }
 
-    public ProtectedRegion checkRegionFromSelection(Player player, String id) {
+    public static ProtectedRegion checkRegionFromSelection(Player player, String id) {
         Region selection = getSelection(player);
         // Detect the type of region from WorldEdit
         if (selection instanceof Polygonal2DRegion polySel) {

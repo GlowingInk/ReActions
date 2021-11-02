@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
@@ -31,9 +30,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: WorldGuard module
-@AllArgsConstructor
 public class FlagRegion implements Flag {
     private final Type flagType;
+
+    public FlagRegion(Type flagType) {
+        this.flagType = flagType;
+    }
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

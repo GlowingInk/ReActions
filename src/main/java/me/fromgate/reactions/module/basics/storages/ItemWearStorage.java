@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.item.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

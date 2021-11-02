@@ -22,16 +22,14 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.VariableActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-@Getter
 public class VariableStorage extends Storage {
 
     private final String variableId;
@@ -58,4 +56,10 @@ public class VariableStorage extends Storage {
                 .put("var-new", newValue)
                 .build();
     }
+
+    public String getVariableId() {return this.variableId;}
+
+    public String getNewValue() {return this.newValue;}
+
+    public String getOldValue() {return this.oldValue;}
 }

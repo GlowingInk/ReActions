@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.MobDamageActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
@@ -39,7 +38,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class MobDamageStorage extends Storage {
     public static final String DAMAGE = "damage";
 
@@ -77,4 +75,10 @@ public class MobDamageStorage extends Storage {
                 .put(DAMAGE, new DoubleValue(damage))
                 .build();
     }
+
+    public LivingEntity getEntity() {return this.entity;}
+
+    public DamageCause getCause() {return this.cause;}
+
+    public double getDamage() {return this.damage;}
 }

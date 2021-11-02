@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.util.TimeUtils;
@@ -31,10 +30,13 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class ActionDelay implements Action {
 
     private final boolean globalDelay;
+
+    public ActionDelay(boolean globalDelay) {
+        this.globalDelay = globalDelay;
+    }
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

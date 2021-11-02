@@ -1,7 +1,5 @@
 package me.fromgate.reactions.events;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -12,13 +10,9 @@ import org.bukkit.event.player.PlayerEvent;
 @Deprecated
 public class PlayerAttacksEntityEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    @Getter
     private final LivingEntity entity;
-    @Getter
     private final EntityDamageEvent.DamageCause cause;
     private boolean cancel = false;
-    @Getter
-    @Setter
     private double damage;
 
     public PlayerAttacksEntityEvent(Player player, LivingEntity entity, double damage, EntityDamageEvent.DamageCause cause) {
@@ -27,6 +21,14 @@ public class PlayerAttacksEntityEvent extends PlayerEvent implements Cancellable
         this.damage = damage;
         this.cause = cause;
     }
+
+    public LivingEntity getEntity() {return this.entity;}
+
+    public EntityDamageEvent.DamageCause getCause() {return this.cause;}
+
+    public double getDamage() {return this.damage;}
+
+    public void setDamage(double damage) {this.damage = damage; }
 
     public static HandlerList getHandlerList() {
         return handlers;

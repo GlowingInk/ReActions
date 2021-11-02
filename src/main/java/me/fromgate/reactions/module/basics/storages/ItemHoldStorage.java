@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class ItemHoldStorage extends Storage {
 
     private final boolean mainHand;
@@ -61,4 +59,8 @@ public class ItemHoldStorage extends Storage {
         tempVars.put("hand", mainHand ? "MAIN" : "OFF");
         return tempVars;
     }
+
+    public boolean isMainHand() {return this.mainHand;}
+
+    public ItemStack getItem() {return this.item;}
 }

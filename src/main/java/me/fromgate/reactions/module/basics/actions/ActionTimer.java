@@ -22,17 +22,19 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class ActionTimer implements Action {
 
     private final boolean pauseTimer;
+
+    public ActionTimer(boolean pauseTimer) {
+        this.pauseTimer = pauseTimer;
+    }
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

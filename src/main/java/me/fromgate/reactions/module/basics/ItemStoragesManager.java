@@ -1,13 +1,10 @@
 package me.fromgate.reactions.module.basics;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
-import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
-import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
-import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
+import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.item.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,10 +15,11 @@ import java.util.UUID;
 /**
  * To manage some item-related activators
  */
-@UtilityClass
 // TODO: Move to custom ActivatorTypes
-public class ItemStoragesManager {
-    private void setFutureItemWearCheck(final UUID playerId, final String itemStr, boolean repeat) {
+public final class ItemStoragesManager {
+    private ItemStoragesManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    private static void setFutureItemWearCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) return;
         if (!player.isOnline()) return;
@@ -33,7 +31,7 @@ public class ItemStoragesManager {
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20 * Cfg.itemWearRecheck);
     }
 
-    public void triggerItemWear(Player player) {
+    public static void triggerItemWear(Player player) {
         final UUID playerId = player.getUniqueId();
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             for (Activator iw : ReActions.getActivators().getType(ItemWearActivator.class).getActivators())
@@ -41,7 +39,7 @@ public class ItemStoragesManager {
         }, 1);
     }
 
-    public void triggerItemHold(Player player) {
+    public static void triggerItemHold(Player player) {
         final UUID playerId = player.getUniqueId();
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             for (Activator ih : ReActions.getActivators().getType(ItemHoldActivator.class).getActivators())
@@ -49,7 +47,7 @@ public class ItemStoragesManager {
         }, 1);
     }
 
-    private void setFutureItemHoldCheck(final UUID playerId, final String itemStr, boolean repeat) {
+    private static void setFutureItemHoldCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);
 
         if (player == null || !player.isOnline() || player.isDead()) return;
@@ -70,12 +68,12 @@ public class ItemStoragesManager {
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20L * Cfg.itemHoldRecheck);
     }
 
-    private void processItemHoldActivator(Player player, ItemStack item, boolean mainHand) {
+    private static void processItemHoldActivator(Player player, ItemStack item, boolean mainHand) {
         ItemHoldStorage ihe = new ItemHoldStorage(player, item, mainHand);
         ReActions.getActivators().activate(ihe);
     }
 
-    private boolean isItemHoldProcessable(ItemStack item, String itemStr) {
+    private static boolean isItemHoldProcessable(ItemStack item, String itemStr) {
         return ItemUtils.isExist(item) && ItemUtils.compareItemStr(item, itemStr);
     }
 }

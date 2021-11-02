@@ -22,17 +22,15 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.ExecActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class ExecStorage extends Storage {
 
     private final Map<String, String> tempVars;
@@ -64,4 +62,6 @@ public class ExecStorage extends Storage {
             tempVars.putAll(this.tempVars);
         return tempVars;
     }
+
+    public Map<String, String> getTempVars() {return this.tempVars;}
 }

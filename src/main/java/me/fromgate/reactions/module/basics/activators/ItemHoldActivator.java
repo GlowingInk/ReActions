@@ -22,11 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -35,8 +34,7 @@ import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
-@Getter
-public class ItemHoldActivator extends Activator /*implements Manageable*/ {
+public class ItemHoldActivator extends Activator {
     // TODO: Store VirtualItem
     private final String itemStr;
     private final HandType hand;
@@ -46,6 +44,10 @@ public class ItemHoldActivator extends Activator /*implements Manageable*/ {
         this.itemStr = item;
         this.hand = hand;
     }
+
+    public String getItemStr() {return this.itemStr;}
+
+    public HandType getHand() {return this.hand;}
 
     public static ItemHoldActivator create(ActivatorLogic base, Parameters param) {
         String item = param.getString("item", "");

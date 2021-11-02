@@ -1,6 +1,5 @@
 package me.fromgate.reactions.module.basics.flags;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -9,9 +8,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by MaxDikiy on 10/1/2017.
  */
-@AllArgsConstructor
 public class FlagGreaterLower implements Flag {
     private final boolean greater;
+
+    public FlagGreaterLower(boolean greater) {
+        this.greater = greater;
+    }
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {

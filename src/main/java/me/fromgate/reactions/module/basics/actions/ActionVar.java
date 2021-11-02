@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.data.RaContext;
@@ -31,11 +30,15 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class ActionVar implements Action {
 
     private final Type actType;
     private final boolean personalVar;
+
+    public ActionVar(Type actType, boolean personalVar) {
+        this.actType = actType;
+        this.personalVar = personalVar;
+    }
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

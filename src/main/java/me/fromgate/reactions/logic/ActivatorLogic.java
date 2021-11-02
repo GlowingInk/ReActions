@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.logic;
 
-import lombok.Getter;
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
@@ -42,7 +41,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 
-@Getter
 public final class ActivatorLogic {
     private @NotNull String group;
     private final @NotNull String name;
@@ -64,6 +62,16 @@ public final class ActivatorLogic {
         loadData(cfg.getStringList("actions"), (s, v) -> storeAction(s, v, actions, activity));
         loadData(cfg.getStringList("reactions"), (s, v) -> storeAction(s, v, reactions, activity));
     }
+
+    public @NotNull String getGroup() {return this.group;}
+
+    public @NotNull String getName() {return this.name;}
+
+    public @NotNull List<StoredFlag> getFlags() {return this.flags;}
+
+    public @NotNull List<StoredAction> getActions() {return this.actions;}
+
+    public @NotNull List<StoredAction> getReactions() {return this.reactions;}
 
     private static void loadData(List<String> data, BiConsumer<String, String> loader) {
         for (String str : data) {

@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import lombok.AllArgsConstructor;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.module.basics.ItemStoragesManager;
@@ -45,9 +44,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 // TODO: Rework
-@AllArgsConstructor
 public class ActionItems implements Action {
     private final Type actionType;
+
+    public ActionItems(Type actionType) {
+        this.actionType = actionType;
+    }
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

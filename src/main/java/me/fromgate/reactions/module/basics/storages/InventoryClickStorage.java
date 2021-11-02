@@ -22,10 +22,9 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.InventoryClickActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -42,7 +41,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-@Getter
 public class InventoryClickStorage extends Storage {
     public static final String ITEM = "item";
 
@@ -101,4 +99,22 @@ public class InventoryClickStorage extends Storage {
                 .put(ITEM, new ItemStackValue(item))
                 .build();
     }
+
+    public ItemStack getItem() {return this.item;}
+
+    public InventoryAction getAction() {return this.action;}
+
+    public ClickType getClickType() {return this.clickType;}
+
+    public SlotType getSlotType() {return this.slotType;}
+
+    public InventoryType getInventoryType() {return this.inventoryType;}
+
+    public int getNumberKey() {return this.numberKey;}
+
+    public int getSlot() {return this.slot;}
+
+    public String getInventoryName() {return this.inventoryName;}
+
+    public InventoryView getInventoryView() {return this.inventoryView;}
 }

@@ -1,9 +1,8 @@
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.BlockBreakActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -18,7 +17,6 @@ import java.util.Map;
 /**
  * Created by MaxDikiy on 2017-05-14.
  */
-@Getter
 public class BlockBreakStorage extends Storage {
     public static final String DO_DROP = "is_drop";
 
@@ -52,4 +50,7 @@ public class BlockBreakStorage extends Storage {
                 .build();
     }
 
+    public Block getBlock() {return this.block;}
+
+    public boolean isDropItems() {return this.dropItems;}
 }

@@ -1,6 +1,5 @@
 package me.fromgate.reactions.util.mob;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -16,12 +15,14 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Some helpful methods related to entities to minify size of code
  */
-@UtilityClass
-public class EntityUtils {
+public final class EntityUtils {
+
+    private EntityUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     /**
      * Get maximal health of entity
@@ -29,7 +30,7 @@ public class EntityUtils {
      * @param entity Entity to check
      * @return Maximal health of entity
      */
-    public double getMaxHealth(LivingEntity entity) {
+    public static double getMaxHealth(LivingEntity entity) {
         return entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     }
 
@@ -39,7 +40,7 @@ public class EntityUtils {
      * @param source Original source
      * @return LivingEntity or null if shooter was a block
      */
-    public LivingEntity getEntityFromProjectile(ProjectileSource source) {
+    public static LivingEntity getEntityFromProjectile(ProjectileSource source) {
         if (source instanceof BlockProjectileSource)
             return null;
         return (LivingEntity) source;
@@ -52,8 +53,8 @@ public class EntityUtils {
      * @param l2 Point of cuboid
      * @return List of entities
      */
-    public Collection<Entity> getEntities(Location l1, Location l2) {
-        Collection<Entity> entities = new HashSet<>();
+    public static Collection<Entity> getEntities(Location l1, Location l2) {
+        Set<Entity> entities = new HashSet<>();
         if (!l1.getWorld().equals(l2.getWorld())) return entities;
         int x1 = Math.min(l1.getBlockX(), l2.getBlockX());
         int x2 = Math.max(l1.getBlockX(), l2.getBlockX());
@@ -80,7 +81,7 @@ public class EntityUtils {
         return entities;
     }
 
-    public LivingEntity getDamagerEntity(EntityDamageByEntityEvent event) {
+    public static LivingEntity getDamagerEntity(EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Projectile prj = (Projectile) event.getDamager();
             return getEntityFromProjectile(prj.getShooter());
@@ -95,11 +96,11 @@ public class EntityUtils {
         return null;
     }
 
-    public String getMobName(LivingEntity mob) {
+    public static String getMobName(LivingEntity mob) {
         return mob.getCustomName() == null ? "" : mob.getCustomName();
     }
 
-    public LivingEntity getAnyKiller(EntityDamageEvent event) {
+    public static LivingEntity getAnyKiller(EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
             if (evdmg.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
@@ -110,7 +111,7 @@ public class EntityUtils {
         return null;
     }
 
-    public Player getKiller(EntityDamageEvent event) {
+    public static Player getKiller(EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             if (evdmg.getDamager().getType() == EntityType.PLAYER) return (Player) evdmg.getDamager();
             if (evdmg.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {

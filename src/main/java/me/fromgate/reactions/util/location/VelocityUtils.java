@@ -1,12 +1,12 @@
 package me.fromgate.reactions.util.location;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
-@UtilityClass
-public class VelocityUtils {
-    public Vector calculateVelocity(Location locFrom, Location locTo, int heightGain) {
+public final class VelocityUtils {
+    private VelocityUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static Vector calculateVelocity(Location locFrom, Location locTo, int heightGain) {
         if (!locFrom.getWorld().equals(locTo.getWorld())) return new Vector(0, 0, 0);
         // Gravity of a potion
         double gravity = 0.18; //0.115;
@@ -49,7 +49,7 @@ public class VelocityUtils {
         return new Vector(vx, vy, vz);
     }
 
-    public double distanceSquared(Vector from, Vector to) {
+    public static double distanceSquared(Vector from, Vector to) {
         double dx = to.getBlockX() - from.getBlockX();
         double dz = to.getBlockZ() - from.getBlockZ();
         return dx * dx + dz * dz;

@@ -1,6 +1,5 @@
 package me.fromgate.reactions;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.module.ModulesManager;
@@ -11,12 +10,13 @@ import org.bukkit.plugin.Plugin;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-@UtilityClass
 // TODO: This is a temporary solution, will be removed after 0.14.0 ASAP
-public class ReActions {
-    private Platform platform;
+public final class ReActions {
+    private static Platform platform;
 
-    public void setPlatform(Platform platform) {
+    private ReActions() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void setPlatform(Platform platform) {
         if (ReActions.platform != null) {
             throw new IllegalStateException("Platform is already assigned.");
         }
@@ -30,35 +30,35 @@ public class ReActions {
         ReActions.platform = platform;
     }
 
-    public ActivatorsManager getActivators() {
+    public static ActivatorsManager getActivators() {
         return platform.getActivators();
     }
 
-    public ActivitiesRegistry getActivities() {
+    public static ActivitiesRegistry getActivities() {
         return platform.getActivities();
     }
 
-    public PlaceholdersManager getPlaceholders() {
+    public static PlaceholdersManager getPlaceholders() {
         return platform.getPlaceholders();
     }
 
-    public VariablesManager getVariables() {
+    public static VariablesManager getVariables() {
         return platform.getVariables();
     }
 
-    public SelectorsManager getSelectors() {
+    public static SelectorsManager getSelectors() {
         return platform.getSelectors();
     }
 
-    public ModulesManager getModules() {
+    public static ModulesManager getModules() {
         return platform.getModules();
     }
 
-    public Logger getLogger() {
+    public static Logger getLogger() {
         return platform.getLogger();
     }
 
-    public Plugin getPlugin() {
+    public static Plugin getPlugin() {
         return platform.getPlugin();
     }
 

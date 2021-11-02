@@ -1,13 +1,11 @@
 package me.fromgate.reactions.commands;
 
-import lombok.Getter;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public abstract class Cmd {
 
-    @Getter
     private String command;
     private String[] subCommands;
     private String permission;
@@ -67,4 +65,5 @@ public abstract class Cmd {
 
     }
 
+    public String getCommand() {return this.command;}
 }

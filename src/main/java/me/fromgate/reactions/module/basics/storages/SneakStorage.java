@@ -1,9 +1,8 @@
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.SneakActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import org.bukkit.entity.Player;
 
@@ -12,7 +11,6 @@ import java.util.Map;
 /**
  * Created by MaxDikiy on 2017-05-16.
  */
-@Getter
 public class SneakStorage extends Storage {
 
     private final boolean sneaking;
@@ -31,4 +29,6 @@ public class SneakStorage extends Storage {
     protected Map<String, String> prepareVariables() {
         return MapBuilder.single("sneak", Boolean.toString(sneaking));
     }
+
+    public boolean isSneaking() {return this.sneaking;}
 }

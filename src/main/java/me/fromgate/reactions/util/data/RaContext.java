@@ -1,6 +1,5 @@
 package me.fromgate.reactions.util.data;
 
-import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-@Getter
 public class RaContext {
 
     public static final RaContext EMPTY_CONTEXT = new RaContext(":unknown", null, null, null);
@@ -90,4 +88,14 @@ public class RaContext {
         variables.put(key, dataValue.asString());
         return true;
     }
+
+    public String getActivatorName() {return this.activatorName;}
+
+    public Player getPlayer() {return this.player;}
+
+    public Map<String, String> getVariables() {return this.variables;}
+
+    public Map<String, DataValue> getChangeables() {return this.changeables;}
+
+    public boolean isAsync() {return this.async;}
 }

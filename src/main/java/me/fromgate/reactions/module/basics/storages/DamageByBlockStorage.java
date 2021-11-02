@@ -1,9 +1,8 @@
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.DamageByBlockActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -20,7 +19,6 @@ import java.util.Map;
 /**
  * Created by MaxDikiy on 2017-07-23.
  */
-@Getter
 public class DamageByBlockStorage extends Storage {
 
     private final Block blockDamager;
@@ -57,4 +55,10 @@ public class DamageByBlockStorage extends Storage {
                 .put(DamageStorage.DAMAGE, new DoubleValue(damage))
                 .build();
     }
+
+    public Block getBlockDamager() {return this.blockDamager;}
+
+    public DamageCause getCause() {return this.cause;}
+
+    public double getDamage() {return this.damage;}
 }

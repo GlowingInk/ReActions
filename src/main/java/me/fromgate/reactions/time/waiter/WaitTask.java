@@ -1,6 +1,5 @@
 package me.fromgate.reactions.time.waiter;
 
-import lombok.Getter;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
@@ -16,11 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class WaitTask implements Runnable {
-    @Getter
     private final String taskId;
-    @Getter
     private String playerName;
-    @Getter
     private boolean executed;
     private List<StoredAction> actions;
     private long executionTime;
@@ -93,4 +89,9 @@ public class WaitTask implements Runnable {
         }
     }
 
+    public String getTaskId() {return this.taskId;}
+
+    public String getPlayerName() {return this.playerName;}
+
+    public boolean isExecuted() {return this.executed;}
 }

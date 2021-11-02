@@ -43,6 +43,13 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.22</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -62,7 +69,7 @@
                                     <shadedPattern>me.fromgate.reactions.metrics</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <patter>org.quartz</patter>
+                                    <pattern>org.quartz</pattern>
                                     <shadedPattern>me.fromgate.reactions.time</shadedPattern>
                                 </relocation>
                                 <relocation>
@@ -76,6 +83,7 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>META-INF/maven/**</exclude>
+                                        <exclide>META-INF/MANIFEST.MF</exclide>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -142,6 +150,7 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.bukkit</groupId>
@@ -154,12 +163,14 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.10.9</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
             <version>7.0.4</version>
             <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.spigotmc</groupId>
@@ -188,6 +199,7 @@
             <artifactId>worldedit-bukkit</artifactId>
             <version>7.2.5</version>
             <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.spigotmc</groupId>
@@ -204,16 +216,11 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.6.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>net.bytebuddy</groupId>
@@ -226,12 +233,14 @@
             <artifactId>Towny</artifactId>
             <version>0.96.7.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit-lite</artifactId>
             <version>1.7</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -244,6 +253,7 @@
             <artifactId>minedown-adventure</artifactId>
             <version>1.7.1-SNAPSHOT</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

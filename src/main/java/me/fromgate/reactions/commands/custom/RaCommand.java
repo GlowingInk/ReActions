@@ -1,6 +1,5 @@
 package me.fromgate.reactions.commands.custom;
 
-import lombok.Getter;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Location;
@@ -27,7 +26,6 @@ import java.util.TreeSet;
 public final class RaCommand extends Command implements PluginIdentifiableCommand {
     private final String permission;
     private final boolean consoleAllowed;
-    @Getter
     private final boolean override;
     private final boolean tab;
     // EXEC activators
@@ -130,4 +128,6 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     private String getErroredExec(ExecType type) {
         return Utils.searchNotNull("unknown", execs.get(type), execs.get(ExecType.ANY_ERROR), execs.get(ExecType.BACKUP), execs.get(ExecType.DEFAULT));
     }
+
+    public boolean isOverride() {return this.override;}
 }

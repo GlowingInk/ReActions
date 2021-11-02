@@ -22,13 +22,11 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
-import lombok.Getter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.RegionActivator;
+import me.fromgate.reactions.module.basics.activators.*;
 import org.bukkit.entity.Player;
 
-@Getter
 public class RegionStorage extends Storage {
 
     private final String region;
@@ -42,4 +40,6 @@ public class RegionStorage extends Storage {
     public Class<? extends Activator> getType() {
         return RegionActivator.class;
     }
+
+    public String getRegion() {return this.region;}
 }
