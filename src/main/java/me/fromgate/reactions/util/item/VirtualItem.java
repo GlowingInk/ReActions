@@ -30,6 +30,7 @@
 
 package me.fromgate.reactions.util.item;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
@@ -68,9 +69,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/*
-    TODO: Such a mess. Better to make it from scratch
- */
+// TODO: Recode from scratch; don't extend ItemStack
 public class VirtualItem extends ItemStack {
 
     private static final String DIVIDER = "\\n";
@@ -477,7 +476,7 @@ public class VirtualItem extends ItemStack {
 
     private void setEnchantments(String enchStr) {
         clearEnchantments();
-        Map<Enchantment, Integer> enchantments = ItemUtils.parseEnchantmentsString(enchStr);
+        Object2IntMap<Enchantment> enchantments = ItemUtils.parseEnchantmentsString(enchStr);
         if (enchantments.isEmpty()) return;
         this.addUnsafeEnchantments(enchantments);
     }
@@ -557,8 +556,7 @@ public class VirtualItem extends ItemStack {
                 boolean flicker;
                 boolean trail;
                 for (FireworkEffect.Type ft : FireworkEffect.Type.values()) {
-                    if (ft.name()
-                            .equalsIgnoreCase(params.getOrDefault("type", "")))
+                    if (ft.name().equalsIgnoreCase(params.getOrDefault("type", "")))
                         fType = ft;
                 }
                 flicker = "true".equalsIgnoreCase(params.getOrDefault("flicker",
@@ -569,15 +567,15 @@ public class VirtualItem extends ItemStack {
                 fadeColors = ItemUtils.parseColors(params.getOrDefault("fade-colors", ""));
                 if (fType == null)
                     continue;
-                Builder b = FireworkEffect.builder().with(fType);
+                FireworkEffect.Builder b = FireworkEffect.builder().with(fType);
                 if (flicker)
-                    b = b.withFlicker();
+                    b.withFlicker();
                 if (trail)
-                    b = b.withTrail();
+                    b.withTrail();
                 for (Color c : colors)
-                    b = b.withColor(c);
+                    b.withColor(c);
                 for (Color c : fadeColors)
-                    b = b.withFade(c);
+                    b.withFade(c);
                 fe.add(b.build());
             }
             if (!fe.isEmpty())

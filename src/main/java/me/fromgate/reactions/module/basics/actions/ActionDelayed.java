@@ -37,7 +37,7 @@ public class ActionDelayed implements Action {
         }
 
         StoredAction av = new StoredAction(action, paramStr);
-        WaitingManager.executeDelayed(context.getPlayer(), av, delay);
+        WaitingManager.schedule(context.getPlayer(), av, delay);
         return true;
     }
 

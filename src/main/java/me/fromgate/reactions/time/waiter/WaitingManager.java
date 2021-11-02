@@ -1,5 +1,6 @@
 package me.fromgate.reactions.time.waiter;
 
+import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.util.FileUtils;
@@ -14,23 +15,25 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO Recode from scratch
+// TODO: Recode from scratch
+@UtilityClass
+@Deprecated
 public class WaitingManager {
 
-    private static Set<WaitTask> tasks;
-    private static long timeLimit;
+    private Set<WaitTask> tasks;
+    private long timeLimit;
 
-    public static void init() {
+    public void init() {
         tasks = Collections.newSetFromMap(new ConcurrentHashMap<>()); //new HashSet<>();
         load();
     }
 
-    public static void executeDelayed(Player player, StoredAction action, long time) {
+    public void schedule(Player player, StoredAction action, long time) {
         if (action == null) return;
-        executeDelayed(player, Collections.singletonList(action), time);
+        schedule(player, Collections.singletonList(action), time);
     }
 
-    public static void executeDelayed(Player player, List<StoredAction> actions, long time) {
+    public void schedule(Player player, List<StoredAction> actions, long time) {
         if (actions.isEmpty()) return;
         String playerStr = player != null ? player.getName() : null;
         WaitTask task = new WaitTask(playerStr, actions, time);
@@ -38,12 +41,12 @@ public class WaitingManager {
         save();
     }
 
-    public static void remove(WaitTask task) {
+    public void remove(WaitTask task) {
         tasks.remove(task);
         save();
     }
 
-    public static void load() {
+    public void load() {
         if (!tasks.isEmpty()) {
             for (WaitTask t : tasks) {
                 t.stop();
@@ -60,11 +63,11 @@ public class WaitingManager {
         Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), WaitingManager::refresh, 1, 1);
     }
 
-    public static void refreshPlayer(Player player) {
+    public void refreshPlayer(Player player) {
         refreshPlayer(player.getName());
     }
 
-    public static void refreshPlayer(String player) {
+    public void refreshPlayer(String player) {
         if (tasks.isEmpty()) return;
         int before = tasks.size();
         Iterator<WaitTask> iter = tasks.iterator();
@@ -76,7 +79,7 @@ public class WaitingManager {
         if (tasks.size() != before) save();
     }
 
-    public static void refresh() {
+    public void refresh() {
         if (tasks.isEmpty()) return;
         int before = tasks.size();
         Iterator<WaitTask> iter = tasks.iterator();
@@ -88,7 +91,7 @@ public class WaitingManager {
         if (tasks.size() != before) save();
     }
 
-    public static void save() {
+    public void save() {
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             YamlConfiguration cfg = new YamlConfiguration();
             File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delayed-actions.yml");
@@ -100,11 +103,11 @@ public class WaitingManager {
         }, 1);
     }
 
-    public static long getTimeLimit() {
+    public long getTimeLimit() {
         return timeLimit;
     }
 
-    public static void setTimeLimit(long ms) {
+    public void setTimeLimit(long ms) {
         timeLimit = ms;
     }
 }

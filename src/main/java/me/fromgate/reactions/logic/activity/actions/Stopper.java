@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface Stopper {
     /**
-     * This method will be called after action execution (if it was successful)
+     * This method will be called after {@link Action#execute(RaContext, String)} if it returned {@code true}
      * @param actions List of actions that were stopped
      */
     void stop(@NotNull RaContext context, @NotNull String params, @NotNull List<StoredAction> actions);

@@ -12,9 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ActionWait implements Action, Stopper {
-
-    // TODO Make it actually work...
-
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -34,6 +31,6 @@ public class ActionWait implements Action, Stopper {
 
     @Override
     public void stop(@NotNull RaContext context, @NotNull String params, @NotNull List<StoredAction> actions) {
-        WaitingManager.executeDelayed(context.getPlayer(), actions, TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1")));
+        WaitingManager.schedule(context.getPlayer(), actions, TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1")));
     }
 }

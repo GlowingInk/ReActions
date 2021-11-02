@@ -22,23 +22,23 @@
 
 package me.fromgate.reactions.util.message;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @UtilityClass
 public class RaDebug {
-    private final Map<UUID, Boolean> debug = new HashMap<>();
+    private final Object2BooleanMap<UUID> debug = new Object2BooleanOpenHashMap<>();
 
     public void setPlayerDebug(Player p, boolean debugMode) {
         debug.put(p.getUniqueId(), debugMode);
     }
 
     public void offPlayerDebug(Player p) {
-        debug.remove(p.getUniqueId());
+        debug.removeBoolean(p.getUniqueId());
     }
 
     public boolean checkFlagAndDebug(Player p, boolean flag) {

@@ -1,5 +1,7 @@
 package me.fromgate.reactions.util.item;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
@@ -21,7 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -170,7 +171,7 @@ public class ItemUtils {
     public List<ItemStack> parseRandomItemsStr(String items) {
         Parameters params = Parameters.fromString(items);
         if (params.matchesAny(SET_D)) {
-            Map<List<ItemStack>, Integer> sets = new HashMap<>();
+            Object2IntMap<List<ItemStack>> sets = new Object2IntOpenHashMap<>();
             int maxChance = 0;
             int nochcount = 0;
             for (String key : params.keySet()) {
@@ -376,8 +377,8 @@ public class ItemUtils {
                 c.getBlue();
     }
 
-    public Map<Enchantment, Integer> parseEnchantmentsString(String enchStr) {
-        Map<Enchantment, Integer> ench = new HashMap<>();
+    public Object2IntMap<Enchantment> parseEnchantmentsString(String enchStr) {
+        Object2IntMap<Enchantment> ench = new Object2IntOpenHashMap<>();
         if (enchStr == null || enchStr.isEmpty()) return ench;
         String[] ln = enchStr.split(";");
         for (String e : ln) {
