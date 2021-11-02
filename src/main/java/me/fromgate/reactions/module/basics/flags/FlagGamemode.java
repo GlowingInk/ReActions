@@ -23,13 +23,13 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
-@Alias({"GM", "GAME_MODE"})
+@Aliases({"GM", "GAME_MODE"})
 public class FlagGamemode implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

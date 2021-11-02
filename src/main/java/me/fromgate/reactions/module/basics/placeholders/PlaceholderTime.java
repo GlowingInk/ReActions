@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import static me.fromgate.reactions.util.TimeUtils.formattedIngameTime;
 import static me.fromgate.reactions.util.TimeUtils.fullTimeToString;
 
-@Alias({"TIME_INGAME", "curtime", "TIME_SERVER", "servertime"})
+@Aliases({"TIME_INGAME", "curtime", "TIME_SERVER", "servertime"})
 public class PlaceholderTime implements Placeholder.Equal {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {

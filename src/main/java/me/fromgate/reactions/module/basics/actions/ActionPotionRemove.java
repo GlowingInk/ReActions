@@ -23,14 +23,14 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-@Alias("RMVPOT")
+@Aliases("RMVPOT")
 public class ActionPotionRemove implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {

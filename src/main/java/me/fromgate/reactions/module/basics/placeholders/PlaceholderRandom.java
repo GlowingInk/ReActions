@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
-@Alias({"rnd", "rng"})
+@Aliases({"rnd", "rng"})
 public class PlaceholderRandom implements Placeholder.Prefixed {
 
     private static final Pattern WORD_LIST = Pattern.compile("[\\S,]*[\\S]");
@@ -17,7 +17,6 @@ public class PlaceholderRandom implements Placeholder.Prefixed {
 
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-
         if (NumberUtils.INT_POSITIVE.matcher(param).matches())
             return Integer.toString(Rng.nextInt(Integer.parseInt(param)));
 

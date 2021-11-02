@@ -7,8 +7,8 @@ import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.WeChangeStorage;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -16,7 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Locale;
 
-@Alias("WECHANGE")
+@Aliases("WECHANGE")
 public class WEChangeActivator extends Activator {
 
     private final Material blockType;

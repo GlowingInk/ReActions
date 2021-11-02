@@ -2,14 +2,15 @@ package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Alias({"varp", "variable"})
+@Aliases({"varp", "variable"})
 public class PlaceholderVariable implements Placeholder.Prefixed {
     @Override
-    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String prefix, @NotNull String text) {
+    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String prefix, @NotNull String text) {
         switch (prefix) {
             case "var":
             case "variable":

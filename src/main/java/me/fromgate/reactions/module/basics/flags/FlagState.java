@@ -24,12 +24,12 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.events.listeners.GodModeListener;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@Alias("PLAYER_STATE")
+@Aliases("PLAYER_STATE")
 public class FlagState implements Flag {
 
     @Override

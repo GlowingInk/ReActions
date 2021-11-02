@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@Alias("BLOCK")
+@Aliases("BLOCK")
 public class FlagBlock implements Flag {
 
     @Override

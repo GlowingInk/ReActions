@@ -23,7 +23,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.location.VelocityUtils;
@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-@Alias("JUMP")
+@Aliases("JUMP")
 public class ActionVelocityJump implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {

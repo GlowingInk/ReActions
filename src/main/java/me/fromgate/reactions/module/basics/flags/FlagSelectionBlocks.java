@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.worldedit.RaWorldEdit;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: WorldEdit module
-@Alias("WE_SEL_BLOCKS")
+@Aliases("WE_SEL_BLOCKS")
 public class FlagSelectionBlocks implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {

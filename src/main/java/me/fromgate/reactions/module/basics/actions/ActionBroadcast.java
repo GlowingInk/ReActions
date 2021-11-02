@@ -23,13 +23,13 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-@Alias("MSGALL")
+@Aliases("MSGALL")
 public class ActionBroadcast implements Action {
 
     @Override

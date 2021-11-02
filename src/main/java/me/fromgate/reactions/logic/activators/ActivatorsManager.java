@@ -222,7 +222,7 @@ public class ActivatorsManager {
         }
         types.put(type.getType(), type);
         String[] aliases = Utils.getAliases(type);
-        if (aliases == null) {
+        if (aliases.length == 0) {
             aliases = Utils.getAliases(type.getType());
         }
         for (String alias : aliases) {
@@ -283,31 +283,26 @@ public class ActivatorsManager {
             this.activators = new HashSet<>();
         }
 
-        @NotNull
         @Override
-        public Class<? extends Activator> getType() {
+        public @NotNull Class<? extends Activator> getType() {
             return type;
         }
 
-        @NotNull
         @Override
-        public String getName() {
+        public @NotNull String getName() {
             return name;
         }
 
-        @NotNull
         @Override
-        public Set<Activator> getActivators() {
+        public @NotNull Set<Activator> getActivators() {
             return activators;
         }
 
-        @Nullable
         @Override
         public Activator createActivator(@NotNull ActivatorLogic logic, @NotNull Parameters params) {
             return creator.apply(logic, params);
         }
 
-        @Nullable
         @Override
         public Activator loadActivator(@NotNull ActivatorLogic logic, @NotNull ConfigurationSection cfg) {
             return loader.apply(logic, cfg);
@@ -353,19 +348,19 @@ public class ActivatorsManager {
     public final class Search {
         @NotNull
         public Collection<Activator> all() {
-            return activatorsNames.values();
+            return Collections.unmodifiableCollection(activatorsNames.values());
         }
 
         @NotNull
         public Collection<Activator> byGroup(@NotNull String group) {
-            return activatorsGroups.getOrDefault(group, Collections.emptySet());
+            return Collections.unmodifiableCollection(activatorsGroups.getOrDefault(group, Collections.emptySet()));
         }
 
         @NotNull
         public Collection<Activator> byType(String typeStr) {
             ActivatorType type = getType(typeStr);
             if (type == null) return Collections.emptySet();
-            return type.getActivators();
+            return Collections.unmodifiableCollection(type.getActivators());
         }
 
         @NotNull
@@ -376,7 +371,7 @@ public class ActivatorsManager {
                     type.getActivators().stream().filter(act -> ((Locatable) act).isLocatedAt(world, x, y, z)).forEach(found::add);
                 }
             }
-            return found;
+            return Collections.unmodifiableCollection(found);
         }
 
         @NotNull

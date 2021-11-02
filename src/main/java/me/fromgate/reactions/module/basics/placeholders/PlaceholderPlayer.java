@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 // TODO: Split to different classes
-@Alias({"player_loc", "player_loc_eye", "player_loc_view", "player_name",
+@Aliases({"player_loc", "player_loc_eye", "player_loc_view", "player_name",
                 "player_display", "dplayer", "player_item_hand", "itemplayer", "player_inv", "invplayer",
                 "health", "player_loc_death", "deathpoint", "player_id", "player_uuid", "uuid", "player_level", "level",
                 "player_held_slot", "slot"})
@@ -34,7 +35,7 @@ public class PlaceholderPlayer implements Placeholder.Prefixed {
     }
 
     @Override
-    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
+    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         Player player = context.getPlayer();
         if (player == null) return null;
         return switch (key) {

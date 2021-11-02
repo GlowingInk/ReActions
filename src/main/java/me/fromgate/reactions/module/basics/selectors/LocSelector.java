@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,18 +19,18 @@ public class LocSelector implements Selector {
 
     @Override
     public @NotNull Set<Player> getPlayers(String param) {
-        Set<Player> players = new HashSet<>();
-        if (param.isEmpty()) return players;
+        if (param.isEmpty()) return Collections.emptySet();
         Parameters params = Parameters.fromString(param, "loc");
         String locStr = params.getString("loc");
-        if (locStr.isEmpty()) return players;
+        if (locStr.isEmpty()) return Collections.emptySet();
         Location loc = LocationUtils.parseLocation(locStr, null);
-        if (loc == null) return players;
+        if (loc == null) return Collections.emptySet();
         loc.setX(loc.getBlockX() + 0.5);
         loc.setY(loc.getBlockY() + 0.5);
         loc.setZ(loc.getBlockZ() + 0.5);
         double radius = params.getDouble("radius", 1.0);
         radius *= radius;
+        Set<Player> players = new HashSet<>();
         for (Player player : loc.getWorld().getPlayers())
             if (player.getLocation().distanceSquared(loc) <= radius) players.add(player);
         return players;

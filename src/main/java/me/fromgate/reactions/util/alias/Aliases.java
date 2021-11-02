@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util;
+package me.fromgate.reactions.util.alias;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Alias {
+public @interface Aliases {
     String[] value();
 }

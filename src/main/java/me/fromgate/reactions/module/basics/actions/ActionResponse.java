@@ -2,14 +2,14 @@ package me.fromgate.reactions.module.basics.actions;
 
 import de.themoep.minedown.adventure.MineDown;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-@Alias("RESPOND")
+@Aliases("RESPOND")
 public class ActionResponse implements Action {
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String params) {

@@ -29,15 +29,15 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.*;
-import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
 // TODO: Maybe it should work like Cuboid activator instead of using different activators just for one check
-@Alias("RG")
+@Aliases("RG")
 public class RegionActivator extends Activator implements Locatable {
 
     private final String region;

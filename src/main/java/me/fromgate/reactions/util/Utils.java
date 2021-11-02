@@ -22,6 +22,8 @@
 
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.util.alias.Aliased;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -32,6 +34,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -247,14 +250,15 @@ public final class Utils {
         return def;
     }
 
-    public static String[] getAliases(Class<?> clazz) {
-        if (clazz.isAnnotationPresent(Alias.class)) {
-            return clazz.getAnnotation(Alias.class).value();
+    public static @NotNull String[] getAliases(@NotNull Class<?> clazz) {
+        if (clazz.isAnnotationPresent(Aliases.class)) {
+            return clazz.getAnnotation(Aliases.class).value();
         }
         return EMPTY_ARRAY;
     }
 
-    public static String[] getAliases(Object obj) {
-        return getAliases(obj.getClass());
+    public static @NotNull String[] getAliases(@NotNull Object obj) {
+        return obj instanceof Aliased aliased ?
+               aliased.getAliases() : getAliases(obj.getClass());
     }
 }

@@ -25,16 +25,16 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
-@Alias({"CONSUME", "EAT"})
+@Aliases({"CONSUME", "EAT"})
 public class ItemConsumeActivator extends Activator {
     // TODO: Store VirtualItem
     private final String item;

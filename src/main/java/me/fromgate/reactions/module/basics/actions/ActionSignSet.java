@@ -24,9 +24,9 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.Alias;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.math.NumberUtils;
@@ -37,7 +37,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 
-@Alias("SIGN_LINE")
+@Aliases("SIGN_LINE")
 public class ActionSignSet implements Action {
 
     @Override

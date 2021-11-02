@@ -24,12 +24,12 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: Vault module
-@Alias("VAULT_GROUP")
+@Aliases("VAULT_GROUP")
 public class FlagGroup implements Flag {
 
     @Override

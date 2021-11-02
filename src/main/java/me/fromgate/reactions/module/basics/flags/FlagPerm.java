@@ -23,11 +23,11 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Alias;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
-@Alias({"PERM", "HAS_PERMISSION"})
+@Aliases({"PERM", "HAS_PERMISSION"})
 public class FlagPerm implements Flag {
     @Override
     public @NotNull String getName() {

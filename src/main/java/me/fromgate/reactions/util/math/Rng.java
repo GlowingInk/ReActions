@@ -14,16 +14,16 @@ public final class Rng {
         return Rng.nextDouble(100) < chance;
     }
 
-    public static boolean chance(double v) {
-        return nextDouble() < v;
+    public static boolean chance(double chance) {
+        return nextDouble() < chance;
     }
 
     public static boolean nextBoolean() {
         return ThreadLocalRandom.current().nextBoolean();
     }
 
-    public static int nextInt(int maxvalue) {
-        return ThreadLocalRandom.current().nextInt(maxvalue);
+    public static int nextInt(int max) {
+        return ThreadLocalRandom.current().nextInt(max);
     }
 
     public static int nextInt(int min, int max) {
@@ -52,11 +52,11 @@ public final class Rng {
         int index = numsStr.indexOf('-');
         if (index > -1) {
             int min = 0;
-            int max = 0;
             String minStr = numsStr.substring(0, index);
-            String maxStr = numsStr.substring(index + 1);
             if (NumberUtils.INT_POSITIVE.matcher(minStr).matches())
                 min = Integer.parseInt(minStr);
+            int max = 0;
+            String maxStr = numsStr.substring(index + 1);
             if (NumberUtils.INT_POSITIVE.matcher(maxStr).matches())
                 max = Integer.parseInt(maxStr);
             if (max > min)
