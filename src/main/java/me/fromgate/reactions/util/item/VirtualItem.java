@@ -30,6 +30,8 @@
 
 package me.fromgate.reactions.util.item;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
@@ -66,6 +68,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /*
@@ -301,13 +304,17 @@ public class VirtualItem extends ItemStack {
         this.setItemMeta(pm);
     }
 
-    @SuppressWarnings("deprecation")
     private void setSkull(String owner) {
         if (Utils.isStringEmpty(owner))
             return;
         if (this.getItemMeta() instanceof SkullMeta) {
             SkullMeta sm = (SkullMeta) this.getItemMeta();
-            sm.setOwner(owner);
+
+            PlayerProfile playerProfile = Bukkit.createProfile(UUID.nameUUIDFromBytes(owner.getBytes()), owner);
+
+            playerProfile.setProperty(new ProfileProperty("textures", SkullUtils.getSkinUrlByName(owner)));
+            sm.setPlayerProfile(playerProfile);
+
             this.setItemMeta(sm);
         }
     }
