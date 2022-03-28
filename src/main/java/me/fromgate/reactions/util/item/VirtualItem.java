@@ -711,6 +711,7 @@ public class VirtualItem extends ItemStack {
             itemMap.remove("default-param");
         }
         if (amount > 0) itemMap.put("amount", Integer.toString(amount));
+        else if (amount == -1) itemMap.put("amount", Integer.toString(this.getAmount()));
         if (this.hasDisplayName() && !itemMap.containsKey("name")) return false;
         if (this.hasLore() && !itemMap.containsKey("lore")) return false;
 

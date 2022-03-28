@@ -232,7 +232,9 @@ public class ActionItems extends Action {
         PlayerInventory inventory = context.getPlayer().getInventory();
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
-            if (search.isSimilar(item)) {
+            if (item == null) continue;
+            VirtualItem virtualItem = new VirtualItem(item);
+            if (search.compare(virtualItem.toMap())) {
                 if (all) {
                     inventory.setItem(i, null);
                 } else if (item.getAmount() > remAmount) {
