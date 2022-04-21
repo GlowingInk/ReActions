@@ -5,8 +5,8 @@ import me.fromgate.reactions.util.Shoot;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Cfg {
+    
     // TODO: Fully rework
-
     public static boolean debugMode = false;
     public static boolean saveEmptySections = false;
     public static String actionMsg = "tp,grpadd,grprmv,townset,townkick,itemrmv,invitemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
