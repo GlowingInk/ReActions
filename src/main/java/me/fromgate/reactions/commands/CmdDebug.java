@@ -5,7 +5,7 @@ import me.fromgate.reactions.util.message.RaDebug;
 import org.bukkit.entity.Player;
 
 @CmdDefine(command = "reactions", description = Msg.CMD_DEBUG, permission = "reactions.debug",
-        subCommands = {"debug", "off|true|false"}, allowConsole = false, shortDescription = "&3/react debug [true|false|off]")
+        subCommands = {"debug", "off|true|false"}, shortDescription = "&3/react debug [true|false|off]")
 public class CmdDebug extends Cmd {
     @Override
     public boolean execute(Player player, String[] args) {

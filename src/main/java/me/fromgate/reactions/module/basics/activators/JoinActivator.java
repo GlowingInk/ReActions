@@ -66,9 +66,7 @@ public class JoinActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (first join:").append(this.firstJoin).append(")");
-        return sb.toString();
+        return super.toString() + " (first join:" + this.firstJoin + ")";
     }
 
 }

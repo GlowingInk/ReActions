@@ -3,12 +3,7 @@ package me.fromgate.reactions.placeholders;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.data.RaContext;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 interface Parser {
     boolean put(Placeholder ph);
@@ -142,7 +137,7 @@ interface Parser {
             public Collection<Placeholder> getPlaceholders() {
                 return placeholders;
             }
-        };
+        }
 
     }
 }

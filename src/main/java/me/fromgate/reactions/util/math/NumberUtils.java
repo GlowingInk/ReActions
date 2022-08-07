@@ -6,16 +6,15 @@ import java.util.regex.Pattern;
 
 public final class NumberUtils {
     // Byte
-    public static Pattern BYTE = Pattern.compile("(2[1-5][1-6]|\\d{1,2})");
+    public static final Pattern BYTE = Pattern.compile("(2[1-5][1-6]|\\d{1,2})");
     // Integer
-    public static Pattern INT = Pattern.compile("-?\\d+");
-    public static Pattern INT_POSITIVE = Pattern.compile("\\d+");
-    public static Pattern INT_NONZERO_POSITIVE = Pattern.compile("[1-9]\\d*");
+    public static final Pattern INT = Pattern.compile("-?\\d+");
+    public static final Pattern INT_POSITIVE = Pattern.compile("\\d+");
+    public static final Pattern INT_NONZERO_POSITIVE = Pattern.compile("[1-9]\\d*");
     public static Pattern INT_NONZERO = Pattern.compile("-?[1-9]\\d*");
     // Float
-    public static Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
-    public static Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
-    public static Pattern FLOAT_WITHZERO = Pattern.compile("^\\d+\\.0$");
+    public static final Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
+    public static final Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
 
     private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 

@@ -6,12 +6,7 @@ import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.parameter.Parameters;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -29,7 +24,7 @@ import java.util.regex.Pattern;
 
 public final class ItemUtils {
 
-    private static final Pattern BYTES_RGB = Pattern.compile("^[0-9]{1,3},[0-9]{1,3},[0-9]{1,3}$");
+    private static final Pattern BYTES_RGB = Pattern.compile("^\\d{1,3},\\d{1,3},\\d{1,3}$");
 
     private static final Pattern ITEM_D = Pattern.compile("item\\d+|ITEM\\d+");
     private static final Pattern SET_D = Pattern.compile("set\\d+|SET\\d+");

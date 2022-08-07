@@ -54,7 +54,7 @@ public class ActionRegex implements Action {
     // TODO: Remove it somehow
     private String removeParams(String message) {
         String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) +
-                "|hide|regex|prefix):(\\{.*\\}|\\S+)\\s?";
+                "|hide|regex|prefix):(\\{.*}|\\S+)\\s?";
         return message.replaceAll(sb, "");
 
     }

@@ -81,11 +81,10 @@ public class ItemClickActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append(this.item);
-        sb.append("; hand:").append(hand);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                this.item +
+                "; hand:" + hand +
+                ")";
+        return sb;
     }
 }

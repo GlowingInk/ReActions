@@ -3,7 +3,7 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.WeatherChangeStorage;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,8 +52,8 @@ public class WeatherChangeActivator extends Activator {
 
         public static WeatherState getByName(String name) {
             return switch (name.toUpperCase(Locale.ENGLISH)) {
-                case "raining", "rain" -> RAINING;
-                case "clear", "sun" -> CLEAR;
+                case "RAINING", "RAIN" -> RAINING;
+                case "CLEAR", "SUN" -> CLEAR;
                 default -> ANY;
             };
         }

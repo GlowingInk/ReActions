@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.QuitActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class QuitStorage extends Storage {
     public static final String QUIT_MESSAGE = "quit-message";
 
-    private String quitMessage;
+    private final String quitMessage;
 
     public QuitStorage(Player p, String quitMessage) {
         super(p);

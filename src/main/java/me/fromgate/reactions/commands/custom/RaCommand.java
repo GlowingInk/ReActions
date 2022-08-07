@@ -11,14 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Custom implementation of Bukkit's Command just for ReActions - not a part of API
@@ -71,7 +64,7 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
      * @param args   Used arguments
      * @return Name of result EXEC activator
      */
-    public final String executeCommand(CommandSender sender, String[] args) {
+    public String executeCommand(CommandSender sender, String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             if (!consoleAllowed) return getErroredExec(ExecType.CONSOLE_DISALLOWED);
         } else if (!Utils.checkPermission(sender, permission)) return getErroredExec(ExecType.NO_PERMISSIONS);
@@ -98,7 +91,7 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     }
 
     @Override
-    public final @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String cmd, String[] args, Location loc) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String cmd, String[] args, Location loc) {
         List<String> complete = new ArrayList<>();
         if (!tab) return complete;
         if (sender instanceof ConsoleCommandSender && !consoleAllowed) return complete;
@@ -109,17 +102,17 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     }
 
     @Override
-    public final boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
         executeCommand(sender, args);
         return true;
     }
 
     @Override
-    public final @NotNull Plugin getPlugin() {
+    public @NotNull Plugin getPlugin() {
         return ReActions.getPlugin();
     }
 
-    public final List<String> list() {
+    public List<String> list() {
         List<String> list = Utils.getEmptyList(1);
         chains.forEach(c -> list.add(c.toString()));
         return list;

@@ -62,8 +62,6 @@ public class RespawnActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("(").append(this.deathCause.name()).append(")");
-        return sb.toString();
+        return super.toString() + "(" + this.deathCause.name() + ")";
     }
 }

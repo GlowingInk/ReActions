@@ -29,7 +29,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.StoragesManager;
-import me.fromgate.reactions.module.basics.activators.MessageActivator.*;
+import me.fromgate.reactions.module.basics.activators.MessageActivator.Source;
 import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,9 +42,9 @@ import java.util.regex.Pattern;
 
 @Deprecated
 public final class RaProtocolLib {
-    private static final Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"\\}");
+    private static final Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"}");
     private static final Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");
-    private static final Pattern TEXT_END = Pattern.compile("\"\\}$");
+    private static final Pattern TEXT_END = Pattern.compile("\"}$");
 
     private static boolean connected = false;
 

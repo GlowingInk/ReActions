@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class LocationUtils {
-    public static Location ZERO_LOCATION = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+    public static final Location ZERO_LOCATION = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
 
     private LocationUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
@@ -301,7 +301,7 @@ public final class LocationUtils {
     }
 
     @FunctionalInterface
-    public static interface LocationFunction<R> {
+    public interface LocationFunction<R> {
         R apply(World world, int x, int y, int z);
     }
 }

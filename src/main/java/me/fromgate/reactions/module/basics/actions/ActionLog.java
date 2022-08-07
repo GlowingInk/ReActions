@@ -109,10 +109,9 @@ public class ActionLog implements Action {
     }
 
     private String removeParams(String message) {
-        StringBuilder sb = new StringBuilder("(?i)(");
-        sb.append(String.join("|", ReActions.getSelectors().getAllKeys()));
-        sb.append("|hide|prefix|color|file):(\\{.*\\}|\\S+)\\s{0,1}");
-        return message.replaceAll(sb.toString(), "");
+        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) +
+                "|hide|prefix|color|file):(\\{.*\\}|\\S+)\\s{0,1}";
+        return message.replaceAll(sb, "");
 
     }
 

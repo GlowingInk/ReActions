@@ -68,7 +68,7 @@ public final class MathBase {
     }
 
     @FunctionalInterface
-    public static interface Function {
+    public interface Function {
         double eval(double a, double... num);
     }
 }

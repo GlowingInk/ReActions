@@ -28,7 +28,7 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.RegionStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -88,10 +88,9 @@ public class RegionActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("region:").append(this.region);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "region:" + this.region +
+                ")";
+        return sb;
     }
 }

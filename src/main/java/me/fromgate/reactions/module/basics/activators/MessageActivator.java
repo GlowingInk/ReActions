@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.MessageStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -96,13 +96,12 @@ public class MessageActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("type:").append(this.type.name());
-        sb.append(" source:").append(this.source.name());
-        sb.append(" mask:").append(this.mask);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "type:" + this.type.name() +
+                " source:" + this.source.name() +
+                " mask:" + this.mask +
+                ")";
+        return sb;
     }
 
     public enum CheckType {

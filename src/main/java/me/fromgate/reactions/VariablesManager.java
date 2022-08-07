@@ -33,6 +33,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -145,8 +147,9 @@ public class VariablesManager {
             File dir = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables");
             if (!dir.exists()) return;
             for (File f : dir.listFiles()) {
-                if (!f.isDirectory()) {
-                    if (f.length() == 0) {
+                BasicFileAttributes fileAttributes = Files.readAttributes(f.toPath(), BasicFileAttributes.class);
+                if (!fileAttributes.isDirectory()) {
+                    if (fileAttributes.size() == 0) {
                         f.delete();
                         deleted++;
                         continue;

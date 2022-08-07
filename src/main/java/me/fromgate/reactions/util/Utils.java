@@ -139,7 +139,6 @@ public final class Utils {
                 UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8));
     }
 
-    @SuppressWarnings("deprecation")
     public static UUID getUUID(String playerName) {
         Player player = Bukkit.getPlayerExact(playerName);
         return player == null ?

@@ -145,17 +145,16 @@ public class InventoryClickActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("name:").append(this.inventoryName);
-        sb.append("; click:").append(this.click.name());
-        sb.append("; action:").append(this.action.name());
-        sb.append("; inventory:").append(this.inventory.name());
-        sb.append("; slotType:").append(this.slotType.name());
-        sb.append("; key:").append(this.numberKey);
-        sb.append("; slot:").append(this.slotStr);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "name:" + this.inventoryName +
+                "; click:" + this.click.name() +
+                "; action:" + this.action.name() +
+                "; inventory:" + this.inventory.name() +
+                "; slotType:" + this.slotType.name() +
+                "; key:" + this.numberKey +
+                "; slot:" + this.slotStr +
+                ")";
+        return sb;
     }
 
     enum ClickType {

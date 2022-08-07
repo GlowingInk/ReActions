@@ -4,7 +4,7 @@ import me.fromgate.reactions.externals.worldedit.WeSelection;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.WeSelectionRegionStorage;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -68,12 +68,11 @@ public class WESelectionActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("minblocks:").append(minBlocks);
-        sb.append("; maxblocks:").append(maxBlocks);
-        sb.append("; type:").append(typeSelection);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "minblocks:" + minBlocks +
+                "; maxblocks:" + maxBlocks +
+                "; type:" + typeSelection +
+                ")";
+        return sb;
     }
 }

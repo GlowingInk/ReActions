@@ -106,12 +106,11 @@ public class DamageByBlockActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("block:").append(blockStr.isEmpty() ? "-" : blockStr);
-        sb.append("; loc:").append(blockLocation.isEmpty() ? "-" : blockLocation);
-        sb.append("; cause:").append(damageCause);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "block:" + (blockStr.isEmpty() ? "-" : blockStr) +
+                "; loc:" + (blockLocation.isEmpty() ? "-" : blockLocation) +
+                "; cause:" + damageCause +
+                ")";
+        return sb;
     }
 }

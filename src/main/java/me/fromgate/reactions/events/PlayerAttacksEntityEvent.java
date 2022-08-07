@@ -6,6 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 @Deprecated
 public class PlayerAttacksEntityEvent extends PlayerEvent implements Cancellable {
@@ -45,7 +46,7 @@ public class PlayerAttacksEntityEvent extends PlayerEvent implements Cancellable
     }
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 }

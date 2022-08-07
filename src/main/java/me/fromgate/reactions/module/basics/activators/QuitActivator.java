@@ -49,7 +49,6 @@ public class QuitActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        return sb.toString();
+        return super.toString();
     }
 }

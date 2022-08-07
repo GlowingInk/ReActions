@@ -248,7 +248,7 @@ public class WGBridge7x extends WGBridge {
     public boolean isFlagInRegion(Player p, String region) {
         if (!connected) return false;
         String[] parts;
-        String[] group_parts = region.split("\\/");
+        String[] group_parts = region.split("/");
         if (group_parts.length > 1) parts = group_parts[0].split("\\.");
         else parts = region.split("\\.");
         if (parts.length < 3 || parts.length > 4) return false;

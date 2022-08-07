@@ -99,7 +99,6 @@ public final class RaWorldEdit {
         return isConnected() && getSession(player).hasSuperPickAxe();
     }
 
-    @SuppressWarnings("deprecation")
     public static boolean isToolControl(Player player) {
         return isConnected() && getSession(player).isToolControlEnabled();
     }

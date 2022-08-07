@@ -71,13 +71,12 @@ public class ItemHeldActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("itemnew:").append(itemNewStr.isEmpty() ? "-" : itemNewStr);
-        sb.append(" itemprev:").append(itemPrevStr.isEmpty() ? "-" : itemPrevStr);
-        sb.append(" slotnew:").append(newSlot + 1);
-        sb.append(" slotprev:").append(previousSlot + 1);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "itemnew:" + (itemNewStr.isEmpty() ? "-" : itemNewStr) +
+                " itemprev:" + (itemPrevStr.isEmpty() ? "-" : itemPrevStr) +
+                " slotnew:" + (newSlot + 1) +
+                " slotprev:" + (previousSlot + 1) +
+                ")";
+        return sb;
     }
 }

@@ -7,7 +7,7 @@ import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.WeChangeStorage;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -64,11 +64,10 @@ public class WEChangeActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("block-type:").append(blockType != null ? blockType : "ANY");
-        sb.append(" region:").append(region.isEmpty() ? "-" : region.toUpperCase(Locale.ENGLISH));
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "block-type:" + (blockType != null ? blockType : "ANY") +
+                " region:" + (region.isEmpty() ? "-" : region.toUpperCase(Locale.ENGLISH)) +
+                ")";
+        return sb;
     }
 }

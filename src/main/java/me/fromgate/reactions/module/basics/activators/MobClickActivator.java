@@ -125,12 +125,11 @@ public class MobClickActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("type:").append(mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ENGLISH));
-        sb.append(" name:").append(mobName.isEmpty() ? "-" : mobName);
-        sb.append(" loc:").append(mobLocation.isEmpty() ? "-" : mobLocation);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "type:" + (mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ENGLISH)) +
+                " name:" + (mobName.isEmpty() ? "-" : mobName) +
+                " loc:" + (mobLocation.isEmpty() ? "-" : mobLocation) +
+                ")";
+        return sb;
     }
 }

@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.MobClickActivator;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
@@ -38,7 +38,7 @@ import java.util.Map;
 
 public class MobClickStorage extends Storage {
 
-    LivingEntity entity;
+    final LivingEntity entity;
 
     public MobClickStorage(Player p, LivingEntity entity) {
         super(p);

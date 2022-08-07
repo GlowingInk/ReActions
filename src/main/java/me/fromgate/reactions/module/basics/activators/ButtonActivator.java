@@ -101,11 +101,10 @@ public class ButtonActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append(world).append(", ").append(x).append(", ").append(y).append(", ").append(z);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                world + ", " + x + ", " + y + ", " + z +
+                ")";
+        return sb;
     }
 
 }

@@ -54,10 +54,9 @@ public class PickupItemActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("item:").append(this.itemStr);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "item:" + this.itemStr +
+                ")";
+        return sb;
     }
 }

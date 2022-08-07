@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @Aliases({"rnd", "rng"})
 public class PlaceholderRandom implements Placeholder.Prefixed {
 
-    private static final Pattern WORD_LIST = Pattern.compile("[\\S,]*[\\S]");
+    private static final Pattern WORD_LIST = Pattern.compile("[\\S,]*\\S");
     private static final Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
 
     @Override

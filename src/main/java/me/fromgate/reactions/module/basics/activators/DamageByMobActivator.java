@@ -125,14 +125,13 @@ public class DamageByMobActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("type:").append(damagerType.isEmpty() ? "-" : damagerType.toUpperCase(Locale.ENGLISH));
-        sb.append("; name:").append(damagerName.isEmpty() ? "-" : damagerName);
-        sb.append("; etype:").append(entityType.isEmpty() ? "-" : entityType.toUpperCase(Locale.ENGLISH));
-        sb.append("; cause:").append(damageCause);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "type:" + (damagerType.isEmpty() ? "-" : damagerType.toUpperCase(Locale.ENGLISH)) +
+                "; name:" + (damagerName.isEmpty() ? "-" : damagerName) +
+                "; etype:" + (entityType.isEmpty() ? "-" : entityType.toUpperCase(Locale.ENGLISH)) +
+                "; cause:" + damageCause +
+                ")";
+        return sb;
     }
 
 }

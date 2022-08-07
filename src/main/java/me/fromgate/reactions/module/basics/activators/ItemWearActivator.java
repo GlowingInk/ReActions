@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
@@ -77,9 +77,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (").append(this.item).append(")");
-        return sb.toString();
+        return super.toString() + " (" + this.item + ")";
     }
 
     @Override

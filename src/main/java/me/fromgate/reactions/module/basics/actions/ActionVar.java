@@ -105,7 +105,7 @@ public class ActionVar implements Action {
     public @NotNull String getName() {
         return switch (actType) {
             case SET -> personalVar ? "VAR_PLAYER_SET" : "VAR_SET";
-            case CLEAR -> personalVar ? "VAR_PLAYER_CLEAR" : "VAR_PLAYER_CLEAR";
+            case CLEAR -> personalVar ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR";
             case INCREASE -> personalVar ? "VAR_PLAYER_INC" : "VAR_INC";
             case DECREASE -> personalVar ? "VAR_PLAYER_DEC" : "VAR_DEC";
             case TEMPORARY_SET -> "VAR_TEMP_SET";

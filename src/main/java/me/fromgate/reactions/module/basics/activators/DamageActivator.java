@@ -60,11 +60,10 @@ public class DamageActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("cause:").append(this.damageCause);
-        sb.append("; source:").append(this.source.name());
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "cause:" + this.damageCause +
+                "; source:" + this.source.name() +
+                ")";
+        return sb;
     }
 }

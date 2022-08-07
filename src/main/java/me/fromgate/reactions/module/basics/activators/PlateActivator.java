@@ -109,8 +109,6 @@ public class PlateActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (").append(world).append(", ").append(x).append(", ").append(y).append(", ").append(z).append(")");
-        return sb.toString();
+        return super.toString() + " (" + world + ", " + x + ", " + y + ", " + z + ")";
     }
 }

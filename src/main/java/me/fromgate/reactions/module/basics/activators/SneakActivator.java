@@ -54,11 +54,10 @@ public class SneakActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("sneak:").append(this.sneak.name());
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "sneak:" + this.sneak.name() +
+                ")";
+        return sb;
     }
 
     enum SneakType {

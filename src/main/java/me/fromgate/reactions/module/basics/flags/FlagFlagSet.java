@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class FlagFlagSet implements Flag {
 
     private static final Pattern BRACES = Pattern.compile("(^\\{\\s*)|(\\s*}$)");
-    private static final Pattern BRACES_GROUP = Pattern.compile("\\S+:\\{[^\\{\\}]*\\}|\\S+");
+    private static final Pattern BRACES_GROUP = Pattern.compile("\\S+:\\{[^{}]*}|\\S+");
 
     private final ActivitiesRegistry registry;
 

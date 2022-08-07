@@ -122,9 +122,8 @@ public class LeverActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (").append(world).append(", ").append(x).append(", ").append(y).append(", ").append(z);
-        sb.append(" state:").append(this.state.toUpperCase(Locale.ENGLISH)).append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" + world + ", " + x + ", " + y + ", " + z +
+                " state:" + this.state.toUpperCase(Locale.ENGLISH) + ")";
+        return sb;
     }
 }

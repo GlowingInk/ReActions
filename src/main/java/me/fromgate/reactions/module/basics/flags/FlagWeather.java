@@ -31,7 +31,7 @@ public class FlagWeather implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        String param = params.toString();
+        String param = params;
         if (param.equalsIgnoreCase("rain")) return !player.getWorld().isThundering() && player.getWorld().hasStorm();
         if (param.equalsIgnoreCase("thunder")) return player.getWorld().isThundering() && player.getWorld().hasStorm();
         return !player.getWorld().hasStorm();

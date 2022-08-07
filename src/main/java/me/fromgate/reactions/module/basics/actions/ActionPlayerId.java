@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ActionPlayerId implements Action {
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         String uuid;

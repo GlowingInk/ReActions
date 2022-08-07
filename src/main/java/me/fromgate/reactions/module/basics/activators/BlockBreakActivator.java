@@ -79,11 +79,10 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("block:").append(blockType == null ? "-" : blockType);
-        sb.append("; loc:").append(blockLocation == null ? "-" : blockLocation);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "block:" + (blockType == null ? "-" : blockType) +
+                "; loc:" + (blockLocation == null ? "-" : blockLocation) +
+                ")";
+        return sb;
     }
 }

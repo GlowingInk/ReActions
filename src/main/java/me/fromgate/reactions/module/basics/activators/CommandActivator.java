@@ -26,7 +26,7 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.*;
+import me.fromgate.reactions.module.basics.storages.CommandStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -131,12 +131,11 @@ public class CommandActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("regex:").append(this.useRegex);
-        sb.append("; command:").append(this.command);
-        sb.append("; console:").append(this.consoleAllowed);
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "regex:" + this.useRegex +
+                "; command:" + this.command +
+                "; console:" + this.consoleAllowed +
+                ")";
+        return sb;
     }
 }

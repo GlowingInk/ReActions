@@ -48,10 +48,9 @@ public class GameModeActivator extends Activator {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("gamemode:").append(gameMode == null ? "ANY" : gameMode.name());
-        sb.append(")");
-        return sb.toString();
+        String sb = super.toString() + " (" +
+                "gamemode:" + (gameMode == null ? "ANY" : gameMode.name()) +
+                ")";
+        return sb;
     }
 }
