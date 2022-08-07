@@ -24,12 +24,13 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.CommandActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,12 +52,12 @@ public class CommandStorage extends Storage {
     }
 
     @Override
-    public Class<? extends Activator> getType() {
+    public @NotNull Class<? extends Activator> getType() {
         return CommandActivator.class;
     }
 
     @Override
-    protected Map<String, String> prepareVariables() {
+    protected @NotNull Map<String, String> prepareVariables() {
         Map<String, String> tempVars = new HashMap<>();
         String[] start = label.split(":");
         if (start.length == 1) {
@@ -88,7 +89,7 @@ public class CommandStorage extends Storage {
     }
 
     @Override
-    protected Map<String, DataValue> prepareChangeables() {
+    protected @NotNull Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 

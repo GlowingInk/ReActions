@@ -22,9 +22,9 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.location.VelocityUtils;
 import me.fromgate.reactions.util.message.Msg;

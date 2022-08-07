@@ -22,9 +22,12 @@
 
 package me.fromgate.reactions.logic.activators;
 
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.util.data.DataValue;
-import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
@@ -40,18 +43,19 @@ public abstract class Storage {
     private final boolean async;
 
     // Default temporary placeholders
-    private Map<String, String> variables;
+    private Map<String, String> variables = Collections.emptyMap();
+    // TODO Separate into own class
     private Map<String, DataValue> changeables;
 
     public Storage() {
         this(null);
     }
 
-    public Storage(Player player) {
+    public Storage(@Nullable Player player) {
         this(player, false);
     }
 
-    public Storage(Player player, boolean async) {
+    public Storage(@Nullable Player player, boolean async) {
         this.player = player;
         this.async = async;
     }
@@ -61,26 +65,35 @@ public abstract class Storage {
         changeables = prepareChangeables();
     }
 
-    public abstract Class<? extends Activator> getType();
+    public abstract @NotNull Class<? extends Activator> getType();
 
     // TODO: dynamicVariables Supplier<String> for expensive calculations? E.g. CommandStorage
-    protected Map<String, String> prepareVariables() {
+    protected @NotNull Map<String, String> prepareVariables() {
         return Collections.emptyMap();
     }
 
-    protected Map<String, DataValue> prepareChangeables() {
+    protected @NotNull Map<String, DataValue> prepareChangeables() {
         return Collections.emptyMap();
     }
 
-    public final RaContext generateContext(String activator) {
+    @Contract(pure = true)
+    public final @NotNull RaContext generateContext(@NotNull String activator) {
         return new RaContext(activator, variables, changeables, player);
     }
 
-    public Player getPlayer() {return this.player;}
+    public @Nullable Player getPlayer() {
+        return this.player;
+    }
 
-    public boolean isAsync() {return this.async;}
+    public boolean isAsync() {
+        return this.async;
+    }
 
-    public Map<String, String> getVariables() {return this.variables;}
+    public @NotNull Map<String, String> getVariables() {
+        return this.variables;
+    }
 
-    public Map<String, DataValue> getChangeables() {return this.changeables;}
+    public @Nullable Map<String, DataValue> getChangeables() {
+        return this.changeables;
+    }
 }

@@ -24,8 +24,9 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.RegionLeaveActivator;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class RegionLeaveStorage extends Storage {
 
@@ -37,7 +38,7 @@ public class RegionLeaveStorage extends Storage {
     }
 
     @Override
-    public Class<? extends Activator> getType() {
+    public @NotNull Class<? extends Activator> getType() {
         return RegionLeaveActivator.class;
     }
 

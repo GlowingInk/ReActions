@@ -20,16 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -60,12 +51,22 @@ public class ActivatorsManager {
 
     public void loadGroup(@NotNull String group, boolean clear) {
         actsFolder.mkdirs();
-        loadGroupsRecursively(actsFolder, group, clear);
+        loadGroupsRecursively(actsFolder, group, clear, false);
     }
 
-    private void loadGroupsRecursively(@NotNull File file, @NotNull String group, boolean clear) {
+    private void loadGroupsRecursively(@NotNull File file, @NotNull String group, boolean clear, boolean useGroup) {
         if (!file.exists()) return;
-        if (file.getName().endsWith(".yml")) {
+
+        if (file.isDirectory()) {
+            if (useGroup) {
+                group = group.isEmpty() ?
+                        file.getName() :
+                        group + File.separator + file.getName();
+            }
+            for (File inner : Objects.requireNonNull(file.listFiles())) {
+                loadGroupsRecursively(inner, group, clear, true);
+            }
+        } else if (file.getName().endsWith(".yml")) {
             FileConfiguration cfg = new YamlConfiguration();
             try {
                 cfg.load(file);
@@ -95,7 +96,7 @@ public class ActivatorsManager {
                 // TODO Replace with some simpler null-safe method
                 ConfigurationSection cfgType = Objects.requireNonNull(cfg.getConfigurationSection(strType));
                 for (String name : cfgType.getKeys(false)) {
-                    ConfigurationSection cfgActivator = Objects.requireNonNull(cfg.getConfigurationSection(name));
+                    ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
                     Activator activator = type.loadActivator(new ActivatorLogic(name, group, cfgActivator, activity), cfgActivator);
                     if (activator == null || !activator.isValid()) {
                         logger.warning("Failed to load activator '" + name + "' in the group '" + group + "'.");
@@ -103,13 +104,6 @@ public class ActivatorsManager {
                     }
                     addActivator(activator, false);
                 }
-            }
-        } else if (file.isDirectory()) {
-            group = group.isEmpty() ?
-                        file.getName() :
-                        group + File.separator + file.getName();
-            for (File inner : Objects.requireNonNull(file.listFiles())) {
-                loadGroupsRecursively(inner, group, clear);
             }
         }
     }
@@ -220,6 +214,7 @@ public class ActivatorsManager {
                 logger.warning("Activator type name '" + name + "' is already used as an alias for '" + preserved.getName() + "', overriding it.");
             }
         }
+        typesAliases.put(name, type);
         types.put(type.getType(), type);
         String[] aliases = Utils.getAliases(type);
         if (aliases.length == 0) {

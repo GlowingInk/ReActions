@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.flags;
 
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 

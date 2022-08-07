@@ -1,8 +1,8 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import org.jetbrains.annotations.NotNull;

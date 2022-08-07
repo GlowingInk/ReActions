@@ -23,9 +23,9 @@
 package me.fromgate.reactions.time;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;

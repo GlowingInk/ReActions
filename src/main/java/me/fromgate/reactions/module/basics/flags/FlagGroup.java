@@ -23,9 +23,9 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.RaVault;
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: Vault module

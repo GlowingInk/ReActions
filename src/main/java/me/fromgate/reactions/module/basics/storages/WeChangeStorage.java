@@ -3,7 +3,7 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.WEChangeActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
@@ -11,6 +11,7 @@ import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -29,12 +30,12 @@ public class WeChangeStorage extends Storage {
     }
 
     @Override
-    public Class<? extends Activator> getType() {
+    public @NotNull Class<? extends Activator> getType() {
         return WEChangeActivator.class;
     }
 
     @Override
-    protected Map<String, String> prepareVariables() {
+    protected @NotNull Map<String, String> prepareVariables() {
         return new MapBuilder<String, String>()
                 .put("blocktype", blockType.name())
                 .put("blocklocation", LocationUtils.locationToString(location))
@@ -42,7 +43,7 @@ public class WeChangeStorage extends Storage {
     }
 
     @Override
-    protected Map<String, DataValue> prepareChangeables() {
+    protected @NotNull Map<String, DataValue> prepareChangeables() {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 

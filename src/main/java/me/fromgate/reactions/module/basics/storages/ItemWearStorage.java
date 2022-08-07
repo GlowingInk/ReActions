@@ -24,10 +24,11 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
 import me.fromgate.reactions.util.item.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemWearStorage extends Storage {
 
@@ -36,7 +37,7 @@ public class ItemWearStorage extends Storage {
     }
 
     @Override
-    public Class<? extends Activator> getType() {
+    public @NotNull Class<? extends Activator> getType() {
         return ItemWearActivator.class;
     }
 

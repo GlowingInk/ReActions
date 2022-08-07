@@ -22,9 +22,9 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.time.TimersManager;
-import me.fromgate.reactions.util.data.RaContext;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagTimerActive implements Flag {

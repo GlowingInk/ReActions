@@ -57,7 +57,8 @@ public class ModulesManager {
         }
         if (!names.isEmpty()) {
             platform.getLogger().info("Registered " + names.size() + " " + what + ": " + String.join(", ", names));
-        } else if (failed != null) {
+        }
+        if (failed != null && !failed.isEmpty()) {
             failed.forEach(platform.getLogger()::warning);
         }
     }

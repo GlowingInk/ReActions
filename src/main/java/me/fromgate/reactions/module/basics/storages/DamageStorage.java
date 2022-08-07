@@ -2,13 +2,14 @@ package me.fromgate.reactions.module.basics.storages;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.DamageActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
 import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
 import me.fromgate.reactions.util.data.DoubleValue;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +32,12 @@ public class DamageStorage extends Storage {
     }
 
     @Override
-    public Class<? extends Activator> getType() {
+    public @NotNull Class<? extends Activator> getType() {
         return DamageActivator.class;
     }
 
     @Override
-    protected Map<String, String> prepareVariables() {
+    protected @NotNull Map<String, String> prepareVariables() {
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("damage", Double.toString(damage));
         tempVars.put("cause", cause.name());
@@ -45,7 +46,7 @@ public class DamageStorage extends Storage {
     }
 
     @Override
-    protected Map<String, DataValue> prepareChangeables() {
+    protected @NotNull Map<String, DataValue> prepareChangeables() {
         return new MapBuilder<String, DataValue>()
                 .put(CANCEL_EVENT, new BooleanValue(false))
                 .put(DAMAGE, new DoubleValue(damage))

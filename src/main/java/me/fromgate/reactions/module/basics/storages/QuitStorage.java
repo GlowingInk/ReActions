@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.data.BooleanValue;
 import me.fromgate.reactions.util.data.DataValue;
 import me.fromgate.reactions.util.data.StringValue;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -44,12 +45,12 @@ public class QuitStorage extends Storage {
     }
 
     @Override
-    public Class<? extends Activator> getType() {
+    public @NotNull Class<? extends Activator> getType() {
         return QuitActivator.class;
     }
 
     @Override
-    protected Map<String, DataValue> prepareChangeables() {
+    protected @NotNull Map<String, DataValue> prepareChangeables() {
         return new MapBuilder<String, DataValue>()
                 .put(CANCEL_EVENT, new BooleanValue(false))
                 .put(QUIT_MESSAGE, new StringValue(quitMessage))

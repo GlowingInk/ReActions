@@ -7,9 +7,8 @@ import me.fromgate.reactions.externals.RaEconomics;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.ItemStoragesManager;
-import me.fromgate.reactions.module.basics.StoragesManager;
-import me.fromgate.reactions.module.basics.activators.*;
+import me.fromgate.reactions.module.basics.activators.MessageActivator;
+import me.fromgate.reactions.module.basics.activators.SignActivator;
 import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.BlockUtils;
@@ -36,30 +35,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -69,23 +49,11 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.List;
 import java.util.Map;
 
+import static me.fromgate.reactions.module.basics.ItemStoragesManager.triggerItemHold;
+import static me.fromgate.reactions.module.basics.ItemStoragesManager.triggerItemWear;
+import static me.fromgate.reactions.module.basics.StoragesManager.*;
+
 public class BukkitListener implements Listener {
-
-    /*
-    private static boolean triggerEntityChangeBlock(EntityChangeBlockEvent event) {
-        if (event.getEntity() instanceof FallingBlock) {
-            Location loc = event.getEntity().getLocation();
-            for (Player p : loc.getWorld().getPlayers()) {
-                if (p.getLocation().distanceSquared(loc) > 0.7) continue;
-                EntityDamageByEntityEvent ev = new EntityDamageByEntityEvent(event.getEntity(), p, EntityDamageEvent.DamageCause.FALLING_BLOCK, 0);
-                Bukkit.getPluginManager().callEvent(ev);
-                return ev.isCancelled();
-            }
-        }
-        return false;
-    }
-    */
-
     @EventHandler(ignoreCancelled = true)
     public void onPickupEvent(EntityPickupItemEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
@@ -110,10 +78,11 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        Map<String, DataValue> changeables = StoragesManager.triggerTeleport(
+        Map<String, DataValue> changeables = triggerTeleport(
                 event.getPlayer(),
                 event.getCause(),
                 event.getTo());
+        if (changeables == null) return;
         event.setTo(changeables.get(TeleportStorage.LOCATION_TO).asLocation());
         event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
     }
@@ -122,21 +91,15 @@ public class BukkitListener implements Listener {
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getRightClicked().getType() != EntityType.ARMOR_STAND) return;
-        if (StoragesManager.triggerMobClick(event.getPlayer(), (LivingEntity) event.getRightClicked()))
+        if (triggerMobClick(event.getPlayer(), (LivingEntity) event.getRightClicked()))
             event.setCancelled(true);
     }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         // TODO: That's not really good solution
-		/*
-		Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> {
-			if (StorageManager.triggerMessage(event.getPlayer(), MessageActivator.Source.CHAT_INPUT, event.getMessage())) {
-				event.setCancelled(true);
-			}
-		});*/
         try {
-            Map<String, DataValue> changeables = StoragesManager.triggerMessage(event.getPlayer(),
+            Map<String, DataValue> changeables = triggerMessage(event.getPlayer(),
                     MessageActivator.Source.CHAT_INPUT,
                     event.getMessage());
             if (changeables == null) return;
@@ -150,13 +113,13 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onServerCommand(ServerCommandEvent event) {
-        if (StoragesManager.triggerPrecommand(null, event.getSender(), event.getCommand()))
+        if (triggerPrecommand(null, event.getSender(), event.getCommand()))
             event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        if (StoragesManager.triggerPrecommand(event.getPlayer(), event.getPlayer(), event.getMessage().substring(1)))
+        if (triggerPrecommand(event.getPlayer(), event.getPlayer(), event.getMessage().substring(1)))
             event.setCancelled(true);
     }
 
@@ -174,52 +137,52 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onItemHeld(PlayerItemHeldEvent event) {
-        if (StoragesManager.triggerItemHeld(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot()))
+        if (triggerItemHeld(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot()))
             event.setCancelled(true);
         else {
-            ItemStoragesManager.triggerItemHold(event.getPlayer());
-            ItemStoragesManager.triggerItemWear(event.getPlayer());
+            triggerItemHold(event.getPlayer());
+            triggerItemWear(event.getPlayer());
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryInteract(InventoryInteractEvent event) {
-        ItemStoragesManager.triggerItemHold((Player) event.getWhoClicked());
-        ItemStoragesManager.triggerItemWear((Player) event.getWhoClicked());
+        triggerItemHold((Player) event.getWhoClicked());
+        triggerItemWear((Player) event.getWhoClicked());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClose(InventoryCloseEvent event) {
-        ItemStoragesManager.triggerItemHold((Player) event.getPlayer());
-        ItemStoragesManager.triggerItemWear((Player) event.getPlayer());
+        triggerItemHold((Player) event.getPlayer());
+        triggerItemWear((Player) event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
         PlayerRespawner.addPlayerRespawn(event);
-        StoragesManager.triggerPvpKill(event);
-        StoragesManager.triggerPvpDeath(event);
+        triggerPvpKill(event);
+        triggerPvpDeath(event);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent event) {
-        if (StoragesManager.triggerItemConsume(event))
+        if (triggerItemConsume(event))
             event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerClickMob(PlayerInteractEntityEvent event) {
-        StoragesManager.triggerItemClick(event);
+        triggerItemClick(event);
         if (!(event.getRightClicked() instanceof LivingEntity)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
-        StoragesManager.triggerMobClick(event.getPlayer(), (LivingEntity) event.getRightClicked());
+        triggerMobClick(event.getPlayer(), (LivingEntity) event.getRightClicked());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         // TODO: Set respawn location
         PlayerRespawner.triggerPlayerRespawn(event.getPlayer(), event.getRespawnLocation());
-        StoragesManager.triggerAllRegions(event.getPlayer(), event.getRespawnLocation(), event.getPlayer().getLocation());
+        triggerAllRegions(event.getPlayer(), event.getRespawnLocation(), event.getPlayer().getLocation());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -238,7 +201,7 @@ public class BukkitListener implements Listener {
         Player killer = EntityUtils.getKiller(event.getEntity().getLastDamageCause());
         if (killer == null) return;
 
-        StoragesManager.triggerMobKill(killer, event.getEntity());
+        triggerMobKill(killer, event.getEntity());
         if (event.getEntity().hasMetadata("ReActions-money") && RaVault.isEconomyConnected()) {
             int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").get(0).asString());
             RaEconomics.creditAccount(killer.getName(), "", Double.toString(money), "");
@@ -246,24 +209,10 @@ public class BukkitListener implements Listener {
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
             String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
-            StoragesManager.triggerExec(killer, exec, null);
+            triggerExec(killer, exec, null);
         }
 
     }
-
-    /*
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
-        if (triggerEntityChangeBlock(event)) event.setCancelled(true);
-    }
-    */
-
-	/*
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onProjectileHit(ProjectileHitEvent event) {
-		StoragesManager.triggerProjectileHit(event);
-	}
-	*/
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onCheckGodEvent(EntityDamageEvent event) {
@@ -281,7 +230,8 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMobDamageByPlayer(PlayerAttacksEntityEvent event) {
-        Map<String, DataValue> changeables = StoragesManager.triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getCause());
+        Map<String, DataValue> changeables = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getCause());
+        if (changeables == null) return;
         event.setDamage(changeables.get(MobDamageStorage.DAMAGE).asDouble());
         event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
     }
@@ -302,22 +252,27 @@ public class BukkitListener implements Listener {
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) return;
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             source = "ENTITY";
-            Map<String, DataValue> changeables = StoragesManager.triggerDamageByMob(evdmg);
-            event.setDamage(changeables.get(DamageStorage.DAMAGE).asDouble());
-            event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
+            Map<String, DataValue> changeables = triggerDamageByMob(evdmg);
+            if (changeables != null) {
+                event.setDamage(changeables.get(DamageStorage.DAMAGE).asDouble());
+                event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
+            }
         } else if (event instanceof EntityDamageByBlockEvent evdmg) {
             source = "BLOCK";
             Block blockDamager = evdmg.getDamager();
             if (blockDamager != null) {
-                Map<String, DataValue> changeables = StoragesManager.triggerDamageByBlock(evdmg, blockDamager);
-                event.setDamage(changeables.get(DamageStorage.DAMAGE).asDouble());
-                event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
+                Map<String, DataValue> changeables = triggerDamageByBlock(evdmg, blockDamager);
+                if (changeables != null) {
+                    event.setDamage(changeables.get(DamageStorage.DAMAGE).asDouble());
+                    event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
+                }
             }
         } else {
             source = "OTHER";
         }
 
-        Map<String, DataValue> changeables = StoragesManager.triggerDamage(event, source);
+        Map<String, DataValue> changeables = triggerDamage(event, source);
+        if (changeables == null) return;
         event.setDamage(changeables.get(DamageStorage.DAMAGE).asDouble());
         event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
     }
@@ -358,11 +313,11 @@ public class BukkitListener implements Listener {
         RaDebug.offPlayerDebug(player);
         MoveListener.initLocation(player);
 
-        StoragesManager.triggerJoin(player, !player.hasPlayedBefore());
-        StoragesManager.triggerAllRegions(player, player.getLocation(), null);
-        StoragesManager.triggerCuboid(player);
-        ItemStoragesManager.triggerItemHold(player);
-        ItemStoragesManager.triggerItemWear(player);
+        triggerJoin(player, !player.hasPlayedBefore());
+        triggerAllRegions(player, player.getLocation(), null);
+        triggerCuboid(player);
+        triggerItemHold(player);
+        triggerItemWear(player);
     }
 
     @EventHandler
@@ -370,40 +325,42 @@ public class BukkitListener implements Listener {
         if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!BlockUtils.isSign(event.getClickedBlock())) return;
         Sign sign = (Sign) event.getClickedBlock().getState();
-        if (StoragesManager.triggerSign(event.getPlayer(), sign.getLines(), event.getClickedBlock().getLocation(), event.getAction() == Action.LEFT_CLICK_BLOCK))
+        if (triggerSign(event.getPlayer(), sign.getLines(), event.getClickedBlock().getLocation(), event.getAction() == Action.LEFT_CLICK_BLOCK))
             event.setCancelled(true);
     }
 
     // TODO: Rework
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        StoragesManager.triggerItemClick(event);
-        ItemStoragesManager.triggerItemWear(event.getPlayer());
-        if (StoragesManager.triggerBlockClick(event)) event.setCancelled(true);
-        if (StoragesManager.triggerButton(event)) event.setCancelled(true);
-        if (StoragesManager.triggerPlate(event)) event.setCancelled(true);
-        if (StoragesManager.triggerLever(event)) event.setCancelled(true);
-        if (StoragesManager.triggerDoor(event)) event.setCancelled(true);
+        triggerItemClick(event);
+        triggerItemWear(event.getPlayer());
+        if (triggerBlockClick(event)) event.setCancelled(true);
+        if (triggerButton(event)) event.setCancelled(true);
+        if (triggerPlate(event)) event.setCancelled(true);
+        if (triggerLever(event)) event.setCancelled(true);
+        if (triggerDoor(event)) event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Teleporter.startTeleport(event);
-        StoragesManager.triggerCuboid(event.getPlayer());
-        StoragesManager.triggerAllRegions(event.getPlayer(), event.getTo(), event.getFrom());
+        triggerCuboid(event.getPlayer());
+        triggerAllRegions(event.getPlayer(), event.getTo(), event.getFrom());
         Teleporter.stopTeleport(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        Map<String, DataValue> changeables = StoragesManager.triggerInventoryClick(event);
+        Map<String, DataValue> changeables = triggerInventoryClick(event);
+        if (changeables == null) return;
         event.setCurrentItem(changeables.get(InventoryClickStorage.ITEM).asItemStack());
         event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
-        Map<String, DataValue> changeables = StoragesManager.triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
+        Map<String, DataValue> changeables = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
+        if (changeables == null) return;
         event.getItemDrop().setPickupDelay((int) changeables.get(DropStorage.PICKUP_DELAY).asDouble());
         event.getItemDrop().setItemStack(changeables.get(DropStorage.ITEM).asItemStack());
         event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
@@ -411,44 +368,45 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onFlight(PlayerToggleFlightEvent event) {
-        if (StoragesManager.triggerFlight(event.getPlayer(), event.isFlying())) event.setCancelled(true);
+        if (triggerFlight(event.getPlayer(), event.isFlying())) event.setCancelled(true);
     }
 
     @EventHandler
     public void onEntityClick(PlayerInteractEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
-        if (StoragesManager.triggerEntityClick(event.getPlayer(), event.getRightClicked()))
+        if (triggerEntityClick(event.getPlayer(), event.getRightClicked()))
             event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        Map<String, DataValue> changeables = StoragesManager.triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
+        Map<String, DataValue> changeables = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
+        if (changeables == null) return;
         event.setDropItems(changeables.get(BlockBreakStorage.DO_DROP).asBoolean());
         event.setCancelled(changeables.get(Storage.CANCEL_EVENT).asBoolean());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onSneak(PlayerToggleSneakEvent event) {
-        StoragesManager.triggerSneak(event);
+        triggerSneak(event);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         TemporaryOp.removeOp(event.getPlayer());
-        event.setQuitMessage(StoragesManager.triggerQuit(event));
+        event.setQuitMessage(triggerQuit(event));
         MoveListener.removeLocation(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
-        if (StoragesManager.triggerGamemode(event.getPlayer(), event.getNewGameMode()))
+        if (triggerGamemode(event.getPlayer(), event.getNewGameMode()))
             event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onWeatherChange(WeatherChangeEvent event) {
-        if (StoragesManager.triggerWeatherChange(event.getWorld().getName(), event.toWeatherState()))
+        if (triggerWeatherChange(event.getWorld().getName(), event.toWeatherState()))
             event.setCancelled(true);
     }
 }

@@ -1,6 +1,6 @@
 package me.fromgate.reactions.logic.activity.flags;
 
-import me.fromgate.reactions.util.data.RaContext;
+import me.fromgate.reactions.logic.RaContext;
 import org.jetbrains.annotations.NotNull;
 
 public interface Flag {

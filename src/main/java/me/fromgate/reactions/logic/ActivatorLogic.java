@@ -31,7 +31,6 @@ import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.activity.flags.StoredFlag;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

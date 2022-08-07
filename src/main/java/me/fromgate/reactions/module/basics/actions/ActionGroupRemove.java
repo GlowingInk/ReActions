@@ -23,9 +23,9 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.externals.RaVault;
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

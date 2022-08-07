@@ -1,6 +1,6 @@
-package me.fromgate.reactions.util.data;
+package me.fromgate.reactions.logic;
 
-import org.bukkit.Location;
+import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -11,13 +11,16 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Context created per activator
+ */
 public class RaContext {
 
     public static final RaContext EMPTY_CONTEXT = new RaContext(":unknown", null, null, null);
 
     private final String activatorName;
     private final Player player;
-    // TODO Use Map<String, Function<String>> instead
+    // TODO Use Map<String, Function<String>> instead?
     private final Map<String, String> variables;
     private final Map<String, DataValue> changeables;
     // TODO
@@ -57,14 +60,6 @@ public class RaContext {
         return variables.put(key.toLowerCase(Locale.ENGLISH), String.valueOf(obj));
     }
 
-    public boolean setChangeable(@NotNull String key, double value) {
-        key = key.toLowerCase(Locale.ENGLISH);
-        DataValue dataValue = changeables.get(key);
-        if (dataValue == null || !dataValue.set(value)) return false;
-        variables.put(key, dataValue.asString());
-        return true;
-    }
-
     public boolean setChangeable(@NotNull String key, @NotNull String value) {
         key = key.toLowerCase(Locale.ENGLISH);
         DataValue dataValue = changeables.get(key);
@@ -81,21 +76,19 @@ public class RaContext {
         return true;
     }
 
-    public boolean setChangeable(@NotNull String key, @NotNull Location value) {
-        key = key.toLowerCase(Locale.ENGLISH);
-        DataValue dataValue = changeables.get(key);
-        if (dataValue == null || !dataValue.set(value)) return false;
-        variables.put(key, dataValue.asString());
-        return true;
+    public String getActivatorName() {
+        return this.activatorName;
     }
 
-    public String getActivatorName() {return this.activatorName;}
+    public Player getPlayer() {
+        return this.player;
+    }
 
-    public Player getPlayer() {return this.player;}
+    public Map<String, String> getVariables() {
+        return this.variables;
+    }
 
-    public Map<String, String> getVariables() {return this.variables;}
-
-    public Map<String, DataValue> getChangeables() {return this.changeables;}
-
-    public boolean isAsync() {return this.async;}
+    public boolean isAsync() {
+        return this.async;
+    }
 }

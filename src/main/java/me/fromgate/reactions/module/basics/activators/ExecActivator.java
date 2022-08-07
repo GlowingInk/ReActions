@@ -7,7 +7,7 @@ import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
-@Aliases("EXE")
+@Aliases({"EXE", "EXECUTABLE"})
 public class ExecActivator extends Activator {
     private ExecActivator(ActivatorLogic base) {
         super(base);
