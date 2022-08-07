@@ -118,10 +118,6 @@
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
         </repository>
-        <repository>
-            <id>glaremasters repo</id>
-            <url>https://repo.glaremasters.me/repository/towny/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -235,13 +231,6 @@
                     <artifactId>bstats-bukkit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.palmergames.bukkit.towny</groupId>
-            <artifactId>towny</artifactId>
-            <version>0.98.1.0</version>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
