@@ -1,5 +1,6 @@
 package me.fromgate.reactions;
 
+import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.module.ModulesManager;
@@ -28,6 +29,10 @@ public final class ReActions {
         Objects.requireNonNull(platform.getModules(), "ModulesManager cannot be null.");
         Objects.requireNonNull(platform.getPlugin(), "Plugin cannot be null.");
         ReActions.platform = platform;
+    }
+
+    public static ActivatorTypesRegistry getActivatorTypes() {
+        return platform.getActivatorTypes();
     }
 
     public static ActivatorsManager getActivators() {
@@ -63,6 +68,7 @@ public final class ReActions {
     }
 
     public interface Platform {
+        ActivatorTypesRegistry getActivatorTypes();
         ActivatorsManager getActivators();
         ActivitiesRegistry getActivities();
         PlaceholdersManager getPlaceholders();

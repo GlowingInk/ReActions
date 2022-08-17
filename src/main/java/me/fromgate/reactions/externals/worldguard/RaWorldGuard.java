@@ -51,15 +51,15 @@ public class RaWorldGuard {
     public static void updateRegionCache() {
         regionActivators = new HashSet<>();
         // TODO Custom ActivatorType
-        for (Activator a : ReActions.getActivators().getType(RegionActivator.class).getActivators()) {
+        for (Activator a : ReActions.getActivatorTypes().get(RegionActivator.class).getActivators()) {
             RegionActivator r = (RegionActivator) a;
             regionActivators.add(r.getRegion());
         }
-        for (Activator a : ReActions.getActivators().getType(RegionEnterActivator.class).getActivators()) {
+        for (Activator a : ReActions.getActivatorTypes().get(RegionEnterActivator.class).getActivators()) {
             RegionEnterActivator r = (RegionEnterActivator) a;
             regionActivators.add(r.getRegion());
         }
-        for (Activator a : ReActions.getActivators().getType(RegionLeaveActivator.class).getActivators()) {
+        for (Activator a : ReActions.getActivatorTypes().get(RegionLeaveActivator.class).getActivators()) {
             RegionLeaveActivator r = (RegionLeaveActivator) a;
             regionActivators.add(r.getRegion());
         }

@@ -181,7 +181,7 @@ public final class StoragesManager {
     }
 
     public static boolean triggerSign(Player player, String[] lines, Location loc, boolean leftClick) {
-        for (Activator act : ReActions.getActivators().getType(SignActivator.class).getActivators()) {
+        for (Activator act : ReActions.getActivatorTypes().get(SignActivator.class).getActivators()) {
             SignActivator sign = (SignActivator) act;
             if (sign.checkMask(lines)) {
                 SignStorage se = new SignStorage(player, lines, loc, leftClick);
@@ -341,7 +341,7 @@ public final class StoragesManager {
     // TODO: Redesign
     public static @Nullable Map<String, DataValue> triggerMessage(CommandSender sender, MessageActivator.Source source, String message) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
-        for (Activator act : ReActions.getActivators().getType(MessageActivator.class).getActivators()) {
+        for (Activator act : ReActions.getActivatorTypes().get(MessageActivator.class).getActivators()) {
             MessageActivator a = (MessageActivator) act;
             if (a.filterMessage(source, message)) {
                 MessageStorage me = new MessageStorage(player, a, message);

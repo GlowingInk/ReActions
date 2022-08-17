@@ -35,7 +35,7 @@ public class ModulesManager {
 
     public void registerModule(Module module) {
         platform.getLogger().info("Registering " + module.getName() + " module (by " + StringUtils.join(module.getAuthors(), ", ") + ")");
-        register("activators", module.getActivatorTypes(platform), ActivatorType::getName, platform.getActivators()::registerType);
+        register("activators", module.getActivatorTypes(platform), ActivatorType::getName, platform.getActivatorTypes()::register);
         register("actions", module.getActions(platform), Action::getName, platform.getActivities()::registerAction);
         register("flags", module.getFlags(platform), Flag::getName, platform.getActivities()::registerFlag);
         register("placeholders", module.getPlaceholders(platform), Placeholder::getBasicName, platform.getPlaceholders()::registerPlaceholder);

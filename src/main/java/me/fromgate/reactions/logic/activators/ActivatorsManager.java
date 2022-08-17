@@ -3,10 +3,7 @@ package me.fromgate.reactions.logic.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
-import me.fromgate.reactions.util.parameter.Parameters;
-import me.fromgate.reactions.util.suppliers.RaGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,21 +27,19 @@ public class ActivatorsManager {
     private final Logger logger;
     private final Search search;
     private final ActivitiesRegistry activity;
-
-    private final Map<Class<? extends Activator>, ActivatorType> types;
-    private final Map<String, ActivatorType> typesAliases;
+    private final ActivatorTypesRegistry types;
     private final Map<String, Activator> activatorsNames;
     private final Map<String, Set<Activator>> activatorsGroups;
 
-    public ActivatorsManager(@NotNull ReActions.Platform react, @NotNull ActivitiesRegistry activity) {
-        plugin = react.getPlugin();
+    public ActivatorsManager(@NotNull ReActions.Platform react, @NotNull ActivitiesRegistry activity, @NotNull ActivatorTypesRegistry types) {
+        this.plugin = react.getPlugin();
+        this.activity = activity;
+        this.types = types;
+
         actsFolder = new File(plugin.getDataFolder(), "Activators");
         logger = react.getLogger();
         search = new Search();
-        this.activity = activity;
 
-        types = new HashMap<>();
-        typesAliases = new HashMap<>();
         activatorsNames = new CaseInsensitiveMap<>();
         activatorsGroups = new HashMap<>();
     }
@@ -87,7 +82,7 @@ public class ActivatorsManager {
                 }
             }
             for (String strType : cfg.getKeys(false)) {
-                ActivatorType type = getType(strType);
+                ActivatorType type = types.get(strType);
                 if (type == null) {
                     logger.warning("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'.");
                     // TODO Move failed activators to backup
@@ -129,7 +124,7 @@ public class ActivatorsManager {
             logger.warning("Failed to add activator '" + logic.getName() + "' - activator with this name already exists!");
             return false;
         }
-        types.get(activator.getClass()).addActivator(activator);
+        Objects.requireNonNull(types.get(activator.getClass())).addActivator(activator);
         activatorsNames.put(logic.getName(), activator);
         activatorsGroups.computeIfAbsent(logic.getGroup(), g -> new HashSet<>()).add(activator);
         if (save) saveGroup(logic.getGroup());
@@ -137,7 +132,7 @@ public class ActivatorsManager {
     }
 
     public void clearActivators() {
-        types.values().forEach(ActivatorType::clearActivators);
+        types.types().forEach(ActivatorType::clearActivators);
         activatorsNames.clear();
         activatorsGroups.clear();
     }
@@ -190,7 +185,9 @@ public class ActivatorsManager {
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
         for (Activator activator : activators) {
             String type = Objects.requireNonNull(types.get(activator.getClass())).getName();
-            ConfigurationSection typeCfg = cfg.isConfigurationSection(type) ? cfg.getConfigurationSection(type) : cfg.createSection(type);
+            ConfigurationSection typeCfg = cfg.isConfigurationSection(type)
+                    ? Objects.requireNonNull(cfg.getConfigurationSection(type))
+                    : cfg.createSection(type);
             activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
         }
         try {
@@ -198,30 +195,6 @@ public class ActivatorsManager {
         } catch (IOException e) {
             logger.warning("Failed to save group '" + name + "'!");
             e.printStackTrace();
-        }
-    }
-
-    public void registerType(@NotNull ActivatorType type) {
-        if (types.containsKey(type.getType())) {
-            throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered!");
-        }
-        String name = type.getName().toUpperCase(Locale.ENGLISH);
-        if (typesAliases.containsKey(name)) {
-            ActivatorType preserved = typesAliases.get(name);
-            if (preserved.getName().equalsIgnoreCase(name)) {
-                throw new IllegalStateException("Activator type name '" + name + "' is already used for '" + preserved.getName() + "'!");
-            } else {
-                logger.warning("Activator type name '" + name + "' is already used as an alias for '" + preserved.getName() + "', overriding it.");
-            }
-        }
-        typesAliases.put(name, type);
-        types.put(type.getType(), type);
-        String[] aliases = Utils.getAliases(type);
-        if (aliases.length == 0) {
-            aliases = Utils.getAliases(type.getType());
-        }
-        for (String alias : aliases) {
-            typesAliases.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), type);
         }
     }
 
@@ -233,107 +206,12 @@ public class ActivatorsManager {
 
     public boolean activate(@NotNull Storage storage) {
         ActivatorType type = types.get(storage.getType());
-        if (!type.isEmpty()) {
+        if (type != null && !type.isEmpty()) {
             storage.init();
             type.activate(storage);
             return true;
         }
         return false;
-    }
-
-    @Nullable
-    public ActivatorType getType(@NotNull String name) {
-        return typesAliases.get(name.toUpperCase(Locale.ENGLISH));
-    }
-
-    @Nullable
-    public ActivatorType getType(@NotNull Class<? extends Activator> type) {
-        return types.get(type);
-    }
-
-    @NotNull
-    public static ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, @NotNull RaGenerator<ConfigurationSection> loader) {
-        return typeOf(type, name, creator, loader, false);
-    }
-
-    @NotNull
-    public static ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, @NotNull RaGenerator<ConfigurationSection> loader, boolean needBlock) {
-        return new SimpleType(type, name, creator, loader, needBlock);
-    }
-
-    private static class SimpleType implements ActivatorType {
-        private final Class<? extends Activator> type;
-        private final RaGenerator<Parameters> creator;
-        private final RaGenerator<ConfigurationSection> loader;
-        private final boolean needBlock;
-        private final String name;
-        private final Set<Activator> activators;
-
-        public SimpleType(Class<? extends Activator> type, String name, RaGenerator<Parameters> creator, RaGenerator<ConfigurationSection> loader, boolean needBlock) {
-            this.type = type;
-            this.creator = creator;
-            this.loader = loader;
-            this.needBlock = needBlock;
-            this.name = name;
-            this.activators = new HashSet<>();
-        }
-
-        @Override
-        public @NotNull Class<? extends Activator> getType() {
-            return type;
-        }
-
-        @Override
-        public @NotNull String getName() {
-            return name;
-        }
-
-        @Override
-        public @NotNull Set<Activator> getActivators() {
-            return activators;
-        }
-
-        @Override
-        public Activator createActivator(@NotNull ActivatorLogic logic, @NotNull Parameters params) {
-            return creator.apply(logic, params);
-        }
-
-        @Override
-        public Activator loadActivator(@NotNull ActivatorLogic logic, @NotNull ConfigurationSection cfg) {
-            return loader.apply(logic, cfg);
-        }
-
-        @Override
-        public boolean isNeedBlock() {
-            return needBlock;
-        }
-
-        @Override
-        public void addActivator(@NotNull Activator activator) {
-            activators.add(activator);
-        }
-
-        @Override
-        public void removeActivator(@NotNull Activator activator) {
-            activators.remove(activator);
-        }
-
-        @Override
-        public void clearActivators() {
-            activators.clear();
-        }
-
-        @Override
-        public void activate(@NotNull Storage storage) {
-            for (Activator activator : getActivators()) {
-                activator.executeActivator(storage);
-            }
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return activators.isEmpty();
-        }
     }
 
     public Search search() {
@@ -353,7 +231,7 @@ public class ActivatorsManager {
 
         @NotNull
         public Collection<Activator> byType(String typeStr) {
-            ActivatorType type = getType(typeStr);
+            ActivatorType type = types.get(typeStr);
             if (type == null) return Collections.emptySet();
             return Collections.unmodifiableCollection(type.getActivators());
         }
@@ -361,7 +239,7 @@ public class ActivatorsManager {
         @NotNull
         public Collection<Activator> byRawLocation(@NotNull World world, int x, int y, int z) {
             List<Activator> found = new ArrayList<>();
-            for (ActivatorType type : types.values()) {
+            for (ActivatorType type : types.types()) {
                 if (Locatable.class.isAssignableFrom(type.getType())) {
                     type.getActivators().stream().filter(act -> ((Locatable) act).isLocatedAt(world, x, y, z)).forEach(found::add);
                 }

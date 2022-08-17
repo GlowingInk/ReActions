@@ -24,7 +24,7 @@ public interface ActivatorType {
     @Nullable
     Activator loadActivator(@NotNull ActivatorLogic logic, @NotNull ConfigurationSection cfg);
 
-    // TODO Module name
+    // TODO Module name?
 
     boolean isNeedBlock();
 

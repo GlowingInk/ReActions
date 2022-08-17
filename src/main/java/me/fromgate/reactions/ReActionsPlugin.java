@@ -24,19 +24,16 @@ package me.fromgate.reactions;
 
 import me.fromgate.reactions.commands.Commander;
 import me.fromgate.reactions.commands.custom.FakeCommander;
-import me.fromgate.reactions.events.listeners.BukkitListener;
-import me.fromgate.reactions.events.listeners.GodModeListener;
-import me.fromgate.reactions.events.listeners.LogHandler;
-import me.fromgate.reactions.events.listeners.MoveListener;
-import me.fromgate.reactions.events.listeners.RaListener;
+import me.fromgate.reactions.events.listeners.*;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.holders.LocationHolder;
+import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.module.ModulesManager;
-import me.fromgate.reactions.module.basics.*;
+import me.fromgate.reactions.module.basics.BasicModule;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.Delayer;
@@ -52,6 +49,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     private ActivitiesRegistry activitiesRegistry;
+    private ActivatorTypesRegistry typesRegistry;
     private ActivatorsManager activatorsManager;
     private PlaceholdersManager placeholdersManager;
     private VariablesManager variablesManager;
@@ -63,7 +61,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.variablesManager = new VariablesManager();
         this.placeholdersManager = new PlaceholdersManager();
         this.activitiesRegistry = new ActivitiesRegistry();
-        this.activatorsManager = new ActivatorsManager(this, activitiesRegistry);
+        this.typesRegistry = new ActivatorTypesRegistry(this);
+        this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
         this.selectorsManager = new SelectorsManager();
         this.modulesManager = new ModulesManager(this, getClassLoader());
         ReActions.setPlatform(this);
@@ -98,6 +97,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         GodModeListener.init();
 
         new MetricsLite(this, 1894);
+    }
+
+    @Override
+    public ActivatorTypesRegistry getActivatorTypes() {
+        return typesRegistry;
     }
 
     @Override

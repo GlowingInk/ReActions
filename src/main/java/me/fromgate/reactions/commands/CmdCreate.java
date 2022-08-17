@@ -65,7 +65,7 @@ public class CmdCreate extends Cmd {
 
     private boolean addActivator(CommandSender sender, String typeStr, String name, String param) {
         ActivatorsManager activators = ReActions.getActivators();
-        ActivatorType type = activators.getType(typeStr);
+        ActivatorType type = ReActions.getActivatorTypes().get(typeStr);
         if (type == null) return false;
         Parameters params;
         if (sender instanceof Player player) {

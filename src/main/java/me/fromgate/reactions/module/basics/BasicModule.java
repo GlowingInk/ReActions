@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static me.fromgate.reactions.logic.activators.ActivatorsManager.typeOf;
+import static me.fromgate.reactions.logic.activators.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
     @Override

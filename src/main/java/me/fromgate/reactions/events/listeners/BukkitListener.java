@@ -126,7 +126,7 @@ public class BukkitListener implements Listener {
     // TODO: All the checks should be inside activator
     @EventHandler(ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
-        for (Activator activator : ReActions.getActivators().getType(SignActivator.class).getActivators()) {
+        for (Activator activator : ReActions.getActivatorTypes().get(SignActivator.class).getActivators()) {
             SignActivator signAct = (SignActivator) activator;
             if (!signAct.checkMask(event.getLines())) continue;
             Msg.MSG_SIGNFORBIDDEN.print(event.getPlayer(), '4', 'c', signAct.getLogic().getName());
