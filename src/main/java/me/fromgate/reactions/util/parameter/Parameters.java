@@ -231,7 +231,7 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    public boolean matchesAny(@NotNull Pattern@NotNull ... patterns) {
+    public boolean matchesAny(@NotNull Pattern @NotNull ... patterns) {
         for (Pattern pattern : patterns) {
             for (String param : params.keySet()) {
                 if (pattern.matcher(param).matches()) return true;
@@ -240,7 +240,7 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    public boolean matchesAny(@NotNull String@NotNull ... keys) {
+    public boolean matchesAny(@NotNull String @NotNull ... keys) {
         for (String key : keys) {
             for (String param : params.keySet()) {
                 if (param.matches(key)) return true;
@@ -264,7 +264,7 @@ public class Parameters implements Iterable<String> {
     }
 
     @Nullable
-    public String put(@NotNull String key, @NotNull String value) {
+    public String put(@NotNull String key, @NotNull String value) { // TODO Recalculate origin string?
         return params.put(key, value);
     }
 

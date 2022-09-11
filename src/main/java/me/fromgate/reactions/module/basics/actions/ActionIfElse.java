@@ -6,12 +6,13 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.parameter.Parameters;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
@@ -27,19 +28,30 @@ import java.util.Map;
  */
 public class ActionIfElse implements Action {
     // TODO: Maybe use some custom evaluator instead of freaking JS engine?
-    private static final ScriptEngine ENGINE;
-    static {
-        ScriptEngineManager scripts = new ScriptEngineManager();
-        ScriptEngine engine = scripts.getEngineByName("javascript");
-        if (engine == null) {
-            try {
-                scripts.registerEngineName("rhino", (ScriptEngineFactory) Class.forName("org.mozilla.javascript.engine.RhinoScriptEngineFactory").getConstructor().newInstance());
-                engine = scripts.getEngineByName("rhino");
-            } catch (Exception ex) {
-                ReActions.getLogger().warn("Unable to find JS rhino engine, IF_ELSE action will not work.", ex);
+    private static ScriptEngine engine = null;
+    private static boolean checked = false;
+
+    private static final String[] POSSIBLE_ENGINES = {"graal.js", "js", "javascript", "rhino", "nashorn"};
+
+    private static boolean engineCheck() {
+        if (checked) return engine != null;
+        checked = true;
+        ScriptEngine search = searchForEngine(new ScriptEngineManager());
+        if (search == null) {
+            RegisteredServiceProvider<ScriptEngineManager> registered = Bukkit.getServicesManager().getRegistration(ScriptEngineManager.class);
+            if (registered == null || (search = searchForEngine(registered.getProvider())) == null) {
+                ReActions.getLogger().warn("Couldn't find JS engine for IF_ELSE action.");
             }
         }
-        ENGINE = engine;
+        return (engine = search) != null;
+    }
+
+    private static ScriptEngine searchForEngine(ScriptEngineManager scriptsManager) {
+        for (String engineName : POSSIBLE_ENGINES) {
+            ScriptEngine engine = scriptsManager.getEngineByName(engineName);
+            if (engine != null) return engine;
+        }
+        return null;
     }
 
     private static boolean executeActivator(Player p, String condition, String paramStr) {
@@ -56,6 +68,7 @@ public class ActionIfElse implements Action {
 
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+        if (!engineCheck()) return false;
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {
@@ -68,7 +81,7 @@ public class ActionIfElse implements Action {
             String suffix = params.getString("suffix");
 
             try {
-                boolean result = (boolean) ENGINE.eval(condition, scriptContext);
+                boolean result = (boolean) engine.eval(condition, scriptContext);
                 if (!executeActivator(player, condition, (result) ? then_ : else_)
                         && !executeActions(context, (result) ? then_ : else_))
                     context.setVariable("ifelseresult" + suffix, (result) ? then_ : else_);

@@ -6,8 +6,6 @@ website: http://fromgate.me
 author: fromgate, fromgate@gmail.com
 softdepend: [Vault,WorldGuard,WorldEdit,ProtocolLib,PlaceholderAPI]
 description: Simplest scripting engine for Bukkit
-libraries:
-  - 'org.mozilla:rhino-engine:1.7.14'
 commands:
   reactions:
     aliases: [ra,rea,react]
