@@ -9,8 +9,18 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import javax.script.*;
-import java.util.*;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+import javax.script.SimpleScriptContext;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 2017-05-17.
@@ -24,10 +34,10 @@ public class ActionIfElse implements Action {
         if (engine == null) {
             try {
                 scripts.registerEngineName("rhino", (ScriptEngineFactory) Class.forName("org.mozilla.javascript.engine.RhinoScriptEngineFactory").getConstructor().newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
+                engine = scripts.getEngineByName("rhino");
+            } catch (Exception ex) {
+                ReActions.getLogger().warn("Unable to find JS rhino engine, IF_ELSE action will not work.", ex);
             }
-            engine = scripts.getEngineByName("rhino");
         }
         ENGINE = engine;
     }

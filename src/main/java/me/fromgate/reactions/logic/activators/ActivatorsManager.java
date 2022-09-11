@@ -14,12 +14,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 public class ActivatorsManager {
     private final Plugin plugin;
@@ -37,7 +45,7 @@ public class ActivatorsManager {
         this.types = types;
 
         actsFolder = new File(plugin.getDataFolder(), "Activators");
-        logger = react.getLogger();
+        logger = react.logger();
         search = new Search();
 
         activatorsNames = new CaseInsensitiveMap<>();
@@ -66,7 +74,7 @@ public class ActivatorsManager {
             try {
                 cfg.load(file);
             } catch (InvalidConfigurationException | IOException e) {
-                logger.warning("Cannot load '" + file.getName() + "' file!");
+                logger.warn("Cannot load '" + file.getName() + "' file!");
                 e.printStackTrace();
                 return;
             }
@@ -84,7 +92,7 @@ public class ActivatorsManager {
             for (String strType : cfg.getKeys(false)) {
                 ActivatorType type = types.get(strType);
                 if (type == null) {
-                    logger.warning("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'.");
+                    logger.warn("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'.");
                     // TODO Move failed activators to backup
                     continue;
                 }
@@ -94,7 +102,7 @@ public class ActivatorsManager {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
                     Activator activator = type.loadActivator(new ActivatorLogic(name, group, cfgActivator, activity), cfgActivator);
                     if (activator == null || !activator.isValid()) {
-                        logger.warning("Failed to load activator '" + name + "' in the group '" + group + "'.");
+                        logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'.");
                         continue;
                     }
                     addActivator(activator, false);
@@ -121,7 +129,7 @@ public class ActivatorsManager {
         ActivatorLogic logic = activator.getLogic();
         String name = logic.getName();
         if (activatorsNames.containsKey(name)) {
-            logger.warning("Failed to add activator '" + logic.getName() + "' - activator with this name already exists!");
+            logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists!");
             return false;
         }
         Objects.requireNonNull(types.get(activator.getClass())).addActivator(activator);
@@ -178,7 +186,7 @@ public class ActivatorsManager {
         try {
             file.createNewFile();
         } catch (IOException e) {
-            logger.warning("Failed to save group '" + name + "'!");
+            logger.warn("Failed to save group '" + name + "'!");
             e.printStackTrace();
             return;
         }
@@ -193,7 +201,7 @@ public class ActivatorsManager {
         try {
             cfg.save(file);
         } catch (IOException e) {
-            logger.warning("Failed to save group '" + name + "'!");
+            logger.warn("Failed to save group '" + name + "'!");
             e.printStackTrace();
         }
     }
@@ -240,7 +248,7 @@ public class ActivatorsManager {
         public Collection<Activator> byRawLocation(@NotNull World world, int x, int y, int z) {
             List<Activator> found = new ArrayList<>();
             for (ActivatorType type : types.types()) {
-                if (Locatable.class.isAssignableFrom(type.getType())) {
+                if (Locatable.class.isAssignableFrom(type.getActivatorClass())) {
                     type.getActivators().stream().filter(act -> ((Locatable) act).isLocatedAt(world, x, y, z)).forEach(found::add);
                 }
             }

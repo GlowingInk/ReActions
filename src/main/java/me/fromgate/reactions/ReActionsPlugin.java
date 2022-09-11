@@ -24,7 +24,11 @@ package me.fromgate.reactions;
 
 import me.fromgate.reactions.commands.Commander;
 import me.fromgate.reactions.commands.custom.FakeCommander;
-import me.fromgate.reactions.events.listeners.*;
+import me.fromgate.reactions.events.listeners.BukkitListener;
+import me.fromgate.reactions.events.listeners.GodModeListener;
+import me.fromgate.reactions.events.listeners.LogHandler;
+import me.fromgate.reactions.events.listeners.MoveListener;
+import me.fromgate.reactions.events.listeners.RaListener;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.holders.LocationHolder;
@@ -41,10 +45,11 @@ import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.message.BukkitMessenger;
 import me.fromgate.reactions.util.message.Msg;
-import org.bstats.bukkit.MetricsLite;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
@@ -96,7 +101,12 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
 
-        new MetricsLite(this, 1894);
+        new Metrics(this, 1894);
+    }
+
+    @Override
+    public Logger logger() {
+        return getSLF4JLogger();
     }
 
     @Override

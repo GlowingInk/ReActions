@@ -7,11 +7,11 @@ import me.fromgate.reactions.module.ModulesManager;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import org.bukkit.plugin.Plugin;
+import org.slf4j.Logger;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
-// TODO: This is a temporary solution, will be removed after 0.14.0 ASAP
+// TODO: This is a temporary solution, will be removed after 0.14.0
 public final class ReActions {
     private static Platform platform;
 
@@ -60,7 +60,7 @@ public final class ReActions {
     }
 
     public static Logger getLogger() {
-        return platform.getLogger();
+        return platform.logger();
     }
 
     public static Plugin getPlugin() {
@@ -75,7 +75,7 @@ public final class ReActions {
         VariablesManager getVariables();
         SelectorsManager getSelectors();
         ModulesManager getModules();
-        Logger getLogger();
+        Logger logger();
         Plugin getPlugin();
     }
 }

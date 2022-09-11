@@ -8,9 +8,14 @@ import me.fromgate.reactions.util.suppliers.RaGenerator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public class ActivatorTypesRegistry {
     private final Logger logger;
@@ -18,13 +23,13 @@ public class ActivatorTypesRegistry {
     private final Map<String, ActivatorType> typesAliases;
 
     public ActivatorTypesRegistry(ReActions.Platform platform) {
-        logger = platform.getLogger();
+        logger = platform.logger();
         types = new HashMap<>();
         typesAliases = new HashMap<>();
     }
 
     public void register(@NotNull ActivatorType type) {
-        if (types.containsKey(type.getType())) {
+        if (types.containsKey(type.getActivatorClass())) {
             throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered!");
         }
         String name = type.getName().toUpperCase(Locale.ENGLISH);
@@ -33,14 +38,14 @@ public class ActivatorTypesRegistry {
             if (preserved.getName().equalsIgnoreCase(name)) {
                 throw new IllegalStateException("Activator type name '" + name + "' is already used for '" + preserved.getName() + "'!");
             } else {
-                logger.warning("Activator type name '" + name + "' is already used as an alias for '" + preserved.getName() + "', overriding it.");
+                logger.warn("Activator type name '" + name + "' is already used as an alias for '" + preserved.getName() + "', overriding it.");
             }
         }
         typesAliases.put(name, type);
-        types.put(type.getType(), type);
+        types.put(type.getActivatorClass(), type);
         String[] aliases = Utils.getAliases(type);
         if (aliases.length == 0) {
-            aliases = Utils.getAliases(type.getType());
+            aliases = Utils.getAliases(type.getActivatorClass());
         }
         for (String alias : aliases) {
             typesAliases.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), type);
@@ -89,7 +94,7 @@ public class ActivatorTypesRegistry {
         }
 
         @Override
-        public @NotNull Class<? extends Activator> getType() {
+        public @NotNull Class<? extends Activator> getActivatorClass() {
             return type;
         }
 

@@ -11,17 +11,17 @@ public final class MathBase {
 
     static {
         for (DefaultFunctions func : DefaultFunctions.values())
-            MathBase.registerFunction(func.name(), func);
-        MathBase.registerConstant("e", Math.E);
-        MathBase.registerConstant("ln2", 0.693147180559945);
-        MathBase.registerConstant("ln10", 2.302585092994046);
-        MathBase.registerConstant("log2e", 1.442695040888963);
-        MathBase.registerConstant("euler", 0.577215664901533);
-        MathBase.registerConstant("log10e", 0.434294481903252);
-        MathBase.registerConstant("phi", 1.618033988749895);
-        MathBase.registerConstant("pi", Math.PI);
-        MathBase.registerConstant("dmax", Double.MAX_VALUE);
-        MathBase.registerConstant("dmin", Double.MIN_VALUE);
+            registerFunction(func.name(), func);
+        registerConstant("e", Math.E);
+        registerConstant("ln2", 0.693147180559945);
+        registerConstant("ln10", 2.302585092994046);
+        registerConstant("log2e", 1.442695040888963);
+        registerConstant("euler", 0.577215664901533);
+        registerConstant("log10e", 0.434294481903252);
+        registerConstant("phi", 1.618033988749895);
+        registerConstant("pi", Math.PI);
+        registerConstant("dmax", Double.MAX_VALUE);
+        registerConstant("dmin", Double.MIN_VALUE);
     }
 
     private MathBase() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}

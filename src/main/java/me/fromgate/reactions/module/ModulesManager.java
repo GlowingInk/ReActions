@@ -34,7 +34,7 @@ public class ModulesManager {
     }
 
     public void registerModule(Module module) {
-        platform.getLogger().info("Registering " + module.getName() + " module (by " + StringUtils.join(module.getAuthors(), ", ") + ")");
+        platform.logger().info("Registering " + module.getName() + " module (by " + StringUtils.join(module.getAuthors(), ", ") + ")");
         register("activators", module.getActivatorTypes(platform), ActivatorType::getName, platform.getActivatorTypes()::register);
         register("actions", module.getActions(platform), Action::getName, platform.getActivities()::registerAction);
         register("flags", module.getFlags(platform), Flag::getName, platform.getActivities()::registerFlag);
@@ -56,10 +56,10 @@ public class ModulesManager {
             }
         }
         if (!names.isEmpty()) {
-            platform.getLogger().info("Registered " + names.size() + " " + what + ": " + String.join(", ", names));
+            platform.logger().info("Registered " + names.size() + " " + what + ": " + String.join(", ", names));
         }
         if (failed != null && !failed.isEmpty()) {
-            failed.forEach(platform.getLogger()::warning);
+            failed.forEach(platform.logger()::warn);
         }
     }
 
@@ -69,7 +69,7 @@ public class ModulesManager {
         folder.mkdirs();
         for (File file : folder.listFiles()) {
             if (!file.getName().endsWith(".jar")) {
-                platform.getLogger().warning(file.getName() + " is not a jar archive - skipping it.");
+                platform.logger().warn(file.getName() + " is not a jar archive - skipping it.");
                 continue;
             }
             try (final JarInputStream stream = new JarInputStream(file.toURI().toURL().openStream())) {
