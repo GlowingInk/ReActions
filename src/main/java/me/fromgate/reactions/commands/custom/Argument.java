@@ -1,12 +1,11 @@
 package me.fromgate.reactions.commands.custom;
 
-import lombok.Getter;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.Set;
  * One part of arguments chain.
  */
 public class Argument {
-    private static final List<String> NUMBERS = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+    private static final List<String> NUMBERS = List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     private final String argument;
     private final Set<String> multiple;
@@ -43,7 +42,7 @@ public class Argument {
             default:
                 if (argument.contains("|") && !argument.contains("\\|")) {
                     this.type = Type.MULTIPLE_TEXT;
-                    multiple = new HashSet<>(Arrays.asList(argument.split("\\|")));
+                    multiple = new HashSet<>(List.of(argument.split("\\|")));
                 } else {
                     this.type = Type.TEXT;
                     if (argument.startsWith("\\~") || argument.equals("\\*")) argument = argument.substring(1);
@@ -60,23 +59,14 @@ public class Argument {
      * @return {@link ExecType#DEFAULT} if everything is OK, some error if not
      */
     public ExecType check(String arg) {
-        switch (type) {
-            case PLAYER:
-                return Utils.getPlayerExact(arg) != null ? ExecType.DEFAULT : ExecType.OFFLINE;
-
-            case TEXT:
-                return argument.equalsIgnoreCase(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
-
-            case MULTIPLE_TEXT:
-                return multiple.contains(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
-
-            case INTEGER:
-                return NumberUtils.INT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_INTEGER;
-
-            case FLOAT:
-                return NumberUtils.FLOAT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_FLOAT;
-        }
-        return ExecType.DEFAULT;
+        return switch (type) {
+            case PLAYER -> Bukkit.getPlayerExact(arg) != null ? ExecType.DEFAULT : ExecType.OFFLINE;
+            case TEXT -> argument.equalsIgnoreCase(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
+            case MULTIPLE_TEXT -> multiple.contains(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
+            case INTEGER -> NumberUtils.INT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_INTEGER;
+            case FLOAT -> NumberUtils.FLOAT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_FLOAT;
+            default -> ExecType.DEFAULT;
+        };
     }
 
     /**
@@ -87,16 +77,9 @@ public class Argument {
      */
     public void tabComplete(List<String> complete, String arg) {
         switch (type) {
-            case PLAYER:
-                StringUtil.copyPartialMatches(arg, Utils.getPlayersList(), complete);
-                return;
-            case TEXT:
-            case MULTIPLE_TEXT:
-                StringUtil.copyPartialMatches(arg, multiple, complete);
-                return;
-            case INTEGER:
-            case FLOAT:
-                StringUtil.copyPartialMatches(arg, NUMBERS, complete);
+            case PLAYER -> StringUtil.copyPartialMatches(arg, Utils.getPlayersList(), complete);
+            case TEXT, MULTIPLE_TEXT -> StringUtil.copyPartialMatches(arg, multiple, complete);
+            case INTEGER, FLOAT -> complete.addAll(NUMBERS);
         }
     }
 
@@ -111,23 +94,21 @@ public class Argument {
 
     @Override
     public String toString() {
-        switch (type) {
-            case TEXT:
-                return argument;
-            case MULTIPLE_TEXT:
-                return String.join(ChatColor.ITALIC + "|" + ChatColor.RESET, multiple);
-            default:
-                return ChatColor.ITALIC + argument;
-        }
+        return switch (type) {
+            case TEXT -> argument;
+            case MULTIPLE_TEXT -> String.join(ChatColor.ITALIC + "|" + ChatColor.RESET, multiple);
+            default -> ChatColor.ITALIC + argument;
+        };
     }
 
     private enum Type {
         TEXT(10), MULTIPLE_TEXT(8), PLAYER(6), INTEGER(3), FLOAT(4), ANY(1);
-        @Getter
         private final int priority;
 
         Type(int priority) {
             this.priority = priority;
         }
+
+        public int getPriority() {return this.priority;}
     }
 }

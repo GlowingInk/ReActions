@@ -223,7 +223,7 @@ public enum DefaultFunctions implements MathBase.Function {
     FORMATFLOAT {
         @Override
         public double eval(double a, double... num) {
-            return Math.round(a * 100) / 100;
+            return Math.round(a * 100) / 100d;
         }
     }
 }

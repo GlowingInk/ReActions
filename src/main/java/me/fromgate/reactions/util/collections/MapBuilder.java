@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapBuilder<K, V> {
-    private Map<K, V> map;
+    private final Map<K, V> map;
 
     public MapBuilder() {
         this.map = new HashMap<>();

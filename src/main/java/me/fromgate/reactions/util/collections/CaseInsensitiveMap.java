@@ -1,12 +1,8 @@
 package me.fromgate.reactions.util.collections;
 
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 /**
  * Basically this is a wrapper for HashMap<String, V> which allows to ignore case of the string key
@@ -98,7 +94,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @SuppressWarnings("unchecked")
     private static class KeyedValue<V> implements Map.Entry<String, V> {
-        private static final KeyedValue EMPTY = new KeyedValue(null, null);
+        private static final KeyedValue<?> EMPTY = new KeyedValue<>(null, null);
 
         private final String key;
         private V value;
@@ -126,7 +122,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
         @Override
         public boolean equals(Object o) {
-            return value == ((KeyedValue) o).value || value.equals(((KeyedValue) o).value);
+            return value == ((KeyedValue<V>) o).value || value.equals(((KeyedValue<V>) o).value);
         }
 
         @Override
@@ -172,7 +168,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     private class KeySet extends InternalSet<String> {
         @Override
-        public Iterator<String> iterator() {
+        public @NotNull Iterator<String> iterator() {
             return new KeyIterator();
         }
 
@@ -186,7 +182,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     private class ValueSet extends InternalSet<V> {
         @Override
-        public Iterator<V> iterator() {
+        public @NotNull Iterator<V> iterator() {
             return new ValueIterator();
         }
 
@@ -200,7 +196,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     private class EntrySet extends InternalSet<Entry<String, V>> {
         @Override
-        public Iterator<Entry<String, V>> iterator() {
+        public @NotNull Iterator<Entry<String, V>> iterator() {
             return new EntrySet.EntryIterator();
         }
 

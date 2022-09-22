@@ -1,9 +1,9 @@
 package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.actions.Actions;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.flags.Flags;
+import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
@@ -33,7 +33,7 @@ public class CmdAdd extends Cmd {
             switch (arg2) {
                 case "a":
                 case "action":
-                    if (addAction(arg1, arg3, param)) {
+                    if (addAction(act, arg3, param)) {
                         Msg.CMD_ACTADDED.print(sender, arg3 + " (" + param + ")");
                         break;
                     } else {
@@ -42,7 +42,7 @@ public class CmdAdd extends Cmd {
                     }
                 case "r":
                 case "reaction":
-                    if (addReaction(arg1, arg3, param)) {
+                    if (addReaction(act, arg3, param)) {
                         Msg.CMD_REACTADDED.print(sender, arg3 + " (" + param + ")");
                         break;
                     } else {
@@ -51,7 +51,7 @@ public class CmdAdd extends Cmd {
                     }
                 case "f":
                 case "flag":
-                    if (addFlag(arg1, arg3, param)) {
+                    if (addFlag(act, arg3, param)) {
                         Msg.CMD_FLAGADDED.print(sender, arg3 + " (" + param + ")");
                         break;
                     } else {
@@ -62,35 +62,36 @@ public class CmdAdd extends Cmd {
                     Msg.CMD_UNKNOWNBUTTON.print(sender, arg2);
                     return true;
             }
-            ReActions.getActivators().saveActivators(act.getLogic().getGroup());
+            ReActions.getActivators().saveGroup(act.getLogic().getGroup());
         } else {
             Msg.CMD_UNKNOWNADD.print(sender, 'c');
         }
         return true;
     }
 
-    private boolean addAction(String activator, String act, String param) {
-        if (Actions.isValid(act)) {
-            ReActions.getActivators().addAction(activator, act, param);
+    private boolean addAction(Activator activator, String act, String param) {
+        Action action = ReActions.getActivities().getAction(act);
+        if (action != null) {
+            activator.getLogic().addAction(action, param);
             return true;
         }
         return false;
     }
 
-    private boolean addReaction(String activator, String act, String param) {
-        if (Actions.isValid(act)) {
-            ReActions.getActivators().addReaction(activator, act, param);
+    private boolean addReaction(Activator activator, String act, String param) {
+        Action action = ReActions.getActivities().getAction(act);
+        if (action != null) {
+            activator.getLogic().addReaction(action, param);
             return true;
         }
         return false;
     }
 
-    private boolean addFlag(String activator, String fl, String param) {
-        String flag = fl.replaceFirst("!", "");
-        boolean not = fl.startsWith("!");
-        if (Flags.isValid(flag)) {
-            // TODO: все эти проверки вынести в соответствующие классы
-            ReActions.getActivators().addFlag(activator, flag, param, not);
+    private boolean addFlag(Activator activator, String fl, String param) {
+        boolean invert = fl.startsWith("!");
+        Flag flag = ReActions.getActivities().getFlag(invert ? fl.substring(1) : fl);
+        if (flag != null) {
+            activator.getLogic().addFlag(flag, param, invert);
             return true;
         }
         return false;

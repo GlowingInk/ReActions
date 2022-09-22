@@ -1,10 +1,8 @@
 package me.fromgate.reactions.util.location;
 
-import lombok.Getter;
 import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Location;
 
-@Getter
 public class Cuboid {
 
     private final String world;
@@ -60,6 +58,20 @@ public class Cuboid {
         double y = loc.getY();
         return (y >= yMin && y <= yMax) || (head && (y + 1.75 >= yMin && y + 1.75 <= yMax));
     }
+
+    public String getWorld() {return this.world;}
+
+    public int getXMin() {return this.xMin;}
+
+    public int getXMax() {return this.xMax;}
+
+    public int getZMin() {return this.zMin;}
+
+    public int getZMax() {return this.zMax;}
+
+    public Integer getYMin() {return this.yMin;}
+
+    public Integer getYMax() {return this.yMax;}
 
     // TODO: toString method
 }

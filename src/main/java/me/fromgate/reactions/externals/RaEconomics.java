@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.externals;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,19 +29,21 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.Map;
 
-@UtilityClass
-public class RaEconomics {
-    public boolean isEconomyFound() {
+@Deprecated
+public final class RaEconomics {
+    private RaEconomics() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean isEconomyFound() {
         return RaVault.isEconomyConnected();
     }
 
-    public boolean hasMoney(String account, double amount, String worldName) {
+    public static boolean hasMoney(String account, double amount, String worldName) {
         if (RaVault.isEconomyConnected()) return RaVault.hasMoney(account, worldName, amount);
         return false;
     }
 
 
-    public String creditAccount(String target, String source, String amountStr, String worldName) {
+    public static String creditAccount(String target, String source, String amountStr, String worldName) {
         if (target.isEmpty()) return "";
         if (!NumberUtils.isFloat(amountStr)) return "";
         double amount = Double.parseDouble(amountStr);
@@ -53,7 +54,7 @@ public class RaEconomics {
         return "";
     }
 
-    public String debitAccount(String accountFrom, String accountTo, String amountStr, String worldName) {
+    public static String debitAccount(String accountFrom, String accountTo, String amountStr, String worldName) {
         if (accountFrom.isEmpty()) return "";
         if (!NumberUtils.isFloat(amountStr)) return "";
         double amount = Double.parseDouble(amountStr);
@@ -64,12 +65,12 @@ public class RaEconomics {
         return "";
     }
 
-    public Map<String, String> getBalances(Player p) {
+    public static Map<String, String> getBalances(Player p) {
         if (RaVault.isEconomyConnected()) return RaVault.getAllBalances(p.getName());
         return Collections.emptyMap();
     }
 
-    public String format(double amount, String worldName) {
+    public static String format(double amount, String worldName) {
         if (RaVault.isEconomyConnected())
             return RaVault.format(amount, worldName.isEmpty() ? Bukkit.getWorlds().get(0).getName() : worldName);
         return Double.toString(amount);

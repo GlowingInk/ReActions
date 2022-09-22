@@ -12,7 +12,7 @@ import java.util.Locale;
 
 /**
  * Math evaluator for "calc'n'go". Supports functions, constants
- * More on https://github.com/imDaniX/EzMath
+ * More on <a href="https://github.com/imDaniX/EzMath">EzMath</a>
  */
 public class MathEvaluator {
     private final String expression;
@@ -54,7 +54,7 @@ public class MathEvaluator {
 
     private double firstImportance() {
         if (tryNext('-')) return -firstImportance(); // "-5", "--5"..
-        if (tryNext('+')) return firstImportance(); // "+5", "++5"..
+        while (tryNext('+')) ; // "+5", "++5"..
         double x = 0;
         int start = pointer;
         if (tryNext('(')) {

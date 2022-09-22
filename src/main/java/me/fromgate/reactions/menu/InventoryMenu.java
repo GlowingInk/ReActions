@@ -1,7 +1,7 @@
 package me.fromgate.reactions.menu;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.StoragesManager;
+import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class InventoryMenu implements Listener {
     // TODO: Some things are weird, needs refactoring
 
-    private static Map<String, VirtualInventory> menu = new HashMap<>();
+    private static final Map<String, VirtualInventory> menu = new HashMap<>();
     private static Map<String, String> tempvars;
 
     public static void init() {

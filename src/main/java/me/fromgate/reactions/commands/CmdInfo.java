@@ -1,9 +1,9 @@
 package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.ActivatorLogic;
-import me.fromgate.reactions.logic.flags.StoredFlag;
+import me.fromgate.reactions.logic.activity.flags.StoredFlag;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
@@ -47,21 +47,21 @@ public class CmdInfo extends Cmd {
         }
 
         Msg.printMSG(sender, "&5☆ &d&l" + Msg.MSG_ACTINFOTITLE.getText("NOCOLOR") + " &r&5☆");
-        Msg.printMSG(sender, "msg_actinfo", base.getName(), act.getType(), base.getGroup());
+        Msg.printMSG(sender, "msg_actinfo", base.getName(), act.getClass().getSimpleName(), base.getGroup());
         Msg.printMSG(sender, "msg_actinfo2", base.getFlags().size(), base.getActions().size(), base.getReactions().size());
         if (f && (!base.getFlags().isEmpty())) {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getFlags().size(); i++) {
                 StoredFlag flag = base.getFlags().get(i);
-                flg.add((flag.isInverted() ? "&4! &e" : "  &e") + flag.getFlagName() + " &3= &a" + flag.getValue());
+                flg.add((flag.isInverted() ? "&4! &e" : "  &e") + flag.getFlag().getName() + " &3= &a" + flag.getParameters());
             }
             Msg.printPage(sender, flg, Msg.LST_FLAGS, 1, 100, true);
         }
         if (a && (!base.getActions().isEmpty())) {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getActions().size(); i++) {
-                String action = base.getActions().get(i).getActionName();
-                String param = base.getActions().get(i).getValue();
+                String action = base.getActions().get(i).getAction().getName();
+                String param = base.getActions().get(i).getParameters();
                 if (action.equalsIgnoreCase("tp")) {
                     Location loc = LocationUtils.parseCoordinates(param);//Util.parseLocation(param);
                     if (loc != null) param = LocationUtils.locationToStringFormatted(loc);
@@ -73,8 +73,8 @@ public class CmdInfo extends Cmd {
         if (r && (!base.getReactions().isEmpty())) {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getReactions().size(); i++) {
-                String action = base.getReactions().get(i).getActionName();
-                String param = base.getReactions().get(i).getValue();
+                String action = base.getReactions().get(i).getAction().getName();
+                String param = base.getReactions().get(i).getParameters();
                 if (action.equalsIgnoreCase("tp")) {
                     Location loc = LocationUtils.parseCoordinates(param);
                     if (loc != null) param = LocationUtils.locationToStringFormatted(loc);

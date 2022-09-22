@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.holders;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
@@ -39,22 +38,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@UtilityClass
-public class LocationHolder {
-    private Map<String, Location> locs = new HashMap<>();
-    private Map<String, TpLocation> tports = new HashMap<>();
+public final class LocationHolder {
+    private static final Map<String, Location> locs = new HashMap<>();
+    private static final Map<String, TpLocation> tports = new HashMap<>();
 
-    public void hold(Player p, Location loc) {
+    private LocationHolder() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void hold(Player p, Location loc) {
         if (p == null) return;
         if (loc == null) loc = p.getTargetBlock(null, 100).getLocation();
         locs.put(p.getName(), loc);
     }
 
-    public Location getHeld(Player p) {
+    public static Location getHeld(Player p) {
         return locs.get(p.getName());
     }
 
-    public void saveLocs() {
+    public static void saveLocs() {
         if (tports.size() > 0) {
             File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "locations.yml");
             YamlConfiguration lcs = new YamlConfiguration();
@@ -71,7 +71,7 @@ public class LocationHolder {
         }
     }
 
-    public void loadLocs() {
+    public static void loadLocs() {
         tports.clear();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "locations.yml");
         YamlConfiguration lcs = new YamlConfiguration();
@@ -86,30 +86,30 @@ public class LocationHolder {
     }
 
     @SuppressWarnings("unused")
-    public boolean containsTpLoc(String locstr) {
+    public static boolean containsTpLoc(String locstr) {
         return tports.containsKey(locstr);
     }
 
-    public Location getTpLoc(String locstr) {
+    public static Location getTpLoc(String locstr) {
         if (tports.containsKey(locstr)) return tports.get(locstr).getLocation();
         return null;
     }
 
-    public int sizeTpLoc() {
+    public static int sizeTpLoc() {
         return tports.size();
     }
 
-    public boolean addTpLoc(String id, Location loc) {
+    public static boolean addTpLoc(String id, Location loc) {
         if (Utils.isStringEmpty(id)) return false;
         tports.put(id, new TpLocation(loc));
         return true;
     }
 
-    public boolean removeTpLoc(String id) {
+    public static boolean removeTpLoc(String id) {
         return tports.remove(id) != null;
     }
 
-    public void printLocList(CommandSender sender, int pageNum, int linesPerPage) {
+    public static void printLocList(CommandSender sender, int pageNum, int linesPerPage) {
         List<String> locList = new ArrayList<>();
         for (String loc : tports.keySet()) {
             locList.add("&3" + loc + " &a" + tports.get(loc).toString());

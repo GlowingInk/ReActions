@@ -32,48 +32,60 @@ import me.fromgate.reactions.events.listeners.RaListener;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.holders.LocationHolder;
-import me.fromgate.reactions.logic.ActivatorsManager;
+import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
+import me.fromgate.reactions.logic.activators.ActivatorsManager;
+import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
+import me.fromgate.reactions.module.ModulesManager;
+import me.fromgate.reactions.module.basics.BasicModule;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
-import me.fromgate.reactions.playerselector.SelectorsManager;
+import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.message.BukkitMessenger;
 import me.fromgate.reactions.util.message.Msg;
-import org.bstats.bukkit.MetricsLite;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
+    private ActivitiesRegistry activitiesRegistry;
+    private ActivatorTypesRegistry typesRegistry;
     private ActivatorsManager activatorsManager;
     private PlaceholdersManager placeholdersManager;
     private VariablesManager variablesManager;
+    private SelectorsManager selectorsManager;
+    private ModulesManager modulesManager;
 
     @Override
     public void onLoad() {
         this.variablesManager = new VariablesManager();
         this.placeholdersManager = new PlaceholdersManager();
-        this.activatorsManager = new ActivatorsManager();
+        this.activitiesRegistry = new ActivitiesRegistry();
+        this.typesRegistry = new ActivatorTypesRegistry(this);
+        this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
+        this.selectorsManager = new SelectorsManager();
+        this.modulesManager = new ModulesManager(this, getClassLoader());
         ReActions.setPlatform(this);
+        modulesManager.registerModule(new BasicModule());
     }
 
     @Override
     public void onEnable() {
-        // TODO: More OOP style
+        // TODO god why
         Cfg.load();
         Cfg.save();
         Msg.init("ReActions", new BukkitMessenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
-
-        if (!getDataFolder().exists()) getDataFolder().mkdirs();
+        getDataFolder().mkdirs();
 
         Commander.init(this);
         TimersManager.init();
-        this.activatorsManager.loadActivators();
+        this.activatorsManager.loadGroup("", false);
         FakeCommander.init();
-        SelectorsManager.init();
         Externals.init();
         RaVault.init();
         WaitingManager.init();
@@ -89,12 +101,27 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
 
-        new MetricsLite(this, 1894);
+        new Metrics(this, 1894);
+    }
+
+    @Override
+    public Logger logger() {
+        return getSLF4JLogger();
+    }
+
+    @Override
+    public ActivatorTypesRegistry getActivatorTypes() {
+        return typesRegistry;
     }
 
     @Override
     public ActivatorsManager getActivators() {
         return activatorsManager;
+    }
+
+    @Override
+    public ActivitiesRegistry getActivities() {
+        return activitiesRegistry;
     }
 
     @Override
@@ -108,7 +135,17 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     }
 
     @Override
+    public SelectorsManager getSelectors() {
+        return selectorsManager;
+    }
+
+    @Override
     public Plugin getPlugin() {
         return this;
+    }
+
+    @Override
+    public ModulesManager getModules() {
+        return modulesManager;
     }
 }

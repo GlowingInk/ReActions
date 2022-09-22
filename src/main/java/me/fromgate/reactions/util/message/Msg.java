@@ -22,10 +22,6 @@
 
 package me.fromgate.reactions.util.message;
 
-import me.fromgate.reactions.logic.actions.Actions;
-import me.fromgate.reactions.logic.activators.ActivatorType;
-import me.fromgate.reactions.logic.flags.Flags;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+@Deprecated
 public enum Msg {
     // TODO: Clean freaking up
     // TODO: Simpler system for messages
@@ -480,10 +477,10 @@ public enum Msg {
     private static boolean debugMode = false;
     private static String language = "default";
     private static String pluginName;
-    private static Set onceLog = new HashSet();
+    private static final Set<String> onceLog = new HashSet<>();
     private String message;
-    private Character color1;
-    private Character color2;
+    private final Character color1;
+    private final Character color2;
 
     Msg(String msg) {
         message = msg;
@@ -496,20 +493,6 @@ public enum Msg {
         this.color1 = color1;
         this.color2 = color2;
     }
-	/*
-	public boolean tip(int seconds, CommandSender sender, Object... s) {
-		if (sender == null) return Message.LNG_PRINT_FAIL.log(this.name());
-		final Player player = sender instanceof Player ? (Player) sender : null;
-		final String message = getText(s);
-		if (player == null) sender.sendMessage(message);
-		else for (int i = 0; i < seconds; i++)
-			Server.getInstance().getScheduler().scheduleDelayedTask(new Runnable() {
-				public void run() {
-					if (player.isOnline()) player.sendTip(message);
-				}
-			}, 20 * i);
-		return true;
-	} */
 
     Msg(String msg, char color) {
         this(msg, color, color);
@@ -517,24 +500,6 @@ public enum Msg {
 
     public static String colorize(String text) {
         return messenger.colorize(text);
-    }
-
-    /**
-     * This is my favorite debug routine :) I use it everywhere to print out variable values
-     *
-     * @param s - array of any object that you need to print out.
-     *          Example:
-     *          Message.BC ("variable 1:",var1,"variable 2:",var2)
-     */
-    public static void BC(Object... s) {
-        if (!debugMode) return;
-        if (s.length == 0) return;
-        StringBuilder sb = new StringBuilder("&3[").append(pluginName).append("]&f ");
-        for (Object str : s) {
-            sb.append(str == null ? "null" : str.toString()).append(" ");
-        }
-
-        messenger.broadcast(colorize(sb.toString().trim()));
     }
 
     public static String clean(String str) {
@@ -553,7 +518,6 @@ public enum Msg {
         initMessages();
         if (save) saveMessages();
         LNG_CONFIG.debug(Msg.values().length, language, true, debugMode);
-        testRequiredMessages();
     }
 
     private static void initMessages() {
@@ -565,35 +529,6 @@ public enum Msg {
                 Msg.LNG_TRANSLATION_NOT_FOUND.log(key.name());
             }
         }
-    }
-
-    private static void testRequiredMessages() {
-        String key;
-        for (ActivatorType activator : ActivatorType.values()) {
-            key = "ACTIVATOR_" + activator.name().toUpperCase(Locale.ENGLISH);
-            if (!exists(key)) {
-                Msg.LNG_MISSED_ACTIVATOR_DESC.log(key);
-            }
-        }
-        for (Actions action : Actions.values()) {
-            key = "ACTION_" + action.name().toUpperCase(Locale.ENGLISH);
-            if (!exists(key)) {
-                Msg.LNG_FAIL_ACTION_DESC.log(key);
-            }
-        }
-        for (Flags flag : Flags.values()) {
-            key = "FLAG_" + flag.name().toUpperCase(Locale.ENGLISH);
-            if (!exists(key)) {
-                Msg.LNG_FAIL_FLAG_DESC.log(key);
-            }
-        }
-    }
-
-    private static boolean exists(String key) {
-        for (Msg m : values()) {
-            if (m.name().equalsIgnoreCase(key)) return true;
-        }
-        return false;
     }
 
     private static void saveMessages() {
@@ -609,7 +544,7 @@ public enum Msg {
      *
      * @param s - array of any object that you need to join.
      */
-    public static String join(Object... s) {
+    private static String join(Object... s) {
         StringBuilder sb = new StringBuilder();
         for (Object o : s) {
             if (sb.length() > 0) sb.append(" ");
@@ -618,7 +553,7 @@ public enum Msg {
         return sb.toString();
     }
 
-    public static void printLines(Object sender, Collection<String> lines) {
+    private static void printLines(Object sender, Collection<String> lines) {
         for (String l : lines) {
             messenger.print(sender, colorize(l));
         }
@@ -630,11 +565,6 @@ public enum Msg {
 
     public static void printPage(Object sender, Collection<String> lines, Msg title, int pageNum, int linesPerPage, boolean showNum) {
         printPage(sender, lines, title, null, pageNum, linesPerPage, showNum);
-    }
-
-    public static void printPage(Object sender, Collection<String> lines, Msg title, Msg footer, int pageNum, int linesPerPage) {
-        printPage(sender, lines, title, footer, pageNum, linesPerPage, false);
-
     }
 
     public static void printPage(Object sender, Collection<String> lines, Msg title, Msg footer, int pageNum, int linesPerPage, boolean showNum) {
@@ -668,10 +598,6 @@ public enum Msg {
         return null;
     }
 
-    public static String enDis(boolean value) {
-        return value ? Msg.ENABLED.toString() : Msg.DISABLED.toString();
-    }
-
     public static boolean printMSG(Object sender, String key, Object... s) {
         Msg m = getByName(key.toUpperCase(Locale.ENGLISH));
         if (m == null) {
@@ -682,7 +608,6 @@ public enum Msg {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void logOnce(String key, Object... s) {
         if (onceLog.contains(key)) return;
         onceLog.add(key);
@@ -797,8 +722,8 @@ public enum Msg {
                 if (!fullFloat) s = fmt.format(key);
             }
 
-            String from = new StringBuilder("%").append(count).append("%").toString();
-            String to = skipDefaultColors ? s : new StringBuilder("&").append(colors[1]).append(s).append("&").append(colors[0]).toString();
+            String from = "%" + count + "%";
+            String to = skipDefaultColors ? s : "&" + colors[1] + s + "&" + colors[0];
             str = str.replace(from, to);
             count++;
         }

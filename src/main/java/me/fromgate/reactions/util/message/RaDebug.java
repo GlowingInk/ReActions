@@ -22,26 +22,26 @@
 
 package me.fromgate.reactions.util.message;
 
-import lombok.experimental.UtilityClass;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-@UtilityClass
-public class RaDebug {
-    private Map<UUID, Boolean> debug = new HashMap<>();
+public final class RaDebug {
+    private static final Object2BooleanMap<UUID> debug = new Object2BooleanOpenHashMap<>();
 
-    public void setPlayerDebug(Player p, boolean debugMode) {
+    private RaDebug() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void setPlayerDebug(Player p, boolean debugMode) {
         debug.put(p.getUniqueId(), debugMode);
     }
 
-    public void offPlayerDebug(Player p) {
-        debug.remove(p.getUniqueId());
+    public static void offPlayerDebug(Player p) {
+        debug.removeBoolean(p.getUniqueId());
     }
 
-    public boolean checkFlagAndDebug(Player p, boolean flag) {
+    public static boolean checkFlagAndDebug(Player p, boolean flag) {
         if ((p != null) && debug.containsKey(p.getUniqueId())) return (debug.get(p.getUniqueId()));
         return flag;
     }

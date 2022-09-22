@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util.location;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.Cfg;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -31,13 +30,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Move it to LocationHolder
-@UtilityClass
-public class PushBack {
+public final class PushBack {
 
-    private Map<String, Location> prevLocs1 = new HashMap<>();
-    private Map<String, Location> prevLocs2 = new HashMap<>();
+    private static final Map<String, Location> prevLocs1 = new HashMap<>();
+    private static final Map<String, Location> prevLocs2 = new HashMap<>();
 
-    public boolean teleportToPrev(Player player, int prev) {
+    private PushBack() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean teleportToPrev(Player player, int prev) {
         Location loc;
         if (prev <= 1) loc = getPlayerPrevLoc1(player);
         else {
@@ -48,7 +48,7 @@ public class PushBack {
         return player.teleport(loc);
     }
 
-    private double distance(Location loc1, Location loc2) {
+    private static double distance(Location loc1, Location loc2) {
         if (loc1.getWorld() != loc2.getWorld()) return 1000;
         if (Cfg.horizontalPushback) {
             double dx = loc2.getX() - loc1.getX();
@@ -57,7 +57,7 @@ public class PushBack {
         } else return loc1.distanceSquared(loc2);
     }
 
-    public void rememberLocations(Player player, Location from, Location to) {
+    public static void rememberLocations(Player player, Location from, Location to) {
         Location prev1 = getPlayerPrevLoc1(player);
         if (prev1 == null) {
             setPlayerPrevLoc1(player, from);
@@ -69,24 +69,24 @@ public class PushBack {
         setPlayerPrevLoc1(player, from);
     }
 
-    private void setPlayerPrevLoc1(Player player, Location prev1) {
+    private static void setPlayerPrevLoc1(Player player, Location prev1) {
         prevLocs1.put(player.getName(), prev1);
     }
 
-    private void setPlayerPrevLoc2(Player player, Location prev2) {
+    private static void setPlayerPrevLoc2(Player player, Location prev2) {
         prevLocs2.put(player.getName(), prev2);
     }
 
-    public void clear(Player player) {
+    public static void clear(Player player) {
         prevLocs1.remove(player.getName());
         prevLocs2.remove(player.getName());
     }
 
-    private Location getPlayerPrevLoc1(Player player) {
+    private static Location getPlayerPrevLoc1(Player player) {
         return prevLocs1.getOrDefault(player.getName(), null);
     }
 
-    private Location getPlayerPrevLoc2(Player player) {
+    private static Location getPlayerPrevLoc2(Player player) {
         return prevLocs2.getOrDefault(player.getName(), null);
     }
 }

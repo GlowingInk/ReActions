@@ -1,11 +1,10 @@
 package me.fromgate.reactions.time.waiter;
 
-import lombok.Getter;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.actions.Actions;
-import me.fromgate.reactions.logic.actions.StoredAction;
+import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.data.RaContext;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -16,22 +15,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class WaitTask implements Runnable {
-    @Getter
     private final String taskId;
-    @Getter
     private String playerName;
-    @Getter
     private boolean executed;
     private List<StoredAction> actions;
-    private boolean isAction;
     private long executionTime;
     private BukkitTask task;
 
-    public WaitTask(String playerName, List<StoredAction> actions, boolean isAction, long time) {
+    public WaitTask(String playerName, List<StoredAction> actions, long time) {
         this.taskId = UUID.randomUUID().toString();
         this.playerName = playerName;
         this.actions = actions;
-        this.isAction = isAction;
         this.executed = false;
         this.executionTime = System.currentTimeMillis() + time;
         task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, TimeUtils.timeToTicks(time));
@@ -56,7 +50,7 @@ public class WaitTask implements Runnable {
         Player p = playerName == null ? null : Bukkit.getPlayerExact(playerName);
         if (System.currentTimeMillis() > executionTime + WaitingManager.getTimeLimit()) this.executed = true;
         if (p == null && playerName != null) return;
-        Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> Actions.executeActions(RaContext.EMPTY_CONTEXT, actions, isAction));
+        Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> actions.forEach(action -> action.getAction().execute(RaContext.EMPTY_CONTEXT, action.getParameters())));
         this.executed = true;
     }
 
@@ -72,7 +66,6 @@ public class WaitTask implements Runnable {
     public void save(YamlConfiguration cfg) {
         cfg.set(this.taskId + ".player", this.playerName == null ? "" : this.playerName);
         cfg.set(this.taskId + ".execution-time", this.executionTime);
-        cfg.set(this.taskId + ".actions.action", this.isAction);
         List<String> actionList = new ArrayList<>();
         for (StoredAction a : this.actions) {
             actionList.add(a.toString());
@@ -83,16 +76,22 @@ public class WaitTask implements Runnable {
     public void load(YamlConfiguration cfg, String root) {
         this.playerName = cfg.getString(root + ".player");
         this.executionTime = cfg.getLong(root + ".execution-time", 0);
-        this.isAction = cfg.getBoolean(root + ".actions.action", true);
         List<String> actionList = cfg.getStringList(root + ".actions.list");
         this.actions = new ArrayList<>();
         for (String a : actionList) {
             if (a.contains("=")) {
-                String av = a.substring(0, a.indexOf("="));
-                String vv = a.substring(a.indexOf("=") + 1);
-                this.actions.add(new StoredAction(av, vv));
+                String[] split = a.split("=", 2);
+                if (split.length < 2) continue;
+                Action action = ReActions.getActivities().getAction(split[0]);
+                if (action == null) continue;
+                this.actions.add(new StoredAction(action, split[1]));
             }
         }
     }
 
+    public String getTaskId() {return this.taskId;}
+
+    public String getPlayerName() {return this.playerName;}
+
+    public boolean isExecuted() {return this.executed;}
 }

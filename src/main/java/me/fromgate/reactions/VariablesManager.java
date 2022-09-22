@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions;
 
-import me.fromgate.reactions.logic.StoragesManager;
+import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
@@ -33,6 +33,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +92,7 @@ public class VariablesManager {
         if (player == null || player.isEmpty()) return;
         UUID id = Utils.getUUID(player);
         if (id == null) return;
-        File f = new File(varDir + File.separator + id.toString() + ".yml");
+        File f = new File(varDir + File.separator + id + ".yml");
         for (String key : vars.keySet()) {
             if (key.contains(player)) cfg.set(key, vars.get(key));
         }
@@ -145,8 +147,9 @@ public class VariablesManager {
             File dir = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables");
             if (!dir.exists()) return;
             for (File f : dir.listFiles()) {
-                if (!f.isDirectory()) {
-                    if (f.length() == 0) {
+                BasicFileAttributes fileAttributes = Files.readAttributes(f.toPath(), BasicFileAttributes.class);
+                if (!fileAttributes.isDirectory()) {
+                    if (fileAttributes.size() == 0) {
                         f.delete();
                         deleted++;
                         continue;

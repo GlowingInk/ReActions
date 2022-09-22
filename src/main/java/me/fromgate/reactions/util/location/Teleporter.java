@@ -23,7 +23,6 @@
 
 package me.fromgate.reactions.util.location;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -31,19 +30,20 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-@UtilityClass
-public class Teleporter {
-    private final Map<Player, PlayerTeleportEvent> events = new HashMap<>();
+public final class Teleporter {
+    private static final Map<Player, PlayerTeleportEvent> events = new HashMap<>();
 
-    public void startTeleport(PlayerTeleportEvent event) {
+    private Teleporter() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void startTeleport(PlayerTeleportEvent event) {
         events.put(event.getPlayer(), event);
     }
 
-    public void stopTeleport(Player player) {
+    public static void stopTeleport(Player player) {
         events.remove(player);
     }
 
-    public void teleport(Player player, Location location) {
+    public static void teleport(Player player, Location location) {
         if (location == null) return;
         PlayerTeleportEvent event = events.get(player);
         if (event != null)

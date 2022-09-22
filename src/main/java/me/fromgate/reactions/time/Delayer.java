@@ -22,28 +22,31 @@
 
 package me.fromgate.reactions.time;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.data.RaContext;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-@UtilityClass
-public class Delayer {
+public final class Delayer {
     // TODO: I don't like anything here...
+    private static final DateFormat HH_MM_SS = new SimpleDateFormat("HH:mm:ss");
 
-    private Map<String, Long> delays = new HashMap<>();
+    private static final Map<String, Long> delays = new HashMap<>();
 
-    public void save() {
+    private Delayer() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void save() {
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
         for (String key : delays.keySet()) {
@@ -54,7 +57,7 @@ public class Delayer {
         FileUtils.saveCfg(cfg, f, "Failed to save delays configuration file");
     }
 
-    public void load() {
+    public static void load() {
         delays.clear();
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
@@ -67,7 +70,7 @@ public class Delayer {
             }
     }
 
-    public boolean checkDelay(String id, long updateTime) {
+    public static boolean checkDelay(String id, long updateTime) {
         String idd = (id.contains(".") ? id : "global." + id);
         Long delay = delays.get(idd);
         boolean result = delay == null || delay < System.currentTimeMillis();
@@ -75,26 +78,26 @@ public class Delayer {
         return result;
     }
 
-    public boolean checkPersonalDelay(String playerName, String id, long updateTime) {
+    public static boolean checkPersonalDelay(String playerName, String id, long updateTime) {
         return checkDelay(playerName + "." + id, updateTime);
     }
 
-    public void setDelay(String id, long delayTime, boolean add) {
+    public static void setDelay(String id, long delayTime, boolean add) {
         setDelaySave(id, delayTime, true, add);
     }
 
-    public void setDelaySave(String id, long delayTime, boolean save, boolean add) {
+    public static void setDelaySave(String id, long delayTime, boolean save, boolean add) {
         String delayId = id.contains(".") ? id : "global." + id;
         long currentDelay = add && delays.containsKey(delayId) ? delays.get(delayId) : System.currentTimeMillis();
         delays.put(delayId, delayTime + currentDelay);
         if (save) save();
     }
 
-    public void setPersonalDelay(String playerName, String id, long delayTime, boolean add) {
+    public static void setPersonalDelay(String playerName, String id, long delayTime, boolean add) {
         setDelay(playerName + "." + id, delayTime, add);
     }
 
-    public void printDelayList(CommandSender sender, int pageNum, int linePerPage) {
+    public static void printDelayList(CommandSender sender, int pageNum, int linePerPage) {
         Set<String> lst = new TreeSet<>();
         for (String key : delays.keySet()) {
             long delayTime = delays.get(key);
@@ -106,14 +109,14 @@ public class Delayer {
         Msg.printPage(sender, lst, Msg.MSG_LISTDELAY, pageNum, linePerPage, true);
     }
 
-    public String[] getStringTime(String playerName, String id) {
+    public static String[] getStringTime(String playerName, String id) {
         String fullId = (id.contains(".") ? id : (playerName == null || playerName.isEmpty() ? "global." + id : playerName + "." + id));
         if (checkDelay(fullId, 0)) return null;
         if (!delays.containsKey(fullId)) return null;
         long time = delays.get(fullId);
         String[] times = new String[8];
-        times[0] = TimeUtils.fullTimeToString(time, "dd-MM-YYYY HH:mm:ss");
-        times[1] = TimeUtils.fullTimeToString(time, "HH:mm:ss");
+        times[0] = TimeUtils.fullTimeToString(time);
+        times[1] = TimeUtils.fullTimeToString(time, HH_MM_SS);
         time = time - System.currentTimeMillis();
 
         long sec = time / 1000;
@@ -138,7 +141,7 @@ public class Delayer {
         return times;
     }
 
-    public void setTempPlaceholders(RaContext context, String playerName, String id) {
+    public static void setTempPlaceholders(RaContext context, String playerName, String id) {
         String[] times = Delayer.getStringTime(playerName, id);
         if (times != null) {
             context.setVariable("delay-fulltime", times[0]);
@@ -152,7 +155,7 @@ public class Delayer {
         }
     }
 
-    private String formatNum(long num) {
+    private static String formatNum(long num) {
         return num > 9 ? Long.toString(num) : ("0" + num);
     }
 }

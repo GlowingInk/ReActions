@@ -7,28 +7,29 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.util.StringUtil;
 
 public class RaPapiExpansion extends PlaceholderExpansion {
-    private static final String IDENTIFIER = "reactions";
-    private static final String AUTHOR = "fromgate";
-    private static final String VERSION = "0.0.3";
-
     @Override
     public boolean persist() {
         return true;
     }
 
     @Override
+    public boolean canRegister() {
+        return true;
+    }
+
+    @Override
     public String getIdentifier() {
-        return IDENTIFIER;
+        return "reactions";
     }
 
     @Override
     public String getAuthor() {
-        return AUTHOR;
+        return "fromgate";
     }
 
     @Override
     public String getVersion() {
-        return VERSION;
+        return "0.0.3";
     }
 
     @Override

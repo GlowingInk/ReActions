@@ -7,21 +7,23 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+// TODO: Refactor a whole commands system
 public class Commander implements CommandExecutor {
-    private static Set<Cmd> commands = new HashSet<>();
+    private static final Set<Cmd> commands = new HashSet<>();
     private static JavaPlugin plugin;
     private static Commander commander;
 
     public static void init(JavaPlugin plg) {
         plugin = plg;
         commander = new Commander();
-        // TODO: All the commands should be redesigned
+
         addNewCommand(new CmdHelp());
         addNewCommand(new CmdRun());
         addNewCommand(new CmdAdd());
@@ -62,7 +64,7 @@ public class Commander implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String cmdLabel, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String cmdLabel, String[] args) {
         for (Cmd cmd : commands) {
             if (!cmd.getCommand().equalsIgnoreCase(command.getLabel())) continue;
             if (cmd.executeCommand(sender, args)) return true;

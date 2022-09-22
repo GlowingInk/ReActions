@@ -22,7 +22,8 @@
 
 package me.fromgate.reactions.util;
 
-import lombok.experimental.UtilityClass;
+import me.fromgate.reactions.util.alias.Aliased;
+import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -32,19 +33,21 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-@UtilityClass
-public class Utils {
-    private final String[] EMPTY_ARRAY = new String[0];
+public final class Utils {
+    private static final String[] EMPTY_ARRAY = new String[0];
 
-    public String removeChar(String str, char remove) {
+    private Utils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static String removeChar(String str, char remove) {
         StringBuilder bld = new StringBuilder();
         for (char c : str.toCharArray()) {
             if (c != remove) bld.append(c);
@@ -59,7 +62,7 @@ public class Utils {
      * @param params Parameters of sound
      * @return Name of played sound
      */
-    public String soundPlay(Location loc, Parameters params) {
+    public static String soundPlay(Location loc, Parameters params) {
         if (params.isEmpty()) return "";
         Location soundLoc = loc;
         String sndstr = "";
@@ -98,7 +101,7 @@ public class Utils {
      * @param loc   Location where sound should be played
      * @param param Parameters of sound
      */
-    public void soundPlay(Location loc, String param) {
+    public static void soundPlay(Location loc, String param) {
         if (param.isEmpty()) return;
         Parameters params = Parameters.fromString(param, "param");
         soundPlay(loc, params);
@@ -110,7 +113,8 @@ public class Utils {
      * @param str String to check
      * @return Is string empty or null
      */
-    public boolean isStringEmpty(String str) {
+    @Contract("null -> true")
+    public static boolean isStringEmpty(String str) {
         return str == null || str.isEmpty();
     }
 
@@ -121,58 +125,45 @@ public class Utils {
      * @param str  String with words
      * @return Is word contained
      */
-    public boolean isWordInList(String word, String str) {
+    public static boolean isWordInList(String word, String str) {
         String[] ln = str.split(",");
-        if (ln.length > 0)
-            for (String wordInList : ln) {
-                if (wordInList.equalsIgnoreCase(word)) return true;
-            }
+        for (String wordInList : ln) {
+            if (wordInList.equalsIgnoreCase(word)) return true;
+        }
         return false;
     }
 
-    // *************************************
-
-    public UUID getUUID(OfflinePlayer player) {
+    public static UUID getUUID(OfflinePlayer player) {
         return Bukkit.getOnlineMode() ?
                 player.getUniqueId() :
                 UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8));
     }
 
-    @SuppressWarnings("deprecation")
-    public UUID getUUID(String playerName) {
-        Player player = getPlayerExact(playerName);
+    public static UUID getUUID(String playerName) {
+        Player player = Bukkit.getPlayerExact(playerName);
         return player == null ?
                 getUUID(Bukkit.getOfflinePlayer(playerName)) :
                 getUUID(player);
     }
 
     /**
-     * Escape java symbols
+     * Escape java symbols (?)
      *
      * @param doco String to escape
      * @return Escaped string
      */
-    public String escapeJava(String doco) {
+    public static String escapeJava(String doco) {
         if (doco == null)
             return "";
 
         StringBuilder b = new StringBuilder();
         for (char c : doco.toCharArray()) {
             switch (c) {
-                case '\r':
-                    b.append("\\r");
-                    continue;
-                case '\n':
-                    b.append("\\n");
-                    continue;
-                case '"':
-                    b.append("\\\"");
-                    continue;
-                case '\\':
-                    b.append("\\\\");
-                    continue;
-                default:
-                    b.append(c);
+                case '\r' -> b.append("\\r");
+                case '\n' -> b.append("\\n");
+                case '"' -> b.append("\\\"");
+                case '\\' -> b.append("\\\\");
+                default -> b.append(c);
             }
         }
         return b.toString();
@@ -184,22 +175,10 @@ public class Utils {
      * @param size Size of list
      * @return List with specified size
      */
-    public List<String> getEmptyList(int size) {
+    public static List<String> getEmptyList(int size) {
         List<String> l = new ArrayList<>();
         for (int i = 0; i < size; i++) l.add("");
         return l;
-    }
-
-    /**
-     * @param name Nickname of player
-     * @return Player with specified name or null
-     */
-    @Deprecated
-    public Player getPlayerExact(String name) {
-        if (name != null)
-            for (Player player : Bukkit.getOnlinePlayers())
-                if (player.getName().equalsIgnoreCase(name)) return player;
-        return null;
     }
 
     /**
@@ -207,8 +186,8 @@ public class Utils {
      *
      * @return List of names
      */
-    public List<String> getPlayersList() {
-        List<String> players = new ArrayList<>();
+    public static List<String> getPlayersList() {
+        List<String> players = new ArrayList<>(Bukkit.getOnlinePlayers().size());
         Bukkit.getOnlinePlayers().forEach(p -> players.add(p.getName()));
         return players;
     }
@@ -220,7 +199,7 @@ public class Utils {
      * @param perm Permission to check
      * @return Is permission is null or user has permissions
      */
-    public boolean checkPermission(Permissible user, String perm) {
+    public static boolean checkPermission(Permissible user, String perm) {
         return perm == null || user.hasPermission(perm);
     }
 
@@ -233,27 +212,11 @@ public class Utils {
      * @return Searched object or default if not found
      */
     @SafeVarargs
-    public <T> T searchNotNull(T def, T... obj) {
+    public static <T> T searchNotNull(T def, T... obj) {
         for (T searched : obj)
             if (searched != null) return searched;
         return def;
 
-    }
-
-    /**
-     * Idk yet
-     */
-    public String implode(String... data) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < data.length - 1; i++) {
-            //data.length - 1 => to not add separator at the end
-            if (!data[i].matches(" *")) {//empty string are ""; " "; "  "; and so on
-                sb.append(data[i]);
-                sb.append(File.separator);
-            }
-        }
-        sb.append(data[data.length - 1].trim());
-        return sb.toString();
     }
 
     /**
@@ -264,7 +227,7 @@ public class Utils {
      * @param name  Name of enum
      * @return Corresponding enum, or null if not found
      */
-    public <T extends Enum<T>> T getEnum(Class<T> clazz, String name) {
+    public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name) {
         return getEnum(clazz, name, null);
     }
 
@@ -276,7 +239,7 @@ public class Utils {
      * @param name  Name of enum
      * @return Corresponding enum, or null if not found
      */
-    public <T extends Enum<T>> T getEnum(Class<T> clazz, String name, T def) {
+    public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name, T def) {
         if (clazz != null && !Utils.isStringEmpty(name)) {
             try {
                 return Enum.valueOf(clazz, name.toUpperCase(Locale.ENGLISH));
@@ -286,17 +249,15 @@ public class Utils {
         return def;
     }
 
-    public boolean containsValue(String str, String... values) {
-        for (String s : values)
-            if (s.equalsIgnoreCase(str)) return true;
-        return false;
-    }
-
-    public static String[] getAliases(Object obj) {
-        Class<?> clazz = obj.getClass();
-        if(clazz.isAnnotationPresent(Alias.class)) {
-            return clazz.getAnnotation(Alias.class).value();
+    public static @NotNull String[] getAliases(@NotNull Class<?> clazz) {
+        if (clazz.isAnnotationPresent(Aliases.class)) {
+            return clazz.getAnnotation(Aliases.class).value();
         }
         return EMPTY_ARRAY;
+    }
+
+    public static @NotNull String[] getAliases(@NotNull Object obj) {
+        return obj instanceof Aliased aliased ?
+               aliased.getAliases() : getAliases(obj.getClass());
     }
 }

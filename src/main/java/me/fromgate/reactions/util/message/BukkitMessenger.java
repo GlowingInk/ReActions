@@ -23,7 +23,6 @@
 package me.fromgate.reactions.util.message;
 
 import me.fromgate.reactions.Cfg;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -72,9 +71,9 @@ public class BukkitMessenger implements Messenger {
             lines.addAll(Arrays.asList(ChatPaginator.wordWrap(str, lineLength)));
         }
         int totalPages = lines.size() / pageHeight + (lines.size() % pageHeight == 0 ? 0 : 1);
-        int actualPageNumber = pageNumber <= totalPages ? pageNumber : totalPages;
+        int actualPageNumber = Math.min(pageNumber, totalPages);
         int from = (actualPageNumber - 1) * pageHeight;
-        int to = from + pageHeight <= lines.size() ? from + pageHeight : lines.size();
+        int to = Math.min(from + pageHeight, lines.size());
         String[] selectedLines = Arrays.copyOfRange(lines.toArray(new String[0]), from, to);
         return new ChatPaginator.ChatPage(selectedLines, actualPageNumber, totalPages);
     }
@@ -82,12 +81,6 @@ public class BukkitMessenger implements Messenger {
     @Override
     public String colorize(String text) {
         return text != null ? ChatColor.translateAlternateColorCodes('&', text) : text;
-    }
-
-    @Override
-    public boolean broadcast(String text) {
-        Bukkit.broadcastMessage(text);
-        return true;
     }
 
     @Override
@@ -99,15 +92,6 @@ public class BukkitMessenger implements Messenger {
     @Override
     public String clean(String text) {
         return ChatColor.stripColor(text);
-    }
-
-    @Override
-    public boolean tip(Object sender, String text) {
-        Player player = toPlayer(sender);
-        if (player == null)
-            return false;
-        player.sendTitle(null, text, 10, 70, 20);
-        return true;
     }
 
     @Override
@@ -125,8 +109,7 @@ public class BukkitMessenger implements Messenger {
     public String toString(Object obj, boolean fullFloat) {
         if (obj == null) return "'null'";
         String s = obj.toString();
-        if (obj instanceof Location) {
-            Location loc = (Location) obj;
+        if (obj instanceof Location loc) {
             if (fullFloat)
                 s = loc.getWorld() + "[" + loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + "]";
             else
@@ -184,9 +167,5 @@ public class BukkitMessenger implements Messenger {
 
     private CommandSender toSender(Object sender) {
         return sender instanceof CommandSender ? (CommandSender) sender : null;
-    }
-
-    private Player toPlayer(Object sender) {
-        return sender instanceof Player ? (Player) sender : null;
     }
 }

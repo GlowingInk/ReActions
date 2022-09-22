@@ -1,7 +1,7 @@
 package me.fromgate.reactions.time.waiter;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.actions.StoredAction;
+import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.util.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,26 +14,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO Recode from scratch
-public class WaitingManager {
+// TODO: Recode from scratch
+@Deprecated
+public final class WaitingManager {
 
     private static Set<WaitTask> tasks;
     private static long timeLimit;
+
+    private WaitingManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static void init() {
         tasks = Collections.newSetFromMap(new ConcurrentHashMap<>()); //new HashSet<>();
         load();
     }
 
-    public static void executeDelayed(Player player, StoredAction action, boolean isAction, long time) {
+    public static void schedule(Player player, StoredAction action, long time) {
         if (action == null) return;
-        executeDelayed(player, Collections.singletonList(action), isAction, time);
+        schedule(player, Collections.singletonList(action), time);
     }
 
-    public static void executeDelayed(Player player, List<StoredAction> actions, boolean isAction, long time) {
+    public static void schedule(Player player, List<StoredAction> actions, long time) {
         if (actions.isEmpty()) return;
         String playerStr = player != null ? player.getName() : null;
-        WaitTask task = new WaitTask(playerStr, actions, isAction, time);
+        WaitTask task = new WaitTask(playerStr, actions, time);
         tasks.add(task);
         save();
     }

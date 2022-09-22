@@ -22,8 +22,7 @@
 
 package me.fromgate.reactions.util;
 
-import lombok.experimental.UtilityClass;
-import me.fromgate.reactions.logic.StoragesManager;
+import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.math.Rng;
@@ -47,18 +46,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@UtilityClass
-public class Shoot {
+// TODO Make from scratch
+public final class Shoot {
 
-    public String actionShootBreak = "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON";
-    public String actionShootThrough = "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE";
+    public static String actionShootBreak = "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON";
+    public static String actionShootThrough = "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE";
 
-    public void shoot(LivingEntity shooter, Parameters params) {
+    private Shoot() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static void shoot(LivingEntity shooter, Parameters params) {
         boolean onehit = params.getBoolean("singlehit", true);
         int distance = params.getInteger("distance", 100);
         float knockbackTarget = params.getInteger("knockbackTarget", 0);
         for (LivingEntity le : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
-            double damage = (double) Rng.nextIntRanged(params.getString("damage", "1"));
+            double damage = Rng.nextIntRanged(params.getString("damage", "1"));
             boolean shoot = true;
             if (damage > 0) {
                 shoot = damageEntity(shooter, le, damage, knockbackTarget);
@@ -69,12 +70,12 @@ public class Shoot {
         }
     }
 
-    private String getMobName(LivingEntity mob) {
+    private static String getMobName(LivingEntity mob) {
         if (mob.getCustomName() == null) return mob.getType().name();
         return mob.getCustomName();
     }
 
-    private void executeActivator(Player shooter, LivingEntity target, String paramStr) {
+    private static void executeActivator(Player shooter, LivingEntity target, String paramStr) {
         Parameters param = Parameters.fromString(paramStr);
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return;
         Player player = target instanceof Player ? (Player) target : null;
@@ -91,7 +92,7 @@ public class Shoot {
         StoragesManager.triggerExec(shooter, param, tempVars);
     }
 
-    private List<Block> getBeam(LivingEntity p, int distance) {
+    private static List<Block> getBeam(LivingEntity p, int distance) {
         List<Block> beam = new ArrayList<>();
         BlockIterator bi = new BlockIterator(p, distance);
         while (bi.hasNext()) {
@@ -102,12 +103,11 @@ public class Shoot {
         return beam;
     }
 
-    private Set<LivingEntity> getEntityBeam(LivingEntity shooter, List<Block> beam, boolean hitSingle) {
+    private static Set<LivingEntity> getEntityBeam(LivingEntity shooter, List<Block> beam, boolean hitSingle) {
         Set<LivingEntity> list = new HashSet<>();
         for (Block b : beam)
             for (Entity e : b.getChunk().getEntities()) {
-                if (!(e instanceof LivingEntity)) continue;
-                LivingEntity le = (LivingEntity) e;
+                if (!(e instanceof LivingEntity le)) continue;
                 if (le.equals(shooter)) continue;
                 if (isEntityAffectByBeamBlock(b, le)) {
                     list.add(le);
@@ -117,7 +117,7 @@ public class Shoot {
         return list;
     }
 
-    private boolean isEmpty(Block b, LivingEntity shooter) {
+    private static boolean isEmpty(Block b, LivingEntity shooter) {
         if (!b.getType().isSolid()) return true;
         if (ItemUtils.isItemInList(b.getType(), 0, actionShootThrough)) return true;
         if ((shooter instanceof Player) && (isShotAndBreak(b, (Player) shooter))) {
@@ -129,23 +129,23 @@ public class Shoot {
     }
 
 
-    public boolean breakBlock(Block b, Player p) {
+    public static boolean breakBlock(Block b, Player p) {
         BlockBreakEvent event = new BlockBreakEvent(b, p);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();
     }
 
-    private boolean isShotAndBreak(Block b, Player p) {
+    private static boolean isShotAndBreak(Block b, Player p) {
         if (ItemUtils.isItemInList(b.getType(), 0, actionShootBreak)) return breakBlock(b, p);
         return false;
     }
 
-    private boolean isEntityAffectByBeamBlock(Block b, LivingEntity le) {
+    private static boolean isEntityAffectByBeamBlock(Block b, LivingEntity le) {
         if (le.getLocation().getBlock().equals(b)) return true;
         return le.getEyeLocation().getBlock().equals(b);
     }
 
-    public boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage, float knockbackTarget) {
+    public static boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage, float knockbackTarget) {
         Vector eVec = entity.getLocation().toVector().clone();
         Vector dVec = damager.getLocation().toVector().clone();
         Vector eDirection = eVec.subtract(dVec).normalize();

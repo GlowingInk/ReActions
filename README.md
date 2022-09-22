@@ -1,19 +1,39 @@
 # ReActions
+[**Тема на RuBukkit**](http://rubukkit.org/threads/165857/) | [**Документация**](https://github.com/imDaniX/ReActions/wiki) | [**Оригинал**](https://github.com/Redolith/ReActions)
 
-ReActions is a plugin for craftbukkit (spigot) server. It brings to Minecraft server a custom event processing system.
+The project is currently (still) in its early state and not available on large platforms like SpigotMC. Because of that,
+this README file's language is Russian, as most of project's users are Russian-speaking. Although, 
+[README-EN.md](README-EN.md) is still available.
 
-## Download
+Плагин ReActions для Paper представляет собой инструмент обработки событий. Он позволяет проверять выполнение условий и,
+в зависимости от результата проверки, выполнять разные действия. Синтаксис плагина устроен донельзя просто:
+```yaml
+СОБЫТИЕ:
+  активатор:
+    условие-события: условие
+    flags:
+     - ПРОВЕРКА=тест
+     - ДРУГАЯ_ПРОВЕРКА=тест:значение
+    actions:
+     - ДЕЙСТВИЕ=делать:дело
+    reactions:
+     - ДЕЙСТВИЕ=делать:{дело, если флаг не сработал}
+     - ДРУГОЕ_ДЕЙСТВИЕ=делать другое дело
+```
 
-[**Страница форка на RuBukkit**](http://rubukkit.org/threads/admin-re-reactions-prostejshij-skriptovyj-plagin-1-16.165857/)
+## Взять к себе
 
-[**Latest Dev Build** ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)
+Для компиляции плагина требуется Maven. Имея его на руках, достаточно войти в корневую папку проекта и ввести `mvn clean package`.
 
-## Documentation
+Если вы просто хотите скачать плагин - возьмите его из вкладки [Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)
 
-[**Documentation Site**](http://reactions.fromgate.me) | [**Сайт документации**](http://reactions.fromgate.ru) |
-[Documentation (Github Wiki)](https://github.com/Redolith/ReActions/wiki)
- 
- 
- 
- ## Developed using Intellij IDEA by Jetbrains
- [![Intellij IDEA](http://reactions.fromgate.ru/images/intellij-logo-300.png)](https://www.jetbrains.com/)
+## Лицензия
+
+Проект опубликован под лицензией [GPL v3](LICENSE.md).
+
+Кроме того, в проекте используется редактированная часть исходного кода 
+[Quartz Scheduler](https://github.com/quartz-scheduler/quartz) под лицензией 
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). Изменения включают в себя: рекомендации Intellij IDEA; 
+рефакторинг коллекций с использованием библиотеки [FastUtil](https://fastutil.di.unimi.it/).
+
+## [Разработано с IntelliJ IDEA от JetBrains](https://www.jetbrains.com/)

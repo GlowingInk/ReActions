@@ -1,6 +1,5 @@
 package me.fromgate.reactions.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -9,17 +8,18 @@ import org.bukkit.block.data.Openable;
 /**
  * Some helpful methods related to blocks to minify size of code
  */
-@UtilityClass
-public class BlockUtils {
-    public boolean isPlate(Block block) {
+public final class BlockUtils {
+    private BlockUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean isPlate(Block block) {
         return Tag.PRESSURE_PLATES.isTagged(block.getType());
     }
 
-    public boolean isSign(Block block) {
+    public static boolean isSign(Block block) {
         return Tag.SIGNS.isTagged(block.getType());
     }
 
-    public boolean setOpen(Block b, boolean open) {
+    public static boolean setOpen(Block b, boolean open) {
         if (isOpenable(b)) {
             Openable om = (Openable) b.getBlockData();
             om.setOpen(open);
@@ -29,7 +29,7 @@ public class BlockUtils {
         return false;
     }
 
-    public boolean isOpen(Block b) {
+    public static boolean isOpen(Block b) {
         if (isOpenable(b)) {
             Openable om = (Openable) b.getBlockData();
             return om.isOpen();
@@ -37,7 +37,7 @@ public class BlockUtils {
         return false;
     }
 
-    public Block getBottomDoor(Block block) {
+    public static Block getBottomDoor(Block block) {
         if (Tag.DOORS.isTagged(block.getType())) {
             Block bottomBlock = block.getRelative(BlockFace.DOWN);
             if (Tag.DOORS.isTagged(bottomBlock.getType()))
@@ -46,7 +46,7 @@ public class BlockUtils {
         return block;
     }
 
-    public boolean isOpenable(Block b) {
+    public static boolean isOpenable(Block b) {
         return b.getBlockData() instanceof Openable;
     }
 }

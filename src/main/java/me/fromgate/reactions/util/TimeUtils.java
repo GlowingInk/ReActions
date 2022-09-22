@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
 
@@ -32,86 +31,62 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@UtilityClass
-public class TimeUtils {
-    private final Pattern TIME_HH_MM = Pattern.compile("^[0-5][0-9]:[0-5][0-9]$");
-    private final Pattern TIME_HH_MM_SS = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
-    private final Pattern TIME_X_MSDHMST = Pattern.compile("\\d+([dhmst]|ms)");
-    private final Pattern TIME_X_MS = Pattern.compile("^\\d+ms$");
-    private final Pattern TIME_X_D = Pattern.compile("^\\d+d$");
-    private final Pattern TIME_X_H = Pattern.compile("^\\d+h$");
-    private final Pattern TIME_X_M = Pattern.compile("^\\d+m$");
-    private final Pattern TIME_X_S = Pattern.compile("^\\d+s$");
-    private final Pattern TIME_X_T = Pattern.compile("^\\d+t$");
+public final class TimeUtils {
+    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+))?");
+    private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)([dhmst]|ms)");
+    private static final DateFormat DEF_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    public long ingameTime() {
-        return Bukkit.getWorlds().get(0).getTime();
-    }
+    private TimeUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public String formattedIngameTime() {
+    public static String formattedIngameTime() {
         return formattedIngameTime(Bukkit.getWorlds().get(0).getTime(), false);
     }
 
-    public String formattedIngameTime(long time, boolean showms) {
+    public static String formattedIngameTime(long time, boolean showms) {
         return showms && (time < 1000) ?
                 time + "ms" :
-                (int) ((time / 1000 + 6) % 24) + ":" + (int) (60 * (time % 1000) / 1000);
+                (long) ((time / 1000D + 6) % 24) + ":" + (long) (60 * (time % 1000D) / 1000);
     }
 
-    public String fullTimeToString(long time, String format) {
-        DateFormat formatter = new SimpleDateFormat(format);
-        return formatter.format(new Date(time));
+    public static String fullTimeToString(long time, DateFormat format) {
+        return format.format(new Date(time));
     }
 
-    public String fullTimeToString(long time) {
-        return fullTimeToString(time, "dd-MM-YYYY HH:mm:ss");
-		/*Date date = new Date(time);
-		DateFormat formatter = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
-		return formatter.format(date);*/
+    public static String fullTimeToString(long time, String format) {
+        return fullTimeToString(time, new SimpleDateFormat(format));
     }
 
+    public static String fullTimeToString(long time) {
+        return fullTimeToString(time, DEF_FORMAT);
+    }
 
-    public long timeToTicks(long time) {
-        //1000 ms = 20 ticks
+    public static long timeToTicks(long time) {
+        // 1000 ms = 20 ticks; 50 ms = 1 tick
         return Math.max(1, (time / 50));
     }
 
-    public long parseTime(String time) {
-        int dd = 0; // дни
-        int hh = 0; // часы
-        int mm = 0; // минуты
-        int ss = 0; // секунды
-        int tt = 0; // тики
-        int ms = 0; // миллисекунды
-        if (NumberUtils.isInteger(time)) {
-            ss = Integer.parseInt(time);
-        } else if (TIME_HH_MM.matcher(time).matches()) {
-            String[] ln = time.split(":");
-            mm = Integer.parseInt(ln[0]);
-            ss = Integer.parseInt(ln[1]);
-        } else if (TIME_HH_MM_SS.matcher(time).matches()) {
-            String[] ln = time.split(":");
-            hh = Integer.parseInt(ln[0]);
-            mm = Integer.parseInt(ln[1]);
-            ss = Integer.parseInt(ln[2]);
-        } else {
-            Matcher matcher = TIME_X_MSDHMST.matcher(time);
-            while (matcher.find()) {
-                String foundTime = matcher.group();
-                if (TIME_X_MS.matcher(foundTime).matches())
-                    ms = Integer.parseInt(foundTime.substring(0, foundTime.length() - 2));
-                else if (TIME_X_D.matcher(foundTime).matches())
-                    dd = Integer.parseInt(foundTime.substring(0, foundTime.length() - 1));
-                else if (TIME_X_H.matcher(foundTime).matches())
-                    hh = Integer.parseInt(foundTime.substring(0, foundTime.length() - 1));
-                else if (TIME_X_M.matcher(foundTime).matches())
-                    mm = Integer.parseInt(foundTime.substring(0, foundTime.length() - 1));
-                else if (TIME_X_S.matcher(foundTime).matches())
-                    ss = Integer.parseInt(foundTime.substring(0, foundTime.length() - 1));
-                else if (TIME_X_T.matcher(foundTime).matches())
-                    tt = Integer.parseInt(foundTime.substring(0, foundTime.length() - 1));
-            }
+    public static long parseTime(String timeStr) {
+        if (NumberUtils.isInteger(timeStr)) {
+            return Long.parseLong(timeStr) * 1000L;
         }
-        return Math.max(1, (dd * 86400000L) + (hh * 3600000L) + (mm * 60000L) + (ss * 1000L) + (tt * 50L) + ms);
+        Matcher matcher = TIME_SPLITTED.matcher(timeStr);
+        if (matcher.matches()) {
+            long time = 3600000L * Long.parseLong(matcher.group(1)) + 60000L * Long.parseLong(matcher.group(2));
+            if (matcher.groupCount() == 3) time += 1000L * Long.parseLong(matcher.group(3));
+            return time;
+        }
+        matcher = TIME_PRECISE.matcher(timeStr);
+        long time = 0;
+        while (matcher.find()) {
+            time += Long.parseLong(matcher.group(1)) * switch (matcher.group(2)) {
+                case "d" -> 86400000L;
+                case "h" -> 3600000L;
+                case "m" -> 60000L;
+                default -> 1000L; // seconds
+                case "t" -> 50L;
+                case "ms" -> 1L;
+            };
+        }
+        return Math.max(time, 1);
     }
 }

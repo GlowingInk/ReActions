@@ -1,6 +1,5 @@
 package me.fromgate.reactions.util;
 
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,9 +7,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-@UtilityClass
-public class FileUtils {
-    public boolean loadCfg(YamlConfiguration cfg, File f, String error) {
+public final class FileUtils {
+    private FileUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean loadCfg(YamlConfiguration cfg, File f, String error) {
         if (cfg == null) return false;
         try {
             if (!createFile(f, error)) return false;
@@ -23,7 +23,7 @@ public class FileUtils {
         }
     }
 
-    public boolean saveCfg(YamlConfiguration cfg, File f, String error) {
+    public static boolean saveCfg(YamlConfiguration cfg, File f, String error) {
         if (cfg == null) return false;
         try {
             if (recreateFile(f, error)) {
@@ -38,7 +38,7 @@ public class FileUtils {
         }
     }
 
-    private boolean createFile(File f, String error) {
+    private static boolean createFile(File f, String error) {
         if (f == null) return false;
         try {
             if (!f.exists()) f.createNewFile();
@@ -50,7 +50,7 @@ public class FileUtils {
         }
     }
 
-    private boolean recreateFile(File f, String error) {
+    private static boolean recreateFile(File f, String error) {
         if (f == null) return false;
         try {
             if (f.exists()) f.delete();

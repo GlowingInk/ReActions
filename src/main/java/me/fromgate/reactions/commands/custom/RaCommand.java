@@ -1,6 +1,5 @@
 package me.fromgate.reactions.commands.custom;
 
-import lombok.Getter;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Location;
@@ -10,23 +9,16 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
- * Custom implementation of Bukkit's Command just for ReActions - should not be used in other plugins
+ * Custom implementation of Bukkit's Command just for ReActions - not a part of API
  */
 public final class RaCommand extends Command implements PluginIdentifiableCommand {
     private final String permission;
     private final boolean consoleAllowed;
-    @Getter
     private final boolean override;
     private final boolean tab;
     // EXEC activators
@@ -72,7 +64,7 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
      * @param args   Used arguments
      * @return Name of result EXEC activator
      */
-    public final String executeCommand(CommandSender sender, String[] args) {
+    public String executeCommand(CommandSender sender, String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             if (!consoleAllowed) return getErroredExec(ExecType.CONSOLE_DISALLOWED);
         } else if (!Utils.checkPermission(sender, permission)) return getErroredExec(ExecType.NO_PERMISSIONS);
@@ -81,8 +73,8 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
         ExecResult prioritizedResult = null;
         for (ArgumentsChain chain : chains) {
             ExecResult result = chain.executeChain(sender, args);
-            ExecType type = result.getType();
-            String exec = result.getExec();
+            ExecType type = result.type();
+            String exec = result.exec();
             if (type == ExecType.BACKUP) continue;
             if (type == ExecType.DEFAULT) {
                 return exec == null ? execs.getOrDefault(ExecType.DEFAULT, "unknown") : exec;
@@ -91,15 +83,15 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
             }
         }
         if (prioritizedResult != null) {
-            String exec = prioritizedResult.getExec();
-            return exec == null ? getErroredExec(prioritizedResult.getType()) : exec;
+            String exec = prioritizedResult.exec();
+            return exec == null ? getErroredExec(prioritizedResult.type()) : exec;
         }
         String backup = execs.get(ExecType.BACKUP);
         return backup == null ? execs.getOrDefault(ExecType.DEFAULT, "unknown") : backup;
     }
 
     @Override
-    public final List<String> tabComplete(CommandSender sender, String cmd, String[] args, Location loc) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String cmd, String[] args, Location loc) {
         List<String> complete = new ArrayList<>();
         if (!tab) return complete;
         if (sender instanceof ConsoleCommandSender && !consoleAllowed) return complete;
@@ -110,17 +102,17 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     }
 
     @Override
-    public final boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
         executeCommand(sender, args);
         return true;
     }
 
     @Override
-    public final Plugin getPlugin() {
+    public @NotNull Plugin getPlugin() {
         return ReActions.getPlugin();
     }
 
-    public final List<String> list() {
+    public List<String> list() {
         List<String> list = Utils.getEmptyList(1);
         chains.forEach(c -> list.add(c.toString()));
         return list;
@@ -129,4 +121,6 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     private String getErroredExec(ExecType type) {
         return Utils.searchNotNull("unknown", execs.get(type), execs.get(ExecType.ANY_ERROR), execs.get(ExecType.BACKUP), execs.get(ExecType.DEFAULT));
     }
+
+    public boolean isOverride() {return this.override;}
 }

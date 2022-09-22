@@ -9,10 +9,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @CmdDefine(command = "reactions", description = Msg.CMD_CHECK, permission = "reactions.config",
-        subCommands = {"check"}, allowConsole = false, shortDescription = "&3/react check [radius]")
+        subCommands = {"check"}, shortDescription = "&3/react check [radius]")
 public class CmdCheck extends Cmd {
 
     @Override
@@ -32,7 +33,7 @@ public class CmdCheck extends Cmd {
             for (int x = playerX - radius; x <= playerX + radius; x++) {
                 for (int y = playerY - radius; y <= playerY + radius; y++) {
                     for (int z = playerZ - radius; z <= playerZ + radius; z++) {
-                        List<Activator> found = ReActions.getActivators().getActivatorInLocation(world, x, y, z);
+                        Collection<Activator> found = ReActions.getActivators().search().byRawLocation(world, x, y, z);
                         if (found.isEmpty()) continue;
                         found.forEach(a -> total.add(a.toString()));
                     }

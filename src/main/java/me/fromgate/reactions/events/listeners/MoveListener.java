@@ -43,7 +43,7 @@ import java.util.UUID;
 
 public class MoveListener implements Listener {
 
-    private static Map<UUID, Location> prevLocations = new HashMap<>();
+    private static final Map<UUID, Location> prevLocations = new HashMap<>();
 
     public static void init() {
         if (Cfg.playerMoveTaskUse) {

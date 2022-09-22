@@ -22,10 +22,10 @@ public class CmdReload extends Cmd {
         if (params.length >= 2) {
             String check = params[1].toLowerCase(Locale.ENGLISH);
             if (check.contains("g") && params.length > 2) {
-                ReActions.getActivators().loadActivators(params[2].replaceAll("[/\\\\]", File.separator));
+                ReActions.getActivators().loadGroup(params[2].replaceAll("[/\\\\]", File.separator), true);
             } else if (check.contains("a")) {
-                ReActions.getActivators().clear();
-                ReActions.getActivators().loadActivators();
+                ReActions.getActivators().clearActivators();
+                ReActions.getActivators().loadGroup("", false);
             }
             if (check.contains("l"))
                 LocationHolder.loadLocs();
@@ -46,8 +46,8 @@ public class CmdReload extends Cmd {
                 InventoryMenu.load();
 
         } else {
-            ReActions.getActivators().clear();
-            ReActions.getActivators().loadActivators();
+            ReActions.getActivators().clearActivators();
+            ReActions.getActivators().loadGroup("", false);
             LocationHolder.loadLocs();
             ReActions.getPlugin().reloadConfig();
             Cfg.load();
@@ -58,7 +58,7 @@ public class CmdReload extends Cmd {
             InventoryMenu.load();
             FakeCommander.updateCommands();
         }
-        Msg.MSG_CMDRELOAD.print(sender, ReActions.getActivators().size(), LocationHolder.sizeTpLoc());
+        Msg.MSG_CMDRELOAD.print(sender, ReActions.getActivators().search().all().size(), LocationHolder.sizeTpLoc());
         return true;
     }
 

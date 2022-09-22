@@ -1,7 +1,5 @@
 package me.fromgate.reactions.menu;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -14,8 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
 public class VirtualInventory {
 
     private int size;
@@ -83,4 +79,20 @@ public class VirtualInventory {
         }
         return inv;
     }
+
+    public int getSize() {return this.size;}
+
+    public String getTitle() {return this.title;}
+
+    public List<String> getSlots() {return this.slots;}
+
+    public List<String> getActivators() {return this.activators;}
+
+    public void setSize(int size) {this.size = size; }
+
+    public void setTitle(String title) {this.title = title; }
+
+    public void setSlots(List<String> slots) {this.slots = slots; }
+
+    public void setActivators(List<String> activators) {this.activators = activators; }
 }

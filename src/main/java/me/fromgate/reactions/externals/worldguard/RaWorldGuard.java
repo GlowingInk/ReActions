@@ -26,10 +26,9 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.ActivatorType;
-import me.fromgate.reactions.logic.activators.RegionActivator;
-import me.fromgate.reactions.logic.activators.RegionEnterActivator;
-import me.fromgate.reactions.logic.activators.RegionLeaveActivator;
+import me.fromgate.reactions.module.basics.activators.RegionActivator;
+import me.fromgate.reactions.module.basics.activators.RegionEnterActivator;
+import me.fromgate.reactions.module.basics.activators.RegionLeaveActivator;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -38,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 public class RaWorldGuard {
 
     private static WGBridge bridge = null;
@@ -50,15 +50,16 @@ public class RaWorldGuard {
 
     public static void updateRegionCache() {
         regionActivators = new HashSet<>();
-        for (Activator a : ReActions.getActivators().getActivators(ActivatorType.REGION)) {
+        // TODO Custom ActivatorType
+        for (Activator a : ReActions.getActivatorTypes().get(RegionActivator.class).getActivators()) {
             RegionActivator r = (RegionActivator) a;
             regionActivators.add(r.getRegion());
         }
-        for (Activator a : ReActions.getActivators().getActivators(ActivatorType.REGION_ENTER)) {
+        for (Activator a : ReActions.getActivatorTypes().get(RegionEnterActivator.class).getActivators()) {
             RegionEnterActivator r = (RegionEnterActivator) a;
             regionActivators.add(r.getRegion());
         }
-        for (Activator a : ReActions.getActivators().getActivators(ActivatorType.REGION_LEAVE)) {
+        for (Activator a : ReActions.getActivatorTypes().get(RegionLeaveActivator.class).getActivators()) {
             RegionLeaveActivator r = (RegionLeaveActivator) a;
             regionActivators.add(r.getRegion());
         }

@@ -26,11 +26,10 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import lombok.experimental.UtilityClass;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.StoragesManager;
-import me.fromgate.reactions.logic.activators.MessageActivator.Source;
-import me.fromgate.reactions.logic.storages.Storage;
+import me.fromgate.reactions.logic.activators.Storage;
+import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.activators.MessageActivator.Source;
 import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,19 +40,21 @@ import org.json.simple.JSONValue;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-@UtilityClass
-public class RaProtocolLib {
-    private final Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"\\}");
-    private final Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");
-    private final Pattern TEXT_END = Pattern.compile("\"\\}$");
+@Deprecated
+public final class RaProtocolLib {
+    private static final Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"}");
+    private static final Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");
+    private static final Pattern TEXT_END = Pattern.compile("\"}$");
 
-    private boolean connected = false;
+    private static boolean connected = false;
 
-    public boolean isConnected() {
+    private RaProtocolLib() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+    public static boolean isConnected() {
         return connected;
     }
 
-    public void connectProtocolLib() {
+    public static void connectProtocolLib() {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             connected = true;
         } else return;
@@ -62,7 +63,7 @@ public class RaProtocolLib {
 
     }
 
-    private String jsonToString(JSONObject source) {
+    private static String jsonToString(JSONObject source) {
         StringBuilder result = new StringBuilder();
         for (Object key : source.keySet()) {
             Object value = source.get(key);
@@ -78,7 +79,7 @@ public class RaProtocolLib {
         return result.toString();
     }
 
-    private String jsonToString(JSONArray source) {
+    private static String jsonToString(JSONArray source) {
         StringBuilder result = new StringBuilder();
         for (Object value : source) {
             if (value instanceof String) {
@@ -92,7 +93,7 @@ public class RaProtocolLib {
         return result.toString();
     }
 
-    private String jsonToString(String json) {
+    private static String jsonToString(String json) {
         JSONObject jsonObject = (JSONObject) JSONValue.parse(json);
         if (jsonObject == null || json.isEmpty()) return json;
         JSONArray array = (JSONArray) jsonObject.get("extra");
@@ -100,7 +101,7 @@ public class RaProtocolLib {
         return jsonToString(array);
     }
 
-    private String textToString(String message) {
+    private static String textToString(String message) {
         String text = message;
         if (TEXT.matcher(text).matches()) {
             text = TEXT_START.matcher(text).replaceAll("");
@@ -110,7 +111,7 @@ public class RaProtocolLib {
     }
 
 
-    private void initPacketListener() {
+    private static void initPacketListener() {
         if (!connected) return;
         ProtocolLibrary.getProtocolManager().addPacketListener(
                 new PacketAdapter(ReActions.getPlugin(), PacketType.Play.Server.CHAT) {

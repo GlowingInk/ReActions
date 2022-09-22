@@ -2,7 +2,7 @@ package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.holders.LocationHolder;
-import me.fromgate.reactions.logic.activators.ActivatorLogic;
+import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.math.NumberUtils;
@@ -31,7 +31,6 @@ public class CmdRemove extends Cmd {
             if (ReActions.getActivators().containsActivator(arg2)) {
                 ReActions.getActivators().removeActivator(arg2);
                 Msg.printMSG(sender, "msg_removebok", arg2);
-                ReActions.getActivators().saveActivators();
             } else Msg.printMSG(sender, "msg_removebnf", arg2);
         } else if (arg1.equalsIgnoreCase("loc")) {
             if (LocationHolder.removeTpLoc(arg2)) {
@@ -62,7 +61,7 @@ public class CmdRemove extends Cmd {
                         Msg.printMSG(sender, "msg_reactionremoved", act.getName(), num);
                     else Msg.printMSG(sender, "msg_failedtoremovereaction", act.getName(), num);
                 } else return false;
-                ReActions.getActivators().saveActivators();
+                ReActions.getActivators().saveGroup(act.getGroup());
             } else Msg.printMSG(sender, "msg_wrongnumber", arg3.toString());
         }
         return true;

@@ -12,26 +12,18 @@ public enum ClickType {
     }
 
     public boolean checkLeft(boolean left) {
-        switch (this) {
-            case ANY:
-                return true;
-            case LEFT:
-                return left;
-            case RIGHT:
-                return !left;
-        }
-        return false;
+        return switch (this) {
+            case ANY -> true;
+            case LEFT -> left;
+            case RIGHT -> !left;
+        };
     }
 
     public boolean checkRight(boolean right) {
-        switch (this) {
-            case ANY:
-                return true;
-            case LEFT:
-                return !right;
-            case RIGHT:
-                return right;
-        }
-        return false;
+        return switch (this) {
+            case ANY -> true;
+            case LEFT -> !right;
+            case RIGHT -> right;
+        };
     }
 }

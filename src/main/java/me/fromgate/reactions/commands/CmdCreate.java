@@ -2,8 +2,10 @@ package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.holders.LocationHolder;
+import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.ActivatorType;
+import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -50,7 +52,7 @@ public class CmdCreate extends Cmd {
                 String arg3 = args[3];
                 if (InventoryMenu.add(id,
                         NumberUtils.isInteger(arg3) ? Integer.parseInt(arg3) : 9,
-                        (param.length() == 1) ? "" : param.toString().substring(arg3.length()))) {
+                        (param.length() == 1) ? "" : param.substring(arg3.length()))) {
                     Msg.CMD_ADDMENUADDED.print(sender, id);
                     return true;
                 }
@@ -61,28 +63,28 @@ public class CmdCreate extends Cmd {
         }
     }
 
-    private boolean addActivator(CommandSender sender, String type, String name, String param) {
-        ActivatorType at = ActivatorType.getByName(type);
-        if (at == null) return false;
+    private boolean addActivator(CommandSender sender, String typeStr, String name, String param) {
+        ActivatorsManager activators = ReActions.getActivators();
+        ActivatorType type = ReActions.getActivatorTypes().get(typeStr);
+        if (type == null) return false;
         Parameters params;
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             param = LocationUtils.parsePlaceholders(player, param);
-            if (at.isNeedBlock())
+            if (type.isNeedBlock())
                 params = new BlockParameters(param, player.getTargetBlock(null, 100));
             else
                 params = Parameters.fromString(param);
         } else {
-            if (at.isNeedBlock()) return false;
+            if (type.isNeedBlock()) return false;
             params = Parameters.fromString(param);
         }
-        Activator activator = at.create(name, "activators", params);
+        Activator activator = type.createActivator(new ActivatorLogic(name, "activators"), params);
         if (activator == null || !activator.isValid()) {
             Msg.CMD_NOTADDBADDEDSYNTAX.print(sender, name, type);
             return true;
         }
-        if (ReActions.getActivators().addActivator(activator)) {
-            ReActions.getActivators().saveActivators();
+        if (activators.addActivator(activator, true)) {
+            activators.saveGroup(activator.getLogic().getGroup());
             Msg.CMD_ADDBADDED.print(sender, activator.toString());
         } else {
             Msg.CMD_NOTADDBADDED.print(sender, activator.toString());

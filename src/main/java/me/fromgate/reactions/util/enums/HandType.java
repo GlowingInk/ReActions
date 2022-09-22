@@ -21,26 +21,18 @@ public enum HandType {
     }
 
     public boolean checkMain(boolean isMain) {
-        switch (this) {
-            case ANY:
-                return true;
-            case MAIN:
-                return isMain;
-            case OFF:
-                return !isMain;
-        }
-        return false;
+        return switch (this) {
+            case ANY -> true;
+            case MAIN -> isMain;
+            case OFF -> !isMain;
+        };
     }
 
     public boolean checkOff(boolean isOff) {
-        switch (this) {
-            case ANY:
-                return true;
-            case MAIN:
-                return !isOff;
-            case OFF:
-                return isOff;
-        }
-        return false;
+        return switch (this) {
+            case ANY -> true;
+            case MAIN -> !isOff;
+            case OFF -> isOff;
+        };
     }
 }

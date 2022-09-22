@@ -24,18 +24,13 @@ package me.fromgate.reactions.util.message;
 
 import java.util.Map;
 
-// Why does this interface/class exist? Nukkit?
 public interface Messenger {
 
     String colorize(String text);
 
-    boolean broadcast(String colorize);
-
     boolean log(String text);
 
     String clean(String text);
-
-    boolean tip(Object sender, String text);
 
     boolean print(Object sender, String text);
 

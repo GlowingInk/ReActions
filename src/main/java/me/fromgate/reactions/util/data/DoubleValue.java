@@ -44,7 +44,7 @@ public class DoubleValue implements DataValue {
     @Override
     public boolean set(String value) {
         if (NumberUtils.FLOAT.matcher(value).matches()) {
-            this.value = Double.valueOf(value);
+            this.value = Double.parseDouble(value);
             return true;
         }
         return false;
