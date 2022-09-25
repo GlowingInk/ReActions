@@ -3,7 +3,7 @@ package me.fromgate.reactions;
 import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
-import me.fromgate.reactions.module.ModulesManager;
+import me.fromgate.reactions.module.ModulesRegistry;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import org.bukkit.plugin.Plugin;
@@ -55,7 +55,7 @@ public final class ReActions {
         return platform.getSelectors();
     }
 
-    public static ModulesManager getModules() {
+    public static ModulesRegistry getModules() {
         return platform.getModules();
     }
 
@@ -74,7 +74,7 @@ public final class ReActions {
         PlaceholdersManager getPlaceholders();
         VariablesManager getVariables();
         SelectorsManager getSelectors();
-        ModulesManager getModules();
+        ModulesRegistry getModules();
         Logger logger();
         Plugin getPlugin();
     }

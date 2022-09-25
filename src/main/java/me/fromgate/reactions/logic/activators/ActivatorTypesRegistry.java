@@ -28,7 +28,7 @@ public class ActivatorTypesRegistry {
         typesAliases = new HashMap<>();
     }
 
-    public void register(@NotNull ActivatorType type) {
+    public void registerType(@NotNull ActivatorType type) {
         if (types.containsKey(type.getActivatorClass())) {
             throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered!");
         }

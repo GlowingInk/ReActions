@@ -15,7 +15,7 @@ public class PlaceholderPAPI implements Placeholder {
     }
 
     @Override
-    public @NotNull String getBasicName() {
+    public @NotNull String getName() {
         return "placeholderapi";
     }
 }

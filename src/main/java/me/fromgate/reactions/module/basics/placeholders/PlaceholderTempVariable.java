@@ -12,7 +12,7 @@ public class PlaceholderTempVariable implements Placeholder {
     }
 
     @Override
-    public @NotNull String getBasicName() {
+    public @NotNull String getName() {
         return "tempvariable";
     }
 }

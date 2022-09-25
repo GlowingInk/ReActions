@@ -14,7 +14,7 @@ public interface Placeholder {
      */
     @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text);
 
-    @NotNull String getBasicName();
+    @NotNull String getName();
 
     // TODO: boolean requiresPlayer
 
@@ -26,7 +26,7 @@ public interface Placeholder {
         @NotNull String getId();
 
         @Override
-        default @NotNull String getBasicName() {
+        default @NotNull String getName() {
             return getId();
         }
     }
@@ -39,7 +39,7 @@ public interface Placeholder {
         @NotNull String getPrefix();
 
         @Override
-        default @NotNull String getBasicName() {
+        default @NotNull String getName() {
             return getPrefix();
         }
     }

@@ -36,7 +36,7 @@ import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
-import me.fromgate.reactions.module.ModulesManager;
+import me.fromgate.reactions.module.ModulesRegistry;
 import me.fromgate.reactions.module.basics.BasicModule;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
@@ -59,7 +59,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private PlaceholdersManager placeholdersManager;
     private VariablesManager variablesManager;
     private SelectorsManager selectorsManager;
-    private ModulesManager modulesManager;
+    private ModulesRegistry modulesRegistry;
 
     @Override
     public void onLoad() {
@@ -69,9 +69,9 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
         this.selectorsManager = new SelectorsManager();
-        this.modulesManager = new ModulesManager(this, getClassLoader());
+        this.modulesRegistry = new ModulesRegistry(this);
         ReActions.setPlatform(this);
-        modulesManager.registerModule(new BasicModule());
+        modulesRegistry.registerModule(new BasicModule());
     }
 
     @Override
@@ -145,7 +145,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     }
 
     @Override
-    public ModulesManager getModules() {
-        return modulesManager;
+    public ModulesRegistry getModules() {
+        return modulesRegistry;
     }
 }
