@@ -7,8 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlaceholdersManager {
-    private static final Pattern PLACEHOLDER_GREEDY = Pattern.compile("(?<!&\\\\)%\\S+%");
-    private static final Pattern PLACEHOLDER_NONGREEDY = Pattern.compile("(?<!&\\\\)%\\S+?%");
+    private static final Pattern PLACEHOLDER_GREEDY = Pattern.compile("(?<!&\\\\)%(\\S+)%");
+    private static final Pattern PLACEHOLDER_NONGREEDY = Pattern.compile("(?<!&\\\\)%(\\S+?)%");
     private static final Pattern PLACEHOLDER_RAW = Pattern.compile("&\\\\(%\\S+%)");
 
     private int countLimit;
@@ -30,7 +30,7 @@ public class PlaceholdersManager {
             oldText = text;
             text = parseRecursive(text, PLACEHOLDER_GREEDY, context);
             text = parseRecursive(text, PLACEHOLDER_NONGREEDY, context);
-        } while (--limit > 0 && !text.equals(oldText));
+        } while (!text.equals(oldText) && --limit > 0);
 
         return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");
     }
@@ -39,7 +39,7 @@ public class PlaceholdersManager {
 
     public void setCountLimit(int countLimit) {this.countLimit = countLimit; }
 
-    private static String parseRecursive(String text, final Pattern phPattern, final RaContext context) {
+    private static String parseRecursive(String text, Pattern phPattern, RaContext context) {
         Matcher phMatcher = phPattern.matcher(text);
         // If found at least one
         if (phMatcher.find()) {
@@ -54,22 +54,16 @@ public class PlaceholdersManager {
     }
 
     private static void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, RaContext context) {
-        matcher.appendReplacement(
-                builder,
-                Matcher.quoteReplacement(
-                        Parser.process(
-                                parseRecursive(
-                                        crop(matcher.group()),
-                                        pattern,
-                                        context
-                                ),
+        matcher.appendReplacement(builder, "");
+        builder.append(
+                Parser.process(
+                        parseRecursive(
+                                matcher.group(1),
+                                pattern,
                                 context
-                        )
+                        ),
+                        context
                 )
         );
-    }
-
-    private static String crop(String text) {
-        return text.substring(1, text.length() - 1);
     }
 }
