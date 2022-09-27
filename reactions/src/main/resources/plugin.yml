@@ -2,10 +2,13 @@ name: ReActions
 api-version: '1.16'
 main: me.fromgate.reactions.ReActionsPlugin
 version: ${project.version}-b${buildNumber}
-website: http://fromgate.me
-author: fromgate, fromgate@gmail.com
+website: https://github.com/imDaniX/ReActions
+authors:
+  - fromgate, fromgate@gmail.com
+  - MaxDikiy
+  - imDaniX
 softdepend: [Vault,WorldGuard,WorldEdit,ProtocolLib,PlaceholderAPI]
-description: Simplest scripting engine for Bukkit
+description: '${project.description}'
 commands:
   reactions:
     aliases: [ra,rea,react]
