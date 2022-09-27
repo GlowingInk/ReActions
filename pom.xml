@@ -5,11 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.fromgate.reactions</groupId>
-    <artifactId>reactions</artifactId>
+    <artifactId>reactions-project</artifactId>
     <version>0.14.0</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <name>ReActions</name>
+    <name>ReActions-Project</name>
+
+    <modules>
+        <module>reactions</module>
+    </modules>
 
     <description>Simplest scripting engine for Bukkit</description>
     <properties>
@@ -33,7 +37,6 @@
     </profiles>
 
     <build>
-        <finalName>ReActions</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
@@ -44,45 +47,6 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.bstats</pattern>
-                                    <shadedPattern>me.fromgate.reactions.bstats</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.quartz</pattern>
-                                    <shadedPattern>me.fromgate.reactions.time.cron</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>de.themoep.minedown</pattern>
-                                    <shadedPattern>me.fromgate.reactions.minedown</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/maven/**</exclude>
-                                        <exclide>META-INF/MANIFEST.MF</exclide>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
         <resources>
@@ -132,105 +96,6 @@
             <artifactId>paper-api</artifactId>
             <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.themoep</groupId>
-            <artifactId>minedown-adventure</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.10.6</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.5.1</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.bytebuddy</groupId>
-                    <artifactId>byte-buddy</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-nodep</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.4</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sk89q.worldedit</groupId>
-                    <artifactId>worldedit-bukkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.papermc</groupId>
-                    <artifactId>paperlib</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sk89q</groupId>
-                    <artifactId>commandbook</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bstats</groupId>
-                    <artifactId>bstats-bukkit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.5</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.papermc</groupId>
-                    <artifactId>paperlib</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bstats</groupId>
-                    <artifactId>bstats-bukkit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 </project>
