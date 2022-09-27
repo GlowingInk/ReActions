@@ -13,7 +13,7 @@ public class PlaceholderActivator implements Placeholder.Equal {
     }
 
     @Override
-    public @NotNull String getId() {
+    public @NotNull String getName() {
         return "activator_name";
     }
 }

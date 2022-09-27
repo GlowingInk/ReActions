@@ -19,7 +19,7 @@ public class PlaceholderMoney implements Placeholder.Equal {
     }
 
     @Override
-    public @NotNull String getId() {
+    public @NotNull String getName() {
         return "money";
     }
 }

@@ -13,22 +13,21 @@ import java.util.Map;
 interface Parser {
     boolean put(Placeholder ph);
     String parse(String text, RaContext context);
-    boolean isEmpty();
-    Collection<Placeholder> getPlaceholders();
+    Collection<? extends Placeholder> getPlaceholders();
 
     /**
      * Parse and process placeholder
      * @param text Text to parse
      * @param context RaContext of activation
-     * @return Placeholder or %{@param text}% if not found
+     * @return Resolved placeholder or null if not found
      */
-    static String process(String text, final RaContext context) {
+    static String process(String text, RaContext context) {
         for (Parser parser : Internal.values()) {
             String replacement = parser.parse(text, context);
             if (replacement == null) continue;
             return replacement;
         }
-        return "%" + text + "%";
+        return null;
     }
 
     enum Internal implements Parser {
@@ -37,16 +36,16 @@ interface Parser {
          * Checks whole placeholder
          */
         EQUAL {
-            private final Map<String, Placeholder> placeholders = new HashMap<>();
+            private final Map<String, Placeholder.Equal> placeholders = new HashMap<>();
 
             @Override
             public boolean put(Placeholder ph) {
-                if (ph instanceof Placeholder.Equal) {
-                    String id = ((Placeholder.Equal)ph).getId().toLowerCase(Locale.ROOT);
+                if (ph instanceof Placeholder.Equal equalPh) {
+                    String id = ph.getName().toLowerCase(Locale.ROOT);
                     if (placeholders.containsKey(id)) return false;
-                    placeholders.put(id, ph);
+                    placeholders.put(id, equalPh);
                     for (String alias : Utils.getAliases(ph))
-                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), ph);
+                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), equalPh);
                     return true;
                 }
                 return false;
@@ -61,12 +60,7 @@ interface Parser {
             }
 
             @Override
-            public boolean isEmpty() {
-                return placeholders.isEmpty();
-            }
-
-            @Override
-            public Collection<Placeholder> getPlaceholders() {
+            public Collection<Placeholder.Equal> getPlaceholders() {
                 return placeholders.values();
             }
         },
@@ -76,16 +70,16 @@ interface Parser {
          * Checks placeholder if it has "%prefix:text%" format
          */
         PREFIXED {
-            private final Map<String, Placeholder> placeholders = new HashMap<>();
+            private final Map<String, Placeholder.Prefixed> placeholders = new HashMap<>();
 
             @Override
             public boolean put(Placeholder ph) {
-                if (ph instanceof Placeholder.Prefixed) {
-                    String prefix = ((Placeholder.Prefixed)ph).getPrefix();
+                if (ph instanceof Placeholder.Prefixed prefixedPh) {
+                    String prefix = ph.getName().toLowerCase(Locale.ROOT);
                     if (placeholders.containsKey(prefix)) return false;
-                    placeholders.put(prefix, ph);
+                    placeholders.put(prefix, prefixedPh);
                     for (String alias : Utils.getAliases(ph))
-                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), ph);
+                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), prefixedPh);
                     return true;
                 }
                 return false;
@@ -94,19 +88,15 @@ interface Parser {
             @Override
             public String parse(String text, RaContext context) {
                 String[] split = text.split(":", 2);
+                if (split.length == 1 || split[1].isEmpty()) return null;
                 String prefix = split[0].toLowerCase(Locale.ROOT);
-                Placeholder ph = placeholders.get(prefix.toLowerCase(Locale.ROOT));
+                Placeholder ph = placeholders.get(prefix);
                 if (ph == null) return null;
-                return ph.processPlaceholder(context, prefix, split.length > 1 ? split[1] : "");
+                return ph.processPlaceholder(context, prefix, split[1]);
             }
 
             @Override
-            public boolean isEmpty() {
-                return placeholders.isEmpty();
-            }
-
-            @Override
-            public Collection<Placeholder> getPlaceholders() {
+            public Collection<Placeholder.Prefixed> getPlaceholders() {
                 return placeholders.values();
             }
         },
@@ -131,11 +121,6 @@ interface Parser {
                     if (result != null) return result;
                 }
                 return null;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return placeholders.isEmpty();
             }
 
             @Override

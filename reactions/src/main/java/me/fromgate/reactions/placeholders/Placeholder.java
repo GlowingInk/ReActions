@@ -19,28 +19,8 @@ public interface Placeholder {
     // TODO: boolean requiresPlayer
 
     interface Equal extends Placeholder {
-        /**
-         * Get all the ids for this placeholder
-         * @return Ids of placeholder
-         */
-        @NotNull String getId();
-
-        @Override
-        default @NotNull String getName() {
-            return getId();
-        }
     }
 
     interface Prefixed extends Placeholder {
-        /**
-         * Get all the prefixes for this placeholder
-         * @return Prefixes of placeholder
-         */
-        @NotNull String getPrefix();
-
-        @Override
-        default @NotNull String getName() {
-            return getPrefix();
-        }
     }
 }

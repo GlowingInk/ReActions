@@ -21,7 +21,7 @@ public class PlaceholderCalc implements Placeholder.Prefixed {
     }
 
     @Override
-    public @NotNull String getPrefix() {
+    public @NotNull String getName() {
         return "calc";
     }
 }

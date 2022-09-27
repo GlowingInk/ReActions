@@ -189,19 +189,23 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean getBoolean(@NotNull String key, boolean def) {
-        return switch (params.get(key).toLowerCase(Locale.ROOT)) {
-            case "true" -> true;
-            case "false" -> false;
-            default -> def;
-        };
+        if (params.containsKey(key)) {
+            return switch (params.get(key).toLowerCase(Locale.ROOT)) {
+                case "true" -> true;
+                case "false" -> false;
+                default -> def;
+            };
+        } else return def;
     }
 
     public boolean getBoolean(@NotNull String key, BooleanSupplier def) {
-        return switch (params.get(key).toLowerCase(Locale.ROOT)) {
-            case "true" -> true;
-            case "false" -> false;
-            default -> def.getAsBoolean();
-        };
+        if (params.containsKey(key)) {
+            return switch (params.get(key).toLowerCase(Locale.ROOT)) {
+                case "true" -> true;
+                case "false" -> false;
+                default -> def.getAsBoolean();
+            };
+        } else return def.getAsBoolean();
     }
 
     public boolean contains(@NotNull String key) {

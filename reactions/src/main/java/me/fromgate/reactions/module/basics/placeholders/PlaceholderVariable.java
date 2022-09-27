@@ -30,7 +30,7 @@ public class PlaceholderVariable implements Placeholder.Prefixed {
     }
 
     @Override
-    public @NotNull String getPrefix() {
+    public @NotNull String getName() {
         return "var";
     }
 }

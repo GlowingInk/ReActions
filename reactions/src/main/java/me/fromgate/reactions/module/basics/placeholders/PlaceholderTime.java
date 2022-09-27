@@ -23,7 +23,7 @@ public class PlaceholderTime implements Placeholder.Equal {
     }
 
     @Override
-    public @NotNull String getId() {
+    public @NotNull String getName() {
         return "time";
     }
 }

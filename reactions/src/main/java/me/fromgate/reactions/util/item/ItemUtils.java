@@ -490,4 +490,17 @@ public final class ItemUtils {
         }
         return null;
     }
+
+    /**
+     * Get item in hand
+     *
+     * @param player  Player to use
+     * @param offhand Check offhand or not
+     * @return Item string
+     */
+    public static String getPlayerItemInHand(Player player, boolean offhand) {
+        VirtualItem vi = VirtualItem.fromItemStack(offhand ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand());
+        if (vi == null) return "";
+        return vi.toString();
+    }
 }

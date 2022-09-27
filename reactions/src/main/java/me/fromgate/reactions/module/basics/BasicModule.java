@@ -8,15 +8,7 @@ import me.fromgate.reactions.module.Module;
 import me.fromgate.reactions.module.basics.actions.*;
 import me.fromgate.reactions.module.basics.activators.*;
 import me.fromgate.reactions.module.basics.flags.*;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderActivator;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderCalc;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderMoney;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderPAPI;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderPlayer;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderRandom;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderTempVariable;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderTime;
-import me.fromgate.reactions.module.basics.placeholders.PlaceholderVariable;
+import me.fromgate.reactions.module.basics.placeholders.*;
 import me.fromgate.reactions.module.basics.selectors.GroupSelector;
 import me.fromgate.reactions.module.basics.selectors.LocSelector;
 import me.fromgate.reactions.module.basics.selectors.PermSelector;
@@ -253,6 +245,7 @@ public class BasicModule implements Module {
     public @NotNull Collection<Placeholder> getPlaceholders(@NotNull ReActions.Platform platform) {
         return List.of(
                 new PlaceholderPlayer(),
+                new PlaceholderPlayerInv(),
                 new PlaceholderRandom(),
                 new PlaceholderTime(),
                 new PlaceholderCalc(),
