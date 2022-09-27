@@ -86,7 +86,7 @@ public class FlagItem implements Flag {
         VirtualItem vi = null;
 
         if (slotNum < 0) {
-            switch (slotStr.toLowerCase(Locale.ENGLISH)) {
+            switch (slotStr.toLowerCase(Locale.ROOT)) {
                 case "helm", "helmet" -> vi = VirtualItem.fromItemStack(player.getInventory().getHelmet());
                 case "chest", "chestplate" -> vi = VirtualItem.fromItemStack(player.getInventory().getChestplate());
                 case "legs", "leggings" -> vi = VirtualItem.fromItemStack(player.getInventory().getLeggings());

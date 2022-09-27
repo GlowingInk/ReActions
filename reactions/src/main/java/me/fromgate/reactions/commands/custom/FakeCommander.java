@@ -52,7 +52,7 @@ public final class FakeCommander {
     }
 
     public static boolean raiseRaCommand(CommandStorage storage, boolean activated) {
-        RaCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ENGLISH));
+        RaCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ROOT));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
         if (exec != null) {
@@ -65,8 +65,8 @@ public final class FakeCommander {
 
     private static boolean register(String command, String prefix, List<String> aliases, CommandMap commandMap, RaCommand raCommand, boolean toBukkit) {
         if (Utils.isStringEmpty(command)) return false;
-        command = command.toLowerCase(Locale.ENGLISH);
-        prefix = Utils.isStringEmpty(prefix) ? command : prefix.toLowerCase(Locale.ENGLISH);
+        command = command.toLowerCase(Locale.ROOT);
+        prefix = Utils.isStringEmpty(prefix) ? command : prefix.toLowerCase(Locale.ROOT);
         if (aliases == null)
             aliases = new ArrayList<>();
         // Registering main command

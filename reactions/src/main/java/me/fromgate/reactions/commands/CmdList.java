@@ -28,7 +28,7 @@ public class CmdList extends Cmd {
         Player player = (sender instanceof Player) ? (Player) sender : null;
         int lpp = (player == null) ? 1000 : 15;
         int page = 1;
-        String arg1 = args.length >= 2 ? args[1].toLowerCase(Locale.ENGLISH) : "";
+        String arg1 = args.length >= 2 ? args[1].toLowerCase(Locale.ROOT) : "";
         String arg2 = args.length >= 3 ? args[2] : "";
         String arg3 = args.length >= 4 ? args[3] : "";
         if (NumberUtils.isNonzeroInteger(arg1)) printAct(sender, 1, lpp);

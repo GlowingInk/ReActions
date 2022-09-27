@@ -61,7 +61,7 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
         ConfigurationSection argsSection = cmdSection.getConfigurationSection("args");
         if (argsSection == null) return;
         for (String arg : argsSection.getKeys(false))
-            chains.add(new ArgumentsChain(arg.toLowerCase(Locale.ENGLISH), argsSection.getConfigurationSection(arg)));
+            chains.add(new ArgumentsChain(arg.toLowerCase(Locale.ROOT), argsSection.getConfigurationSection(arg)));
     }
 
     /**

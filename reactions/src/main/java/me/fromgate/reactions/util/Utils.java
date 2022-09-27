@@ -242,7 +242,7 @@ public final class Utils {
     public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name, T def) {
         if (clazz != null && !Utils.isStringEmpty(name)) {
             try {
-                return Enum.valueOf(clazz, name.toUpperCase(Locale.ENGLISH));
+                return Enum.valueOf(clazz, name.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ignored) {
             }
         }

@@ -48,7 +48,7 @@ public final class ItemUtils {
     public static Enchantment getEnchantmentByName(String name) {
         if (!Utils.isStringEmpty(name))
             try {
-                return Enchantment.getByKey(NamespacedKey.minecraft(name.toLowerCase(Locale.ENGLISH)));
+                return Enchantment.getByKey(NamespacedKey.minecraft(name.toLowerCase(Locale.ROOT)));
             } catch (IllegalArgumentException ignore) {
             }
         return null;
@@ -259,7 +259,7 @@ public final class ItemUtils {
      */
     public static Material getMaterial(String name) {
         if (Utils.isStringEmpty(name)) return null;
-        name = name.toUpperCase(Locale.ENGLISH);
+        name = name.toUpperCase(Locale.ROOT);
         Material material = Material.getMaterial(name, false);
         return material == null ? Material.getMaterial(name, true) : material;
     }
@@ -433,7 +433,7 @@ public final class ItemUtils {
                 amount = Math.max(Rng.nextIntRanged(si[1]), 1);
             String[] ti = si[0].split(":");
             if (ti.length > 0) {
-                Material m = Material.getMaterial(ti[0].toUpperCase(Locale.ENGLISH));
+                Material m = Material.getMaterial(ti[0].toUpperCase(Locale.ROOT));
                 if (m == null)
                     return null;
                 id = m;

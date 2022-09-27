@@ -48,7 +48,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @Override
     public boolean containsKey(Object o) {
-        return origin.containsKey(((String)o).toLowerCase(Locale.ENGLISH));
+        return origin.containsKey(((String)o).toLowerCase(Locale.ROOT));
     }
 
     @Override
@@ -58,24 +58,24 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @Override
     public V get(Object o) {
-        return origin.getOrDefault(((String)o).toLowerCase(Locale.ENGLISH), KeyedValue.empty()).getValue();
+        return origin.getOrDefault(((String)o).toLowerCase(Locale.ROOT), KeyedValue.empty()).getValue();
     }
 
     @Override
     public V put(String s, V v) {
-        KeyedValue<V> result = origin.put(s.toLowerCase(Locale.ENGLISH), new KeyedValue<>(s, v));
+        KeyedValue<V> result = origin.put(s.toLowerCase(Locale.ROOT), new KeyedValue<>(s, v));
         return result == null ? null : result.getValue();
     }
 
     @Override
     public V remove(Object o) {
-        KeyedValue<V> result = origin.remove(((String)o).toLowerCase(Locale.ENGLISH));
+        KeyedValue<V> result = origin.remove(((String)o).toLowerCase(Locale.ROOT));
         return result == null ? null : result.getValue();
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends V> map) {
-        map.forEach((k, v) -> origin.put(k.toLowerCase(Locale.ENGLISH), new KeyedValue<>(k, v)));
+        map.forEach((k, v) -> origin.put(k.toLowerCase(Locale.ROOT), new KeyedValue<>(k, v)));
     }
 
     @Override

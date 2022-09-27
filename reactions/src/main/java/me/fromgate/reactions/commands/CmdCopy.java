@@ -22,7 +22,7 @@ public class CmdCopy extends Cmd {
         Activator actFrom = activators.getActivator(id1);
         Activator actTo = activators.getActivator(id2);
         boolean fail = actFrom == null || actTo == null;
-        switch (copyMode.toLowerCase(Locale.ENGLISH)) {
+        switch (copyMode.toLowerCase(Locale.ROOT)) {
             case "f": case "flag": case "flags":
                 if (fail) {
                     Msg.printMSG(sender, "msg_copyflagsfailed", 'c', '4', id1, id2);

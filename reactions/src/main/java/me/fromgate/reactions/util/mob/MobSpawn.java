@@ -56,7 +56,7 @@ public final class MobSpawn {
     private MobSpawn() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static void mobSpawn(Player p, Parameters params) {
-        String mob = params.getString("type", "").toUpperCase(Locale.ENGLISH);
+        String mob = params.getString("type", "").toUpperCase(Locale.ROOT);
         if (mob.isEmpty()) {
             Msg.logMessage("Failed to spawn mob: " + params);
             return;

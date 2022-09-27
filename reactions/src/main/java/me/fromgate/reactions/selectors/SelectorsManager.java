@@ -23,13 +23,13 @@ public class SelectorsManager {
     }
 
     public void registerSelector(@NotNull Selector selector) {
-        if (selectorByName.containsKey(selector.getName().toLowerCase(Locale.ENGLISH))) {
-            throw new IllegalStateException("Selector '" + selector.getName().toLowerCase(Locale.ENGLISH) + "' is already registered!");
+        if (selectorByName.containsKey(selector.getName().toLowerCase(Locale.ROOT))) {
+            throw new IllegalStateException("Selector '" + selector.getName().toLowerCase(Locale.ROOT) + "' is already registered!");
         }
         selectors.add(selector);
-        selectorByName.put(selector.getName().toLowerCase(Locale.ENGLISH), selector);
+        selectorByName.put(selector.getName().toLowerCase(Locale.ROOT), selector);
         for (String alias : Utils.getAliases(selector)) {
-            selectorByName.putIfAbsent(alias.toLowerCase(Locale.ENGLISH), selector);
+            selectorByName.putIfAbsent(alias.toLowerCase(Locale.ROOT), selector);
         }
     }
 

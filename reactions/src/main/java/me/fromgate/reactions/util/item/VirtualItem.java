@@ -143,14 +143,14 @@ public class VirtualItem extends ItemStack {
             if (itemStr.contains(":")) {
                 itemStr = itemStr.substring(0, itemStr.indexOf(":"));
             }
-            type = Material.getMaterial(itemStr.toUpperCase(Locale.ENGLISH), false);
+            type = Material.getMaterial(itemStr.toUpperCase(Locale.ROOT), false);
             if (type == null)
-                type = Material.getMaterial(itemStr.toUpperCase(Locale.ENGLISH), true);
+                type = Material.getMaterial(itemStr.toUpperCase(Locale.ROOT), true);
             amount = Rng.nextIntRanged(amountStr);
             if (amount == 0) return null;
         } else if (params.containsKey("type")) {
             String typeStr = params.getOrDefault("type", "");
-            type = Material.getMaterial(typeStr.toUpperCase(Locale.ENGLISH));
+            type = Material.getMaterial(typeStr.toUpperCase(Locale.ROOT));
         } else
             return null;
         if (type == null)
@@ -278,7 +278,7 @@ public class VirtualItem extends ItemStack {
             if (ln.length == 0)
                 continue;
             PotionEffectType pType = PotionEffectType.getByName(ln[0]
-                    .toUpperCase(Locale.ENGLISH));
+                    .toUpperCase(Locale.ROOT));
             if (pType == null)
                 continue;
             int amplifier = (ln.length > 1) ? Rng.nextIntRanged(ln[1]) : 0;
@@ -513,7 +513,7 @@ public class VirtualItem extends ItemStack {
         boolean flicker;
         boolean trail;
         fType = FireworkEffect.Type.valueOf(params.getOrDefault("type", "")
-                .toUpperCase(Locale.ENGLISH));
+                .toUpperCase(Locale.ROOT));
         flicker = "true".equalsIgnoreCase(params.getOrDefault("flicker", "false"));
         trail = "true".equalsIgnoreCase(params.getOrDefault("trail", "false"));
         colors = ItemUtils.parseColors(params.getOrDefault("colors", ""));
@@ -649,7 +649,7 @@ public class VirtualItem extends ItemStack {
         boolean regex = !itemMap.containsKey("regex") || itemMap.get("regex").equalsIgnoreCase("true");
 
         if (itemMap.containsKey("type")) {
-            String typeStr = itemMap.get("type").toUpperCase(Locale.ENGLISH);
+            String typeStr = itemMap.get("type").toUpperCase(Locale.ROOT);
             Material m = Material.getMaterial(typeStr);
             if (m == null) return false;
             typeStr = m.toString();
@@ -668,7 +668,7 @@ public class VirtualItem extends ItemStack {
                 itemStr = itemStr.substring(0, itemStr.indexOf(":"));
                 dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
             }
-            itemMap.put("type", Material.getMaterial(itemStr.toUpperCase(Locale.ENGLISH)).name());
+            itemMap.put("type", Material.getMaterial(itemStr.toUpperCase(Locale.ROOT)).name());
 
             if (NumberUtils.INT_POSITIVE.matcher(dataStr).matches()) itemMap.put("data", dataStr);
             if (NumberUtils.INT_POSITIVE.matcher(amountStr).matches()) itemMap.put("amount", amountStr);

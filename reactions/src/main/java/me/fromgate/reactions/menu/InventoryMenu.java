@@ -164,15 +164,15 @@ public class InventoryMenu implements Listener {
     }
 
     private static VirtualInventory getMenu(String id) {
-        return menu.get(id.toLowerCase(Locale.ENGLISH));
+        return menu.get(id.toLowerCase(Locale.ROOT));
     }
 
     private static void putMenu(String id, VirtualInventory inventory) {
-        menu.put(id.toLowerCase(Locale.ENGLISH), inventory);
+        menu.put(id.toLowerCase(Locale.ROOT), inventory);
     }
 
     private static boolean containsMenu(String id) {
-        return menu.containsKey(id.toLowerCase(Locale.ENGLISH));
+        return menu.containsKey(id.toLowerCase(Locale.ROOT));
     }
 
     public static void printMenu(CommandSender sender, String id) {
@@ -193,7 +193,7 @@ public class InventoryMenu implements Listener {
         int linesPerPage = (sender instanceof Player) ? 15 : 10000;
         List<String> menuList = new ArrayList<>();
         for (String id : menu.keySet()) {
-            if (mask.isEmpty() || id.toLowerCase(Locale.ENGLISH).contains(mask.toLowerCase(Locale.ENGLISH))) {
+            if (mask.isEmpty() || id.toLowerCase(Locale.ROOT).contains(mask.toLowerCase(Locale.ROOT))) {
                 menuList.add(id + " : " + getMenu(id).getTitle());
             }
         }

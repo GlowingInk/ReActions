@@ -151,7 +151,7 @@ public class BukkitMessenger implements Messenger {
         }
 
         for (Map.Entry<String, String> message : messages.entrySet())
-            lng.set(message.getKey().toLowerCase(Locale.ENGLISH), message.getValue());
+            lng.set(message.getKey().toLowerCase(Locale.ROOT), message.getValue());
 
         try {
             lng.save(f);

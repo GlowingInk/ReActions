@@ -114,7 +114,7 @@ public class ActionIfElse implements Action {
 
         if (!params.contains("action1")) return false;
         for (String actionKey : params.keySet()) {
-            if (!((actionKey.toLowerCase(Locale.ENGLISH)).startsWith("action"))) continue;
+            if (!((actionKey.toLowerCase(Locale.ROOT)).startsWith("action"))) continue;
             if (params.isEmpty() || !params.toString().contains("=")) continue;
             String actionStr = params.getString(actionKey);
 
@@ -142,7 +142,7 @@ public class ActionIfElse implements Action {
 			Map<String, ConditionType> byName = new HashMap<>();
 			for(ConditionType cnd : ConditionType.values()) {
 				byName.put(cnd.name(), cnd);
-				byName.put(cnd.alias.toUpperCase(Locale.ENGLISH), cnd);
+				byName.put(cnd.alias.toUpperCase(Locale.ROOT), cnd);
 			}
 			BY_NAME = Collections.unmodifiableMap(byName);
 		}

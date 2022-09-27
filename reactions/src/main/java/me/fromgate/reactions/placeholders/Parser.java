@@ -42,11 +42,11 @@ interface Parser {
             @Override
             public boolean put(Placeholder ph) {
                 if (ph instanceof Placeholder.Equal) {
-                    String id = ((Placeholder.Equal)ph).getId().toLowerCase(Locale.ENGLISH);
+                    String id = ((Placeholder.Equal)ph).getId().toLowerCase(Locale.ROOT);
                     if (placeholders.containsKey(id)) return false;
                     placeholders.put(id, ph);
                     for (String alias : Utils.getAliases(ph))
-                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ENGLISH), ph);
+                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), ph);
                     return true;
                 }
                 return false;
@@ -54,7 +54,7 @@ interface Parser {
 
             @Override
             public String parse(String text, RaContext context) {
-                String key = text.toLowerCase(Locale.ENGLISH);
+                String key = text.toLowerCase(Locale.ROOT);
                 Placeholder ph = placeholders.get(key);
                 if (ph == null) return null;
                 return ph.processPlaceholder(context, key, text);
@@ -85,7 +85,7 @@ interface Parser {
                     if (placeholders.containsKey(prefix)) return false;
                     placeholders.put(prefix, ph);
                     for (String alias : Utils.getAliases(ph))
-                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ENGLISH), ph);
+                        placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), ph);
                     return true;
                 }
                 return false;
@@ -94,8 +94,8 @@ interface Parser {
             @Override
             public String parse(String text, RaContext context) {
                 String[] split = text.split(":", 2);
-                String prefix = split[0].toLowerCase(Locale.ENGLISH);
-                Placeholder ph = placeholders.get(prefix.toLowerCase(Locale.ENGLISH));
+                String prefix = split[0].toLowerCase(Locale.ROOT);
+                Placeholder ph = placeholders.get(prefix.toLowerCase(Locale.ROOT));
                 if (ph == null) return null;
                 return ph.processPlaceholder(context, prefix, split.length > 1 ? split[1] : "");
             }

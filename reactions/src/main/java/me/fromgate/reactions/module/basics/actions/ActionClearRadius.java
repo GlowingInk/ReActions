@@ -65,7 +65,7 @@ public class ActionClearRadius implements Action {
         } else {
             if (type.equalsIgnoreCase("item") || type.equalsIgnoreCase("items")) return true;
         }
-        return (Utils.isWordInList(e.getType().name().toLowerCase(Locale.ENGLISH), type.toLowerCase(Locale.ENGLISH)));
+        return (Utils.isWordInList(e.getType().name().toLowerCase(Locale.ROOT), type.toLowerCase(Locale.ROOT)));
     }
 
 }

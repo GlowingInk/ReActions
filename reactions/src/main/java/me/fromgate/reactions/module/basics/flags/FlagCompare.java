@@ -39,7 +39,7 @@ public class FlagCompare implements Flag {
         if (paramValue.isEmpty()) return false;
         if (!params.contains("value1")) return false;
         for (String valueKey : params.keySet()) {
-            if (!((valueKey.toLowerCase(Locale.ENGLISH)).startsWith("value"))) continue;
+            if (!((valueKey.toLowerCase(Locale.ROOT)).startsWith("value"))) continue;
             String value = params.getString(valueKey);
             if (NumberUtils.isIntegerSigned(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
                 return true;

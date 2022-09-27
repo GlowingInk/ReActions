@@ -32,7 +32,7 @@ public class ActivatorTypesRegistry {
         if (types.containsKey(type.getActivatorClass())) {
             throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered!");
         }
-        String name = type.getName().toUpperCase(Locale.ENGLISH);
+        String name = type.getName().toUpperCase(Locale.ROOT);
         if (typesAliases.containsKey(name)) {
             ActivatorType preserved = typesAliases.get(name);
             if (preserved.getName().equalsIgnoreCase(name)) {
@@ -48,7 +48,7 @@ public class ActivatorTypesRegistry {
             aliases = Utils.getAliases(type.getActivatorClass());
         }
         for (String alias : aliases) {
-            typesAliases.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), type);
+            typesAliases.putIfAbsent(alias.toUpperCase(Locale.ROOT), type);
         }
     }
 
@@ -57,7 +57,7 @@ public class ActivatorTypesRegistry {
     }
 
     public @Nullable ActivatorType get(@NotNull String name) {
-        return typesAliases.get(name.toUpperCase(Locale.ENGLISH));
+        return typesAliases.get(name.toUpperCase(Locale.ROOT));
     }
 
     public @Nullable ActivatorType get(@NotNull Class<? extends Activator> type) {

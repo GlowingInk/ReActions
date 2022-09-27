@@ -51,7 +51,7 @@ public class WeatherChangeActivator extends Activator {
         RAINING, CLEAR, ANY;
 
         public static WeatherState getByName(String name) {
-            return switch (name.toUpperCase(Locale.ENGLISH)) {
+            return switch (name.toUpperCase(Locale.ROOT)) {
                 case "RAINING", "RAIN" -> RAINING;
                 case "CLEAR", "SUN" -> CLEAR;
                 default -> ANY;

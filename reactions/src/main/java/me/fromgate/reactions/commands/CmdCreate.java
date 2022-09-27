@@ -28,7 +28,7 @@ public class CmdCreate extends Cmd {
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length < 3) return false;
         Player player = (sender instanceof Player) ? (Player) sender : null;
-        String type = args[1].toLowerCase(Locale.ENGLISH);
+        String type = args[1].toLowerCase(Locale.ROOT);
         String id = args[2];
         StringBuilder param = new StringBuilder(args.length >= 4 ? args[3] : "");
         if (args.length > 4) {

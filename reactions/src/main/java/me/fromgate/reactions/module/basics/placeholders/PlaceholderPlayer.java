@@ -89,7 +89,7 @@ public class PlaceholderPlayer implements Placeholder.Prefixed {
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
             vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
         } else {
-            switch (value.toLowerCase(Locale.ENGLISH)) {
+            switch (value.toLowerCase(Locale.ROOT)) {
                 case "mainhand":
                 case "hand":
                     return getPlayerItemInHand(player, false);

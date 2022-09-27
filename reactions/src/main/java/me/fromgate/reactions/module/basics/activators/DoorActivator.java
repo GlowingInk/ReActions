@@ -123,7 +123,7 @@ public class DoorActivator extends Activator implements Locatable {
     public String toString() {
         String sb = super.toString() + " (" +
                 world + ", " + x + ", " + y + ", " + z +
-                "; state:" + this.state.toUpperCase(Locale.ENGLISH) +
+                "; state:" + this.state.toUpperCase(Locale.ROOT) +
                 ")";
         return sb;
     }

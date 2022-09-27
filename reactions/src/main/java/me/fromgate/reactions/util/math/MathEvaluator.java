@@ -19,7 +19,7 @@ public class MathEvaluator {
     private int pointer;
 
     private MathEvaluator(String expression) {
-        this.expression = Utils.removeChar(expression.toLowerCase(Locale.ENGLISH), ' ');
+        this.expression = Utils.removeChar(expression.toLowerCase(Locale.ROOT), ' ');
     }
 
     public static double eval(String expression) {

@@ -48,7 +48,7 @@ public class DamageByMobActivator extends Activator {
 
     private static String getEntityTypeByName(String sType) {
         if (sType != null) {
-            sType = sType.toUpperCase(Locale.ENGLISH);
+            sType = sType.toUpperCase(Locale.ROOT);
             for (EntityType type : EntityType.values()) {
                 if (sType.equals(type.name()))
                     return type.name();
@@ -126,9 +126,9 @@ public class DamageByMobActivator extends Activator {
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                "type:" + (damagerType.isEmpty() ? "-" : damagerType.toUpperCase(Locale.ENGLISH)) +
+                "type:" + (damagerType.isEmpty() ? "-" : damagerType.toUpperCase(Locale.ROOT)) +
                 "; name:" + (damagerName.isEmpty() ? "-" : damagerName) +
-                "; etype:" + (entityType.isEmpty() ? "-" : entityType.toUpperCase(Locale.ENGLISH)) +
+                "; etype:" + (entityType.isEmpty() ? "-" : entityType.toUpperCase(Locale.ROOT)) +
                 "; cause:" + damageCause +
                 ")";
         return sb;

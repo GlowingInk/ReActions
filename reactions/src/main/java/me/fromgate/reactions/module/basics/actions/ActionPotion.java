@@ -94,7 +94,7 @@ public class ActionPotion implements Action {
 
         if (pef == null) {
             try {
-                PotionType ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ENGLISH));
+                PotionType ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ROOT));
                 pef = ptype.getEffectType();
             } catch (IllegalArgumentException e) {
                 Msg.logMessage("Unknown potion type name: " + potionEffect);

@@ -44,24 +44,24 @@ public class RaContext {
     }
 
     public @Nullable String getVariable(@NotNull String key) {
-        return variables.get(key.toLowerCase(Locale.ENGLISH));
+        return variables.get(key.toLowerCase(Locale.ROOT));
     }
 
     @Contract("_, !null -> !null")
     public @Nullable String getVariable(@NotNull String key, @Nullable String def) {
-        return variables.getOrDefault(key.toLowerCase(Locale.ENGLISH), def);
+        return variables.getOrDefault(key.toLowerCase(Locale.ROOT), def);
     }
 
     public @Nullable String setVariable(@NotNull String key, @Nullable String str) {
-        return variables.put(key.toLowerCase(Locale.ENGLISH), str);
+        return variables.put(key.toLowerCase(Locale.ROOT), str);
     }
 
     public @Nullable String setVariable(@NotNull String key, @Nullable Object obj) {
-        return variables.put(key.toLowerCase(Locale.ENGLISH), String.valueOf(obj));
+        return variables.put(key.toLowerCase(Locale.ROOT), String.valueOf(obj));
     }
 
     public boolean setChangeable(@NotNull String key, @NotNull String value) {
-        key = key.toLowerCase(Locale.ENGLISH);
+        key = key.toLowerCase(Locale.ROOT);
         DataValue dataValue = changeables.get(key);
         if (dataValue == null || !dataValue.set(value)) return false;
         variables.put(key, dataValue.asString());
@@ -69,7 +69,7 @@ public class RaContext {
     }
 
     public boolean setChangeable(@NotNull String key, boolean value) {
-        key = key.toLowerCase(Locale.ENGLISH);
+        key = key.toLowerCase(Locale.ROOT);
         DataValue dataValue = changeables.get(key);
         if (dataValue == null || !dataValue.set(value)) return false;
         variables.put(key, dataValue.asString());

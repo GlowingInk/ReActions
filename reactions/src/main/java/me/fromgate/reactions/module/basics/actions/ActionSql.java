@@ -50,7 +50,7 @@ public class ActionSql implements Action {
         switch (sqlType) {
             case SELECT -> { // SELECT to variable
                 if (query.isEmpty()) return false;
-                if (!query.toLowerCase(Locale.ENGLISH).startsWith("select")) {
+                if (!query.toLowerCase(Locale.ROOT).startsWith("select")) {
                     Msg.logOnce("needselect" + query, "You need to use only \"SELECT\" query in SQL_SELECT action. Query: " + query);
                     return false;
                 }
@@ -60,7 +60,7 @@ public class ActionSql implements Action {
             case INSERT -> { // INSERT
                 query = params.getString("query", params.getString(Parameters.ORIGIN_KEY, "")).trim();
                 if (query.isEmpty()) return false;
-                if (!query.toLowerCase(Locale.ENGLISH).startsWith("insert")) {
+                if (!query.toLowerCase(Locale.ROOT).startsWith("insert")) {
                     Msg.logOnce("needinsert" + query, "You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
                     return false;
                 }
@@ -69,7 +69,7 @@ public class ActionSql implements Action {
             case UPDATE -> { // UPDATE
                 query = params.getString("query", params.getString(Parameters.ORIGIN_KEY, "")).trim();
                 if (query.isEmpty()) return false;
-                if (!query.toLowerCase(Locale.ENGLISH).startsWith("update")) {
+                if (!query.toLowerCase(Locale.ROOT).startsWith("update")) {
                     Msg.logOnce("needupdate" + query, "You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
                     return false;
                 }
@@ -78,7 +78,7 @@ public class ActionSql implements Action {
             case DELETE -> { // DELETE
                 query = params.getString("query", params.getString(Parameters.ORIGIN_KEY, "")).trim();
                 if (query.isEmpty()) return false;
-                if (!query.toLowerCase(Locale.ENGLISH).startsWith("delete")) {
+                if (!query.toLowerCase(Locale.ROOT).startsWith("delete")) {
                     Msg.logOnce("needdelete" + query, "You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
                     return false;
                 }
@@ -87,7 +87,7 @@ public class ActionSql implements Action {
             case SET -> { // SET
                 query = params.getString("query", params.getString(Parameters.ORIGIN_KEY, "")).trim();
                 if (query.isEmpty()) return false;
-                if (!query.toLowerCase(Locale.ENGLISH).startsWith("set")) {
+                if (!query.toLowerCase(Locale.ROOT).startsWith("set")) {
                     Msg.logOnce("needset" + query, "You need to use only \"SET\" query in SQL_SET action. Query: " + query);
                     return false;
                 }

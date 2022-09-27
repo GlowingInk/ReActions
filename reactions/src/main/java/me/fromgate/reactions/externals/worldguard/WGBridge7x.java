@@ -110,7 +110,7 @@ public class WGBridge7x extends WGBridge {
         if (!connected) return rgs;
         ApplicableRegionSet rset = query.getApplicableRegions(BukkitAdapter.adapt(loc));
         if ((rset == null) || (rset.size() == 0)) return rgs;
-        for (ProtectedRegion rg : rset) rgs.add((loc.getWorld().getName() + "." + rg.getId()).toLowerCase(Locale.ENGLISH));
+        for (ProtectedRegion rg : rset) rgs.add((loc.getWorld().getName() + "." + rg.getId()).toLowerCase(Locale.ROOT));
         return rgs;
     }
 
@@ -144,7 +144,7 @@ public class WGBridge7x extends WGBridge {
         if (rgs.isEmpty() && !rg.contains("__global__")) return false;
         World world = getRegionWorld(rg);
         String regionName = getRegionName(rg);
-        return rgs.isEmpty() && rg.contains("__global__") && p.getWorld() == world || rgs.contains((world.getName() + "." + regionName).toLowerCase(Locale.ENGLISH));
+        return rgs.isEmpty() && rg.contains("__global__") && p.getWorld() == world || rgs.contains((world.getName() + "." + regionName).toLowerCase(Locale.ROOT));
     }
 
     @Override

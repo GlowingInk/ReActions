@@ -27,7 +27,7 @@ public final class MathBase {
     private MathBase() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static boolean registerFunction(String name, Function function) {
-        name = name.toLowerCase(Locale.ENGLISH);
+        name = name.toLowerCase(Locale.ROOT);
         if (isAllowedName(name) && !functions.containsKey(name)) {
             functions.put(name, function);
             return true;
@@ -36,7 +36,7 @@ public final class MathBase {
     }
 
     public static boolean registerConstant(String name, double value) {
-        name = name.toLowerCase(Locale.ENGLISH);
+        name = name.toLowerCase(Locale.ROOT);
         if (isAllowedName(name) && !constants.containsKey(name)) {
             constants.put(name, value);
             return true;

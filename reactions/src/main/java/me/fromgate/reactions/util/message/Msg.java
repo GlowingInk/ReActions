@@ -523,8 +523,8 @@ public enum Msg {
     private static void initMessages() {
         Map<String, String> lng = messenger.load(language);
         for (Msg key : Msg.values()) {
-            if (lng.containsKey(key.name().toLowerCase(Locale.ENGLISH))) {
-                key.initMessage(lng.get(key.name().toLowerCase(Locale.ENGLISH)));
+            if (lng.containsKey(key.name().toLowerCase(Locale.ROOT))) {
+                key.initMessage(lng.get(key.name().toLowerCase(Locale.ROOT)));
             } else if (!(language.equalsIgnoreCase("default") || language.equalsIgnoreCase("english"))) {
                 Msg.LNG_TRANSLATION_NOT_FOUND.log(key.name());
             }
@@ -534,7 +534,7 @@ public enum Msg {
     private static void saveMessages() {
         Map<String, String> messages = new LinkedHashMap<>();
         for (Msg msg : Msg.values()) {
-            messages.put(msg.name().toLowerCase(Locale.ENGLISH), msg.message);
+            messages.put(msg.name().toLowerCase(Locale.ROOT), msg.message);
         }
         messenger.save(language, messages);
     }
@@ -599,7 +599,7 @@ public enum Msg {
     }
 
     public static boolean printMSG(Object sender, String key, Object... s) {
-        Msg m = getByName(key.toUpperCase(Locale.ENGLISH));
+        Msg m = getByName(key.toUpperCase(Locale.ROOT));
         if (m == null) {
             LNG_PRINT_FAIL_M.print(sender, key);
             return LNG_PRINT_FAIL_M.log(sender, key);

@@ -20,7 +20,7 @@ public class CmdReload extends Cmd {
     @Override
     public boolean execute(CommandSender sender, String[] params) {
         if (params.length >= 2) {
-            String check = params[1].toLowerCase(Locale.ENGLISH);
+            String check = params[1].toLowerCase(Locale.ROOT);
             if (check.contains("g") && params.length > 2) {
                 ReActions.getActivators().loadGroup(params[2].replaceAll("[/\\\\]", File.separator), true);
             } else if (check.contains("a")) {

@@ -84,7 +84,7 @@ public class ActionMessage implements Action {
         String annoymentTime = params.getString("hide");
         for (Player p : players) {
             if (showMessage(p, message, annoymentTime)) {
-                switch (type.toLowerCase(Locale.ENGLISH)) {
+                switch (type.toLowerCase(Locale.ROOT)) {
                     case "title" -> p.sendTitle(Msg.colorize(message),
                             params.getString("subtitle", null),
                             params.getInteger("fadein", 10),

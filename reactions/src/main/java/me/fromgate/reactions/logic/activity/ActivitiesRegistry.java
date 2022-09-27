@@ -21,30 +21,30 @@ public class ActivitiesRegistry {
     }
 
     public void registerAction(@NotNull Action action) {
-        if (actionByName.containsKey(action.getName().toUpperCase(Locale.ENGLISH))) {
-            throw new IllegalStateException("Action '" + action.getName().toUpperCase(Locale.ENGLISH) + "' is already registered!");
+        if (actionByName.containsKey(action.getName().toUpperCase(Locale.ROOT))) {
+            throw new IllegalStateException("Action '" + action.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
         }
-        actionByName.put(action.getName().toUpperCase(Locale.ENGLISH), action);
+        actionByName.put(action.getName().toUpperCase(Locale.ROOT), action);
         for (String alias : Utils.getAliases(action)) {
-            actionByName.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), action);
+            actionByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), action);
         }
     }
 
     public void registerFlag(@NotNull Flag flag) {
-        if (flagByName.containsKey(flag.getName().toUpperCase(Locale.ENGLISH))) {
-            throw new IllegalStateException("Flag '" + flag.getName().toUpperCase(Locale.ENGLISH) + "' is already registered!");
+        if (flagByName.containsKey(flag.getName().toUpperCase(Locale.ROOT))) {
+            throw new IllegalStateException("Flag '" + flag.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
         }
-        flagByName.put(flag.getName().toUpperCase(Locale.ENGLISH), flag);
+        flagByName.put(flag.getName().toUpperCase(Locale.ROOT), flag);
         for (String alias : Utils.getAliases(flag)) {
-            flagByName.putIfAbsent(alias.toUpperCase(Locale.ENGLISH), flag);
+            flagByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), flag);
         }
     }
 
     public @Nullable Action getAction(@NotNull String name) {
-        return actionByName.get(name.toUpperCase(Locale.ENGLISH));
+        return actionByName.get(name.toUpperCase(Locale.ROOT));
     }
 
     public @Nullable Flag getFlag(@NotNull String name) {
-        return flagByName.get(name.toUpperCase(Locale.ENGLISH));
+        return flagByName.get(name.toUpperCase(Locale.ROOT));
     }
 }

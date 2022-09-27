@@ -265,7 +265,7 @@ public final class ActivatorLogic {
 
     @Override
     public int hashCode() {
-        return name.toLowerCase(Locale.ENGLISH).hashCode();
+        return name.toLowerCase(Locale.ROOT).hashCode();
     }
 
     @Override

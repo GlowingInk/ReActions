@@ -66,7 +66,7 @@ public class WEChangeActivator extends Activator {
     public String toString() {
         String sb = super.toString() + " (" +
                 "block-type:" + (blockType != null ? blockType : "ANY") +
-                " region:" + (region.isEmpty() ? "-" : region.toUpperCase(Locale.ENGLISH)) +
+                " region:" + (region.isEmpty() ? "-" : region.toUpperCase(Locale.ROOT)) +
                 ")";
         return sb;
     }

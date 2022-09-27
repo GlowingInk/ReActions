@@ -103,7 +103,7 @@ public class CommandActivator extends Activator {
                 return pattern.matcher(cs.getCommand()).matches();
             } else
                 return starts ?
-                        cs.getCommand().toLowerCase(Locale.ENGLISH).startsWith(command) :
+                        cs.getCommand().toLowerCase(Locale.ROOT).startsWith(command) :
                         command.equalsIgnoreCase(cs.getCommand());
         } else {
             if (args.size() != cs.getArgs().length + 1) return false;
