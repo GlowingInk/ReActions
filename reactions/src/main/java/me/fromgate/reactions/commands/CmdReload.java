@@ -31,7 +31,7 @@ public class CmdReload extends Cmd {
                 LocationHolder.loadLocs();
             if (check.contains("c")) {
                 ReActions.getPlugin().reloadConfig();
-                Cfg.load();
+                Cfg.load(ReActions.getPlugin().getConfig());
                 FakeCommander.updateCommands();
             }
             if (check.contains("d"))
@@ -50,7 +50,7 @@ public class CmdReload extends Cmd {
             ReActions.getActivators().loadGroup("", false);
             LocationHolder.loadLocs();
             ReActions.getPlugin().reloadConfig();
-            Cfg.load();
+            Cfg.load(ReActions.getPlugin().getConfig());
             Delayer.load();
             if (!Cfg.playerSelfVarFile) ReActions.getVariables().load();
             else ReActions.getVariables().loadVars();

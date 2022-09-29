@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class PlaceholderCalc implements Placeholder.Prefixed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-        if (!param.contains("%")) try {
+        try {
             return NumberUtils.format(MathEvaluator.eval(param));
         } catch (NumberFormatException | ArithmeticException ignore) {
             // TODO: Error

@@ -13,7 +13,7 @@ public class StoredFlag {
         this.flag = flag;
         this.params = params;
         this.inverted = inverted;
-        this.placeholders = params.contains("%");
+        this.placeholders = params.contains("%") || params.contains("#[");
     }
 
     public @NotNull Flag getFlag() {

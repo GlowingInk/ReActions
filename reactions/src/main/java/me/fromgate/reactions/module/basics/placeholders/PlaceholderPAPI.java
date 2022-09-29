@@ -4,14 +4,11 @@ import me.fromgate.reactions.externals.placeholderapi.RaPlaceholderAPI;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class PlaceholderPAPI implements Placeholder {
+public class PlaceholderPAPI implements Placeholder.Postprocess {
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text) {
-        String backup = "%" + text + "%";
-        String result = RaPlaceholderAPI.processPlaceholder(context.getPlayer(), backup);
-        return backup.equals(result) ? null : result;
+    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text) {
+        return RaPlaceholderAPI.processPlaceholder(context.getPlayer(), text);
     }
 
     @Override

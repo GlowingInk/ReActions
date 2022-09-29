@@ -16,11 +16,23 @@ public interface Placeholder {
 
     @NotNull String getName();
 
-    // TODO: boolean requiresPlayer
+    // TODO: boolean requiresPlayer?
 
     interface Equal extends Placeholder {
     }
 
     interface Prefixed extends Placeholder {
+    }
+
+    interface Postprocess extends Placeholder {
+        /**
+         * Process this placeholder
+         * @param context Context of activation
+         * @param key Always {@link Placeholder#getName()}
+         * @param text Full message text
+         * @return Processed text
+         */
+        @Override
+        @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text);
     }
 }

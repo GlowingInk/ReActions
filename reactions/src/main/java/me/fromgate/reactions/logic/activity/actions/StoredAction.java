@@ -11,7 +11,7 @@ public class StoredAction {
     public StoredAction(@NotNull Action action, @NotNull String params) {
         this.action = action;
         this.params = params;
-        this.placeholders = params.contains("%");
+        this.placeholders = params.contains("%") || params.contains("#[");
     }
 
     public @NotNull Action getAction() {

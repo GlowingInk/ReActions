@@ -38,6 +38,8 @@ import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.module.ModulesRegistry;
 import me.fromgate.reactions.module.basics.BasicModule;
+import me.fromgate.reactions.placeholders.LegacyPlaceholdersManager;
+import me.fromgate.reactions.placeholders.ModernPlaceholdersManager;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.Delayer;
@@ -63,8 +65,18 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onLoad() {
+        Cfg.load(getConfig());
+        Cfg.save(getConfig());
+        saveConfig();
         this.variablesManager = new VariablesManager();
-        this.placeholdersManager = new PlaceholdersManager();
+        if (Cfg.modernPlaceholders) {
+            this.placeholdersManager = new ModernPlaceholdersManager();
+        } else {
+            logger().warn("You're using legacy placeholders parser! " +
+                    "While it does protect compatibility, it's highly recommended to use modern one. " +
+                    "Turn it on by enabling 'use-modern-placeholders' in the config (restart required).");
+            this.placeholdersManager = new LegacyPlaceholdersManager();
+        }
         this.activitiesRegistry = new ActivitiesRegistry();
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
@@ -78,8 +90,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public void onEnable() {
         // TODO god why
-        Cfg.load();
-        Cfg.save();
         Msg.init("ReActions", new BukkitMessenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
         getDataFolder().mkdirs();
 

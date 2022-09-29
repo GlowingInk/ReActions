@@ -1,69 +1,53 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.placeholders.resolvers.EqualResolver;
+import me.fromgate.reactions.placeholders.resolvers.PostprocessResolver;
+import me.fromgate.reactions.placeholders.resolvers.PrefixedResolver;
+import me.fromgate.reactions.placeholders.resolvers.Resolver;
+import me.fromgate.reactions.placeholders.resolvers.SimpleResolver;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PlaceholdersManager {
-    private static final Pattern PLACEHOLDER_GREEDY = Pattern.compile("(?<!&\\\\)%(\\S+)%");
-    private static final Pattern PLACEHOLDER_NONGREEDY = Pattern.compile("(?<!&\\\\)%(\\S+?)%");
-    private static final Pattern PLACEHOLDER_RAW = Pattern.compile("&\\\\(%\\S+%)");
-
-    private int countLimit;
+public abstract class PlaceholdersManager {
+    private final List<Resolver> resolvers;
+    private final PostprocessResolver postprocess;
+    protected static int countLimit;
 
     public PlaceholdersManager() {
-        countLimit = 127;
+        resolvers = new ArrayList<>();
+        resolvers.add(new EqualResolver());
+        resolvers.add(new PrefixedResolver());
+        resolvers.add(new SimpleResolver());
+        postprocess = new PostprocessResolver();
+    }
+
+    public static void setCountLimit(int countLimit) {
+        PlaceholdersManager.countLimit = countLimit;
     }
 
     public void registerPlaceholder(@NotNull Placeholder ph) {
-        if (!Parser.Internal.EQUAL.put(ph) && !Parser.Internal.PREFIXED.put(ph)) Parser.Internal.SIMPLE.put(ph);
-    }
-
-    public String parsePlaceholders(RaContext context, String text) {
-        if (text == null || text.length() < 3) return text;
-
-        String oldText;
-        int limit = countLimit;
-        do {
-            oldText = text;
-            text = parseRecursive(text, PLACEHOLDER_GREEDY, context);
-            text = parseRecursive(text, PLACEHOLDER_NONGREEDY, context);
-        } while (!text.equals(oldText) && --limit > 0);
-
-        return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");
-    }
-
-    public int getCountLimit() {return this.countLimit;}
-
-    public void setCountLimit(int countLimit) {this.countLimit = countLimit; }
-
-    private static String parseRecursive(String text, Pattern phPattern, RaContext context) {
-        Matcher phMatcher = phPattern.matcher(text);
-        // If found at least one
-        if (phMatcher.find()) {
-            StringBuilder builder = new StringBuilder();
-            processIteration(builder, phMatcher, phPattern, context);
-            while (phMatcher.find()) {
-                processIteration(builder, phMatcher, phPattern, context);
-            }
-            return phMatcher.appendTail(builder).toString();
+        if (ph instanceof Placeholder.Postprocess) {
+            postprocess.put(ph);
+        } else for (Resolver resolver : resolvers) {
+            if (resolver.put(ph)) break;
         }
-        return text;
     }
 
-    private static void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, RaContext context) {
-        matcher.appendReplacement(builder, "");
-        builder.append(
-                Parser.process(
-                        parseRecursive(
-                                matcher.group(1),
-                                pattern,
-                                context
-                        ),
-                        context
-                )
-        );
+    public final @Nullable String resolvePlaceholder(@NotNull RaContext context, @NotNull String text) {
+        for (Resolver resolver : resolvers) {
+            String result = resolver.parse(context, text);
+            if (result != null) return result;
+        }
+        return null;
     }
+
+    public final @NotNull String postprocess(@NotNull RaContext context, @NotNull String text) {
+        return postprocess.parse(context, text);
+    }
+
+    public abstract String parsePlaceholders(@NotNull RaContext context, @Nullable String text);
 }

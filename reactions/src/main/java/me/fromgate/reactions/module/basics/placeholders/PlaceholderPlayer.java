@@ -17,11 +17,15 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
-// TODO: Split to different classes
-@Aliases({"player_loc", "player_loc_eye", "player_loc_view", "player_name",
-                "player_display", "dplayer", "player_item_hand", "itemplayer",
-                "health", "player_loc_death", "deathpoint", "player_id", "player_uuid", "uuid", "player_level", "level",
-                "player_held_slot", "slot"})
+// TODO: Split to different classes?
+@Aliases({
+        "player_loc", "player_loc_eye", "player_loc_view", "player_loc_death", "deathpoint",
+        "player_name", "player_display", "dplayer",
+        "player_item_hand", "itemplayer", "player_held_slot", "slot",
+        "player_health", "health",
+        "player_id", "player_uuid", "uuid",
+        "player_level", "level"
+})
 public class PlaceholderPlayer implements Placeholder.Equal {
 
     private static final Set<Material> NON_SOLID;
@@ -38,7 +42,7 @@ public class PlaceholderPlayer implements Placeholder.Equal {
         if (player == null) return null;
         return switch (key) {
             case "player", "player_name" -> player.getName();
-            case "health" -> Double.toString(player.getHealth());
+            case "player_health", "health" -> Double.toString(player.getHealth());
             case "player_item_hand", "itemplayer" -> ItemUtils.getPlayerItemInHand(player, false);
             case "player_item_offhand", "offitemplayer" -> ItemUtils.getPlayerItemInHand(player, true);
             case "player_display", "dplayer" -> player.getDisplayName();

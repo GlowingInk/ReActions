@@ -1,5 +1,6 @@
 package me.fromgate.reactions;
 
+import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.Shoot;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +13,6 @@ public class Cfg {
     public static String actionMsg = "tp,grpadd,grprmv,townset,townkick,itemrmv,invitemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
     public static String language = "english";
     public static boolean languageSave = false;
-    public static boolean checkUpdates = false;
     public static boolean centerTpCoords = true;
     public static int worldguardRecheck = 2;
     public static int itemHoldRecheck = 2;
@@ -26,22 +26,18 @@ public class Cfg {
     public static boolean godActivatorEnable = false; // experimental, disabled by default
     public static int godActivatorCheckTicks = 10;
     public static boolean altOperator = false; // experimental, disabled by default
-    private static final FileConfiguration config;
+    public static boolean modernPlaceholders = false;
 
-    static {
-        config = ReActions.getPlugin().getConfig();
-    }
-
-    public static void save() {
+    public static void save(FileConfiguration config) {
         config.set("general.language", language);
-        config.set("general.check-updates", checkUpdates);
         config.set("general.debug", debugMode);
         config.set("general.player-self-variable-file", playerSelfVarFile);
         config.set("general.player-asynch-save-self-variable-file", playerAsynchSaveSelfVarFile);
         config.set("general.player-move-event.use-task", playerMoveTaskUse);
         config.set("general.player-move-event.task-tick", playerMoveTaskTick);
-        config.set("general.placeholder-limit", ReActions.getPlaceholders().getCountLimit());
+        config.set("general.placeholder-limit", 32);
         config.set("general.waiter-hours-limit", WaitingManager.getTimeLimit() / 3600000L);
+        config.set("general.use-modern-placeholders", modernPlaceholders);
         config.set("reactions.activators.god.enable", godActivatorEnable);
         config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
@@ -55,21 +51,19 @@ public class Cfg {
         config.set("actions.shoot.break-block", Shoot.actionShootBreak);
         config.set("actions.shoot.penetrable", Shoot.actionShootThrough);
         config.set("actions.cmd_op.proxy-operator", false);
-
-        ReActions.getPlugin().saveConfig();
     }
 
-    public static void load() {
+    public static void load(FileConfiguration config) {
         language = config.getString("general.language", "english");
-        checkUpdates = config.getBoolean("general.check-updates", true);
         languageSave = config.getBoolean("general.language-save", false);
         debugMode = config.getBoolean("general.debug", false);
         playerSelfVarFile = config.getBoolean("general.player-self-variable-file", false);
         playerAsynchSaveSelfVarFile = config.getBoolean("general.player-asynch-save-self-variable-file", false);
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
         playerMoveTaskTick = config.getInt("general.player-move-event.task-tick", 5);
-        ReActions.getPlaceholders().setCountLimit(config.getInt("general.placeholder-limit", 127));
+        PlaceholdersManager.setCountLimit(config.getInt("general.placeholder-limit", 127));
         WaitingManager.setTimeLimit(config.getLong("general.waiter-hours-limit", 4380) * 3600000L);
+        modernPlaceholders = config.getBoolean("general.use-modern-placeholders", false);
         godActivatorEnable = config.getBoolean("reactions.activators.god.enable", true);
         godActivatorCheckTicks = config.getInt("reactions.activators.god.recheck-ticks", 10);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
