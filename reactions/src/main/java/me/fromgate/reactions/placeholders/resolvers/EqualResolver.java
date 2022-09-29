@@ -30,7 +30,7 @@ public final class EqualResolver implements Resolver<Placeholder.Equal> {
         String key = text.toLowerCase(Locale.ROOT);
         Placeholder ph = placeholders.get(key);
         if (ph == null) return null;
-        return ph.processPlaceholder(context, key, text);
+        return ph.processPlaceholder(context, key, "");
     }
 
     @Override
