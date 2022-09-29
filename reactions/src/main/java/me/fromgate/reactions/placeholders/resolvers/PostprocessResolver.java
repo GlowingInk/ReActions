@@ -6,18 +6,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
-public final class PostprocessResolver implements Resolver {
+public final class PostprocessResolver implements Resolver<Placeholder.Postprocess> {
     private final List<Placeholder.Postprocess> placeholders = new ArrayList<>();
 
     @Override
-    public boolean put(@NotNull Placeholder ph) {
-        if (ph instanceof Placeholder.Postprocess postPh) {
-            placeholders.add(postPh);
-            return true;
-        }
-        return false;
+    public boolean put(@NotNull Placeholder.Postprocess ph) {
+        placeholders.add(ph);
+        return true;
     }
 
     @Override
@@ -30,6 +28,6 @@ public final class PostprocessResolver implements Resolver {
 
     @Override
     public @NotNull Collection<Placeholder.Postprocess> getPlaceholders() {
-        return placeholders;
+        return new HashSet<>(placeholders);
     }
 }

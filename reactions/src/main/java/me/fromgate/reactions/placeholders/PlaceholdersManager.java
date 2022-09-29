@@ -9,19 +9,21 @@ import me.fromgate.reactions.placeholders.resolvers.SimpleResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlaceholdersManager {
-    private final List<Resolver> resolvers;
+    private final List<Resolver<?>> processResolvers;
+    private final EqualResolver equal;
+    private final PrefixedResolver prefixed;
+    private final SimpleResolver simple;
     private final PostprocessResolver postprocess;
     protected static int countLimit;
 
     public PlaceholdersManager() {
-        resolvers = new ArrayList<>();
-        resolvers.add(new EqualResolver());
-        resolvers.add(new PrefixedResolver());
-        resolvers.add(new SimpleResolver());
+        equal = new EqualResolver();
+        prefixed = new PrefixedResolver();
+        simple = new SimpleResolver();
+        processResolvers = List.of(equal, prefixed, simple);
         postprocess = new PostprocessResolver();
     }
 
@@ -30,15 +32,15 @@ public abstract class PlaceholdersManager {
     }
 
     public void registerPlaceholder(@NotNull Placeholder ph) {
-        if (ph instanceof Placeholder.Postprocess) {
-            postprocess.put(ph);
-        } else for (Resolver resolver : resolvers) {
-            if (resolver.put(ph)) break;
-        }
+        boolean registered = false;
+        if (ph instanceof Placeholder.Equal phEqual)        registered = equal.put(phEqual);
+        if (ph instanceof Placeholder.Prefixed phPrefixed)  registered |= prefixed.put(phPrefixed);
+        if (ph instanceof Placeholder.Postprocess phPost)   registered |= postprocess.put(phPost);
+        if (!registered) simple.put(ph);
     }
 
     public final @Nullable String resolvePlaceholder(@NotNull RaContext context, @NotNull String text) {
-        for (Resolver resolver : resolvers) {
+        for (Resolver<?> resolver : processResolvers) {
             String result = resolver.parse(context, text);
             if (result != null) return result;
         }

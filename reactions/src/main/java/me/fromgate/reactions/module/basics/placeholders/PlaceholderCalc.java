@@ -1,5 +1,6 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
+import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.alias.Aliases;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class PlaceholderCalc implements Placeholder.Prefixed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-        try {
+        if (Cfg.modernPlaceholders || !param.contains("%")) try {
             return NumberUtils.format(MathEvaluator.eval(param));
         } catch (NumberFormatException | ArithmeticException ignore) {
             // TODO: Error

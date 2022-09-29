@@ -8,23 +8,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-public final class PrefixedResolver implements Resolver {
+public final class PrefixedResolver implements Resolver<Placeholder.Prefixed> {
     private final Map<String, Placeholder.Prefixed> placeholders = new HashMap<>();
 
     @Override
-    public boolean put(@NotNull Placeholder ph) {
-        if (ph instanceof Placeholder.Prefixed prefixedPh) {
-            String prefix = ph.getName().toLowerCase(Locale.ROOT);
-            if (placeholders.containsKey(prefix)) return false;
-            placeholders.put(prefix, prefixedPh);
-            for (String alias : Utils.getAliases(ph))
-                placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), prefixedPh);
-            return true;
-        }
-        return false;
+    public boolean put(@NotNull Placeholder.Prefixed ph) {
+        String prefix = ph.getName().toLowerCase(Locale.ROOT);
+        if (placeholders.containsKey(prefix)) return false;
+        placeholders.put(prefix, ph);
+        for (String alias : Utils.getAliases(ph))
+            placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), ph);
+        return true;
     }
 
     @Override
@@ -39,6 +37,6 @@ public final class PrefixedResolver implements Resolver {
 
     @Override
     public @NotNull Collection<Placeholder.Prefixed> getPlaceholders() {
-        return placeholders.values();
+        return new HashSet<>(placeholders.values());
     }
 }

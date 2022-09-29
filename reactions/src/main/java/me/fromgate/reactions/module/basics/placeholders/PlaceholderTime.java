@@ -11,7 +11,7 @@ import static me.fromgate.reactions.util.TimeUtils.formattedIngameTime;
 import static me.fromgate.reactions.util.TimeUtils.fullTimeToString;
 
 @Aliases({"TIME_INGAME", "curtime", "TIME_SERVER", "servertime"})
-public class PlaceholderTime implements Placeholder.Equal {
+public class PlaceholderTime implements Placeholder.Equal, Placeholder.Prefixed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         Player player = context.getPlayer();

@@ -7,10 +7,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public sealed interface Resolver permits EqualResolver, PostprocessResolver, PrefixedResolver, SimpleResolver {
-    boolean put(@NotNull Placeholder ph);
+public sealed interface Resolver<T extends Placeholder> permits EqualResolver, PostprocessResolver, PrefixedResolver, SimpleResolver {
+    boolean put(@NotNull T ph);
 
     @Nullable String parse(@NotNull RaContext context, @NotNull String text);
 
-    @NotNull Collection<? extends Placeholder> getPlaceholders();
+    @NotNull Collection<T> getPlaceholders();
 }

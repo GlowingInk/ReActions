@@ -7,9 +7,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
-public final class SimpleResolver implements Resolver {
+public final class SimpleResolver implements Resolver<Placeholder> {
     private final List<Placeholder> placeholders = new ArrayList<>();
 
     @Override
@@ -29,6 +30,6 @@ public final class SimpleResolver implements Resolver {
 
     @Override
     public @NotNull Collection<Placeholder> getPlaceholders() {
-        return placeholders;
+        return new HashSet<>(placeholders);
     }
 }

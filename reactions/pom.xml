@@ -6,7 +6,7 @@
     <parent>
         <artifactId>reactions-project</artifactId>
         <groupId>me.fromgate.reactions</groupId>
-        <version>0.14.0</version>
+        <version>0.14</version>
     </parent>
 
     <artifactId>reactions</artifactId>
