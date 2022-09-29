@@ -26,7 +26,7 @@ import java.util.Set;
         "player_id", "player_uuid", "uuid",
         "player_level", "level"
 })
-public class PlaceholderPlayer implements Placeholder.Equal {
+public class PlaceholderPlayer implements Placeholder {
 
     private static final Set<Material> NON_SOLID;
     static {

@@ -4,7 +4,7 @@ main: me.fromgate.reactions.ReActionsPlugin
 version: '${project.version}.${sub-version}-${build-version}'
 website: https://github.com/imDaniX/ReActions
 authors:
-  - fromgate, fromgate@gmail.com
+  - fromgate fromgate@gmail.com
   - MaxDikiy
   - imDaniX
 softdepend: [Vault,WorldGuard,WorldEdit,ProtocolLib,PlaceholderAPI]

@@ -5,14 +5,14 @@ import me.fromgate.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlaceholderTempVariable implements Placeholder {
+public class PlaceholderTempVariable implements Placeholder.Dynamic {
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text) {
-        return context.getVariable(key);
+    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String phText) {
+        return context.getVariable(phText);
     }
 
     @Override
     public @NotNull String getName() {
-        return "tempvariable";
+        return "temp_variable";
     }
 }

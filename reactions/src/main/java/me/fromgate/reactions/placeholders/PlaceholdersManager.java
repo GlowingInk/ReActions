@@ -1,54 +1,48 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.logic.RaContext;
-import me.fromgate.reactions.placeholders.resolvers.EqualResolver;
+import me.fromgate.reactions.placeholders.resolvers.DynamicResolver;
+import me.fromgate.reactions.placeholders.resolvers.KeyedResolver;
 import me.fromgate.reactions.placeholders.resolvers.PostprocessResolver;
-import me.fromgate.reactions.placeholders.resolvers.PrefixedResolver;
-import me.fromgate.reactions.placeholders.resolvers.Resolver;
-import me.fromgate.reactions.placeholders.resolvers.SimpleResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public abstract class PlaceholdersManager {
-    private final List<Resolver<?>> processResolvers;
-    private final EqualResolver equal;
-    private final PrefixedResolver prefixed;
-    private final SimpleResolver simple;
+    private final KeyedResolver keyed;
+    private final DynamicResolver dynamic;
     private final PostprocessResolver postprocess;
     protected static int countLimit;
 
     public PlaceholdersManager() {
-        equal = new EqualResolver();
-        prefixed = new PrefixedResolver();
-        simple = new SimpleResolver();
-        processResolvers = List.of(equal, prefixed, simple);
+        keyed = new KeyedResolver();
+        dynamic = new DynamicResolver();
         postprocess = new PostprocessResolver();
     }
 
+    // TODO Unstatic
     public static void setCountLimit(int countLimit) {
         PlaceholdersManager.countLimit = countLimit;
     }
 
-    public void registerPlaceholder(@NotNull Placeholder ph) {
-        boolean registered = false;
-        if (ph instanceof Placeholder.Equal phEqual)        registered = equal.put(phEqual);
-        if (ph instanceof Placeholder.Prefixed phPrefixed)  registered |= prefixed.put(phPrefixed);
-        if (ph instanceof Placeholder.Postprocess phPost)   registered |= postprocess.put(phPost);
-        if (!registered) simple.put(ph);
-    }
-
-    public final @Nullable String resolvePlaceholder(@NotNull RaContext context, @NotNull String text) {
-        for (Resolver<?> resolver : processResolvers) {
-            String result = resolver.parse(context, text);
-            if (result != null) return result;
+    public final void registerPlaceholder(@NotNull Placeholder ph) {
+        if (ph instanceof Placeholder.Dynamic phDynamic) {
+            dynamic.put(phDynamic);
+        } else if (ph instanceof Placeholder.Postprocess phPost) {
+            postprocess.put(phPost);
+        } else if (!keyed.put(ph)) {
+            throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder. It isn't Dynamic nor Postprocess, and it's key is already used");
         }
-        return null;
     }
 
-    public final @NotNull String postprocess(@NotNull RaContext context, @NotNull String text) {
-        return postprocess.parse(context, text);
+    public final @Nullable String resolvePlaceholder(@NotNull RaContext context, @NotNull String phText) {
+        String result = keyed.parse(context, phText);
+        return result == null
+                ? dynamic.parse(context, phText)
+                : result;
+    }
+
+    public final @NotNull String resolvePostprocess(@NotNull RaContext context, @NotNull String fullText) {
+        return postprocess.parse(context, fullText);
     }
 
     public abstract String parsePlaceholders(@NotNull RaContext context, @Nullable String text);

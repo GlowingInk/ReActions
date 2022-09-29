@@ -22,17 +22,14 @@
 
 package me.fromgate.reactions.externals;
 
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Deprecated
 public final class RaVault {
@@ -76,23 +73,16 @@ public final class RaVault {
         return (economy != null);
     }
 
-
-    @Deprecated
-    public static double getBalance(String account) {
-        if (!isEconomyConnected()) return 0;
-        return economy.getBalance(account);
+    public static double getBalance(Player player) {
+        return isEconomyConnected()
+                ? economy.getBalance(player)
+                : 0;
     }
 
-    @Deprecated
-    public static void withdrawPlayer(String account, double amount) {
-        if (!isEconomyConnected()) return;
-        economy.withdrawPlayer(account, amount);
-    }
-
-    @Deprecated
-    public static void depositPlayer(String account, double amount) {
-        if (!isEconomyConnected()) return;
-        economy.depositPlayer(account, amount);
+    public static double getBalance(Player player, String world) {
+        return isEconomyConnected()
+                ? economy.getBalance(player, world)
+                : 0;
     }
 
     public static boolean playerAddGroup(Player p, String group) {
@@ -170,15 +160,25 @@ public final class RaVault {
         return economy.format(Double.parseDouble(value)); // Integer???
     }
 
-    public static Map<String, String> getAllBalances(String name) {
-        Map<String, String> bals = new HashMap<>();
-        for (World world : Bukkit.getWorlds()) {
-            String key = "money." + world.getName();
-            String amount = format(economy.getBalance(name, world.getName()), world.getName());
-            bals.put(key, amount);
-            if (Bukkit.getWorlds().get(0).equals(world)) bals.put("money", amount);
+    public static String creditAccount(String target, String source, String amountStr, String worldName) {
+        if (target.isEmpty()) return "";
+        if (!NumberUtils.isFloat(amountStr)) return "";
+        double amount = Double.parseDouble(amountStr);
+        if (isEconomyConnected()) {
+            if (creditAccount(target, source, amount, worldName))
+                return format(amount, worldName);
         }
-        return bals;
+        return "";
     }
 
+    public static String debitAccount(String accountFrom, String accountTo, String amountStr, String worldName) {
+        if (accountFrom.isEmpty()) return "";
+        if (!NumberUtils.isFloat(amountStr)) return "";
+        double amount = Double.parseDouble(amountStr);
+        if (isEconomyConnected()) {
+            if (debitAccount(accountFrom, accountTo, amount, worldName))
+                return format(amount, worldName);
+        }
+        return "";
+    }
 }

@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.externals.RaEconomics;
+import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.alias.Aliases;
@@ -41,7 +41,7 @@ public class ActionMoneyGive implements Action {
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        if (!RaEconomics.isEconomyFound()) return false;
+        if (!RaVault.isEconomyConnected()) return false;
         if (params.isEmpty()) return false;
         if (params.size() <= 2) params = parseOldFormat(player, params.toString());
         String amountStr = params.getString("amount");
@@ -50,7 +50,7 @@ public class ActionMoneyGive implements Action {
         String target = params.getString("target", params.getString("player", (player == null ? "" : player.getName())));
         if (target.isEmpty()) return false;
         String source = params.getString("source");
-        String message = RaEconomics.creditAccount(target, source, amountStr, worldName);
+        String message = RaVault.creditAccount(target, source, amountStr, worldName);
         return !message.isEmpty();
     }
 

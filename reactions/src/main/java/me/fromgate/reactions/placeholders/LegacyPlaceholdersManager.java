@@ -21,7 +21,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
             oldText = text;
             text = parseRecursive(text, PLACEHOLDER_GREEDY, context);
             text = parseRecursive(text, PLACEHOLDER_NONGREEDY, context);
-            text = postprocess(context, text);
+            text = resolvePostprocess(context, text);
         } while (!text.equals(oldText) & --limit > 0);
 
         return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");

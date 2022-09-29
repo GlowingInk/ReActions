@@ -253,13 +253,11 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    @NotNull
-    public Set<String> keySet() {
+    public @NotNull Set<String> keySet() {
         return this.params.keySet();
     }
 
-    @NotNull
-    public Map<String, String> getMap() {
+    public @NotNull Map<String, String> getMap() {
         return this.params;
     }
 
@@ -267,8 +265,8 @@ public class Parameters implements Iterable<String> {
         return this.params.isEmpty();
     }
 
-    @Nullable
-    public String put(@NotNull String key, @NotNull String value) { // TODO Recalculate origin string?
+    @Deprecated
+    public @Nullable String put(@NotNull String key, @NotNull String value) {
         return params.put(key, value);
     }
 
@@ -282,14 +280,12 @@ public class Parameters implements Iterable<String> {
     }
 
     @Override
-    @NotNull
-    public String toString() {
+    public @NotNull String toString() {
         return this.origin;
     }
 
     @Override
-    @NotNull
-    public Iterator<String> iterator() {
+    public @NotNull Iterator<String> iterator() {
         return params.keySet().iterator();
     }
 
@@ -297,8 +293,7 @@ public class Parameters implements Iterable<String> {
         params.forEach(consumer);
     }
 
-    @NotNull
-    public static Map<String, String> parametersMap(@NotNull String param) {
+    public @NotNull static Map<String, String> parametersMap(@NotNull String param) {
         return fromString(param).getMap();
     }
 }

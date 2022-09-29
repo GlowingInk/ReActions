@@ -3,7 +3,6 @@ package me.fromgate.reactions.events.listeners;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.events.PlayerAttacksEntityEvent;
 import me.fromgate.reactions.events.PlayerPickupItemEvent;
-import me.fromgate.reactions.externals.RaEconomics;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
@@ -215,8 +214,8 @@ public class BukkitListener implements Listener {
         triggerMobKill(killer, event.getEntity());
         if (event.getEntity().hasMetadata("ReActions-money") && RaVault.isEconomyConnected()) {
             int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").get(0).asString());
-            RaEconomics.creditAccount(killer.getName(), "", Double.toString(money), "");
-            Msg.MSG_MOBBOUNTY.print(killer, 'e', '6', RaEconomics.format(money, ""), event.getEntity().getType().name());
+            RaVault.creditAccount(killer.getName(), "", Double.toString(money), "");
+            Msg.MSG_MOBBOUNTY.print(killer, 'e', '6', RaVault.format(money, ""), event.getEntity().getType().name());
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
             String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();

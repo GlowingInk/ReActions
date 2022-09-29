@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.externals.RaEconomics;
+import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
@@ -48,13 +48,13 @@ public class FlagMoney implements Flag {
     public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        if (!RaEconomics.isEconomyFound()) return false;
+        if (!RaVault.isEconomyConnected()) return false;
         String amountStr = params.getString("amount", "a");
         if (!NumberUtils.isFloat(amountStr)) return false;
         double amount = Double.parseDouble(amountStr);
         String account = params.getString("account", params.getString("player", player == null ? "" : player.getName()));
         if (account.isEmpty()) return false;
         String world = params.getString("world", "");
-        return RaEconomics.hasMoney(account, amount, world);
+        return RaVault.hasMoney(account, world, amount);
     }
 }

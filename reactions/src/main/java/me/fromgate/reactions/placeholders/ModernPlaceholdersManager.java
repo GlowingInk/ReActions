@@ -19,7 +19,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         do {
             oldText = text;
             text = parse(context, text);
-            text = postprocess(context, text);
+            text = resolvePostprocess(context, text);
         } while (!oldText.equals(text) & --limit > 0);
         return unescapeSlash(text);
     }
@@ -28,7 +28,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         StringBuilder builder = new StringBuilder(text.length());
         IterationStage stage = IterationStage.TEXT;
         int stepIndex = 0;
-        boolean allowSpecial = false;
+        boolean allowSpecial = true;
         boolean recursive = false;
         for (int index = 0; index < text.length(); index++) {
             char c = text.charAt(index);

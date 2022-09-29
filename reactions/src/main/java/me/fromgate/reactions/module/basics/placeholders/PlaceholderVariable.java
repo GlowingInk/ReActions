@@ -8,21 +8,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliases({"varp", "variable"})
-public class PlaceholderVariable implements Placeholder.Prefixed {
+public class PlaceholderVariable implements Placeholder {
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String prefix, @NotNull String text) {
-        switch (prefix) {
-            case "var":
-            case "variable":
-                String[] varSplit = text.split("\\.", 2);
-                if (varSplit.length > 1) {
-                    return ReActions.getVariables().getVariable(varSplit[0], varSplit[1]);
+    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String params) {
+        switch (key) {
+            case "var": case "variable":
+                int index = params.indexOf('.');
+                if (index != -1) {
+                    return ReActions.getVariables().getVariable(params.substring(0, index), params.substring(index + 1));
                 } else {
-                    return ReActions.getVariables().getVariable("", varSplit[0]);
+                    return ReActions.getVariables().getVariable("", params);
                 }
 
-            case "varp":
-                return ReActions.getVariables().getVariable(context.getPlayer().getName(), text);
+            case "varp": case "varplayer":
+                return ReActions.getVariables().getVariable(context.getPlayer().getName(), params);
 
             default:
                 return null;

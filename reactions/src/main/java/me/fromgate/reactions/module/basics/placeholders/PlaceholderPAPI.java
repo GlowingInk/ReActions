@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 public class PlaceholderPAPI implements Placeholder.Postprocess {
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text) {
-        return RaPlaceholderAPI.processPlaceholder(context.getPlayer(), text);
+        return text.contains("%")
+                ? RaPlaceholderAPI.processPlaceholder(context.getPlayer(), text)
+                : text;
     }
 
     @Override

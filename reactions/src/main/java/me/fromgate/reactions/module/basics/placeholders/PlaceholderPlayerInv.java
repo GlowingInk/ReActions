@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 
 @Aliases("invplayer")
-public class PlaceholderPlayerInv implements Placeholder.Prefixed {
+public class PlaceholderPlayerInv implements Placeholder {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text) {
         return getPlayerInventory(context.getPlayer(), text);

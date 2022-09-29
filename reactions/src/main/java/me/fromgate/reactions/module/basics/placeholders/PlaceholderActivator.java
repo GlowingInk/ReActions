@@ -6,7 +6,7 @@ import me.fromgate.reactions.util.alias.Aliases;
 import org.jetbrains.annotations.NotNull;
 
 @Aliases("activatorname")
-public class PlaceholderActivator implements Placeholder.Equal {
+public class PlaceholderActivator implements Placeholder {
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         return context.getActivatorName();

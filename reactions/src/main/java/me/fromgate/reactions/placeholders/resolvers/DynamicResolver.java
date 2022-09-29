@@ -10,26 +10,26 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public final class SimpleResolver implements Resolver<Placeholder> {
-    private final List<Placeholder> placeholders = new ArrayList<>();
+public final class DynamicResolver implements Resolver<Placeholder.Dynamic> {
+    private final List<Placeholder.Dynamic> placeholders = new ArrayList<>();
 
     @Override
-    public boolean put(@NotNull Placeholder ph) {
+    public boolean put(@NotNull Placeholder.Dynamic ph) {
         placeholders.add(ph);
         return true;
     }
 
     @Override
-    public @Nullable String parse(@NotNull RaContext context, @NotNull String text) {
-        for (Placeholder ph : placeholders) {
-            String result = ph.processPlaceholder(context, text, text);
+    public @Nullable String parse(@NotNull RaContext context, @NotNull String phText) {
+        for (Placeholder.Dynamic ph : placeholders) {
+            String result = ph.processPlaceholder(context, ph.getName(), phText);
             if (result != null) return result;
         }
         return null;
     }
 
     @Override
-    public @NotNull Collection<Placeholder> getPlaceholders() {
+    public @NotNull Collection<Placeholder.Dynamic> getPlaceholders() {
         return new HashSet<>(placeholders);
     }
 }
