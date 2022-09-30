@@ -16,7 +16,7 @@ public class PlaceholderTime implements Placeholder.Keyed {
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         Player player = context.getPlayer();
         return switch (key) {
-            case "time_server", "servertime" -> param.isEmpty() ? fullTimeToString(System.currentTimeMillis()) : fullTimeToString(System.currentTimeMillis(), param);
+            case "time", "time_server", "servertime" -> param.isEmpty() ? fullTimeToString(System.currentTimeMillis()) : fullTimeToString(System.currentTimeMillis(), param);
             case "TIME_INGAME", "curtime" -> player == null ? formattedIngameTime() : formattedIngameTime(player.getWorld().getTime(), false);
             default -> null;
         };

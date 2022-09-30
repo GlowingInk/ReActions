@@ -7,7 +7,7 @@ import me.fromgate.reactions.util.alias.Aliases;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Aliases({"varp", "variable"})
+@Aliases({"var", "varp", "varplayer"})
 public class PlaceholderVariable implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String params) {
@@ -30,6 +30,6 @@ public class PlaceholderVariable implements Placeholder.Keyed {
 
     @Override
     public @NotNull String getName() {
-        return "var";
+        return "variable";
     }
 }
