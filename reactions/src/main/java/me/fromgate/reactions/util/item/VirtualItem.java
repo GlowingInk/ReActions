@@ -33,7 +33,7 @@ package me.fromgate.reactions.util.item;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -249,7 +249,7 @@ public class VirtualItem extends ItemStack {
             if (eType.contains(":")) {
                 String powerStr = eType.substring(eType.indexOf(":") + 1);
                 eType = eType.substring(0, eType.indexOf(":"));
-                power = MathUtils.INT_POSITIVE.matcher(powerStr).matches() ? Integer.parseInt(powerStr) : 0;
+                power = NumberUtils.INT_POSITIVE.matcher(powerStr).matches() ? Integer.parseInt(powerStr) : 0;
             }
             Enchantment enchantment = ItemUtils.getEnchantmentByName(eType);
             if (enchantment == null) continue;
@@ -670,8 +670,8 @@ public class VirtualItem extends ItemStack {
             }
             itemMap.put("type", Material.getMaterial(itemStr.toUpperCase(Locale.ROOT)).name());
 
-            if (MathUtils.INT_POSITIVE.matcher(dataStr).matches()) itemMap.put("data", dataStr);
-            if (MathUtils.INT_POSITIVE.matcher(amountStr).matches()) itemMap.put("amount", amountStr);
+            if (NumberUtils.INT_POSITIVE.matcher(dataStr).matches()) itemMap.put("data", dataStr);
+            if (NumberUtils.INT_POSITIVE.matcher(amountStr).matches()) itemMap.put("amount", amountStr);
             itemMap.remove("item");
             itemMap.remove("default-param");
         }
@@ -681,12 +681,12 @@ public class VirtualItem extends ItemStack {
 
         if (itemMap.containsKey("data")) {
             String dataStr = itemMap.get("data");
-            int reqData = MathUtils.INT_POSITIVE.matcher(dataStr).matches() ? Integer.parseInt(dataStr) : -1;
+            int reqData = NumberUtils.INT_POSITIVE.matcher(dataStr).matches() ? Integer.parseInt(dataStr) : -1;
             if (reqData != this.getDamage()) return false;
         }
         if (itemMap.containsKey("amount")) {
             String amountStr = itemMap.get("amount");
-            if (MathUtils.INT_POSITIVE.matcher(amountStr).matches() && this.getAmount() < Integer.parseInt(amountStr))
+            if (NumberUtils.INT_POSITIVE.matcher(amountStr).matches() && this.getAmount() < Integer.parseInt(amountStr))
                 return false;//this.getAmount()>=Integer.parseInt(amountStr);
             else if (AMOUNT_RANDOM.matcher(amountStr).matches()) {
                 boolean greater = amountStr.startsWith(">");
