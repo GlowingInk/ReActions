@@ -35,8 +35,8 @@ public abstract class Activator {
      * @param cfg Section of activator
      */
     public final void saveActivator(ConfigurationSection cfg) {
-        logic.save(cfg);
         saveOptions(cfg);
+        logic.save(cfg);
     }
 
     /**
