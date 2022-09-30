@@ -29,8 +29,12 @@ public abstract class PlaceholdersManager {
             dynamic.put(phDynamic);
         } else if (ph instanceof Placeholder.Postprocess phPost) {
             postprocess.put(phPost);
-        } else if (!keyed.put(ph)) {
-            throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder. It isn't Dynamic nor Postprocess, and it's key is already used");
+        } else if (ph instanceof Placeholder.Keyed phKeyed) {
+            if (!keyed.put(phKeyed)) {
+                throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder - its name is already used");
+            }
+        } else  {
+            throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder - it doesn't implement any specific Placeholder interfaces");
         }
     }
 

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliases("balance")
-public class PlaceholderMoney implements Placeholder {
+public class PlaceholderMoney implements Placeholder.Keyed {
 
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliases({"varp", "variable"})
-public class PlaceholderVariable implements Placeholder {
+public class PlaceholderVariable implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String params) {
         switch (key) {

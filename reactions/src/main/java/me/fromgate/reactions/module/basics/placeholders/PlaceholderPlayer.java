@@ -17,16 +17,20 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
-// TODO: Split to different classes?
+// TODO: Split into different classes?
 @Aliases({
-        "player_loc", "player_loc_eye", "player_loc_view", "player_loc_death", "deathpoint",
+        "player_loc", "player_loc_eye",
+        "player_loc_death", "deathpoint",
+        "player_loc_view", "player_loc_view_solid",
         "player_name", "player_display", "dplayer",
-        "player_item_hand", "itemplayer", "player_held_slot", "slot",
+        "player_item_hand", "itemplayer", "player_item_offhand", "offitemplayer",
+        "player_held_slot", "slot",
         "player_health", "health",
         "player_id", "player_uuid", "uuid",
-        "player_level", "level"
+        "player_level", "level",
+        "player_ip", "ip_address"
 })
-public class PlaceholderPlayer implements Placeholder {
+public class PlaceholderPlayer implements Placeholder.Keyed {
 
     private static final Set<Material> NON_SOLID;
     static {

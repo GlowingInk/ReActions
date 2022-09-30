@@ -102,10 +102,6 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return builder.toString();
     }
 
-    enum IterationStage {
-        TEXT, PLACEHOLDER_CHECK, PLACEHOLDER_INSIDE
-    }
-
     private static String escapeSlash(String text) {
         return text.replace("\\", "\\\\\\");
     }
@@ -128,5 +124,9 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
             }
         }
         return matcher.appendTail(builder).toString();
+    }
+
+    private enum IterationStage {
+        TEXT, PLACEHOLDER_CHECK, PLACEHOLDER_INSIDE
     }
 }

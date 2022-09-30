@@ -22,7 +22,7 @@ public final class DynamicResolver implements Resolver<Placeholder.Dynamic> {
     @Override
     public @Nullable String parse(@NotNull RaContext context, @NotNull String phText) {
         for (Placeholder.Dynamic ph : placeholders) {
-            String result = ph.processPlaceholder(context, ph.getName(), phText);
+            String result = ph.processPlaceholder(context, phText);
             if (result != null) return result;
         }
         return null;

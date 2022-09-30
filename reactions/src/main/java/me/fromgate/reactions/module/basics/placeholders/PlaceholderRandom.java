@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 @Aliases({"rnd", "rng"})
-public class PlaceholderRandom implements Placeholder {
+public class PlaceholderRandom implements Placeholder.Keyed {
 
     private static final Pattern WORD_LIST = Pattern.compile("[\\S,]*\\S");
     private static final Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");

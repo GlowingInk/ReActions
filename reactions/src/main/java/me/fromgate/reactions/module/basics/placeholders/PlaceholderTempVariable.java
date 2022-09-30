@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PlaceholderTempVariable implements Placeholder.Dynamic {
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String phText) {
+    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String phText) {
         return context.getVariable(phText);
     }
 

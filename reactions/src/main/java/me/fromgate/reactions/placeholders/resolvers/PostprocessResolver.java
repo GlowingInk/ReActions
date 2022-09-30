@@ -21,7 +21,7 @@ public final class PostprocessResolver implements Resolver<Placeholder.Postproce
     @Override
     public @NotNull String parse(@NotNull RaContext context, @NotNull String fullText) {
         for (Placeholder.Postprocess placeholder : placeholders) {
-            fullText = placeholder.processPlaceholder(context, placeholder.getName(), fullText);
+            fullText = placeholder.processPlaceholder(context, fullText);
         }
         return fullText;
     }
