@@ -25,7 +25,7 @@ package me.fromgate.reactions.util;
 import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -81,8 +81,8 @@ public final class Utils {
                     if (prm.length > 2) strpitch = prm[2];
                 }
             } else sndstr = param;
-            if (MathUtils.FLOAT_POSITIVE.matcher(strvolume).matches()) volume = Float.parseFloat(strvolume);
-            if (MathUtils.FLOAT_POSITIVE.matcher(strpitch).matches()) pitch = Float.parseFloat(strpitch);
+            if (NumberUtils.FLOAT_POSITIVE.matcher(strvolume).matches()) volume = Float.parseFloat(strvolume);
+            if (NumberUtils.FLOAT_POSITIVE.matcher(strpitch).matches()) pitch = Float.parseFloat(strpitch);
         } else {
             String locationStr = params.getString("loc");
             soundLoc = locationStr.isEmpty() ? loc : LocationUtils.parseLocation(locationStr, null);

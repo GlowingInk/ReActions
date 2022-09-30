@@ -27,7 +27,7 @@ import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -259,7 +259,7 @@ public final class MobSpawn {
             pef = ln[0];
             PotionEffectType pet = PotionEffectType.getByName(pef);
             if (pet == null) continue;
-            if ((ln.length == 2) && MathUtils.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
+            if ((ln.length == 2) && NumberUtils.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
             PotionEffect pe = new PotionEffect(pet, Integer.MAX_VALUE, level, true);
             e.addPotionEffect(pe);
         }

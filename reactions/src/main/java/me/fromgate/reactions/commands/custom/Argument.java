@@ -1,7 +1,7 @@
 package me.fromgate.reactions.commands.custom;
 
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
@@ -63,8 +63,8 @@ public class Argument {
             case PLAYER -> Bukkit.getPlayerExact(arg) != null ? ExecType.DEFAULT : ExecType.OFFLINE;
             case TEXT -> argument.equalsIgnoreCase(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
             case MULTIPLE_TEXT -> multiple.contains(arg) ? ExecType.DEFAULT : ExecType.BACKUP;
-            case INTEGER -> MathUtils.INT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_INTEGER;
-            case FLOAT -> MathUtils.FLOAT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_FLOAT;
+            case INTEGER -> NumberUtils.INT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_INTEGER;
+            case FLOAT -> NumberUtils.FLOAT.matcher(arg).matches() ? ExecType.DEFAULT : ExecType.NOT_FLOAT;
             default -> ExecType.DEFAULT;
         };
     }

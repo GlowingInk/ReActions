@@ -1,13 +1,10 @@
 package me.fromgate.reactions.util.math;
 
 import me.fromgate.reactions.util.Utils;
-import me.imdanix.math.MathDictionary;
 
 import java.util.regex.Pattern;
 
-public final class MathUtils {
-    public static final MathDictionary DICTIONARY = new MathDictionary();
-
+public final class NumberUtils {
     // Byte
     public static final Pattern BYTE = Pattern.compile("(2[1-5][1-6]|\\d{1,2})");
     // Integer
@@ -19,7 +16,7 @@ public final class MathUtils {
     public static final Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
     public static final Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
 
-    private MathUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static double getDouble(String str, double def) {
         if (Utils.isStringEmpty(str) || !FLOAT.matcher(str).matches()) return def;

@@ -3,7 +3,7 @@ package me.fromgate.reactions.module.basics.placeholders;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public class PlaceholderRandom implements Placeholder.Keyed {
 
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-        if (MathUtils.INT_POSITIVE.matcher(param).matches())
+        if (NumberUtils.INT_POSITIVE.matcher(param).matches())
             return Integer.toString(Rng.nextInt(Integer.parseInt(param)));
 
         if (INT_MIN_MAX.matcher(param).matches())

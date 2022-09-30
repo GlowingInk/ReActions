@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public class FlagChance implements Flag {
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         context.setVariable("chance", params + "%");
         double d = 50;
-        if (MathUtils.isFloat(params)) d = Double.parseDouble(params);
+        if (NumberUtils.isFloat(params)) d = Double.parseDouble(params);
         d = Math.max(Math.min(d, 100), 0);
         return Rng.percentChance(d);
     }

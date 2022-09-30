@@ -25,7 +25,7 @@ package me.fromgate.reactions.util.location;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.holders.LocationHolder;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -171,7 +171,7 @@ public final class LocationUtils {
         World w = Bukkit.getWorld(ln[0]);
         if (w == null) return null;
         for (int i = 1; i < ln.length; i++) {
-            if (!MathUtils.FLOAT.matcher(ln[i]).matches()) return null;
+            if (!NumberUtils.FLOAT.matcher(ln[i]).matches()) return null;
         }
         loc = new Location(w, Double.parseDouble(ln[1]), Double.parseDouble(ln[2]), Double.parseDouble(ln[3]));
         if (ln.length == 6) {
@@ -186,7 +186,7 @@ public final class LocationUtils {
         String[] ln = vectorStr.split(",");
         if (ln.length != 3) return null;
         for (String s : ln) {
-            if (!MathUtils.FLOAT.matcher(s).matches()) return null;
+            if (!NumberUtils.FLOAT.matcher(s).matches()) return null;
         }
         return new Vector(Double.parseDouble(ln[0]), Double.parseDouble(ln[1]), Double.parseDouble(ln[2]));
     }
@@ -252,11 +252,11 @@ public final class LocationUtils {
     public static String locationToString(Location loc) {
         if (loc == null || loc.getWorld() == null) return "";
         return loc.getWorld().getName() + "," +
-                MathUtils.trimDouble(loc.getX()) + "," +
-                MathUtils.trimDouble(loc.getY()) + "," +
-                MathUtils.trimDouble(loc.getZ()) + "," +
-                (float) MathUtils.trimDouble(loc.getYaw()) + "," +
-                (float) MathUtils.trimDouble(loc.getPitch());
+                NumberUtils.trimDouble(loc.getX()) + "," +
+                NumberUtils.trimDouble(loc.getY()) + "," +
+                NumberUtils.trimDouble(loc.getZ()) + "," +
+                (float) NumberUtils.trimDouble(loc.getYaw()) + "," +
+                (float) NumberUtils.trimDouble(loc.getPitch());
     }
 
     public static List<Location> getMinMaxRadiusLocations(Player p, int radius) {

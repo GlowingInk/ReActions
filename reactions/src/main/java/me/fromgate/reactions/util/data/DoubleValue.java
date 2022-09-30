@@ -1,7 +1,7 @@
 package me.fromgate.reactions.util.data;
 
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +43,7 @@ public class DoubleValue implements DataValue {
 
     @Override
     public boolean set(String value) {
-        if (MathUtils.FLOAT.matcher(value).matches()) {
+        if (NumberUtils.FLOAT.matcher(value).matches()) {
             this.value = Double.parseDouble(value);
             return true;
         }

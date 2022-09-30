@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -85,15 +85,15 @@ public class FlagVar implements Flag {
                 return true;
 
             case COMPARE: // VAR_COMPARE
-                if (MathUtils.isNumber(variable, value))
+                if (NumberUtils.isNumber(variable, value))
                     return Double.parseDouble(variable) == Double.parseDouble(value);
                 return variable.equalsIgnoreCase(value);
 
             case GREATER: // VAR_GREATER
-                return MathUtils.isNumber(variable, value) && Double.parseDouble(variable) > Double.parseDouble(value);
+                return NumberUtils.isNumber(variable, value) && Double.parseDouble(variable) > Double.parseDouble(value);
 
             case LOWER: // VAR_LOWER
-                return MathUtils.isNumber(variable, value) && Double.parseDouble(variable) < Double.parseDouble(value);
+                return NumberUtils.isNumber(variable, value) && Double.parseDouble(variable) < Double.parseDouble(value);
 
             case MATCH: // VAR_MATCH
                 return variable.matches(value);

@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -95,7 +95,7 @@ public class ActionItems implements Action {
         if (itemStr.isEmpty()) return false;
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!MathUtils.isInteger(slotStr)) return wearItem(context, params);
+        if (!NumberUtils.isInteger(slotStr)) return wearItem(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         String existStr = params.getString("exist", "remove");
@@ -121,7 +121,7 @@ public class ActionItems implements Action {
         Player player = context.getPlayer();
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!MathUtils.isInteger(slotStr)) return wearItemView(context, params);
+        if (!NumberUtils.isInteger(slotStr)) return wearItemView(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);

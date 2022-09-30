@@ -26,7 +26,7 @@ import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public class FlagMoney implements Flag {
         Player player = context.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
         String amountStr = params.getString("amount", "a");
-        if (!MathUtils.isFloat(amountStr)) return false;
+        if (!NumberUtils.isFloat(amountStr)) return false;
         double amount = Double.parseDouble(amountStr);
         String account = params.getString("account", params.getString("player", player == null ? "" : player.getName()));
         if (account.isEmpty()) return false;

@@ -26,7 +26,7 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -70,13 +70,13 @@ public class ActionPotion implements Action {
                 String[] prm = param.split("/");
                 if (prm.length > 1) {
                     peffstr = prm[0];
-                    if (MathUtils.isNonzeroInteger(prm[1])) duration = Integer.parseInt(prm[1]);
-                    if ((prm.length > 2) && MathUtils.isNonzeroInteger(prm[2])) amplifier = Integer.parseInt(prm[2]);
+                    if (NumberUtils.isNonzeroInteger(prm[1])) duration = Integer.parseInt(prm[1]);
+                    if ((prm.length > 2) && NumberUtils.isNonzeroInteger(prm[2])) amplifier = Integer.parseInt(prm[2]);
                 }
             } else peffstr = param;
         } else {
             peffstr = params.getString("type");
-            duration = MathUtils.safeLongToInt(TimeUtils.timeToTicks(TimeUtils.parseTime(params.getString("time", "3s"))));
+            duration = NumberUtils.safeLongToInt(TimeUtils.timeToTicks(TimeUtils.parseTime(params.getString("time", "3s"))));
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);
         }

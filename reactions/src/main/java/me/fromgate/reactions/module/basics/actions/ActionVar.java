@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -75,10 +75,10 @@ public class ActionVar implements Action {
             }
             case INCREASE -> { //VAR_INC, VAR_PLAYER_INC
                 String variable = ReActions.getVariables().getVariable(player, var);
-                if (variable == null || !MathUtils.isNumber(variable)) return false;
+                if (variable == null || !NumberUtils.isNumber(variable)) return false;
                 double variableValue = Double.parseDouble(variable);
-                variableValue += value.isEmpty() || !(MathUtils.isNumber(value)) ? 1 : Double.parseDouble(value);
-                ReActions.getVariables().setVariable(player, var, MathUtils.format(variableValue));
+                variableValue += value.isEmpty() || !(NumberUtils.isNumber(value)) ? 1 : Double.parseDouble(value);
+                ReActions.getVariables().setVariable(player, var, NumberUtils.format(variableValue));
                 return true;
             }
 
@@ -87,10 +87,10 @@ public class ActionVar implements Action {
 
             case DECREASE -> { //VAR_DEC, VAR_PLAYER_DEC
                 String variable = ReActions.getVariables().getVariable(player, var);
-                if (variable == null || !MathUtils.isNumber(variable)) return false;
+                if (variable == null || !NumberUtils.isNumber(variable)) return false;
                 double variableValue = Double.parseDouble(variable);
-                variableValue -= value.isEmpty() || !(MathUtils.isNumber(value)) ? 1 : Double.parseDouble(value);
-                ReActions.getVariables().setVariable(player, var, MathUtils.format(variableValue));
+                variableValue -= value.isEmpty() || !(NumberUtils.isNumber(value)) ? 1 : Double.parseDouble(value);
+                ReActions.getVariables().setVariable(player, var, NumberUtils.format(variableValue));
                 return true;
             }
             case TEMPORARY_SET -> { //VAR_TEMP_SET

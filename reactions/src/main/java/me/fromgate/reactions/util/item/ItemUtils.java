@@ -3,7 +3,7 @@ package me.fromgate.reactions.util.item;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.MathUtils;
+import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
@@ -94,7 +94,7 @@ public final class ItemUtils {
     public static int getAmount(String itemStr) {
         Map<String, String> itemMap = Parameters.parametersMap(itemStr);
         String amountStr = itemMap.getOrDefault("amount", "1");
-        if (MathUtils.INT_NONZERO_POSITIVE.matcher(amountStr).matches()) return Integer.parseInt(amountStr);
+        if (NumberUtils.INT_NONZERO_POSITIVE.matcher(amountStr).matches()) return Integer.parseInt(amountStr);
         return 1;
     }
 
@@ -324,7 +324,7 @@ public final class ItemUtils {
             int green = Integer.parseInt(rgb[1]);
             int blue = Integer.parseInt(rgb[2]);
             return Color.fromRGB(red, green, blue);
-        } else if (MathUtils.BYTE.matcher(colorStr).matches()) {
+        } else if (NumberUtils.BYTE.matcher(colorStr).matches()) {
             int num = Integer.parseInt(colorStr);
             if (num > 15)
                 num = 15;
@@ -437,7 +437,7 @@ public final class ItemUtils {
                 if (m == null)
                     return null;
                 id = m;
-                if ((ti.length == 2) && (MathUtils.INT_POSITIVE.matcher(ti[1]).matches()))
+                if ((ti.length == 2) && (NumberUtils.INT_POSITIVE.matcher(ti[1]).matches()))
                     data = Short.parseShort(ti[1]);
                 ItemStack item = new ItemStack(id, amount);
                 setDurability(item, data);
