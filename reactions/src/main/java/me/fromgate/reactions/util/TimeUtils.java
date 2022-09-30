@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import org.bukkit.Bukkit;
 
 import java.text.DateFormat;
@@ -66,7 +66,7 @@ public final class TimeUtils {
     }
 
     public static long parseTime(String timeStr) {
-        if (NumberUtils.isInteger(timeStr)) {
+        if (MathUtils.isInteger(timeStr)) {
             return Long.parseLong(timeStr) * 1000L;
         }
         Matcher matcher = TIME_SPLITTED.matcher(timeStr);

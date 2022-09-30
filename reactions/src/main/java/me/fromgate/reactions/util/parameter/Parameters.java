@@ -2,7 +2,7 @@ package me.fromgate.reactions.util.parameter;
 
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import me.fromgate.reactions.util.suppliers.NotNullSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -165,11 +165,11 @@ public class Parameters implements Iterable<String> {
     }
 
     public double getDouble(@NotNull String key, double def) {
-        return NumberUtils.getDouble(params.get(key), def);
+        return MathUtils.getDouble(params.get(key), def);
     }
 
     public double getDouble(@NotNull String key, @NotNull DoubleSupplier def) {
-        return NumberUtils.getDouble(params.get(key), def.getAsDouble());
+        return MathUtils.getDouble(params.get(key), def.getAsDouble());
     }
 
     public int getInteger(@NotNull String key) {
@@ -177,11 +177,11 @@ public class Parameters implements Iterable<String> {
     }
 
     public int getInteger(@NotNull String key, int def) {
-        return NumberUtils.getInteger(params.get(key), def);
+        return MathUtils.getInteger(params.get(key), def);
     }
 
     public int getInteger(@NotNull String key, @NotNull IntSupplier def) {
-        return NumberUtils.getInteger(params.get(key), def.getAsInt());
+        return MathUtils.getInteger(params.get(key), def.getAsInt());
     }
 
     public boolean getBoolean(@NotNull String key) {

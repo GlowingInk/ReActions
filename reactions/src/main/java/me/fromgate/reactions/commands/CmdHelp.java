@@ -1,6 +1,6 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 
@@ -14,7 +14,7 @@ public class CmdHelp extends Cmd {
 
         if (args.length > 1)
             for (int i = 1; i < Math.min(args.length, 3); i++) {
-                if (NumberUtils.isNonzeroInteger(args[i])) page = Integer.parseInt(args[i]);
+                if (MathUtils.isNonzeroInteger(args[i])) page = Integer.parseInt(args[i]);
                 else arg1 = args[i];
             }
         // TODO: Reimplement listings

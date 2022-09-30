@@ -9,7 +9,7 @@ import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.BlockParameters;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -51,7 +51,7 @@ public class CmdCreate extends Cmd {
                 if (param.length() == 0) return false;
                 String arg3 = args[3];
                 if (InventoryMenu.add(id,
-                        NumberUtils.isInteger(arg3) ? Integer.parseInt(arg3) : 9,
+                        MathUtils.isInteger(arg3) ? Integer.parseInt(arg3) : 9,
                         (param.length() == 1) ? "" : param.substring(arg3.length()))) {
                     Msg.CMD_ADDMENUADDED.print(sender, id);
                     return true;

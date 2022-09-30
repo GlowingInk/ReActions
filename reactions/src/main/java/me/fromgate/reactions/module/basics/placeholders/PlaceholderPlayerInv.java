@@ -5,7 +5,7 @@ import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
 
     private static String getPlayerInventory(Player player, String value) {
         VirtualItem vi = null;
-        if (NumberUtils.isInteger(value)) {
+        if (MathUtils.isInteger(value)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
             vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));

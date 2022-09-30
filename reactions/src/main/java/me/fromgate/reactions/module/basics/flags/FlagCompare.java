@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class FlagCompare implements Flag {
         for (String valueKey : params.keySet()) {
             if (!((valueKey.toLowerCase(Locale.ROOT)).startsWith("value"))) continue;
             String value = params.getString(valueKey);
-            if (NumberUtils.isIntegerSigned(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
+            if (MathUtils.isIntegerSigned(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
                 return true;
             else if (paramValue.equalsIgnoreCase(value)) return true;
         }

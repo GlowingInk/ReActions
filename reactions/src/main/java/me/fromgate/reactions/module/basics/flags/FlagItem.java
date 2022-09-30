@@ -26,7 +26,7 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -80,7 +80,7 @@ public class FlagItem implements Flag {
 
         String slotStr = params.getString("slot", "");
         if (slotStr.isEmpty()) return false;
-        int slotNum = NumberUtils.isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
+        int slotNum = MathUtils.isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
         if (slotNum >= player.getInventory().getSize()) return false;
 
         VirtualItem vi = null;

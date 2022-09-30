@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public class FlagExperience implements Flag {
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        if (!NumberUtils.isInteger(params)) return false;
+        if (!MathUtils.isInteger(params)) return false;
         return player.getTotalExperience() >= Integer.parseInt(params);
     }
 

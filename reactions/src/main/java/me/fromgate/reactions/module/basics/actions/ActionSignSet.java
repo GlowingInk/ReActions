@@ -29,7 +29,7 @@ import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -64,7 +64,7 @@ public class ActionSignSet implements Action {
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {
-                if (!NumberUtils.isInteger(cl)) continue;
+                if (!MathUtils.isInteger(cl)) continue;
                 int num = Integer.parseInt(cl) - 1;
                 if (num < 0) continue;
                 if (num >= 4) continue;

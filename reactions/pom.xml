@@ -62,6 +62,10 @@
                                     <pattern>de.themoep.minedown</pattern>
                                     <shadedPattern>me.fromgate.reactions.minedown</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>me.imdanix.math</pattern>
+                                    <shadedPattern>me.fromgate.reactions.util.math</shadedPattern>
+                                </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <filters>
@@ -88,12 +92,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>de.themoep</groupId>
             <artifactId>minedown-adventure</artifactId>
             <version>1.7.1-SNAPSHOT</version>
@@ -104,6 +102,13 @@
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>3.0.0</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.imDaniX</groupId>
+            <artifactId>EzMath</artifactId>
+            <version>v3.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

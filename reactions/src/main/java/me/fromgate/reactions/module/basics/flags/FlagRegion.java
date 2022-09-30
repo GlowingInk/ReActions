@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public class FlagRegion implements Flag {
     private boolean playersInRegion(String param) {
         String[] split = param.split("/");
         if (split.length != 2) return false;
-        return (NumberUtils.getInteger(split[1], 1) <= RaWorldGuard.countPlayersInRegion(split[0]));
+        return (MathUtils.getInteger(split[1], 1) <= RaWorldGuard.countPlayersInRegion(split[0]));
     }
 
     @Override

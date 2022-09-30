@@ -4,8 +4,8 @@ import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.MathEvaluator;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.math.MathUtils;
+import me.imdanix.math.ExpressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +14,7 @@ public class PlaceholderCalc implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         if (Cfg.modernPlaceholders || !param.contains("%")) try {
-            return NumberUtils.format(MathEvaluator.eval(param));
+            return MathUtils.format(ExpressionEvaluator.eval(param, MathUtils.DICTIONARY));
         } catch (NumberFormatException | ArithmeticException ignore) {
             // TODO: Error
         }
