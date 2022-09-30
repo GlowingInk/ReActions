@@ -1,8 +1,8 @@
 package me.fromgate.reactions.util.parameter;
 
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
-import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.suppliers.NotNullSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

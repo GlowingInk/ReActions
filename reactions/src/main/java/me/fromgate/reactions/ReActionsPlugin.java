@@ -45,7 +45,7 @@ import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.time.waiter.WaitingManager;
-import me.fromgate.reactions.util.message.BukkitMessenger;
+import me.fromgate.reactions.util.message.Messenger;
 import me.fromgate.reactions.util.message.Msg;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -90,7 +90,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public void onEnable() {
         // TODO god why
-        Msg.init("ReActions", new BukkitMessenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
+        Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
         getDataFolder().mkdirs();
 
         Commander.init(this);

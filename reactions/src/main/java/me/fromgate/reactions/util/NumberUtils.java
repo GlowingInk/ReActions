@@ -1,6 +1,4 @@
-package me.fromgate.reactions.util.math;
-
-import me.fromgate.reactions.util.Utils;
+package me.fromgate.reactions.util;
 
 import java.util.regex.Pattern;
 

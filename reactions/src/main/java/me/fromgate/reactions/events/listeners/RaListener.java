@@ -1,12 +1,12 @@
 package me.fromgate.reactions.events.listeners;
 
+import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.events.PlayerMoveByBlockEvent;
 import me.fromgate.reactions.events.PlayerPickupItemEvent;
 import me.fromgate.reactions.events.PlayerStayEvent;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.ItemStoragesManager;
 import me.fromgate.reactions.module.basics.storages.PickupItemStorage;
-import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

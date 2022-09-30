@@ -25,7 +25,6 @@ package me.fromgate.reactions.util;
 import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

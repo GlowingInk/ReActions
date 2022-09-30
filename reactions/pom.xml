@@ -56,7 +56,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>org.quartz</pattern>
-                                    <shadedPattern>me.fromgate.reactions.time.cron</shadedPattern>
+                                    <shadedPattern>me.fromgate.reactions.time</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>de.themoep.minedown</pattern>
@@ -64,7 +64,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>me.imdanix.math</pattern>
-                                    <shadedPattern>me.fromgate.reactions.util.math</shadedPattern>
+                                    <shadedPattern>me.fromgate.reactions.math</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>

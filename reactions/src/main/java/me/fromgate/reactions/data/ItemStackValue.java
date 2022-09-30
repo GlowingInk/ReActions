@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.data;
+package me.fromgate.reactions.data;
 
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;

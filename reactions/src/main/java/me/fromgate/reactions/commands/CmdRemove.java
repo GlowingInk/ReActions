@@ -5,7 +5,7 @@ import me.fromgate.reactions.holders.LocationHolder;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.TimersManager;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;

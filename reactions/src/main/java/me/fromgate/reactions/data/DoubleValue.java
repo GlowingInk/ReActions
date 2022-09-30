@@ -1,30 +1,31 @@
-package me.fromgate.reactions.util.data;
+package me.fromgate.reactions.data;
 
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class BooleanValue implements DataValue {
-    private boolean value;
+public class DoubleValue implements DataValue {
+    private double value;
 
-    public BooleanValue(boolean value) {
+    public DoubleValue(double value) {
         this.value = value;
     }
 
     @Override
     public String asString() {
-        return Boolean.toString(value);
+        return Double.toString(value);
     }
 
     @Override
     public double asDouble() {
-        return value ? 1 : 0;
+        return value;
     }
 
     @Override
     public boolean asBoolean() {
-        return value;
+        return value >= 0;
     }
 
     @Override
@@ -34,16 +35,16 @@ public class BooleanValue implements DataValue {
 
     @Override
     public ItemStack asItemStack() {
+        int i = 0;
+        for (Material mat : Material.values())
+            if (value <= i++) return new ItemStack(mat);
         return new ItemStack(Material.STONE);
     }
 
     @Override
     public boolean set(String value) {
-        if (value.equalsIgnoreCase("true")) {
-            this.value = true;
-            return true;
-        } else if (value.equalsIgnoreCase("false")) {
-            this.value = false;
+        if (NumberUtils.FLOAT.matcher(value).matches()) {
+            this.value = Double.parseDouble(value);
             return true;
         }
         return false;
@@ -51,13 +52,13 @@ public class BooleanValue implements DataValue {
 
     @Override
     public boolean set(double value) {
-        return false;
+        this.value = value;
+        return true;
     }
 
     @Override
     public boolean set(boolean value) {
-        this.value = value;
-        return true;
+        return false;
     }
 
     @Override

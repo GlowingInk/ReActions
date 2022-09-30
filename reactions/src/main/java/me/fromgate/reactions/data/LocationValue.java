@@ -1,50 +1,47 @@
-package me.fromgate.reactions.util.data;
+package me.fromgate.reactions.data;
 
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class DoubleValue implements DataValue {
-    private double value;
+public class LocationValue implements DataValue {
+    private Location value;
 
-    public DoubleValue(double value) {
+    public LocationValue(Location value) {
         this.value = value;
     }
 
     @Override
     public String asString() {
-        return Double.toString(value);
+        return LocationUtils.locationToString(value);
     }
 
     @Override
     public double asDouble() {
-        return value;
+        return value.getX() + value.getY() + value.getZ();
     }
 
     @Override
     public boolean asBoolean() {
-        return value >= 0;
+        return value.isWorldLoaded();
     }
 
     @Override
     public Location asLocation() {
-        return LocationUtils.ZERO_LOCATION;
+        return value;
     }
 
     @Override
     public ItemStack asItemStack() {
-        int i = 0;
-        for (Material mat : Material.values())
-            if (value <= i++) return new ItemStack(mat);
         return new ItemStack(Material.STONE);
     }
 
     @Override
     public boolean set(String value) {
-        if (NumberUtils.FLOAT.matcher(value).matches()) {
-            this.value = Double.parseDouble(value);
+        Location loc = LocationUtils.parseLocation(value, null);
+        if (loc != null) {
+            this.value = loc;
             return true;
         }
         return false;
@@ -52,8 +49,7 @@ public class DoubleValue implements DataValue {
 
     @Override
     public boolean set(double value) {
-        this.value = value;
-        return true;
+        return false;
     }
 
     @Override
@@ -63,7 +59,8 @@ public class DoubleValue implements DataValue {
 
     @Override
     public boolean set(Location value) {
-        return false;
+        this.value = value;
+        return true;
     }
 
     @Override

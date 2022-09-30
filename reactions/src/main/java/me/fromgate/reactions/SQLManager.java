@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions;
 
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 

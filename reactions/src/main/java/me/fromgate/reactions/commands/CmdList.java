@@ -7,7 +7,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.time.TimersManager;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

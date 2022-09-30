@@ -22,12 +22,12 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
+import me.fromgate.reactions.data.BooleanValue;
+import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.CommandActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
-import me.fromgate.reactions.util.data.BooleanValue;
-import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public class CommandStorage extends Storage {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
+    protected @NotNull Map<String, String> prepareVariables() { // TODO: Generating tempvars for it is expensive af
         Map<String, String> tempVars = new HashMap<>();
         String[] start = label.split(":");
         if (start.length == 1) {

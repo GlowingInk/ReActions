@@ -2,9 +2,9 @@ package me.fromgate.reactions.util.item;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.NumberUtils;
-import me.fromgate.reactions.util.math.Rng;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;

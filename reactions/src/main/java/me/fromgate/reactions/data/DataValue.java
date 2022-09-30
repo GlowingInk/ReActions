@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.data;
+package me.fromgate.reactions.data;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;

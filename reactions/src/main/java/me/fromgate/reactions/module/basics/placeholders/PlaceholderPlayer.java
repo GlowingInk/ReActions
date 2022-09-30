@@ -1,11 +1,11 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
+import me.fromgate.reactions.holders.PlayerRespawner;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.location.PlayerRespawner;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

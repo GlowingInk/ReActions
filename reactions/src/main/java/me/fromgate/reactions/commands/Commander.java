@@ -1,7 +1,7 @@
 package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.util.message.BukkitMessenger;
+import me.fromgate.reactions.util.message.Messenger;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,7 +60,7 @@ public class Commander implements CommandExecutor {
             helpList.add(cmd.getFullDescription());
         }
         Msg.printMessage(sender, "&6&lReActions v" + ReActions.getPlugin().getDescription().getVersion() + " &r&6| " + Msg.HLP_HELP.getText("NO_COLOR"));
-        BukkitMessenger.printPage(sender, helpList, null, page);
+        Messenger.printPage(sender, helpList, null, page);
     }
 
     @Override

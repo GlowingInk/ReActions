@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.math;
+package me.fromgate.reactions.util;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

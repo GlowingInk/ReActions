@@ -2,10 +2,10 @@ package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
-import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

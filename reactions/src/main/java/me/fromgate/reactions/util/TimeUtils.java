@@ -22,7 +22,6 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
 
 import java.text.DateFormat;

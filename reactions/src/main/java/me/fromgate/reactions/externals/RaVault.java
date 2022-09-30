@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.externals;
 
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;

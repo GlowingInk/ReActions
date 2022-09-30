@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

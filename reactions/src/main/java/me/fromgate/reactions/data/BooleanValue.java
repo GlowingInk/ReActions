@@ -1,35 +1,35 @@
-package me.fromgate.reactions.util.data;
+package me.fromgate.reactions.data;
 
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class LocationValue implements DataValue {
-    private Location value;
+public class BooleanValue implements DataValue {
+    private boolean value;
 
-    public LocationValue(Location value) {
+    public BooleanValue(boolean value) {
         this.value = value;
     }
 
     @Override
     public String asString() {
-        return LocationUtils.locationToString(value);
+        return Boolean.toString(value);
     }
 
     @Override
     public double asDouble() {
-        return value.getX() + value.getY() + value.getZ();
+        return value ? 1 : 0;
     }
 
     @Override
     public boolean asBoolean() {
-        return value.isWorldLoaded();
+        return value;
     }
 
     @Override
     public Location asLocation() {
-        return value;
+        return LocationUtils.ZERO_LOCATION;
     }
 
     @Override
@@ -39,9 +39,11 @@ public class LocationValue implements DataValue {
 
     @Override
     public boolean set(String value) {
-        Location loc = LocationUtils.parseLocation(value, null);
-        if (loc != null) {
-            this.value = loc;
+        if (value.equalsIgnoreCase("true")) {
+            this.value = true;
+            return true;
+        } else if (value.equalsIgnoreCase("false")) {
+            this.value = false;
             return true;
         }
         return false;
@@ -54,13 +56,13 @@ public class LocationValue implements DataValue {
 
     @Override
     public boolean set(boolean value) {
-        return false;
+        this.value = value;
+        return true;
     }
 
     @Override
     public boolean set(Location value) {
-        this.value = value;
-        return true;
+        return false;
     }
 
     @Override

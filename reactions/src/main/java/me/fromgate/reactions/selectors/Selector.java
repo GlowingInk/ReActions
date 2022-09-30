@@ -8,5 +8,5 @@ import java.util.Collection;
 public interface Selector {
     @NotNull String getName();
 
-    @NotNull Collection<Player> getPlayers(String param);
+    @NotNull Collection<Player> getPlayers(@NotNull String param);
 }

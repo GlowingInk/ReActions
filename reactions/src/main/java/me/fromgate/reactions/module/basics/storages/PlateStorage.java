@@ -22,12 +22,12 @@
 
 package me.fromgate.reactions.module.basics.storages;
 
+import me.fromgate.reactions.data.BooleanValue;
+import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.PlateActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
-import me.fromgate.reactions.util.data.BooleanValue;
-import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 package me.fromgate.reactions.logic;
 
-import me.fromgate.reactions.util.data.DataValue;
+import me.fromgate.reactions.data.DataValue;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

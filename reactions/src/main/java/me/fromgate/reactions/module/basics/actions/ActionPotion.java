@@ -24,9 +24,9 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;

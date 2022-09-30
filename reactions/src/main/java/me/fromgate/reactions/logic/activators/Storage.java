@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.logic.activators;
 
+import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.RaContext;
-import me.fromgate.reactions.util.data.DataValue;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

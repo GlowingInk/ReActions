@@ -1,6 +1,6 @@
 package me.fromgate.reactions.util.location;
 
-import me.fromgate.reactions.util.math.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils;
 import org.bukkit.Location;
 
 public class Cuboid {

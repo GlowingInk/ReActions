@@ -1,7 +1,7 @@
 package me.fromgate.reactions.util.location;
 
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

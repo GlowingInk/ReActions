@@ -20,7 +20,7 @@
  *
  */
 
-package me.fromgate.reactions.util.location;
+package me.fromgate.reactions.holders;
 
 import me.fromgate.reactions.Cfg;
 import org.bukkit.Location;

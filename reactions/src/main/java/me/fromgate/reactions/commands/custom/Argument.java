@@ -1,7 +1,7 @@
 package me.fromgate.reactions.commands.custom;
 
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
