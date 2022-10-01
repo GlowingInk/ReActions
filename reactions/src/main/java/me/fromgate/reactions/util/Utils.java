@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public final class Utils {
      * @return Is string empty or null
      */
     @Contract("null -> true")
-    public static boolean isStringEmpty(String str) {
+    public static boolean isStringEmpty(@Nullable String str) {
         return str == null || str.isEmpty();
     }
 

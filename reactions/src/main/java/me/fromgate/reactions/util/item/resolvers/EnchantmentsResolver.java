@@ -18,8 +18,6 @@ import static me.fromgate.reactions.util.Utils.cutBuilder;
 
 @Aliases({"enchants", "stored-enchantments", "stored-enchants"})
 public class EnchantmentsResolver implements MetaResolver {
-    private static final Instance EMPTY = new Instance(Collections.emptyMap());
-
     @Override
     public @NotNull String getName() {
         return "enchantments";
@@ -28,7 +26,7 @@ public class EnchantmentsResolver implements MetaResolver {
     @Override
     public @NotNull Instance fromString(@NotNull String value) {
         if (value.isEmpty()) {
-            return EMPTY;
+            return Instance.EMPTY;
         }
         String[] split = value.split(";");
         Map<Enchantment, Integer> enchantments = new HashMap<>(split.length);
@@ -62,6 +60,8 @@ public class EnchantmentsResolver implements MetaResolver {
     }
 
     private record Instance(@NotNull Map<Enchantment, Integer> enchantments) implements MetaResolver.Instance {
+        private static final Instance EMPTY = new Instance(Collections.emptyMap());
+
         @Override
         public void apply(@NotNull ItemMeta meta) {
             EnchantmentConsumer consumer = meta instanceof EnchantmentStorageMeta enchantmentMeta

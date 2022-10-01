@@ -1,5 +1,7 @@
 package me.fromgate.reactions.util;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
 // TODO: In the current state it's bloated mess. Refactor
@@ -24,6 +26,16 @@ public final class NumberUtils {
 
     public static int getInteger(String str, int def) {
         if (Utils.isStringEmpty(str) || !INT.matcher(str).matches()) return def;
+        return Integer.parseInt(str);
+    }
+
+    public static double getDouble(String str, DoubleSupplier def) {
+        if (Utils.isStringEmpty(str) || !FLOAT.matcher(str).matches()) return def.getAsDouble();
+        return Double.parseDouble(str);
+    }
+
+    public static int getInteger(String str, IntSupplier def) {
+        if (Utils.isStringEmpty(str) || !INT.matcher(str).matches()) return def.getAsInt();
         return Integer.parseInt(str);
     }
 
