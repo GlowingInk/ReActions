@@ -219,11 +219,10 @@ public final class Utils {
     }
 
     /**
-     * Get any enum by it's name
-     *
-     * @param <T>   Enum type
+     * Get any enum by its name
+     * @param <T> Enum type
      * @param clazz Enum class
-     * @param name  Name of enum
+     * @param name Name of enum
      * @return Corresponding enum, or null if not found
      */
     public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name) {
@@ -231,12 +230,12 @@ public final class Utils {
     }
 
     /**
-     * Get any enum by it's name or default value if not found
-     *
-     * @param <T>   Enum type
+     * Get any enum by its name or default value if not found
+     * @param <T> Enum type
      * @param clazz Enum class
-     * @param name  Name of enum
-     * @return Corresponding enum, or null if not found
+     * @param name Name of enum
+     * @param def Default value
+     * @return Corresponding enum, or {@param def} if not found
      */
     public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name, T def) {
         if (clazz != null && !Utils.isStringEmpty(name)) {
@@ -256,7 +255,14 @@ public final class Utils {
     }
 
     public static @NotNull String[] getAliases(@NotNull Object obj) {
-        return obj instanceof Aliased aliased ?
-               aliased.getAliases() : getAliases(obj.getClass());
+        return obj instanceof Aliased aliased
+                ? aliased.getAliases()
+                : getAliases(obj.getClass());
+    }
+
+    public static @NotNull String cutBuilder(@NotNull StringBuilder builder, int offset) {
+        return offset < builder.length()
+                ? builder.substring(0, builder.length() - offset)
+                : "";
     }
 }

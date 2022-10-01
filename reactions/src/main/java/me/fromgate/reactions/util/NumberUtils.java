@@ -2,6 +2,7 @@ package me.fromgate.reactions.util;
 
 import java.util.regex.Pattern;
 
+// TODO: In the current state it's bloated mess. Refactor
 public final class NumberUtils {
     // Byte
     public static final Pattern BYTE = Pattern.compile("(2[1-5][1-6]|\\d{1,2})");
@@ -32,7 +33,6 @@ public final class NumberUtils {
                Double.toString(d);
     }
 
-    // TODO: Should be removed or refactored
     public static boolean isIntegerSigned(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
@@ -67,6 +67,10 @@ public final class NumberUtils {
         for (String s : str)
             if (!FLOAT.matcher(s).matches()) return false;
         return true;
+    }
+
+    public static boolean isNumber(String str) {
+        return FLOAT.matcher(str).matches();
     }
 
     /**
