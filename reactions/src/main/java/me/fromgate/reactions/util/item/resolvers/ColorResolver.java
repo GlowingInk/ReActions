@@ -27,7 +27,7 @@ public class ColorResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String key, @NotNull String value) {
+    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
         if (value.startsWith("#")) {
             Matcher matcher = HEX.matcher(value);
             if (matcher.matches()) {

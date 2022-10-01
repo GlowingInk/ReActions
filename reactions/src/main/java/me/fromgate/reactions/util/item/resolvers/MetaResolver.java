@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public interface MetaResolver {
     @NotNull String getName();
 
-    @NotNull MetaResolver.Instance fromString(@NotNull String key, @NotNull String value);
+    @NotNull MetaResolver.Instance fromString(@NotNull String value);
 
     @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta);
 
