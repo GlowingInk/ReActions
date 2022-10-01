@@ -146,7 +146,6 @@ public class Parameters implements Iterable<String> {
         return new Parameters(str.isEmpty() ? str : str.substring(0, str.length() - 1), params);
     }
 
-    // TODO Make @Nullable?
     public @NotNull String getString(@NotNull String key) {
         return getString(key, "");
     }
@@ -157,7 +156,8 @@ public class Parameters implements Iterable<String> {
     }
 
     public @NotNull String getStringSafe(@NotNull String key, @NotNull NotNullSupplier<String> def) {
-        return params.getOrDefault(key, def.get());
+        String value = params.get(key);
+        return value == null ? def.get() : value;
     }
 
     public double getDouble(@NotNull String key) {
@@ -169,7 +169,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public double getDouble(@NotNull String key, @NotNull DoubleSupplier def) {
-        return NumberUtils.getDouble(params.get(key), def.getAsDouble());
+        return NumberUtils.getDouble(params.get(key), def);
     }
 
     public int getInteger(@NotNull String key) {
@@ -181,7 +181,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public int getInteger(@NotNull String key, @NotNull IntSupplier def) {
-        return NumberUtils.getInteger(params.get(key), def.getAsInt());
+        return NumberUtils.getInteger(params.get(key), def);
     }
 
     public boolean getBoolean(@NotNull String key) {
@@ -198,7 +198,7 @@ public class Parameters implements Iterable<String> {
         } else return def;
     }
 
-    public boolean getBoolean(@NotNull String key, BooleanSupplier def) {
+    public boolean getBoolean(@NotNull String key, @NotNull BooleanSupplier def) {
         if (params.containsKey(key)) {
             return switch (params.get(key).toLowerCase(Locale.ROOT)) {
                 case "true" -> true;
