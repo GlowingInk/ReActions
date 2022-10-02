@@ -15,23 +15,61 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static me.fromgate.reactions.util.item.CheckingStrategy.getStrategy;
 
-public record ModernVirtualItem(
-        @Nullable Material type,
-        @NotNull CheckingStrategy name,
-        @NotNull CheckingStrategy lore,
-        int amount, // TODO Make nullable to ignore amount
-        @NotNull List<MetaResolver.Instance> resolvers
-) {
+public final class ModernVirtualItem {
     private static final Map<String, MetaResolver> RESOLVERS_MAP = new HashMap<>(); // TODO Fill the map
     private static final List<MetaResolver> RESOLVERS = new ArrayList<>(); // TODO Fill the list
 
+    private final Material type;
+    private final int amount;
+    private final List<MetaResolver.Instance> resolvers;
+
+    private boolean itemGenerated;
+    private ItemStack itemStack;
+
+    public ModernVirtualItem(
+            @Nullable Material type,
+            int amount, // TODO Make nullable to ignore amount
+            @NotNull List<MetaResolver.Instance> resolvers
+    ) {
+        this.type = type;
+        this.amount = amount;
+        this.resolvers = resolvers;
+    }
+
+    public @Nullable ItemStack asItemStack() {
+        if (!itemGenerated) {
+            itemGenerated = true;
+            if (type == null || !type.isItem() || type.isEmpty()) return null;
+            itemStack = new ItemStack(type);
+            itemStack.setAmount(amount);
+            if (!resolvers.isEmpty()) {
+                ItemMeta meta = itemStack.getItemMeta();
+                resolvers.forEach(resolver -> resolver.apply(meta));
+                itemStack.setItemMeta(meta);
+            }
+        }
+        return itemStack;
+    }
+
+    public boolean isSimilar(@Nullable ItemStack compared) {
+        if (type == null || type.isEmpty()) {
+            return !ItemUtils.isExist(compared);
+        } else if (!ItemUtils.isExist(compared)) {
+            return false;
+        }
+        if (!resolvers.isEmpty()) {
+            if (!compared.hasItemMeta()) return false;
+            ItemMeta meta = compared.getItemMeta();
+            for (MetaResolver.Instance resolver : resolvers) {
+                if (!resolver.isSimilar(meta)) return false;
+            }
+        }
+        return true;
+    }
+
     public static @NotNull ModernVirtualItem fromItem(@NotNull ItemStack item) {
-        // TODO if (!item.hasItemMeta())
         List<MetaResolver.Instance> resolvers;
-        String name = null;
-        String lore = null;
         if (!item.hasItemMeta()) {
             resolvers = Collections.emptyList();
         } else {
@@ -41,16 +79,12 @@ public record ModernVirtualItem(
                 MetaResolver.Instance resolverInst = resolver.fromItem(meta);
                 resolvers.add(resolverInst);
             }
-            name = meta.getDisplayName();
-            lore = meta.hasLore() ? String.join("\\n", meta.getLore()) : null;
             if (resolvers.isEmpty()) {
                 resolvers = Collections.emptyList();
             }
         }
         return new ModernVirtualItem(
                 item.getType(),
-                getStrategy(name, false),
-                getStrategy(lore, false),
                 item.getAmount(),
                 resolvers
         );
@@ -63,24 +97,19 @@ public record ModernVirtualItem(
     public static @NotNull ModernVirtualItem fromParameters(@NotNull Parameters params) {
         List<MetaResolver.Instance> resolvers = new ArrayList<>();
         Material type = null;
-        String name = null;
-        String lore = null;
-        boolean regexName = false;
-        boolean regexLore = false;
         int amount = 1;
+        boolean regex = params.getBoolean("regex", false);
         for (String key : params) {
             key = key.toLowerCase(Locale.ROOT);
             switch (key) {
                 case "type" -> type = Material.getMaterial(params.getString(key));
-                case "name" -> name = params.getString(key);
-                case "lore" -> lore = params.getString(key);
-                case "regex" -> {
-                    boolean value = params.getBoolean(key);
-                    regexName = value;
-                    regexLore = value;
+                case "name", "lore" -> {
+                    if (regex) {
+                        MetaResolver resolver = RESOLVERS_MAP.get(key + "-regex");
+                        if (resolver == null) continue; // Literally how
+                        resolvers.add(resolver.fromString(params.getString(key)));
+                    }
                 }
-                case "regex-name" -> regexName = params.getBoolean(key);
-                case "regex-lore" -> regexLore = params.getBoolean(key);
                 case "amount" -> amount = params.getInteger(key);
                 default -> {
                     MetaResolver resolver = RESOLVERS_MAP.get(key);
@@ -91,8 +120,6 @@ public record ModernVirtualItem(
         }
         return new ModernVirtualItem(
                 type,
-                getStrategy(name, regexName),
-                getStrategy(lore, regexLore),
                 amount,
                 resolvers
         );

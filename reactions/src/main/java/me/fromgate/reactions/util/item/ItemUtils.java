@@ -271,7 +271,7 @@ public final class ItemUtils {
      * @return Is item not null and not air
      */
     public static boolean isExist(ItemStack item) {
-        return item != null && !item.getType().isAir();
+        return item != null && !item.getType().isEmpty();
     }
 
     public static String fireworksToString(FireworkEffect fe) {
