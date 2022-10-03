@@ -63,12 +63,8 @@ public class ColorResolver implements MetaResolver {
         return null;
     }
 
-    private record Instance(Color color) implements MetaResolver.Instance {
+    private record Instance(@Nullable Color color) implements MetaResolver.Instance {
         private static final ColorResolver.Instance EMPTY = new ColorResolver.Instance(null);
-
-        private Instance(@Nullable Color color) {
-            this.color = color;
-        }
 
         @Override
         public void apply(@NotNull ItemMeta meta) {
@@ -91,6 +87,11 @@ public class ColorResolver implements MetaResolver {
                 return Objects.equals(mapMeta.getColor(), color);
             }
             return color == null;
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return "color";
         }
 
         @Override

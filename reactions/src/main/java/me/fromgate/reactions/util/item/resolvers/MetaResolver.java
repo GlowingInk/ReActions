@@ -16,6 +16,8 @@ public interface MetaResolver {
 
         boolean isSimilar(@NotNull ItemMeta meta);
 
+        @NotNull String getName(); // TODO: I don't like the fact it's in both resolver and instance
+
         @NotNull String asString();
     }
 }

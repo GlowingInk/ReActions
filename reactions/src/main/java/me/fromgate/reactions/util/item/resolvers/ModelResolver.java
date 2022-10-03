@@ -45,6 +45,11 @@ public class ModelResolver implements MetaResolver {
         }
 
         @Override
+        public @NotNull String getName() {
+            return "model";
+        }
+
+        @Override
         public @NotNull String asString() {
             return value == null ? "" : value.toString();
         }

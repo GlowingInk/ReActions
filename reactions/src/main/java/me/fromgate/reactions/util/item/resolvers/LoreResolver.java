@@ -90,6 +90,13 @@ public class LoreResolver implements MetaResolver {
         }
 
         @Override
+        public @NotNull String getName() {
+            return lorePattern != null
+                    ? "lore-regex"
+                    : "lore";
+        }
+
+        @Override
         public @NotNull String asString() {
             return value;
         }

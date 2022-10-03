@@ -67,6 +67,13 @@ public class NameResolver implements MetaResolver {
         }
 
         @Override
+        public @NotNull String getName() {
+            return namePattern != null
+                    ? "name-regex"
+                    : "name";
+        }
+
+        @Override
         public @NotNull String asString() {
             return value;
         }

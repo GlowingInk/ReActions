@@ -1,5 +1,6 @@
 package me.fromgate.reactions.util.item;
 
+import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.resolvers.MetaResolver;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -27,6 +28,9 @@ public final class ModernVirtualItem {
     private boolean itemGenerated;
     private ItemStack itemStack;
 
+    private boolean strGenerated;
+    private String strValue;
+
     public ModernVirtualItem(
             @Nullable Material type,
             int amount, // TODO Make nullable to ignore amount
@@ -50,6 +54,28 @@ public final class ModernVirtualItem {
             }
         }
         return itemStack;
+    }
+
+    public @NotNull String asString() {
+        if (strGenerated) {
+            return strValue;
+        }
+        strGenerated = true;
+        if (type == null) {
+            return strValue = "type:AIR";
+        }
+        StringBuilder builder = new StringBuilder("type:").append(type.name()).append(' ');
+        for (MetaResolver.Instance resolver : resolvers) {
+            builder.append(resolver.getName()).append(':');
+            String value = resolver.asString();
+            if (value.indexOf(' ') != -1 || value.isEmpty()) { // We don't expect String to String conversion, so it's better to check emptiness later
+                builder.append('{').append(value).append('}');
+            } else {
+                builder.append(value);
+            }
+            builder.append(' ');
+        }
+        return strValue = Utils.cutBuilder(builder, 1);
     }
 
     public boolean isSimilar(@Nullable ItemStack compared) {

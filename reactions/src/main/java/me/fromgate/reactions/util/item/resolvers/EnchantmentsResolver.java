@@ -94,6 +94,11 @@ public class EnchantmentsResolver implements MetaResolver {
         }
 
         @Override
+        public @NotNull String getName() {
+            return "enchantments";
+        }
+
+        @Override
         public @NotNull String asString() {
             if (enchantments.isEmpty()) return "";
             StringBuilder builder = new StringBuilder();
