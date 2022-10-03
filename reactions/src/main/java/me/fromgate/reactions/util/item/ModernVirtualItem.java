@@ -33,7 +33,7 @@ public final class ModernVirtualItem {
 
     public ModernVirtualItem(
             @Nullable Material type,
-            int amount, // TODO Make nullable to ignore amount
+            int amount,
             @NotNull List<MetaResolver.Instance> resolvers
     ) {
         this.type = type;
@@ -46,7 +46,7 @@ public final class ModernVirtualItem {
             itemGenerated = true;
             if (type == null || !type.isItem() || type.isEmpty()) return null;
             itemStack = new ItemStack(type);
-            itemStack.setAmount(amount);
+            itemStack.setAmount(Math.max(amount, 1));
             if (!resolvers.isEmpty()) {
                 ItemMeta meta = itemStack.getItemMeta();
                 resolvers.forEach(resolver -> resolver.apply(meta));
@@ -82,6 +82,9 @@ public final class ModernVirtualItem {
         if (type == null || type.isEmpty()) {
             return !ItemUtils.isExist(compared);
         } else if (!ItemUtils.isExist(compared)) {
+            return false;
+        }
+        if (type != compared.getType() || amount > compared.getAmount()) {
             return false;
         }
         if (!resolvers.isEmpty()) {
@@ -123,7 +126,7 @@ public final class ModernVirtualItem {
     public static @NotNull ModernVirtualItem fromParameters(@NotNull Parameters params) {
         List<MetaResolver.Instance> resolvers = new ArrayList<>();
         Material type = null;
-        int amount = 1;
+        int amount = -1;
         boolean regex = params.getBoolean("regex", false);
         for (String key : params) {
             key = key.toLowerCase(Locale.ROOT);
