@@ -1,6 +1,15 @@
 package me.fromgate.reactions.util.item;
 
+import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.item.resolvers.BookResolver;
+import me.fromgate.reactions.util.item.resolvers.ColorResolver;
+import me.fromgate.reactions.util.item.resolvers.EnchantmentsResolver;
+import me.fromgate.reactions.util.item.resolvers.FireworkResolver;
+import me.fromgate.reactions.util.item.resolvers.HeadResolver;
+import me.fromgate.reactions.util.item.resolvers.LoreResolver;
 import me.fromgate.reactions.util.item.resolvers.MetaResolver;
+import me.fromgate.reactions.util.item.resolvers.ModelResolver;
+import me.fromgate.reactions.util.item.resolvers.NameResolver;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,8 +26,30 @@ import java.util.Map;
 
 
 public final class ModernVirtualItem {
-    private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO Fill the map
-    private static final List<MetaResolver> RESOLVERS = new ArrayList<>(); // TODO Fill the list
+    private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
+    private static final List<MetaResolver> RESOLVERS = new ArrayList<>();
+    static {
+        registerResolver(new BookResolver(BookResolver.Type.PAGES));
+        registerResolver(new BookResolver(BookResolver.Type.TITLE));
+        registerResolver(new BookResolver(BookResolver.Type.AUTHOR));
+        registerResolver(new ColorResolver());
+        registerResolver(new EnchantmentsResolver());
+        registerResolver(new FireworkResolver(true));
+        registerResolver(new FireworkResolver(false));
+        registerResolver(new HeadResolver());
+        registerResolver(new LoreResolver(true));
+        registerResolver(new LoreResolver(false));
+        registerResolver(new ModelResolver());
+        registerResolver(new NameResolver(true));
+        registerResolver(new NameResolver(false));
+    }
+    private static void registerResolver(@NotNull MetaResolver resolver) {
+        RESOLVERS_MAP.put(resolver.getName().toLowerCase(Locale.ROOT), resolver);
+        RESOLVERS.add(resolver);
+        for (String alias : Utils.getAliases(resolver)) {
+            RESOLVERS_MAP.putIfAbsent(alias.toLowerCase(Locale.ROOT), resolver);
+        }
+    }
 
     private final Material type;
     private final int amount;

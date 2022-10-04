@@ -4,5 +4,5 @@ import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface Aliased {
-    @NotNull String[] getAliases();
+    @NotNull String @NotNull [] getAliases();
 }

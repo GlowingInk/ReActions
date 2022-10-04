@@ -264,7 +264,7 @@ public final class Utils {
         return EMPTY_ARRAY;
     }
 
-    public static @NotNull String[] getAliases(@NotNull Object obj) {
+    public static @NotNull String @NotNull [] getAliases(@NotNull Object obj) {
         return obj instanceof Aliased aliased
                 ? aliased.getAliases()
                 : getAliases(obj.getClass());

@@ -115,14 +115,14 @@ public class FireworkResolver implements MetaResolver {
                     if (!effect.getColors().isEmpty()) {
                         builder.append("colors:{");
                         for (Color color : effect.getColors()) {
-                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(color.getBlue()).append(';');
+                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(',').append(color.getBlue()).append(';');
                         }
                         builder.deleteCharAt(builder.length() - 1).append('}');
                     }
                     if (!effect.getFadeColors().isEmpty()) {
                         builder.append("fade-colors:{");
                         for (Color color : effect.getFadeColors()) {
-                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(color.getBlue()).append(';');
+                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(',').append(color.getBlue()).append(';');
                         }
                         builder.deleteCharAt(builder.length() - 1).append('}');
                     }
