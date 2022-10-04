@@ -49,14 +49,14 @@ public class BookResolver implements MetaResolver {
         private final List<String> pages;
         private final String pagesStr;
 
-        private PagesInst(@NotNull List<String> pages) {
+        public PagesInst(@NotNull List<String> pages) {
             this.pages = pages;
             if (pages.isEmpty()) {
                 pagesStr = "";
             } else {
                 StringBuilder builder = new StringBuilder();
                 for (String page : pages) {
-                    builder.append(page.replace("\\n", "&z")).append("\\n");
+                    builder.append(page.replace("\n", "&z")).append("\\n");
                 }
                 pagesStr = Utils.cutBuilder(builder, 2);
             }
