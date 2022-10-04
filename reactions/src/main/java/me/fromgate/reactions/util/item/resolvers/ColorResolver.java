@@ -27,12 +27,16 @@ public class ColorResolver implements MetaResolver {
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+        Color color = null;
         if (meta instanceof LeatherArmorMeta leatherMeta) {
-            return new ColorInst(leatherMeta.getColor());
+            color = leatherMeta.getColor();
         } else if (meta instanceof PotionMeta potionMeta) {
-            return new ColorInst(potionMeta.getColor());
+            color = potionMeta.getColor();
         } else if (meta instanceof MapMeta mapMeta) {
-            return new ColorInst(mapMeta.getColor());
+            color = mapMeta.getColor();
+        }
+        if (color != null) {
+            return new ColorInst(color);
         }
         return null;
     }

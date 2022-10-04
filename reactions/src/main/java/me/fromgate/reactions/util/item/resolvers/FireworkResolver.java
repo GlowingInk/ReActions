@@ -77,23 +77,30 @@ public class FireworkResolver implements MetaResolver {
 
         public EffectsInst(@NotNull String effectsStr) {
             this.effectsStr = effectsStr;
-            String[] split = effectsStr.split("@");
+            String[] split = effectsStr.split(";");
             this.effects = new ArrayList<>(split.length);
-            for (String effectStr : effectsStr.split("@")) {
+            for (String effectStr : split) {
                 Parameters params = Parameters.fromString(effectStr);
                 FireworkEffect.Builder builder = FireworkEffect.builder();
-                FireworkEffect.Type type = Utils.getEnum(FireworkEffect.Type.class, params.getString("type"), FireworkEffect.Type.BALL);
+                FireworkEffect.Type type = Utils.getEnum(FireworkEffect.Type.class, params.getString("type"), FireworkEffect.Type.BALL); // TODO: Allow search by key
                 builder.with(type);
                 if (params.getBoolean("flicker")) builder.withFlicker();
                 if (params.getBoolean("trail")) builder.withTrail();
+                boolean addColor = true;
                 if (params.contains("colors")) {
-                    for (String colorStr : params.getString("colors").split(";")) {
+                    for (String colorStr : params.getString("colors").split(" ")) {
                         Color color = Utils.getColor(colorStr);
-                        if (color != null) builder.withColor(color);
+                        if (color != null) {
+                            builder.withColor(color);
+                            addColor = false;
+                        }
                     }
                 }
+                if (addColor) {
+                    builder.withColor(Color.WHITE);
+                }
                 if (params.contains("fade-colors")) {
-                    for (String colorStr : params.getString("fade-colors").split(";")) {
+                    for (String colorStr : params.getString("fade-colors").split(" ")) {
                         Color color = Utils.getColor(colorStr);
                         if (color != null) builder.withFade(color);
                     }
@@ -113,20 +120,20 @@ public class FireworkResolver implements MetaResolver {
                     if (effect.hasFlicker()) builder.append(" flicker:true");
                     if (effect.hasTrail()) builder.append(" trail:true");
                     if (!effect.getColors().isEmpty()) {
-                        builder.append("colors:{");
+                        builder.append(" colors:{");
                         for (Color color : effect.getColors()) {
-                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(',').append(color.getBlue()).append(';');
+                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(',').append(color.getBlue()).append(' ');
                         }
                         builder.deleteCharAt(builder.length() - 1).append('}');
                     }
                     if (!effect.getFadeColors().isEmpty()) {
-                        builder.append("fade-colors:{");
+                        builder.append(" fade-colors:{");
                         for (Color color : effect.getFadeColors()) {
-                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(',').append(color.getBlue()).append(';');
+                            builder.append(color.getRed()).append(',').append(color.getGreen()).append(',').append(color.getBlue()).append(' ');
                         }
                         builder.deleteCharAt(builder.length() - 1).append('}');
                     }
-                    builder.append("@ ");
+                    builder.append("; ");
                 }
                 effectsStr = Utils.cutBuilder(builder, 2);
             }

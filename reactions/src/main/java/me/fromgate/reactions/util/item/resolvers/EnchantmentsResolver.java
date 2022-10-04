@@ -54,9 +54,13 @@ public class EnchantmentsResolver implements MetaResolver {
 
     @Override
     public EnchantmentsInst fromItem(@NotNull ItemMeta meta) {
-        return meta instanceof EnchantmentStorageMeta enchantmentMeta
-                ? new EnchantmentsInst(enchantmentMeta.getStoredEnchants())
-                : new EnchantmentsInst(meta.getEnchants());
+        Map<Enchantment, Integer> enchants =  meta instanceof EnchantmentStorageMeta enchantmentMeta
+                ? enchantmentMeta.getStoredEnchants()
+                : meta.getEnchants();
+        if (!enchants.isEmpty()) {
+            return new EnchantmentsInst(enchants);
+        }
+        return null;
     }
 
     private record EnchantmentsInst(@NotNull Map<Enchantment, Integer> enchantments) implements MetaResolver.Instance {

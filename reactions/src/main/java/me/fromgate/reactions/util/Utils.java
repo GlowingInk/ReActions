@@ -280,15 +280,15 @@ public final class Utils {
         if (value.startsWith("#")) {
             Matcher matcher = HEX_COLOR.matcher(value);
             if (matcher.matches()) {
-                return Color.fromRGB(Integer.parseInt(matcher.group(), 16));
+                return Color.fromRGB(Integer.parseInt(matcher.group(1), 16));
             }
         } else {
             Matcher matcher = BYTE_COLOR.matcher(value);
             if (matcher.matches()) {
                 return Color.fromRGB(
-                        Math.max(getInteger(matcher.group(1), 0), 255),
-                        Math.max(getInteger(matcher.group(2), 0), 255),
-                        Math.max(getInteger(matcher.group(3), 0), 255)
+                        Math.min(getInteger(matcher.group(1), 0), 255),
+                        Math.min(getInteger(matcher.group(2), 0), 255),
+                        Math.min(getInteger(matcher.group(3), 0), 255)
                 );
             } else if (!value.isEmpty()) {
                 TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));

@@ -94,7 +94,7 @@ public final class ModernVirtualItem {
         if (type == null) {
             return strValue = "type:AIR";
         }
-        StringBuilder builder = new StringBuilder("type:").append(type.name());
+        StringBuilder builder = new StringBuilder("type:").append(type.name()).append(" amount:").append(amount);
         for (MetaResolver.Instance resolver : resolvers) {
             builder.append(' ').append(resolver.getName()).append(':');
             String value = resolver.asString();
@@ -162,11 +162,9 @@ public final class ModernVirtualItem {
             switch (key) {
                 case "type" -> type = Material.getMaterial(params.getString(key));
                 case "name", "lore" -> {
-                    if (regex) {
-                        MetaResolver resolver = RESOLVERS_MAP.get(key + "-regex");
-                        if (resolver == null) continue; // Literally how
-                        resolvers.add(resolver.fromString(params.getString(key)));
-                    }
+                    MetaResolver resolver = RESOLVERS_MAP.get(regex ? key + "-regex" : key);
+                    if (resolver == null) continue; // Literally how
+                    resolvers.add(resolver.fromString(params.getString(key)));
                 }
                 case "amount" -> amount = params.getInteger(key);
                 default -> {
@@ -181,5 +179,10 @@ public final class ModernVirtualItem {
                 amount,
                 resolvers
         );
+    }
+
+    @Override
+    public String toString() {
+        return asString();
     }
 }
