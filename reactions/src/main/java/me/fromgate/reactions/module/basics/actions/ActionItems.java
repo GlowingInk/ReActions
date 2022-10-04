@@ -29,7 +29,7 @@ import me.fromgate.reactions.module.basics.ItemStoragesManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -103,7 +103,7 @@ public class ActionItems implements Action {
         if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
             player.getInventory().setItem(slotNum, null);
         } else {
-            VirtualItem vi = VirtualItem.fromString(itemStr);
+            LegacyVirtualItem vi = LegacyVirtualItem.fromString(itemStr);
             if (vi == null) return false;
             player.getInventory().setItem(slotNum, vi);
         }
@@ -182,7 +182,7 @@ public class ActionItems implements Action {
             if (slot == -1) return setItemInOffhand(context, params, null);
             //if (slot == -1) slot = 3;
         } else {
-            item = VirtualItem.fromString(itemStr);
+            item = LegacyVirtualItem.fromString(itemStr);
             if (item == null) return false;
             if (slot == -1) return setItemInOffhand(context, params, item);
             // if (slot == -1) slot = getSlotByItem(item);
@@ -220,7 +220,7 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInInventory(RaContext context, Parameters params) {
-        VirtualItem search = VirtualItem.fromMap(params.getMap());
+        LegacyVirtualItem search = LegacyVirtualItem.fromMap(params.getMap());
         int remAmount = search.getAmount();
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
@@ -245,7 +245,7 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInHand(RaContext context, Parameters params) {
-        VirtualItem search = VirtualItem.fromMap(params.getMap());
+        LegacyVirtualItem search = LegacyVirtualItem.fromMap(params.getMap());
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         ItemStack item = inventory.getItemInMainHand();
@@ -257,7 +257,7 @@ public class ActionItems implements Action {
                 inventory.setItemInMainHand(item);
             }
         }
-        VirtualItem result = VirtualItem.fromItemStack(item);
+        LegacyVirtualItem result = LegacyVirtualItem.fromItemStack(item);
         if (result != null) {
             context.setVariable("item", result.toString());
             context.setVariable("item_str", result.toDisplayString());
@@ -269,7 +269,7 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInOffHand(RaContext context, Parameters params) {
-        VirtualItem search = VirtualItem.fromMap(params.getMap());
+        LegacyVirtualItem search = LegacyVirtualItem.fromMap(params.getMap());
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         ItemStack item = inventory.getItemInOffHand();
@@ -281,7 +281,7 @@ public class ActionItems implements Action {
                 inventory.setItemInOffHand(item);
             }
         }
-        VirtualItem result = VirtualItem.fromItemStack(item);
+        LegacyVirtualItem result = LegacyVirtualItem.fromItemStack(item);
         if (result != null) {
             context.setVariable("item", result.toString());
             context.setVariable("item_str", result.toDisplayString());
@@ -345,21 +345,21 @@ public class ActionItems implements Action {
         String itemStr = params.getString("item");
         String action = params.getString("item-action", "remove");
 
-        VirtualItem vi = null;
+        LegacyVirtualItem vi = null;
 
         ItemStack[] armor = player.getInventory().getArmorContents();
 
         if (slot == -1 && !itemStr.isEmpty()) {
             for (int i = 0; i < armor.length; i++) {
                 if (ItemUtils.compareItemStr(armor[i], itemStr)) {
-                    vi = VirtualItem.fromItemStack(armor[i]);
+                    vi = LegacyVirtualItem.fromItemStack(armor[i]);
                     slot = i;
                 }
             }
         } else if (slot >= 0) {
             ItemStack itemSlot = armor[slot];
             if (itemStr.isEmpty() || ItemUtils.compareItemStr(itemSlot, itemStr))
-                vi = VirtualItem.fromItemStack(itemSlot);
+                vi = LegacyVirtualItem.fromItemStack(itemSlot);
         }
         if (vi == null || vi.getType() == Material.AIR) return false;
         armor[slot] = null;

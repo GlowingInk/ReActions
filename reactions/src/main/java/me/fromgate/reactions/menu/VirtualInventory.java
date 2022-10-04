@@ -1,7 +1,7 @@
 package me.fromgate.reactions.menu;
 
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -73,7 +73,7 @@ public class VirtualInventory {
         holder.setInventory(inv);
         for (int i = 0; i < slots.size(); i++) {
             if (slots.get(i).isEmpty()) continue;
-            ItemStack item = VirtualItem.fromString(slots.get(i));
+            ItemStack item = LegacyVirtualItem.fromString(slots.get(i));
             if (item == null) continue;
             inv.setItem(i, item);
         }

@@ -84,7 +84,7 @@ public final class ItemUtils {
         int count = 0;
         for (ItemStack slot : inventory) {
             if (slot == null || slot.getType() == Material.AIR) continue;
-            VirtualItem vi = VirtualItem.fromItemStack(slot);
+            LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(slot);
             if (!vi.compare(itemParams, 1)) continue;
             count += slot.getAmount();
         }
@@ -98,8 +98,8 @@ public final class ItemUtils {
         return 1;
     }
 
-    public static VirtualItem itemFromBlock(Block block) {
-        return new VirtualItem(block == null ? Material.STONE : block.getType());
+    public static LegacyVirtualItem itemFromBlock(Block block) {
+        return new LegacyVirtualItem(block == null ? Material.STONE : block.getType());
     }
 
     public static boolean compareItemStr(Block block, String itemStr) {
@@ -108,11 +108,13 @@ public final class ItemUtils {
         return compareItemStr(item, itemStr);
     }
 
+    @Deprecated
     public static boolean compareItemStr(ItemStack item, String itemStr) {
         if (!isExist(item)) return false;
-        return VirtualItem.fromItemStack(item).compare(itemStr);
+        return LegacyVirtualItem.fromItemStack(item).compare(itemStr);
     }
 
+    @Deprecated
     public static boolean compareItemStr(ItemStack item, String itemStr, boolean allowHand) {
         if (allowHand && (itemStr.equalsIgnoreCase("HAND") || itemStr.equalsIgnoreCase("AIR"))) {
             return !isExist(item);
@@ -125,7 +127,7 @@ public final class ItemUtils {
         String[] ln = str.split(",");
         if (ln.length == 0) return new ItemStack(Material.AIR);
 
-        ItemStack item = VirtualItem.fromString(ln[Rng.nextInt(ln.length)]);
+        ItemStack item = LegacyVirtualItem.fromString(ln[Rng.nextInt(ln.length)]);
 
         if (item == null) return new ItemStack(Material.AIR);
         item.setAmount(1);
@@ -133,14 +135,14 @@ public final class ItemUtils {
     }
 
     public static String itemToString(ItemStack item) {
-        VirtualItem vi = VirtualItem.fromItemStack(item);
+        LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(item);
         return vi == null ? "" : vi.toString();
     }
 
     public static String toDisplayString(List<ItemStack> items) {
         StringBuilder sb = new StringBuilder();
         for (ItemStack i : items) {
-            VirtualItem vi = VirtualItem.fromItemStack(i);
+            LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(i);
             sb.append(vi.toDisplayString()).append(", ");
         }
         return sb.substring(0, sb.length() - 2);
@@ -151,12 +153,12 @@ public final class ItemUtils {
         for (String key : params.keySet()) {
             if (ITEM_D.matcher(key).matches()) {
                 String itemStr = params.getString(key, "");
-                VirtualItem vi = VirtualItem.fromString(itemStr);
+                LegacyVirtualItem vi = LegacyVirtualItem.fromString(itemStr);
                 if (vi != null) items.add(vi);
             }
         }
         if (items.isEmpty()) {
-            VirtualItem item = VirtualItem.fromMap(params.getMap());
+            LegacyVirtualItem item = LegacyVirtualItem.fromMap(params.getMap());
             if (item != null) items.add(item);
         }
         return items;
@@ -195,7 +197,7 @@ public final class ItemUtils {
         } else if (params.matchesAny("item\\d+|ITEM\\d+")) {
             return parseItemsSet(params);
         } else {
-            VirtualItem vi = VirtualItem.fromString(items);
+            LegacyVirtualItem vi = LegacyVirtualItem.fromString(items);
             if (vi != null) {
                 List<ItemStack> iList = new ArrayList<>();
                 iList.add(vi);
@@ -207,7 +209,7 @@ public final class ItemUtils {
     }
 
     public static String toDisplayString(String itemStr) {
-        VirtualItem vi = VirtualItem.fromString(itemStr);
+        LegacyVirtualItem vi = LegacyVirtualItem.fromString(itemStr);
         if (vi != null) return vi.toDisplayString();
         Map<String, String> itemMap = Parameters.parametersMap(itemStr);
         String name = itemMap.containsKey("name") ? itemMap.get("name") : itemMap.getOrDefault("type", null);
@@ -244,7 +246,7 @@ public final class ItemUtils {
     }
 
     public static boolean compareItemIdDataStr(Material type, int durability, String itemStr) {
-        ItemStack item = VirtualItem.fromString(itemStr);
+        ItemStack item = LegacyVirtualItem.fromString(itemStr);
         if (item == null) return false;
         if (item.getType() != type) return false;
         if (durability < 0) return true;
@@ -499,7 +501,7 @@ public final class ItemUtils {
      * @return Item string
      */
     public static String getPlayerItemInHand(Player player, boolean offhand) {
-        VirtualItem vi = VirtualItem.fromItemStack(offhand ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand());
+        LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(offhand ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand());
         if (vi == null) return "";
         return vi.toString();
     }

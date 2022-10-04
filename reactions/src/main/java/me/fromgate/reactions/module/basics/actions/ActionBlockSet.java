@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -47,7 +47,7 @@ public class ActionBlockSet implements Action {
         Parameters itemParam = Parameters.fromString(params.getString("block", "AIR"), "type");
         ItemStack item = null;
         if (!itemParam.getString("type", "AIR").equalsIgnoreCase("air")) {
-            item = VirtualItem.fromMap(itemParam.getMap());
+            item = LegacyVirtualItem.fromMap(itemParam.getMap());
             if ((item == null) || ((!item.getType().isBlock()))) {
                 Msg.logOnce("wrongblock" + params.getString("block"), "Failed to execute action BLOCK_FILL. Wrong block " + params.getString("block"));
                 return false;

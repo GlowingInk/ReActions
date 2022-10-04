@@ -5,7 +5,7 @@ import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +20,11 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
     }
 
     private static String getPlayerInventory(Player player, String value) {
-        VirtualItem vi = null;
+        LegacyVirtualItem vi = null;
         if (NumberUtils.isInteger(value)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
-            vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
+            vi = LegacyVirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
         } else switch (value.toLowerCase(Locale.ROOT)) {
             case "mainhand":
             case "hand":
@@ -34,19 +34,19 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
             case "head":
             case "helm":
             case "helmet":
-                vi = VirtualItem.fromItemStack(player.getInventory().getHelmet());
+                vi = LegacyVirtualItem.fromItemStack(player.getInventory().getHelmet());
                 break;
             case "chestplate":
             case "chest":
-                vi = VirtualItem.fromItemStack(player.getInventory().getChestplate());
+                vi = LegacyVirtualItem.fromItemStack(player.getInventory().getChestplate());
                 break;
             case "leggings":
             case "legs":
-                vi = VirtualItem.fromItemStack(player.getInventory().getLeggings());
+                vi = LegacyVirtualItem.fromItemStack(player.getInventory().getLeggings());
                 break;
             case "boots":
             case "boot":
-                vi = VirtualItem.fromItemStack(player.getInventory().getBoots());
+                vi = LegacyVirtualItem.fromItemStack(player.getInventory().getBoots());
                 break;
         }
         if (vi == null) return "";

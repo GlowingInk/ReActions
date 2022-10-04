@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -38,7 +38,7 @@ public class FlagWalkBlock implements Flag {
         Block walk = player.getLocation().getBlock();
         if (!walk.getType().isSolid()) walk = walk.getLocation().subtract(0, 0.1, 0).getBlock();
         // TODO: Use Parameters
-        return walk.getType() == VirtualItem.fromMap(params.getMap()).getType();
+        return walk.getType() == LegacyVirtualItem.fromMap(params.getMap()).getType();
     }
 
     @Override

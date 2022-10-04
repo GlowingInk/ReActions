@@ -29,7 +29,7 @@ import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -56,7 +56,7 @@ public class ItemConsumeActivator extends Activator {
     }
 
     public boolean checkStorage(Storage event) {
-        if (this.item.isEmpty() || VirtualItem.fromString(this.item) == null) {
+        if (this.item.isEmpty() || LegacyVirtualItem.fromString(this.item) == null) {
             Msg.logOnce(logic.getName() + "activatoritemempty", "Failed to parse item of activator " + logic.getName());
             return false;
         }
