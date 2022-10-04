@@ -1,15 +1,7 @@
 package me.fromgate.reactions.util.item;
 
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.item.resolvers.BookResolver;
-import me.fromgate.reactions.util.item.resolvers.ColorResolver;
-import me.fromgate.reactions.util.item.resolvers.EnchantmentsResolver;
-import me.fromgate.reactions.util.item.resolvers.FireworkResolver;
-import me.fromgate.reactions.util.item.resolvers.HeadResolver;
-import me.fromgate.reactions.util.item.resolvers.LoreResolver;
-import me.fromgate.reactions.util.item.resolvers.MetaResolver;
-import me.fromgate.reactions.util.item.resolvers.ModelResolver;
-import me.fromgate.reactions.util.item.resolvers.NameResolver;
+import me.fromgate.reactions.util.item.resolvers.*;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -33,6 +25,7 @@ public final class ModernVirtualItem {
         registerResolver(new BookResolver(BookResolver.Type.TITLE));
         registerResolver(new BookResolver(BookResolver.Type.AUTHOR));
         registerResolver(new ColorResolver());
+        registerResolver(new DurabilityResolver());
         registerResolver(new EnchantmentsResolver());
         registerResolver(new FireworkResolver(true));
         registerResolver(new FireworkResolver(false));

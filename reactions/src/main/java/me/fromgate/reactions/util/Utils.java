@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -196,9 +197,10 @@ public final class Utils {
      * @return List of names
      */
     public static List<String> getPlayersList() {
-        List<String> players = new ArrayList<>(Bukkit.getOnlinePlayers().size());
-        Bukkit.getOnlinePlayers().forEach(p -> players.add(p.getName()));
-        return players;
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        List<String> playersNames = new ArrayList<>(players.size());
+        players.forEach(p -> playersNames.add(p.getName()));
+        return playersNames;
     }
 
     /**
@@ -208,7 +210,7 @@ public final class Utils {
      * @param perm Permission to check
      * @return Is permission is null or user has permissions
      */
-    public static boolean checkPermission(Permissible user, String perm) {
+    public static boolean checkPermission(@NotNull Permissible user, @Nullable String perm) {
         return perm == null || user.hasPermission(perm);
     }
 
