@@ -41,7 +41,7 @@ public class EnchantmentsResolver implements MetaResolver {
                 enchKey = enchValue.substring(0, index);
                 levelStr = enchValue.substring(index + 1);
             }
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchKey.toLowerCase(Locale.ROOT)));
+            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchKey.toLowerCase(Locale.ROOT)));  // TODO Pattern required
             if (enchantment == null) {
                 enchantment = Enchantment.getByName(enchKey.toUpperCase(Locale.ROOT));
                 if (enchantment == null) continue;

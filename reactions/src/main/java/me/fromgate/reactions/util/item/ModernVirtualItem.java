@@ -35,6 +35,8 @@ public final class ModernVirtualItem {
         registerResolver(new ModelResolver());
         registerResolver(new NameResolver(true));
         registerResolver(new NameResolver(false));
+        registerResolver(new PotionResolver(true));
+        registerResolver(new PotionResolver(false));
     }
     private static void registerResolver(@NotNull MetaResolver resolver) {
         RESOLVERS_MAP.put(resolver.getName().toLowerCase(Locale.ROOT), resolver);
