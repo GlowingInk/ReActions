@@ -1,6 +1,5 @@
 package me.fromgate.reactions.util.item;
 
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.resolvers.MetaResolver;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -11,14 +10,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 
 public final class ModernVirtualItem {
-    private static final Map<String, MetaResolver> RESOLVERS_MAP = new HashMap<>(); // TODO Fill the map
+    private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO Fill the map
     private static final List<MetaResolver> RESOLVERS = new ArrayList<>(); // TODO Fill the list
 
     private final Material type;
@@ -64,18 +63,17 @@ public final class ModernVirtualItem {
         if (type == null) {
             return strValue = "type:AIR";
         }
-        StringBuilder builder = new StringBuilder("type:").append(type.name()).append(' ');
+        StringBuilder builder = new StringBuilder("type:").append(type.name());
         for (MetaResolver.Instance resolver : resolvers) {
-            builder.append(resolver.getName()).append(':');
+            builder.append(' ').append(resolver.getName()).append(':');
             String value = resolver.asString();
             if (value.indexOf(' ') != -1 || value.isEmpty()) { // We don't expect String to String conversion, so it's better to check emptiness later
                 builder.append('{').append(value).append('}');
             } else {
                 builder.append(value);
             }
-            builder.append(' ');
         }
-        return strValue = Utils.cutBuilder(builder, 1);
+        return strValue = builder.toString();
     }
 
     public boolean isSimilar(@Nullable ItemStack compared) {
@@ -106,7 +104,7 @@ public final class ModernVirtualItem {
             ItemMeta meta = item.getItemMeta();
             for (MetaResolver resolver : RESOLVERS) {
                 MetaResolver.Instance resolverInst = resolver.fromItem(meta);
-                resolvers.add(resolverInst);
+                if (resolverInst != null) resolvers.add(resolverInst);
             }
             if (resolvers.isEmpty()) {
                 resolvers = Collections.emptyList();

@@ -25,21 +25,21 @@ public class LoreResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        return new Lore(value, regex);
+        return new LoreInst(value, regex);
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (regex || !meta.hasLore()) return null;
-        return new Lore(meta.getLore(), false);
+        return new LoreInst(meta.getLore(), false);
     }
 
-    private static final class Lore implements Instance {
+    private static final class LoreInst implements Instance {
         private final List<String> lore;
         private final String value;
         private final Pattern lorePattern;
 
-        private Lore(@NotNull String value, boolean regex) {
+        private LoreInst(@NotNull String value, boolean regex) {
             this(
                     value,
                     value.isEmpty()
@@ -49,7 +49,7 @@ public class LoreResolver implements MetaResolver {
             );
         }
 
-        private Lore(@NotNull List<String> lore, boolean regex) {
+        private LoreInst(@NotNull List<String> lore, boolean regex) {
             this(
                     String.join("\\n", lore),
                     lore,
@@ -57,7 +57,7 @@ public class LoreResolver implements MetaResolver {
             );
         }
 
-        private Lore(@NotNull String value, @NotNull List<String> lore, boolean regex) {
+        private LoreInst(@NotNull String value, @NotNull List<String> lore, boolean regex) {
             this.lore = lore;
             this.value = value;
             if (regex) {

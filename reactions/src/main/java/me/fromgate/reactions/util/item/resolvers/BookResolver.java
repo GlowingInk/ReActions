@@ -29,9 +29,9 @@ public class BookResolver implements MetaResolver {
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
         return switch (type) {
-            case TITLE -> new Text(value, false);
-            case AUTHOR -> new Text(value, true);
-            case PAGES -> new Pages(value);
+            case TITLE -> new TextInst(value, false);
+            case AUTHOR -> new TextInst(value, true);
+            case PAGES -> new PagesInst(value);
         };
     }
 
@@ -39,17 +39,17 @@ public class BookResolver implements MetaResolver {
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (!(meta instanceof BookMeta bookMeta)) return null;
         return switch (type) {
-            case TITLE -> bookMeta.hasTitle() ? new Text(bookMeta.getTitle(), false) : null;
-            case AUTHOR -> bookMeta.hasAuthor() ? new Text(bookMeta.getAuthor(), true) : null;
-            case PAGES -> bookMeta.hasPages() ? new Pages(bookMeta.getPages()) : null;
+            case TITLE -> bookMeta.hasTitle() ? new TextInst(bookMeta.getTitle(), false) : null;
+            case AUTHOR -> bookMeta.hasAuthor() ? new TextInst(bookMeta.getAuthor(), true) : null;
+            case PAGES -> bookMeta.hasPages() ? new PagesInst(bookMeta.getPages()) : null;
         };
     }
 
-    private static final class Pages implements Instance {
+    private static final class PagesInst implements Instance {
         private final List<String> pages;
         private final String pagesStr;
 
-        private Pages(@NotNull List<String> pages) {
+        private PagesInst(@NotNull List<String> pages) {
             this.pages = pages;
             if (pages.isEmpty()) {
                 pagesStr = "";
@@ -62,7 +62,7 @@ public class BookResolver implements MetaResolver {
             }
         }
 
-        public Pages(@NotNull String pagesStr) {
+        public PagesInst(@NotNull String pagesStr) {
             this.pagesStr = pagesStr;
             String[] split = pagesStr.split("\\\\n");
             this.pages = new ArrayList<>(split.length);
@@ -95,7 +95,7 @@ public class BookResolver implements MetaResolver {
         }
     }
 
-    private record Text(String value, boolean author) implements Instance {
+    private record TextInst(String value, boolean author) implements Instance {
         @Override
         public void apply(@NotNull ItemMeta meta) {
             if (meta instanceof BookMeta bookMeta) {

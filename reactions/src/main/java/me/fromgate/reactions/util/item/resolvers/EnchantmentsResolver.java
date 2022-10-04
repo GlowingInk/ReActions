@@ -24,9 +24,9 @@ public class EnchantmentsResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull Instance fromString(@NotNull String value) {
+    public @NotNull EnchantmentsResolver.EnchantmentsInst fromString(@NotNull String value) {
         if (value.isEmpty()) {
-            return Instance.EMPTY;
+            return EnchantmentsInst.EMPTY;
         }
         String[] split = value.split(";");
         Map<Enchantment, Integer> enchantments = new HashMap<>(split.length);
@@ -49,18 +49,18 @@ public class EnchantmentsResolver implements MetaResolver {
             int level = NumberUtils.getInteger(levelStr, 0);
             enchantments.put(enchantment, level > 0 ? level : null);
         }
-        return new Instance(enchantments);
+        return new EnchantmentsInst(enchantments);
     }
 
     @Override
-    public Instance fromItem(@NotNull ItemMeta meta) {
+    public EnchantmentsInst fromItem(@NotNull ItemMeta meta) {
         return meta instanceof EnchantmentStorageMeta enchantmentMeta
-                ? new Instance(enchantmentMeta.getStoredEnchants())
-                : new Instance(meta.getEnchants());
+                ? new EnchantmentsInst(enchantmentMeta.getStoredEnchants())
+                : new EnchantmentsInst(meta.getEnchants());
     }
 
-    private record Instance(@NotNull Map<Enchantment, Integer> enchantments) implements MetaResolver.Instance {
-        private static final Instance EMPTY = new Instance(Collections.emptyMap());
+    private record EnchantmentsInst(@NotNull Map<Enchantment, Integer> enchantments) implements MetaResolver.Instance {
+        private static final EnchantmentsInst EMPTY = new EnchantmentsInst(Collections.emptyMap());
 
         @Override
         public void apply(@NotNull ItemMeta meta) {
@@ -103,7 +103,7 @@ public class EnchantmentsResolver implements MetaResolver {
             if (enchantments.isEmpty()) return "";
             StringBuilder builder = new StringBuilder();
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                builder.append(entry.getKey().getKey().value());
+                builder.append(entry.getKey().getKey().value()); // TODO Optionally use names instead of keys
                 if (entry.getValue() != null) {
                     builder.append(':').append(entry.getValue());
                 }

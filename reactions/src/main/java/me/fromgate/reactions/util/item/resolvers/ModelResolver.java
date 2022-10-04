@@ -17,19 +17,19 @@ public class ModelResolver implements MetaResolver {
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
         return NumberUtils.isInteger(value)
-                ? new Instance(Integer.valueOf(value))
-                : Instance.EMPTY;
+                ? new ModelInst(Integer.valueOf(value))
+                : ModelInst.EMPTY;
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         return meta.hasCustomModelData()
-                ? new Instance(meta.getCustomModelData())
+                ? new ModelInst(meta.getCustomModelData())
                 : null;
     }
 
-    private record Instance(Integer value) implements MetaResolver.Instance {
-        private static final Instance EMPTY = new Instance(null);
+    private record ModelInst(Integer value) implements MetaResolver.Instance {
+        private static final ModelInst EMPTY = new ModelInst(null);
 
         @Override
         public void apply(@NotNull ItemMeta meta) {

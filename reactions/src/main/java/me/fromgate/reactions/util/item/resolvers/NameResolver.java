@@ -22,20 +22,20 @@ public class NameResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        return new Name(value, regex);
+        return new NameInst(value, regex);
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (regex || !meta.hasDisplayName()) return null;
-        return new Name(meta.getDisplayName(), false);
+        return new NameInst(meta.getDisplayName(), false);
     }
 
-    private static final class Name implements Instance {
+    private static final class NameInst implements Instance {
         private final String value;
         private final Pattern namePattern;
 
-        private Name(@NotNull String value, boolean regex) {
+        private NameInst(@NotNull String value, boolean regex) {
             this.value = value;
             if (regex) {
                 Pattern pattern;

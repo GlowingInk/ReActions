@@ -26,7 +26,10 @@ import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -41,8 +44,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static me.fromgate.reactions.util.NumberUtils.getInteger;
 
 public final class Utils {
+    private static final Pattern HEX_COLOR = Pattern.compile("#([a-fA-F\\d]{6})");
+    private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
     private static final String[] EMPTY_ARRAY = new String[0];
 
     private Utils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
@@ -265,5 +274,29 @@ public final class Utils {
         return offset < builder.length()
                 ? builder.substring(0, builder.length() - offset)
                 : "";
+    }
+
+    public static @Nullable Color getColor(@NotNull String value) {
+        if (value.startsWith("#")) {
+            Matcher matcher = HEX_COLOR.matcher(value);
+            if (matcher.matches()) {
+                return Color.fromRGB(Integer.parseInt(matcher.group(), 16));
+            }
+        } else {
+            Matcher matcher = BYTE_COLOR.matcher(value);
+            if (matcher.matches()) {
+                return Color.fromRGB(
+                        Math.max(getInteger(matcher.group(1), 0), 255),
+                        Math.max(getInteger(matcher.group(2), 0), 255),
+                        Math.max(getInteger(matcher.group(3), 0), 255)
+                );
+            } else if (!value.isEmpty()) {
+                TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));
+                if (color != null) {
+                    return Color.fromRGB(color.value());
+                }
+            }
+        }
+        return null;
     }
 }

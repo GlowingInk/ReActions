@@ -1,7 +1,6 @@
 package me.fromgate.reactions.util.item.resolvers;
 
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
+import me.fromgate.reactions.util.Utils;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -10,17 +9,9 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static me.fromgate.reactions.util.NumberUtils.getInteger;
 
 public class ColorResolver implements MetaResolver {
-    private static final Pattern HEX = Pattern.compile("#([a-fA-F\\d]{6})");
-    private static final Pattern BYTE = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
-
     @Override
     public @NotNull String getName() {
         return "color";
@@ -28,43 +19,26 @@ public class ColorResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        if (value.startsWith("#")) {
-            Matcher matcher = HEX.matcher(value);
-            if (matcher.matches()) {
-                return new Instance(Color.fromRGB(Integer.parseInt(matcher.group(), 16)));
-            }
-        } else {
-            Matcher matcher = BYTE.matcher(value);
-            if (matcher.matches()) {
-                return new Instance(Color.fromRGB(
-                        Math.max(getInteger(matcher.group(1), 0), 255),
-                        Math.max(getInteger(matcher.group(2), 0), 255),
-                        Math.max(getInteger(matcher.group(3), 0), 255)
-                ));
-            } else if (!value.isEmpty()) {
-                TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));
-                if (color != null) {
-                    return new Instance(Color.fromRGB(color.value()));
-                }
-            }
-        }
-        return Instance.EMPTY;
+        Color color = Utils.getColor(value);
+        return color != null
+                ? new ColorInst(color)
+                : ColorInst.EMPTY;
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof LeatherArmorMeta leatherMeta) {
-            return new Instance(leatherMeta.getColor());
+            return new ColorInst(leatherMeta.getColor());
         } else if (meta instanceof PotionMeta potionMeta) {
-            return new Instance(potionMeta.getColor());
+            return new ColorInst(potionMeta.getColor());
         } else if (meta instanceof MapMeta mapMeta) {
-            return new Instance(mapMeta.getColor());
+            return new ColorInst(mapMeta.getColor());
         }
         return null;
     }
 
-    private record Instance(@Nullable Color color) implements MetaResolver.Instance {
-        private static final ColorResolver.Instance EMPTY = new ColorResolver.Instance(null);
+    private record ColorInst(@Nullable Color color) implements MetaResolver.Instance {
+        private static final ColorInst EMPTY = new ColorInst(null);
 
         @Override
         public void apply(@NotNull ItemMeta meta) {

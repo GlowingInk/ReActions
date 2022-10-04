@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -258,7 +259,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public @NotNull Map<String, String> getMap() {
-        return this.params;
+        return new HashMap<>(this.params);
     }
 
     public boolean isEmpty() {
