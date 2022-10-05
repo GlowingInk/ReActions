@@ -9,25 +9,25 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public final class PostprocessResolver implements Resolver<Placeholder.Postprocess> {
-    private final List<Placeholder.Postprocess> placeholders = new ArrayList<>();
+public final class PreprocessResolver implements Resolver<Placeholder.Preprocess> {
+    private final List<Placeholder.Preprocess> placeholders = new ArrayList<>();
 
     @Override
-    public boolean put(@NotNull Placeholder.Postprocess ph) {
+    public boolean put(@NotNull Placeholder.Preprocess ph) {
         placeholders.add(ph);
         return true;
     }
 
     @Override
     public @NotNull String parse(@NotNull RaContext context, @NotNull String fullText) {
-        for (Placeholder.Postprocess placeholder : placeholders) {
+        for (Placeholder.Preprocess placeholder : placeholders) {
             fullText = placeholder.processPlaceholder(context, fullText);
         }
         return fullText;
     }
 
     @Override
-    public @NotNull Collection<Placeholder.Postprocess> getPlaceholders() {
+    public @NotNull Collection<Placeholder.Preprocess> getPlaceholders() {
         return new HashSet<>(placeholders);
     }
 }
