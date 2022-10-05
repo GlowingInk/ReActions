@@ -5,7 +5,7 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
 
-public class PlaceholderPAPI implements Placeholder.Postprocess {
+public class PlaceholderPAPI implements Placeholder.Preprocess {
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context,@NotNull String text) {
         return text.contains("%")

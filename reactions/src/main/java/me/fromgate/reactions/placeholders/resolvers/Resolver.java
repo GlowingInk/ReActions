@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public sealed interface Resolver<T extends Placeholder> permits PostprocessResolver, KeyedResolver, DynamicResolver {
+public sealed interface Resolver<T extends Placeholder> permits PreprocessResolver, KeyedResolver, DynamicResolver {
     boolean put(@NotNull T ph);
 
     @Nullable String parse(@NotNull RaContext context, @NotNull String text);

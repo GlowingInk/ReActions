@@ -3,23 +3,23 @@ package me.fromgate.reactions.placeholders;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.resolvers.DynamicResolver;
 import me.fromgate.reactions.placeholders.resolvers.KeyedResolver;
-import me.fromgate.reactions.placeholders.resolvers.PostprocessResolver;
+import me.fromgate.reactions.placeholders.resolvers.PreprocessResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class PlaceholdersManager {
     private final KeyedResolver keyed;
     private final DynamicResolver dynamic;
-    private final PostprocessResolver postprocess;
+    private final PreprocessResolver preprocess;
     protected static int countLimit;
 
     public PlaceholdersManager() {
         keyed = new KeyedResolver();
         dynamic = new DynamicResolver();
-        postprocess = new PostprocessResolver();
+        preprocess = new PreprocessResolver();
     }
 
-    // TODO Unstatic
+    // TODO: Unstatic
     public static void setCountLimit(int countLimit) {
         PlaceholdersManager.countLimit = countLimit;
     }
@@ -27,8 +27,8 @@ public abstract class PlaceholdersManager {
     public final void registerPlaceholder(@NotNull Placeholder ph) {
         if (ph instanceof Placeholder.Dynamic phDynamic) {
             dynamic.put(phDynamic);
-        } else if (ph instanceof Placeholder.Postprocess phPost) {
-            postprocess.put(phPost);
+        } else if (ph instanceof Placeholder.Preprocess phPost) {
+            preprocess.put(phPost);
         } else if (ph instanceof Placeholder.Keyed phKeyed) {
             if (!keyed.put(phKeyed)) {
                 throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder - its name is already used");
@@ -45,8 +45,8 @@ public abstract class PlaceholdersManager {
                 : result;
     }
 
-    public final @NotNull String resolvePostprocess(@NotNull RaContext context, @NotNull String fullText) {
-        return postprocess.parse(context, fullText);
+    public final @NotNull String resolvePreprocess(@NotNull RaContext context, @NotNull String fullText) {
+        return preprocess.parse(context, fullText);
     }
 
     public abstract String parsePlaceholders(@NotNull RaContext context, @Nullable String text);

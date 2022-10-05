@@ -10,7 +10,6 @@ public interface Placeholder {
     // TODO: boolean requiresPlayer?
 
     interface Keyed extends Placeholder {
-        // TODO Should probably be @NotNull
         /**
          * Process this placeholder
          * @param context Context of activation
@@ -31,7 +30,7 @@ public interface Placeholder {
         @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String phText);
     }
 
-    interface Postprocess extends Placeholder {
+    interface Preprocess extends Placeholder {
         /**
          * Process this placeholder
          * @param context Context of activation
