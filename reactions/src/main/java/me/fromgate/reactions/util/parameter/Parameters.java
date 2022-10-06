@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
@@ -145,6 +146,24 @@ public class Parameters implements Iterable<String> {
             bld.append(' ');
         });
         return new Parameters(Utils.cutBuilder(bld, 1), params);
+    }
+
+    public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter) {
+        String value = params.get(key);
+        return value == null
+                ? null
+                : converter.apply(value);
+    }
+
+    @Contract("_, _, !null -> !null")
+    public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter, @Nullable R def) {
+        R value = get(key, converter);
+        return value == null ? def : value;
+    }
+
+    public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull NotNullSupplier<R> def) {
+        R value = get(key, converter);
+        return value == null ? def.get() : value;
     }
 
     public @NotNull String getString(@NotNull String key) {
