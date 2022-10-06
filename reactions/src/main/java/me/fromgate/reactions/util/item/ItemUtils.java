@@ -15,11 +15,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +36,7 @@ public final class ItemUtils {
 
     private ItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public static void removeItemAmount(ItemStack item, int amount) {
-        if (!isExist(item)) return;
-        int itemAmount = item.getAmount();
-        if (amount >= itemAmount)
-            item.setType(Material.AIR);
-        else
-            item.setAmount(itemAmount - amount);
-    }
-
+    @Deprecated
     public static Enchantment getEnchantmentByName(String name) {
         if (!Utils.isStringEmpty(name))
             try {
@@ -55,17 +47,15 @@ public final class ItemUtils {
     }
 
     public static int getDurability(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta instanceof Damageable)
-            return ((Damageable) meta).getDamage();
-        return 0;
+        return item.getItemMeta() instanceof Damageable damageMeta
+                ? damageMeta.getDamage()
+                : 0;
     }
 
     public static void setDurability(ItemStack item, int durability) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta instanceof Damageable dmg) {
-            dmg.setDamage(durability);
-            item.setItemMeta(meta);
+        if (item.getItemMeta() instanceof Damageable damageMeta) {
+            damageMeta.setDamage(durability);
+            item.setItemMeta(damageMeta);
         }
     }
 
@@ -75,54 +65,41 @@ public final class ItemUtils {
         }
     }
 
-    public static int countItemsInInventory(Inventory inventory, String itemStr) {
-        Map<String, String> itemMap = Parameters.parametersMap(itemStr);
-        return countItemsInventory(inventory, itemMap);
-    }
-
-    private static int countItemsInventory(Inventory inventory, Map<String, String> itemParams) {
-        int count = 0;
-        for (ItemStack slot : inventory) {
-            if (slot == null || slot.getType() == Material.AIR) continue;
-            LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(slot);
-            if (!vi.compare(itemParams, 1)) continue;
-            count += slot.getAmount();
-        }
-        return count;
-    }
-
-    public static int getAmount(String itemStr) {
+    @Deprecated
+    public static int getAmount(String itemStr) { // TODO: Can be replaced with just Parameters
         Map<String, String> itemMap = Parameters.parametersMap(itemStr);
         String amountStr = itemMap.getOrDefault("amount", "1");
         if (NumberUtils.INT_NONZERO_POSITIVE.matcher(amountStr).matches()) return Integer.parseInt(amountStr);
         return 1;
     }
 
-    public static LegacyVirtualItem itemFromBlock(Block block) {
+    @Deprecated
+    public static LegacyVirtualItem itemFromBlock(Block block) { // TODO: Getting items from blocks is generally impossible
         return new LegacyVirtualItem(block == null ? Material.STONE : block.getType());
     }
 
-    public static boolean compareItemStr(Block block, String itemStr) {
+    @Deprecated
+    public static boolean compareItemStr(Block block, String itemStr) { // TODO: Should be refactored outside
         if (block == null || block.getType() == Material.AIR) return false;
         ItemStack item = new ItemStack(block.getType(), 1);
         return compareItemStr(item, itemStr);
     }
 
     @Deprecated
-    public static boolean compareItemStr(ItemStack item, String itemStr) {
-        if (!isExist(item)) return false;
-        return LegacyVirtualItem.fromItemStack(item).compare(itemStr);
+    public static boolean compareItemStr(ItemStack item, String itemStr) { // TODO: Can be replaced with just VirtualItem
+        return VirtualItem.isSimilar(itemStr, item);
     }
 
     @Deprecated
-    public static boolean compareItemStr(ItemStack item, String itemStr, boolean allowHand) {
+    public static boolean compareItemStr(ItemStack item, String itemStr, boolean allowHand) { // TODO: Should be refactored outside
         if (allowHand && (itemStr.equalsIgnoreCase("HAND") || itemStr.equalsIgnoreCase("AIR"))) {
             return !isExist(item);
         }
-        return compareItemStr(item, itemStr);
+        return VirtualItem.isSimilar(itemStr, item);
     }
 
-    public static ItemStack getRndItem(String str) {
+    @Deprecated
+    public static ItemStack getRndItem(String str) { // TODO: Should be refactored outside
         if (str.isEmpty()) return new ItemStack(Material.AIR);
         String[] ln = str.split(",");
         if (ln.length == 0) return new ItemStack(Material.AIR);
@@ -134,12 +111,13 @@ public final class ItemUtils {
         return item;
     }
 
-    public static String itemToString(ItemStack item) {
+    @Deprecated
+    public static String itemToString(ItemStack item) { // TODO: Can be replaced with VirtualItem
         LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(item);
         return vi == null ? "" : vi.toString();
     }
 
-    public static String toDisplayString(List<ItemStack> items) {
+    public static String toDisplayString(List<ItemStack> items) { // TODO: Doesn't need VirtualItem
         StringBuilder sb = new StringBuilder();
         for (ItemStack i : items) {
             LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(i);
@@ -148,7 +126,7 @@ public final class ItemUtils {
         return sb.substring(0, sb.length() - 2);
     }
 
-    public static List<ItemStack> parseItemsSet(Parameters params) {
+    public static List<ItemStack> parseItemsSet(Parameters params) { // TODO: Reimplement with VirtualItem
         List<ItemStack> items = new ArrayList<>();
         for (String key : params.keySet()) {
             if (ITEM_D.matcher(key).matches()) {
@@ -170,7 +148,7 @@ public final class ItemUtils {
      * @param items Set of items, e.g set1:{item1:{}  item2:{} item3:{} chance:50}  set2:{item1:{}  item2:{} item3:{} chance:50}
      * @return List of items
      */
-    public static List<ItemStack> parseRandomItemsStr(String items) {
+    public static List<ItemStack> parseRandomItemsStr(String items) { // TODO: Reimplement with VirtualItem
         Parameters params = Parameters.fromString(items);
         if (params.matchesAny(SET_D)) {
             Object2IntMap<List<ItemStack>> sets = new Object2IntOpenHashMap<>();
@@ -180,7 +158,7 @@ public final class ItemUtils {
                 if (!SET_D.matcher(key).matches()) continue;
                 Parameters itemParams = Parameters.fromString(params.getString(key));
                 List<ItemStack> itemList = parseItemsSet(itemParams);
-                if (itemList == null || itemList.isEmpty()) continue;
+                if (itemList.isEmpty()) continue;
                 int chance = itemParams.getInteger("chance", -1);
                 if (chance > 0) maxChance += chance;
                 else nochcount++;
@@ -208,7 +186,7 @@ public final class ItemUtils {
         return null;
     }
 
-    public static String toDisplayString(String itemStr) {
+    public static String toDisplayString(String itemStr) { // TODO: Doesn't need VirtualItem
         LegacyVirtualItem vi = LegacyVirtualItem.fromString(itemStr);
         if (vi != null) return vi.toDisplayString();
         Map<String, String> itemMap = Parameters.parametersMap(itemStr);
@@ -222,21 +200,13 @@ public final class ItemUtils {
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', sb.toString()));
     }
 
-    public static String toDisplayString(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        StringBuilder sb = new StringBuilder(meta.hasDisplayName() ? meta.getDisplayName() : item.getType().name());
-        int data = getDurability(item);
-        if (data != 0) sb.append(":").append(data);
-        if (item.getAmount() > 1) sb.append("*").append(item.getAmount());
-        return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', sb.toString()));
-    }
-
     /*
      * Функция проверяет входит есть ли item (блок) с заданным id и data в списке,
      * представленным в виде строки вида id1:data1,id2:data2,MATERIAL_NAME:data
      * При этом если data может быть опущена
      */
-    public static boolean isItemInList(Material type, int durability, String str) {
+    @Deprecated
+    public static boolean isItemInList(Material type, int durability, String str) { // TODO: There's no block data/durability
         String[] ln = str.split(",");
         if (ln.length > 0)
             for (String itemInList : ln) {
@@ -245,7 +215,8 @@ public final class ItemUtils {
         return false;
     }
 
-    public static boolean compareItemIdDataStr(Material type, int durability, String itemStr) {
+    @Deprecated
+    private static boolean compareItemIdDataStr(Material type, int durability, String itemStr) {
         ItemStack item = LegacyVirtualItem.fromString(itemStr);
         if (item == null) return false;
         if (item.getType() != type) return false;
@@ -259,11 +230,8 @@ public final class ItemUtils {
      * @param name Name of material
      * @return Material (may be legacy)
      */
-    public static Material getMaterial(String name) {
-        if (Utils.isStringEmpty(name)) return null;
-        name = name.toUpperCase(Locale.ROOT);
-        Material material = Material.getMaterial(name, false);
-        return material == null ? Material.getMaterial(name, true) : material;
+    public static @Nullable Material getMaterial(String name) {
+        return Material.getMaterial(name.toUpperCase(Locale.ROOT));
     }
 
     /**
@@ -272,11 +240,12 @@ public final class ItemUtils {
      * @param item Item to check
      * @return Is item not null and not air
      */
-    public static boolean isExist(ItemStack item) {
+    public static boolean isExist(@Nullable ItemStack item) {
         return item != null && !item.getType().isEmpty();
     }
 
-    public static String fireworksToString(FireworkEffect fe) {
+    @Deprecated
+    public static String fireworksToString(FireworkEffect fe) { // TODO: Not required
         StringBuilder sb = new StringBuilder();
         sb.append("type:").append(fe.getType().name());
         sb.append(" flicker:").append(fe.hasFlicker());
@@ -301,7 +270,8 @@ public final class ItemUtils {
         return sb.toString();
     }
 
-    static List<Color> parseColors(String colorStr) {
+    @Deprecated
+    static List<Color> parseColors(String colorStr) { // TODO: Not required
         List<Color> colors = new ArrayList<>();
         String[] clrs = colorStr.split(";");
         for (String cStr : clrs) {
@@ -319,7 +289,8 @@ public final class ItemUtils {
      * @param colorStr - Color name, or RGB values (Example: 10,15,20)
      * @return - Color
      */
-    public static Color parseColor(String colorStr) {
+    @Deprecated
+    public static Color parseColor(String colorStr) { // TODO: Not required
         if (BYTES_RGB.matcher(colorStr).matches()) {
             String[] rgb = colorStr.split(",");
             int red = Integer.parseInt(rgb[0]);
@@ -343,7 +314,7 @@ public final class ItemUtils {
         return null;
     }
 
-    private static double getColorDistance(Color c1, Color c2) {
+    private static double getColorDistance(Color c1, Color c2) { // TODO: Not required, but can probably be used
         double rmean = (c1.getRed() + c2.getRed()) / 2.0;
         double r = c1.getRed() - c2.getRed();
         double g = c1.getGreen() - c2.getGreen();
@@ -354,7 +325,7 @@ public final class ItemUtils {
         return weightR * r * r + weightG * g * g + weightB * b * b;
     }
 
-    public static DyeColor getClosestColor(Color color) {
+    private static DyeColor getClosestColor(Color color) { // TODO: Not required, but can probably be used
         int index = 0;
         double best = -1;
         for (int i = 0; i < DyeColor.values().length; i++) {
@@ -368,7 +339,8 @@ public final class ItemUtils {
         return DyeColor.values()[index];
     }
 
-    public static String colorToString(Color c, boolean useRGB) {
+    @Deprecated
+    public static String colorToString(Color c, boolean useRGB) { // TODO: Not required
         for (DyeColor dc : DyeColor.values())
             if (dc.getColor().equals(c))
                 return dc.name();
@@ -379,7 +351,8 @@ public final class ItemUtils {
                 c.getBlue();
     }
 
-    public static Object2IntMap<Enchantment> parseEnchantmentsString(String enchStr) {
+    @Deprecated
+    public static Object2IntMap<Enchantment> parseEnchantmentsString(String enchStr) { // TODO: Not required
         Object2IntMap<Enchantment> ench = new Object2IntOpenHashMap<>();
         if (enchStr == null || enchStr.isEmpty()) return ench;
         String[] ln = enchStr.split(";");
@@ -406,7 +379,7 @@ public final class ItemUtils {
      * @param itemStr - old item format
      * @return - ItemStack
      */
-    protected static ItemStack parseOldItemStack(String itemStr) {
+    static ItemStack parseOldItemStack(String itemStr) { // TODO: Not required
         if (Utils.isStringEmpty(itemStr))
             return null;
         String iStr = itemStr;
@@ -500,7 +473,7 @@ public final class ItemUtils {
      * @param offhand Check offhand or not
      * @return Item string
      */
-    public static String getPlayerItemInHand(Player player, boolean offhand) {
+    public static String getPlayerItemInHand(Player player, boolean offhand) { // TODO: Reimplement with VirtualItem
         LegacyVirtualItem vi = LegacyVirtualItem.fromItemStack(offhand ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand());
         if (vi == null) return "";
         return vi.toString();

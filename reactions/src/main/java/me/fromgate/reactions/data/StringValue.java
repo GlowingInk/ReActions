@@ -1,6 +1,6 @@
 package me.fromgate.reactions.data;
 
-import me.fromgate.reactions.util.item.LegacyVirtualItem;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +34,7 @@ public class StringValue implements DataValue {
 
     @Override
     public ItemStack asItemStack() {
-        return LegacyVirtualItem.fromString(value);
+        return VirtualItem.asItem(value);
     }
 
     @Override

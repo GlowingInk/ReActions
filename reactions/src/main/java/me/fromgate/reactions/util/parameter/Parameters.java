@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
     public static final String ORIGIN_KEY = "origin-string";
+    public static final Parameters EMPTY = new Parameters("", Collections.emptyMap());
 
     private final String origin;
     private final Map<String, String> params;
@@ -123,7 +124,9 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters noParse(@NotNull String str) {
-        return new Parameters(str, Collections.singletonMap(Parameters.ORIGIN_KEY, str));
+        Map<String, String> params = new CaseInsensitiveMap<>(1);
+        params.put(Parameters.ORIGIN_KEY, str);
+        return new Parameters(str, params);
     }
 
     public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {

@@ -29,6 +29,7 @@ import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +75,7 @@ public class FlagItem implements Flag {
         Parameters params = Parameters.fromString(itemStr);
 
         if (!params.containsEvery("slot", "item")) {
-            int countAmount = ItemUtils.countItemsInInventory(player.getInventory(), itemStr);
+            int countAmount = countItemsInInventory(player.getInventory(), itemStr);
             context.setVariable("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
             int amount = ItemUtils.getAmount(itemStr);
             return countAmount >= amount;
@@ -111,6 +112,17 @@ public class FlagItem implements Flag {
     @Override
     public boolean requiresPlayer() {
         return false;
+    }
+
+    private static int countItemsInInventory(Inventory inventory, String itemStr) {
+        VirtualItem virtualItem = VirtualItem.fromString(itemStr);
+        int count = 0;
+        for (ItemStack item : inventory) {
+            if (virtualItem.isSimilar(item)) {
+                count += item == null ? 1 : item.getAmount();
+            }
+        }
+        return count;
     }
 
     public enum Type {

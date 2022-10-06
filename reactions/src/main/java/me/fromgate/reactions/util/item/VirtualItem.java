@@ -19,7 +19,8 @@ import java.util.Map;
 
 public final class VirtualItem {
     private static final Parameters AIR_PARAMS = Parameters.fromMap(Collections.singletonMap("type", "AIR"));
-    public static final VirtualItem AIR = new VirtualItem(null, -1, Collections.emptyList(), AIR_PARAMS);
+    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, Collections.emptyList(), AIR_PARAMS);
+    public static final VirtualItem EMPTY = new VirtualItem(null, -1, Collections.emptyList(), Parameters.EMPTY);
 
     private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaResolver> RESOLVERS = new ArrayList<>();
@@ -49,7 +50,7 @@ public final class VirtualItem {
         }
     }
 
-    private final Material type;
+    private final @Nullable Material type;
     private final int amount;
     private final @NotNull List<MetaResolver.Instance> resolvers;
 
@@ -89,14 +90,17 @@ public final class VirtualItem {
     private @Nullable ItemStack asItem(boolean clone) {
         if (!itemGenerated) {
             itemGenerated = true;
-            if (type == null || !type.isItem()) return null;
-            itemValue = new ItemStack(type);
-            if (!type.isEmpty()) {
-                itemValue.setAmount(Math.max(amount, 1));
-                if (!resolvers.isEmpty()) {
-                    ItemMeta meta = itemValue.getItemMeta();
-                    resolvers.forEach(resolver -> resolver.apply(meta));
-                    itemValue.setItemMeta(meta);
+            if (type == null || !type.isItem()) {
+                itemValue = null;
+            } else {
+                itemValue = new ItemStack(type);
+                if (!type.isEmpty()) {
+                    itemValue.setAmount(Math.max(amount, 1));
+                    if (!resolvers.isEmpty()) {
+                        ItemMeta meta = itemValue.getItemMeta();
+                        resolvers.forEach(resolver -> resolver.apply(meta));
+                        itemValue.setItemMeta(meta);
+                    }
                 }
             }
         }
@@ -110,7 +114,7 @@ public final class VirtualItem {
             return paramsValue;
         }
         if (type == null) {
-            return paramsValue = AIR_PARAMS;
+            return paramsValue = Parameters.EMPTY;
         }
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("type", type.name());
@@ -125,13 +129,18 @@ public final class VirtualItem {
         return asParams().toString();
     }
 
+    /**
+     * Compare this item's resolvers and another item.
+     * If compared item is null or its type is AIR, expecting this item's type to be AIR.
+     * If this item's type is specified, expecting compared item's type to be the same.
+     * @param compared item to compare
+     * @return is compared item conforms this item's resolvers
+     */
     public boolean isSimilar(@Nullable ItemStack compared) {
-        if (type == null || type.isEmpty()) {
-            return !ItemUtils.isExist(compared);
-        } else if (!ItemUtils.isExist(compared)) {
-            return false;
+        if (compared == null || compared.getType().isEmpty()) {
+            return type != null && type.isEmpty();
         }
-        if (type != compared.getType() || amount > compared.getAmount()) {
+        if (type != null && compared.getType() != type) {
             return false;
         }
         if (!resolvers.isEmpty()) {
@@ -144,6 +153,12 @@ public final class VirtualItem {
         return true;
     }
 
+    /**
+     * Generate a new VirtualItem from item
+     * Considers null as item type AIR
+     * @param item item to generate from
+     * @return generated VirtualItem
+     */
     public static @NotNull VirtualItem fromItem(@Nullable ItemStack item) {
         if (item == null || item.getType().isEmpty()) {
             return AIR;
@@ -171,7 +186,9 @@ public final class VirtualItem {
     }
 
     public static @NotNull VirtualItem fromString(@NotNull String paramsStr) {
-        return fromParameters(Parameters.fromString(paramsStr));
+        return paramsStr.isEmpty()
+                ? VirtualItem.EMPTY
+                : fromParameters(Parameters.fromString(paramsStr));
     }
 
     public static @NotNull VirtualItem fromParameters(@NotNull Parameters params) {
@@ -218,6 +235,14 @@ public final class VirtualItem {
 
     public static @NotNull Parameters asParams(@Nullable ItemStack item) {
         return fromItem(item).asParams();
+    }
+
+    public static boolean isSimilar(@NotNull String itemStr, @Nullable ItemStack compared) {
+        return fromString(itemStr).isSimilar(compared);
+    }
+
+    public static boolean isSimilar(@NotNull Parameters itemParams, @Nullable ItemStack compared) {
+        return fromParameters(itemParams).isSimilar(compared);
     }
 
     @Override
