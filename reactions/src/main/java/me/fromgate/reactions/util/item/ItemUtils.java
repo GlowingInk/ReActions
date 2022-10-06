@@ -7,6 +7,7 @@ import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public final class ItemUtils {
@@ -27,19 +29,21 @@ public final class ItemUtils {
 
     private ItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
+    public static <T> @Nullable T searchByKey(@NotNull String key, @NotNull Function<NamespacedKey, T> search) {
+        NamespacedKey namespaced;
+        try {
+            namespaced = NamespacedKey.minecraft(key.toLowerCase(Locale.ROOT));
+        } catch (Exception ignored) {
+            return null;
+        }
+        return search.apply(namespaced);
+    }
+
     public static int getDurability(@NotNull ItemStack item) {
         if (!item.hasItemMeta()) return 0;
         return item.getItemMeta() instanceof Damageable damageMeta
                 ? damageMeta.getDamage()
                 : 0;
-    }
-
-    public static void setDurability(@NotNull ItemStack item, int durability) {
-        if (!item.hasItemMeta()) return;
-        if (item.getItemMeta() instanceof Damageable damageMeta) {
-            damageMeta.setDamage(durability);
-            item.setItemMeta(damageMeta);
-        }
     }
 
     public static void giveItemOrDrop(@NotNull Player player, @NotNull ItemStack item) {

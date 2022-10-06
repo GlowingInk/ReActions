@@ -3,8 +3,8 @@ package me.fromgate.reactions.util.item.resolvers;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -113,9 +113,9 @@ public class PotionResolver implements MetaResolver {
                 for (String effectStr : split) {
                     String[] effectData = effectStr.split(":");
                     if (effectData.length < 3) continue;
-                    PotionEffectType type = PotionEffectType.getByName(effectData[0].toUpperCase(Locale.ROOT));
+                    PotionEffectType type = ItemUtils.searchByKey(effectData[0], PotionEffectType::getByKey);
                     if (type == null) {
-                        type = PotionEffectType.getByKey(NamespacedKey.minecraft(effectData[0].toLowerCase(Locale.ROOT))); // TODO Pattern required
+                        type = PotionEffectType.getByName(effectData[0].toUpperCase(Locale.ROOT));
                         if (type == null) continue;
                     }
                     int level = Math.max(NumberUtils.getInteger(effectData[1], 0), 0);

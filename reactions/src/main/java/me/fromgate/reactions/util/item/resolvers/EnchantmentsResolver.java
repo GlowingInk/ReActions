@@ -2,7 +2,7 @@ package me.fromgate.reactions.util.item.resolvers;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.alias.Aliases;
-import org.bukkit.NamespacedKey;
+import me.fromgate.reactions.util.item.ItemUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,7 +41,7 @@ public class EnchantmentsResolver implements MetaResolver {
                 enchKey = enchValue.substring(0, index);
                 levelStr = enchValue.substring(index + 1);
             }
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchKey.toLowerCase(Locale.ROOT)));  // TODO Pattern required
+            Enchantment enchantment = ItemUtils.searchByKey(enchKey, Enchantment::getByKey);
             if (enchantment == null) {
                 enchantment = Enchantment.getByName(enchKey.toUpperCase(Locale.ROOT));
                 if (enchantment == null) continue;
