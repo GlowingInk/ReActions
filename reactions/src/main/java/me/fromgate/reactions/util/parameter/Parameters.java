@@ -135,16 +135,16 @@ public class Parameters implements Iterable<String> {
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         StringBuilder bld = new StringBuilder();
         Map<String, String> params = new CaseInsensitiveMap<>(map);
-        params.forEach((k, v) -> {
+        map.forEach((k, v) -> {
             bld.append(k).append(':');
-            if (v.contains(" "))
+            if (v.indexOf(' ') != -1) {
                 bld.append('{').append(v).append('}');
-            else
-                bld.append(':').append(v);
+            } else {
+                bld.append(v);
+            }
             bld.append(' ');
         });
-        String str = bld.toString();
-        return new Parameters(str.isEmpty() ? str : str.substring(0, str.length() - 1), params);
+        return new Parameters(Utils.cutBuilder(bld, 1), params);
     }
 
     public @NotNull String getString(@NotNull String key) {

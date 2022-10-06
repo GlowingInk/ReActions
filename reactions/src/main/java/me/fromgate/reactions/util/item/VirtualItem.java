@@ -11,13 +11,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 public final class VirtualItem {
+    private static final Parameters AIR_PARAMS = Parameters.fromMap(Collections.singletonMap("type", "AIR"));
+    public static final VirtualItem AIR = new VirtualItem(null, -1, Collections.emptyList(), AIR_PARAMS);
+
     private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaResolver> RESOLVERS = new ArrayList<>();
     static {
@@ -48,58 +51,78 @@ public final class VirtualItem {
 
     private final Material type;
     private final int amount;
-    private final List<MetaResolver.Instance> resolvers;
+    private final @NotNull List<MetaResolver.Instance> resolvers;
 
     private boolean itemGenerated;
-    private ItemStack itemStack;
+    private ItemStack itemValue;
+    private Parameters paramsValue;
 
-    private boolean strGenerated;
-    private String strValue;
-
-    public VirtualItem(
+    private VirtualItem(
             @Nullable Material type,
             int amount,
-            @NotNull List<MetaResolver.Instance> resolvers
+            @NotNull List<MetaResolver.Instance> resolvers,
+            @NotNull Parameters params
     ) {
         this.type = type;
         this.amount = amount;
         this.resolvers = resolvers;
+        this.paramsValue = params;
     }
 
-    public @Nullable ItemStack asItemStack() {
+    private VirtualItem(
+            @Nullable Material type,
+            int amount,
+            @NotNull List<MetaResolver.Instance> resolvers,
+            @NotNull ItemStack item
+    ) {
+        this.type = type;
+        this.amount = amount;
+        this.resolvers = resolvers;
+        this.itemGenerated = true;
+        this.itemValue = item;
+    }
+
+    public @Nullable ItemStack asItem() {
+        return asItem(true);
+    }
+
+    private @Nullable ItemStack asItem(boolean clone) {
         if (!itemGenerated) {
             itemGenerated = true;
-            if (type == null || !type.isItem() || type.isEmpty()) return null;
-            itemStack = new ItemStack(type);
-            itemStack.setAmount(Math.max(amount, 1));
-            if (!resolvers.isEmpty()) {
-                ItemMeta meta = itemStack.getItemMeta();
-                resolvers.forEach(resolver -> resolver.apply(meta));
-                itemStack.setItemMeta(meta);
+            if (type == null || !type.isItem()) return null;
+            itemValue = new ItemStack(type);
+            if (!type.isEmpty()) {
+                itemValue.setAmount(Math.max(amount, 1));
+                if (!resolvers.isEmpty()) {
+                    ItemMeta meta = itemValue.getItemMeta();
+                    resolvers.forEach(resolver -> resolver.apply(meta));
+                    itemValue.setItemMeta(meta);
+                }
             }
         }
-        return itemStack;
+        return itemValue == null
+                ? null
+                : clone ? itemValue.clone() : itemValue;
+    }
+
+    public @NotNull Parameters asParams() {
+        if (paramsValue != null) {
+            return paramsValue;
+        }
+        if (type == null) {
+            return paramsValue = AIR_PARAMS;
+        }
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("type", type.name());
+        paramsMap.put("amount", Integer.toString(amount));
+        for (MetaResolver.Instance resolver : resolvers) {
+            paramsMap.put(resolver.getName(), resolver.asString());
+        }
+        return paramsValue = Parameters.fromMap(paramsMap);
     }
 
     public @NotNull String asString() {
-        if (strGenerated) {
-            return strValue;
-        }
-        strGenerated = true;
-        if (type == null) {
-            return strValue = "type:AIR";
-        }
-        StringBuilder builder = new StringBuilder("type:").append(type.name()).append(" amount:").append(amount);
-        for (MetaResolver.Instance resolver : resolvers) {
-            builder.append(' ').append(resolver.getName()).append(':');
-            String value = resolver.asString();
-            if (value.indexOf(' ') != -1 || value.isEmpty()) { // We don't expect String to String conversion, so it's better to check emptiness later
-                builder.append('{').append(value).append('}');
-            } else {
-                builder.append(value);
-            }
-        }
-        return strValue = builder.toString();
+        return asParams().toString();
     }
 
     public boolean isSimilar(@Nullable ItemStack compared) {
@@ -121,7 +144,10 @@ public final class VirtualItem {
         return true;
     }
 
-    public static @NotNull VirtualItem fromItem(@NotNull ItemStack item) {
+    public static @NotNull VirtualItem fromItem(@Nullable ItemStack item) {
+        if (item == null || item.getType().isEmpty()) {
+            return AIR;
+        }
         List<MetaResolver.Instance> resolvers;
         if (!item.hasItemMeta()) {
             resolvers = Collections.emptyList();
@@ -139,7 +165,8 @@ public final class VirtualItem {
         return new VirtualItem(
                 item.getType(),
                 item.getAmount(),
-                resolvers
+                resolvers,
+                item
         );
     }
 
@@ -172,8 +199,25 @@ public final class VirtualItem {
         return new VirtualItem(
                 type,
                 amount,
-                resolvers
+                resolvers,
+                params
         );
+    }
+
+    public static @Nullable ItemStack asItem(@NotNull String itemStr) {
+        return fromString(itemStr).asItem(false);
+    }
+
+    public static @Nullable ItemStack asItem(@NotNull Parameters itemParams) {
+        return fromParameters(itemParams).asItem(false);
+    }
+
+    public static @NotNull String asString(@Nullable ItemStack item) {
+        return fromItem(item).asString();
+    }
+
+    public static @NotNull Parameters asParams(@Nullable ItemStack item) {
+        return fromItem(item).asParams();
     }
 
     @Override
