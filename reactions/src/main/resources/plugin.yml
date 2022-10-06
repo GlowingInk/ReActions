@@ -1,7 +1,7 @@
 name: ReActions
 api-version: '1.16'
 main: me.fromgate.reactions.ReActionsPlugin
-version: '${project.version}.${sub-version}-${build-version}'
+version: '${project.version}-${build-version}'
 website: https://github.com/imDaniX/ReActions
 authors:
   - fromgate fromgate@gmail.com
