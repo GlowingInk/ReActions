@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.LegacyVirtualItem;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -126,7 +127,7 @@ public class ActionItems implements Action {
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);
         String actionItems = "";
-        if (item != null) actionItems = ItemUtils.itemToString(item);
+        if (item != null) actionItems = VirtualItem.asString(item);
         context.setVariable("item_str", actionItems);
         context.setVariable("item_str_esc", Utils.escapeJava(actionItems));
 
@@ -141,7 +142,7 @@ public class ActionItems implements Action {
         ItemStack[] armour = player.getInventory().getArmorContents();
         ItemStack item = armour[slot];
         String actionItems = "";
-        if (item != null) actionItems = ItemUtils.itemToString(item);
+        if (item != null) actionItems = VirtualItem.asString(item);
         context.setVariable("item_str", actionItems);
         context.setVariable("item_str_esc", Utils.escapeJava(actionItems));
         return true;
@@ -156,7 +157,7 @@ public class ActionItems implements Action {
             context.setVariable("item_str_esc", "");
             return true;
         }
-        String item = ItemUtils.itemToString(player.getInventory().getItemInOffHand());
+        String item = VirtualItem.asString(player.getInventory().getItemInOffHand());
         context.setVariable("item_str", item);
         context.setVariable("item_str_esc", Utils.escapeJava(item));
         return true;
@@ -294,7 +295,7 @@ public class ActionItems implements Action {
 
     private boolean giveItemPlayer(RaContext context, final String param) {
         Player player = context.getPlayer();
-        final List<ItemStack> items = ItemUtils.parseRandomItemsStr(param);
+        List<ItemStack> items = ItemUtils.parseRandomItemsStr(param);
         if (items == null || items.isEmpty()) return false;
         String actionItems = ItemUtils.toDisplayString(items);
         context.setVariable("item_str", actionItems);
@@ -351,14 +352,14 @@ public class ActionItems implements Action {
 
         if (slot == -1 && !itemStr.isEmpty()) {
             for (int i = 0; i < armor.length; i++) {
-                if (ItemUtils.compareItemStr(armor[i], itemStr)) {
+                if (VirtualItem.isSimilar(itemStr, armor[i])) {
                     vi = LegacyVirtualItem.fromItemStack(armor[i]);
                     slot = i;
                 }
             }
         } else if (slot >= 0) {
             ItemStack itemSlot = armor[slot];
-            if (itemStr.isEmpty() || ItemUtils.compareItemStr(itemSlot, itemStr))
+            if (itemStr.isEmpty() || VirtualItem.isSimilar(itemStr, itemSlot))
                 vi = LegacyVirtualItem.fromItemStack(itemSlot);
         }
         if (vi == null || vi.getType() == Material.AIR) return false;

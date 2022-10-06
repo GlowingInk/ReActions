@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.storages;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +41,9 @@ public class ItemWearStorage extends Storage {
         return ItemWearActivator.class;
     }
 
-    public boolean isItemWeared(String itemStr) {
+    public boolean isItemWeared(String itemStr) { // TODO: Why is it there?
         for (ItemStack armour : player.getInventory().getArmorContents())
-            if (ItemUtils.compareItemStr(armour, itemStr)) return true;
+            if (VirtualItem.isSimilar(itemStr, armour)) return true;
         return false;
     }
 

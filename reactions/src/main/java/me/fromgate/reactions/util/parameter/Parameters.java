@@ -8,9 +8,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,28 @@ public class Parameters implements Iterable<String> {
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
         this.params = params;
+    }
+
+    public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) { // TODO: Edge case "test:value,value"
+        if (str.indexOf(splitCh) == -1) return Collections.singletonList(str);
+        List<String> splits = new ArrayList<>();
+        int lastSplit = 0;
+        int brCount = 0;
+        for (int index = 0; index < str.length(); ++index) {
+            char ch = str.charAt(index);
+            if (ch == splitCh) {
+                if (brCount == 0) {
+                    int nextIndex = index + 1;
+                    splits.add(str.substring(lastSplit, nextIndex));
+                    lastSplit = nextIndex;
+                }
+            } else if (ch == '{') {
+                ++brCount;
+            } else if (ch == '}') {
+                --brCount;
+            }
+        }
+        return splits;
     }
 
     public static @NotNull Parameters fromString(@NotNull String str) {
@@ -235,13 +258,17 @@ public class Parameters implements Iterable<String> {
         return params.containsKey(key);
     }
 
-    public boolean containsEvery(@NotNull String @NotNull ... keys) {
+    public boolean containsEvery(@NotNull Iterable<String> keys) {
         for (String key : keys) {
             if (!params.containsKey(key)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean containsEvery(@NotNull String @NotNull ... keys) {
+        return containsEvery(List.of(keys));
     }
 
     public boolean containsAny(@NotNull Iterable<String> keys) {
@@ -252,13 +279,11 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean containsAny(@NotNull String @NotNull ... keys) {
-        for (String key : keys) {
-            if (params.containsKey(key)) return true;
-        }
-        return false;
+        return containsAny(List.of(keys));
     }
 
-    public boolean matchesAny(@NotNull Pattern @NotNull ... patterns) {
+    @Deprecated
+    public boolean matchesAny(@NotNull Pattern @NotNull ... patterns) { // TODO: Quite useless
         for (Pattern pattern : patterns) {
             for (String param : params.keySet()) {
                 if (pattern.matcher(param).matches()) return true;
@@ -267,21 +292,12 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    public boolean matchesAny(@NotNull String @NotNull ... keys) {
-        for (String key : keys) {
-            for (String param : params.keySet()) {
-                if (param.matches(key)) return true;
-            }
-        }
-        return false;
-    }
-
     public @NotNull Set<String> keySet() {
-        return this.params.keySet();
+        return Collections.unmodifiableSet(this.params.keySet());
     }
 
     public @NotNull Map<String, String> getMap() {
-        return new HashMap<>(this.params);
+        return Collections.unmodifiableMap(this.params);
     }
 
     public boolean isEmpty() {
@@ -291,11 +307,6 @@ public class Parameters implements Iterable<String> {
     @Deprecated
     public @Nullable String put(@NotNull String key, @NotNull String value) {
         return params.put(key, value);
-    }
-
-    @Nullable
-    public String remove(@NotNull String key) {
-        return this.params.remove(key);
     }
 
     public int size() {
@@ -309,14 +320,10 @@ public class Parameters implements Iterable<String> {
 
     @Override
     public @NotNull Iterator<String> iterator() {
-        return params.keySet().iterator();
+        return getMap().keySet().iterator();
     }
 
     public void forEach(@NotNull BiConsumer<String, String> consumer) {
         params.forEach(consumer);
-    }
-
-    public @NotNull static Map<String, String> parametersMap(@NotNull String param) {
-        return fromString(param).getMap();
     }
 }

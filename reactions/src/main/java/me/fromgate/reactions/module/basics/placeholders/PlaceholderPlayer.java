@@ -47,8 +47,8 @@ public class PlaceholderPlayer implements Placeholder.Keyed {
         return switch (key) {
             case "player", "player_name" -> player.getName();
             case "player_health", "health" -> Double.toString(player.getHealth());
-            case "player_item_hand", "itemplayer" -> ItemUtils.getPlayerItemInHand(player, false);
-            case "player_item_offhand", "offitemplayer" -> ItemUtils.getPlayerItemInHand(player, true);
+            case "player_item_hand", "itemplayer" -> ItemUtils.getItemInHand(player, false);
+            case "player_item_offhand", "offitemplayer" -> ItemUtils.getItemInHand(player, true);
             case "player_display", "dplayer" -> player.getDisplayName();
             case "player_loc" -> LocationUtils.locationToString(player.getLocation());
             case "player_loc_death", "deathpoint" -> LocationUtils.locationToString(Optional.of(PlayerRespawner.getLastDeathPoint(player)).orElse(player.getLocation()));

@@ -6,9 +6,11 @@ public class BlockParameters extends Parameters {
     private final Block block;
 
     public BlockParameters(String param, Block block) {
-        super(param, Parameters.parametersMap(param));
+        super(param, Parameters.fromString(param).getMap());
         this.block = block;
     }
 
-    public Block getBlock() {return this.block;}
+    public Block getBlock() {
+        return this.block;
+    }
 }

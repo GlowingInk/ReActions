@@ -77,6 +77,11 @@ public class MobDamageStorage extends Storage {
                 .build();
     }
 
+    @Override
+    public @NotNull Player getPlayer() {
+        return player;
+    }
+
     public LivingEntity getEntity() {return this.entity;}
 
     public DamageCause getCause() {return this.cause;}

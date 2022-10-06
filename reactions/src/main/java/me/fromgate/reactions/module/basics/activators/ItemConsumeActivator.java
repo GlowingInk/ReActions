@@ -28,8 +28,8 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.LegacyVirtualItem;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -61,7 +61,7 @@ public class ItemConsumeActivator extends Activator {
             return false;
         }
         ItemConsumeStorage ie = (ItemConsumeStorage) event;
-        return ItemUtils.compareItemStr(ie.getItem(), this.item);
+        return VirtualItem.isSimilar(item, ie.getItem());
     }
 
     public void saveOptions(ConfigurationSection cfg) {

@@ -31,29 +31,27 @@
 package me.fromgate.reactions.util.item;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -63,8 +61,9 @@ import java.util.regex.Pattern;
 @Deprecated
 public class LegacyVirtualItem extends ItemStack {
 
+    private static final Pattern BYTES_RGB = Pattern.compile("^\\d{1,3},\\d{1,3},\\d{1,3}$");
+
     private static final String DIVIDER = "\\n";
-    private static final Pattern AMOUNT_RANDOM = Pattern.compile("<\\d+|>\\d+|<=\\d+|>=\\d+");
 
     /**
      * Constructor Create new VirtualItem object
@@ -111,10 +110,10 @@ public class LegacyVirtualItem extends ItemStack {
      * @return - New VirtualItem object or null (if parse failed)
      */
     public static LegacyVirtualItem fromString(String itemStr) {
-        Map<String, String> params = Parameters.parametersMap(itemStr);
+        Map<String, String> params = Parameters.fromString(itemStr).getMap();
         LegacyVirtualItem vi = fromMap(params);
         if (vi != null) return vi;
-        ItemStack item = ItemUtils.parseOldItemStack(itemStr);
+        ItemStack item = parseOldItemStack(itemStr);
         if (item != null) return new LegacyVirtualItem(item);
         return null;
     }
@@ -173,34 +172,230 @@ public class LegacyVirtualItem extends ItemStack {
         return vi;
     }
 
-    /**
-     * Deserialize item from JSON-string
-     *
-     * @param itemJSON JSON-string with item parameters
-     * @return VirtualItem generated from JSON-string
-     */
-    public static LegacyVirtualItem fromJSONString(String itemJSON) {
-        if (Utils.isStringEmpty(itemJSON))
-            return null;
-        JSONParser parser = new JSONParser();
-        Object object = null;
-        try {
-            object = parser.parse(itemJSON);
-        } catch (Exception ignore) {
-        }
-        if (object == null)
-            return null;
-        JSONObject json = (JSONObject) object;
-        Map<String, Object> map = new HashMap<>();
-        for (Object key : json.keySet()) {
-            if (key instanceof String) {
-                map.put((String) key, json.get(key));
+    private static Enchantment getEnchantmentByName(String name) {
+        if (!Utils.isStringEmpty(name))
+            try {
+                return Enchantment.getByKey(NamespacedKey.minecraft(name.toLowerCase(Locale.ROOT)));
+            } catch (IllegalArgumentException ignore) {
+            }
+        return null;
+    }
+
+    private static String fireworksToString(FireworkEffect fe) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("type:").append(fe.getType().name());
+        sb.append(" flicker:").append(fe.hasFlicker());
+        sb.append(" trail:").append(fe.hasTrail());
+        if (!fe.getColors().isEmpty()) {
+            sb.append(" colors:");
+            for (int i = 0; i < fe.getColors().size(); i++) {
+                Color c = fe.getColors().get(i);
+                if (i > 0)
+                    sb.append(";");
+                sb.append(colorToString(c, true));
             }
         }
-        if (map.isEmpty())
+        if (!fe.getFadeColors().isEmpty()) {
+            sb.append(" fade-colors:");
+            for (int i = 0; i < fe.getFadeColors().size(); i++) {
+                Color c = fe.getColors().get(i);
+                if (i > 0) sb.append(";");
+                sb.append(colorToString(c, true));
+            }
+        }
+        return sb.toString();
+    }
+
+    private static List<Color> parseColors(String colorStr) {
+        List<Color> colors = new ArrayList<>();
+        String[] clrs = colorStr.split(";");
+        for (String cStr : clrs) {
+            Color c = parseColor(cStr.trim());
+            if (c == null)
+                continue;
+            colors.add(c);
+        }
+        return colors;
+    }
+
+    /**
+     * Parse bukkit colors. Name and RGB values supported
+     *
+     * @param colorStr - Color name, or RGB values (Example: 10,15,20)
+     * @return - Color
+     */
+    private static Color parseColor(String colorStr) {
+        if (BYTES_RGB.matcher(colorStr).matches()) {
+            String[] rgb = colorStr.split(",");
+            int red = Integer.parseInt(rgb[0]);
+            int green = Integer.parseInt(rgb[1]);
+            int blue = Integer.parseInt(rgb[2]);
+            return Color.fromRGB(red, green, blue);
+        } else if (NumberUtils.BYTE.matcher(colorStr).matches()) {
+            int num = Integer.parseInt(colorStr);
+            if (num > 15)
+                num = 15;
+            @SuppressWarnings("deprecation")
+            DyeColor c = DyeColor.getByDyeData((byte) num);
+            return c == null ? null : c.getColor();
+        } else {
+			/*
+			for (DyeColor dc : DyeColor.values())
+				if (dc.name().equalsIgnoreCase(colorStr))
+					return dc.getColor();
+			 */
+        }
+        return null;
+    }
+
+    private static double getColorDistance(Color c1, Color c2) {
+        double rmean = (c1.getRed() + c2.getRed()) / 2.0;
+        double r = c1.getRed() - c2.getRed();
+        double g = c1.getGreen() - c2.getGreen();
+        int b = c1.getBlue() - c2.getBlue();
+        double weightR = 2 + rmean / 256.0;
+        double weightG = 4.0;
+        double weightB = 2 + (255 - rmean) / 256.0;
+        return weightR * r * r + weightG * g * g + weightB * b * b;
+    }
+
+    private static DyeColor getClosestColor(Color color) {
+        int index = 0;
+        double best = -1;
+        for (int i = 0; i < DyeColor.values().length; i++) {
+            double distance = getColorDistance(color,
+                    DyeColor.values()[i].getColor());
+            if (distance < best || best == -1) {
+                best = distance;
+                index = i;
+            }
+        }
+        return DyeColor.values()[index];
+    }
+
+    private static String colorToString(Color c, boolean useRGB) {
+        for (DyeColor dc : DyeColor.values())
+            if (dc.getColor().equals(c))
+                return dc.name();
+        if (!useRGB)
+            getClosestColor(c).name();
+        return c.getRed() + "," +
+                c.getGreen() + "," +
+                c.getBlue();
+    }
+
+    private static Object2IntMap<Enchantment> parseEnchantmentsString(String enchStr) {
+        Object2IntMap<Enchantment> ench = new Object2IntOpenHashMap<>();
+        if (enchStr == null || enchStr.isEmpty()) return ench;
+        String[] ln = enchStr.split(";");
+        for (String e : ln) {
+            String eType = e;
+            int power = 0;
+            if (eType.contains(":")) {
+                String powerStr = eType.substring(eType.indexOf(":") + 1);
+                eType = eType.substring(0, eType.indexOf(":"));
+                power = Rng.nextIntRanged(powerStr);
+            }
+            Enchantment enchantment = getEnchantmentByName(eType);
+            if (enchantment == null)
+                continue;
+            ench.put(enchantment, power);
+        }
+        return ench;
+
+    }
+
+    /**
+     * Old format algorithm. Implemented for compatibility.
+     *
+     * @param itemStr - old item format
+     * @return - ItemStack
+     */
+    private static ItemStack parseOldItemStack(String itemStr) {
+        if (Utils.isStringEmpty(itemStr))
             return null;
-        ItemStack item = ItemStack.deserialize(map);
-        return new LegacyVirtualItem(item);
+        String iStr = itemStr;
+        String enchant = "";
+        String name = "";
+        String loreStr = "";
+        if (iStr.contains("$")) {
+            name = iStr.substring(0, iStr.indexOf("$"));
+            iStr = iStr.substring(name.length() + 1);
+            if (name.contains("@")) {
+                loreStr = name.substring(name.indexOf("@") + 1);
+                name = name.substring(0, name.indexOf("@"));
+            }
+
+        }
+        if (iStr.contains("@")) {
+            enchant = iStr.substring(iStr.indexOf("@") + 1);
+            iStr = iStr.substring(0, iStr.indexOf("@"));
+        }
+        Material id;
+        int amount = 1;
+        short data = 0;
+        String[] si = iStr.split("\\*");
+        if (si.length > 0) {
+            if (si.length == 2)
+                amount = Math.max(Rng.nextIntRanged(si[1]), 1);
+            String[] ti = si[0].split(":");
+            if (ti.length > 0) {
+                Material m = Material.getMaterial(ti[0].toUpperCase(Locale.ROOT));
+                if (m == null)
+                    return null;
+                id = m;
+                if ((ti.length == 2) && (NumberUtils.INT_POSITIVE.matcher(ti[1]).matches()))
+                    data = Short.parseShort(ti[1]);
+                ItemStack item = new ItemStack(id, amount);
+                ItemUtils.setDurability(item, data);
+                if (!enchant.isEmpty()) {
+
+                    String[] ln = enchant.split(",");
+                    for (String ec : ln) {
+                        if (ec.isEmpty())
+                            continue;
+
+                        Color clr = parseColor(ec);
+                        if (clr != null) {
+                            if (item.hasItemMeta()
+                                    && (item.getItemMeta() instanceof LeatherArmorMeta meta)) {
+                                meta.setColor(clr);
+                                item.setItemMeta(meta);
+                            }
+                        } else {
+                            String ench = ec;
+                            int level = 1;
+                            if (ec.contains(":")) {
+                                ench = ec.substring(0, ec.indexOf(":"));
+                                level = Math.max(1, Rng.nextIntRanged(ec.substring(ench
+                                        .length() + 1)));
+                            }
+                            Enchantment e = getEnchantmentByName(ench);
+                            if (e == null)
+                                continue;
+                            item.addUnsafeEnchantment(e, level);
+                        }
+                    }
+                }
+                if (!name.isEmpty()) {
+                    ItemMeta im = item.getItemMeta();
+                    im.setDisplayName(ChatColor.translateAlternateColorCodes(
+                            '&', name.replace("_", " ")));
+                    item.setItemMeta(im);
+                }
+                if (!loreStr.isEmpty()) {
+                    ItemMeta im = item.getItemMeta();
+                    String[] ln = loreStr.split("@");
+                    List<String> lore = new ArrayList<>();
+                    for (String loreLine : ln)
+                        lore.add(loreLine.replace("_", " "));
+                    im.setLore(lore);
+                    item.setItemMeta(im);
+                }
+                return item;
+            }
+        }
+        return null;
     }
 
     /**
@@ -220,25 +415,6 @@ public class LegacyVirtualItem extends ItemStack {
         return params;
     }
 
-    /**
-     * Serialize item to JSON-string
-     *
-     * @return JSON-string generated from ItemStack
-     */
-    @SuppressWarnings({"unchecked"})
-    public String toJSON() {
-        Map<String, Object> itemS = this.serialize();
-        JSONObject json = new JSONObject();
-        for (String i : itemS.keySet())
-            json.put(i, itemS.get(i));
-        return json.toJSONString();
-    }
-
-    public void giveItem(Player player) {
-        for (ItemStack i : player.getInventory().addItem(this.clone()).values())
-            player.getWorld().dropItemNaturally(player.getLocation(), i);
-    }
-
     public void setEnchantStorage(String enchStr) {
         if (Utils.isStringEmpty(enchStr)) return;
         if (!(this.getItemMeta() instanceof EnchantmentStorageMeta esm)) return;
@@ -251,7 +427,7 @@ public class LegacyVirtualItem extends ItemStack {
                 eType = eType.substring(0, eType.indexOf(":"));
                 power = NumberUtils.INT_POSITIVE.matcher(powerStr).matches() ? Integer.parseInt(powerStr) : 0;
             }
-            Enchantment enchantment = ItemUtils.getEnchantmentByName(eType);
+            Enchantment enchantment = getEnchantmentByName(eType);
             if (enchantment == null) continue;
             esm.addStoredEnchant(enchantment, power, true);
         }
@@ -307,7 +483,7 @@ public class LegacyVirtualItem extends ItemStack {
         if (Utils.isStringEmpty(colorStr)) return;
 
         if (this.getItemMeta() instanceof LeatherArmorMeta lm) {
-            Color c = ItemUtils.parseColor(colorStr);
+            Color c = parseColor(colorStr);
             if (c == null) return;
             lm.setColor(c);
             this.setItemMeta(lm);
@@ -324,21 +500,6 @@ public class LegacyVirtualItem extends ItemStack {
             sb.append(e.getKey().getKey()).append(":").append(enchantments.get(e));
         }
         params.put(key, sb.toString());
-    }
-
-    public boolean hasDisplayName() {
-        return this.hasItemMeta() && this.getItemMeta().hasDisplayName();
-    }
-
-    public boolean hasLore() {
-        return this.hasItemMeta() && this.getItemMeta().hasLore();
-    }
-
-    public String getDisplayName() {
-        if (!this.hasItemMeta()) return null;
-        ItemMeta im = this.getItemMeta();
-        if (im.hasDisplayName()) return im.getDisplayName();
-        return null;
     }
 
     public List<String> getLore() {
@@ -387,7 +548,7 @@ public class LegacyVirtualItem extends ItemStack {
         }
 
         if (itemMeta instanceof LeatherArmorMeta lm) {
-            put(params, "color", ItemUtils.colorToString(lm.getColor(), true));
+            put(params, "color", colorToString(lm.getColor(), true));
         }
         if (itemMeta instanceof SkullMeta sm) {
             if (sm.hasOwner())
@@ -413,7 +574,7 @@ public class LegacyVirtualItem extends ItemStack {
 
     private void putFireworkEffectMeta(Map<String, String> params, FireworkEffectMeta fwm) {
         if (fwm.hasEffect())
-            put(params, "firework-effects", ItemUtils.fireworksToString(fwm.getEffect()));
+            put(params, "firework-effects", fireworksToString(fwm.getEffect()));
     }
 
     private void putEffects(Map<String, String> params, List<PotionEffect> customEffects) {
@@ -467,7 +628,7 @@ public class LegacyVirtualItem extends ItemStack {
 
     private void setEnchantments(String enchStr) {
         clearEnchantments();
-        Object2IntMap<Enchantment> enchantments = ItemUtils.parseEnchantmentsString(enchStr);
+        Object2IntMap<Enchantment> enchantments = parseEnchantmentsString(enchStr);
         if (enchantments.isEmpty()) return;
         this.addUnsafeEnchantments(enchantments);
     }
@@ -506,7 +667,7 @@ public class LegacyVirtualItem extends ItemStack {
     private void setFireworkEffect(String fireworkStr) {
         if (fireworkStr == null || fireworkStr.isEmpty()) return;
         if (!(this.getItemMeta() instanceof FireworkEffectMeta fm)) return;
-        Map<String, String> params = Parameters.parametersMap(fireworkStr);
+        Map<String, String> params = Parameters.fromString(fireworkStr).getMap();
         FireworkEffect.Type fType;
         List<Color> colors;
         List<Color> fadeColors;
@@ -516,8 +677,8 @@ public class LegacyVirtualItem extends ItemStack {
                 .toUpperCase(Locale.ROOT));
         flicker = "true".equalsIgnoreCase(params.getOrDefault("flicker", "false"));
         trail = "true".equalsIgnoreCase(params.getOrDefault("trail", "false"));
-        colors = ItemUtils.parseColors(params.getOrDefault("colors", ""));
-        fadeColors = ItemUtils.parseColors(params.getOrDefault("fade-colors", ""));
+        colors = parseColors(params.getOrDefault("colors", ""));
+        fadeColors = parseColors(params.getOrDefault("fade-colors", ""));
         Builder b = FireworkEffect.builder().with(fType);
         if (flicker)
             b = b.withFlicker();
@@ -540,7 +701,7 @@ public class LegacyVirtualItem extends ItemStack {
             String[] fireworks = fireworkStr.split(";");
             List<FireworkEffect> fe = new ArrayList<>();
             for (String fStr : fireworks) {
-                Map<String, String> params = Parameters.parametersMap(fStr);
+                Map<String, String> params = Parameters.fromString(fStr).getMap();
                 FireworkEffect.Type fType = null;
                 List<Color> colors;
                 List<Color> fadeColors;
@@ -554,8 +715,8 @@ public class LegacyVirtualItem extends ItemStack {
                         "false"));
                 trail = "true".equalsIgnoreCase(params.getOrDefault("trail",
                         "false"));
-                colors = ItemUtils.parseColors(params.getOrDefault("colors", ""));
-                fadeColors = ItemUtils.parseColors(params.getOrDefault("fade-colors", ""));
+                colors = parseColors(params.getOrDefault("colors", ""));
+                fadeColors = parseColors(params.getOrDefault("fade-colors", ""));
                 if (fType == null)
                     continue;
                 FireworkEffect.Builder b = FireworkEffect.builder().with(fType);
@@ -585,7 +746,7 @@ public class LegacyVirtualItem extends ItemStack {
             if (j > 0)
                 sb.append(";");
             FireworkEffect fe = fireworks.get(j);
-            sb.append(ItemUtils.fireworksToString(fe));
+            sb.append(fireworksToString(fe));
         }
         fireList.add(sb.toString());
         return fireList;
@@ -617,106 +778,6 @@ public class LegacyVirtualItem extends ItemStack {
         String str = listToString(valueList);
         if (str == null) return;
         params.put(key, str.replace('§', '&'));
-    }
-
-    public boolean compare(ItemStack item, int amount) {
-        int amountToRemove = amount > 0 ? amount : item.getAmount();
-        if (this.getAmount() < amountToRemove)
-            return false; // Сравниваем ТЕКУЩИЙ предмет с целевым. Т.е. текущего должно быть столько же или больше
-        if (this.getType() != item.getType()) return false;
-        if (this.getDamage() != ItemUtils.getDurability(item)) return false;
-        return Bukkit.getItemFactory().equals(this.getItemMeta(), item.getItemMeta());
-    }
-
-    public boolean compare(String itemStr) {
-        return compare(itemStr, -1);
-    }
-
-    public boolean compare(String itemStr, int amount) {
-        Map<String, String> params = Parameters.parametersMap(itemStr);
-        if (amount > 0) params.put("amount", Integer.toString(amount));
-        return compare(params, amount);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean compare(Map<String, String> itemMap) {
-        return compare(itemMap, -1);
-    }
-
-    public boolean compare(Map<String, String> itemMap, int amount) {
-        if (itemMap == null || itemMap.isEmpty()) return false;
-
-        boolean regex = !itemMap.containsKey("regex") || itemMap.get("regex").equalsIgnoreCase("true");
-
-        if (itemMap.containsKey("type")) {
-            String typeStr = itemMap.get("type").toUpperCase(Locale.ROOT);
-            Material m = Material.getMaterial(typeStr);
-            if (m == null) return false;
-            typeStr = m.toString();
-            if (!compareOrMatch(this.getType().toString(), typeStr, regex)) return false;
-        }
-        ItemMeta thisMeta = this.getItemMeta();
-        if (itemMap.containsKey("item") || itemMap.containsKey("default-param")) {
-            String itemStr = itemMap.containsKey("item") ? itemMap.get("item") : itemMap.get("default-param");
-            String dataStr = "";
-            String amountStr = "";
-            if (itemStr.contains("*")) {
-                itemStr = itemStr.substring(0, itemStr.indexOf("*"));
-                amountStr = itemStr.substring(itemStr.indexOf("*") + 1);
-            }
-            if (itemStr.contains(":")) {
-                itemStr = itemStr.substring(0, itemStr.indexOf(":"));
-                dataStr = itemStr.substring(itemStr.indexOf(":") + 1);
-            }
-            itemMap.put("type", Material.getMaterial(itemStr.toUpperCase(Locale.ROOT)).name());
-
-            if (NumberUtils.INT_POSITIVE.matcher(dataStr).matches()) itemMap.put("data", dataStr);
-            if (NumberUtils.INT_POSITIVE.matcher(amountStr).matches()) itemMap.put("amount", amountStr);
-            itemMap.remove("item");
-            itemMap.remove("default-param");
-        }
-        if (amount > 0) itemMap.put("amount", Integer.toString(amount));
-        if (this.hasDisplayName() && !itemMap.containsKey("name")) return false;
-        if (this.hasLore() && !itemMap.containsKey("lore")) return false;
-
-        if (itemMap.containsKey("data")) {
-            String dataStr = itemMap.get("data");
-            int reqData = NumberUtils.INT_POSITIVE.matcher(dataStr).matches() ? Integer.parseInt(dataStr) : -1;
-            if (reqData != this.getDamage()) return false;
-        }
-        if (itemMap.containsKey("amount")) {
-            String amountStr = itemMap.get("amount");
-            if (NumberUtils.INT_POSITIVE.matcher(amountStr).matches() && this.getAmount() < Integer.parseInt(amountStr))
-                return false;//this.getAmount()>=Integer.parseInt(amountStr);
-            else if (AMOUNT_RANDOM.matcher(amountStr).matches()) {
-                boolean greater = amountStr.startsWith(">");
-                boolean equal = amountStr.contains("=");
-                int reqAmount = Integer.parseInt(amountStr.replaceAll("\\D+", ""));
-                reqAmount = equal ? (greater ? reqAmount++ : reqAmount--) : reqAmount;
-                if (greater && this.getAmount() < reqAmount) return false;
-                if (!greater && this.getAmount() > reqAmount) return false;
-            }
-        }
-        if (itemMap.containsKey("name")) {
-            String thisName = thisMeta.hasDisplayName() ? thisMeta.getDisplayName() : "";
-            if (!compareOrMatch(thisName, ChatColor.translateAlternateColorCodes('&', itemMap.get("name")), regex))
-                return false;
-        }
-
-        if (itemMap.containsKey("lore")) {
-            List<String> thisLore = thisMeta.hasLore() ? thisMeta.getLore() : new ArrayList<>();
-            String thisLoreStr = String.join(DIVIDER, thisLore);
-            String loreStr = ChatColor.translateAlternateColorCodes('&', itemMap.get("lore")); //Joiner.on(regex ? Pattern.quote(DIVIDER) : DIVIDER).join(thisLore);
-            return compareOrMatch(thisLoreStr, loreStr, regex);
-        }
-        return true;
-    }
-
-    private boolean compareOrMatch(String str, String toStr, boolean useRegex) {
-        if (useRegex) {
-            return str.matches(toStr);
-        }
-        return str.equalsIgnoreCase(toStr);
     }
 
     /**

@@ -28,7 +28,6 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.BlockClickActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -58,7 +57,7 @@ public class BlockClickStorage extends Storage {
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("blocklocation", LocationUtils.locationToString(block.getLocation()));
         tempVars.put("blocktype", block.getType().name());
-        tempVars.put("block", ItemUtils.itemFromBlock(block).toString());
+        tempVars.put("block", block.getType().name());
         return tempVars;
     }
 

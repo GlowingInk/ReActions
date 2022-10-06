@@ -28,8 +28,8 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.LegacyVirtualItem;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -71,7 +71,7 @@ public class ItemHoldActivator extends Activator {
 
         if (!hand.checkMain(ie.isMainHand())) return false;
 
-        return ItemUtils.compareItemStr(ie.getItem(), this.itemStr);
+        return VirtualItem.isSimilar(this.itemStr, ie.getItem());
     }
 
     @Override

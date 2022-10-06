@@ -76,6 +76,7 @@ public class Cfg {
         horizontalPushback = config.getBoolean("reactions.horizontal-pushback-action", false);
         Shoot.actionShootBreak = config.getString("actions.shoot.break-block", Shoot.actionShootBreak);
         Shoot.actionShootThrough = config.getString("actions.shoot.penetrable", Shoot.actionShootThrough);
+        Shoot.reload();
         altOperator = config.getBoolean("actions.cmd_op.proxy-operator", false);
     }
 }

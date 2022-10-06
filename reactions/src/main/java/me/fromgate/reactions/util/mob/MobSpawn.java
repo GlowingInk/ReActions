@@ -28,11 +28,13 @@ import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -49,7 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class MobSpawn {
+public final class MobSpawn { // TODO: Requires major refactoring
 
     private static final Map<LivingEntity, List<ItemStack>> drops = new HashMap<>();
 
@@ -223,29 +225,29 @@ public final class MobSpawn {
     private static void setMobEquipment(LivingEntity e, String helm, String chest, String leg, String boot, String weapon, String offhand) {
         // if (!Util.isWordInList(e.getType().name(), "zombie,skeleton,villager")) return;
         if (!helm.isEmpty()) {
-            ItemStack item = ItemUtils.getRndItem(helm);
-            if (item != null) e.getEquipment().setHelmet(item);
+            ItemStack item = getRandomItem(helm);
+            e.getEquipment().setHelmet(item);
         }
         if (!chest.isEmpty()) {
-            ItemStack item = ItemUtils.getRndItem(chest);
-            if (item != null) e.getEquipment().setChestplate(item);
+            ItemStack item = getRandomItem(chest);
+            e.getEquipment().setChestplate(item);
         }
         if (!leg.isEmpty()) {
-            ItemStack item = ItemUtils.getRndItem(leg);
-            if (item != null) e.getEquipment().setLeggings(item);
+            ItemStack item = getRandomItem(leg);
+            e.getEquipment().setLeggings(item);
         }
         if (!boot.isEmpty()) {
-            ItemStack item = ItemUtils.getRndItem(boot);
-            if (item != null) e.getEquipment().setBoots(item);
+            ItemStack item = getRandomItem(boot);
+            e.getEquipment().setBoots(item);
         }
         if (!weapon.isEmpty()) {
-            ItemStack item = ItemUtils.getRndItem(weapon);
-            if (item != null) e.getEquipment().setItemInMainHand(item);
+            ItemStack item = getRandomItem(weapon);
+            e.getEquipment().setItemInMainHand(item);
         }
 
         if (!offhand.isEmpty()) {
-            ItemStack item = ItemUtils.getRndItem(offhand);
-            if (item != null) e.getEquipment().setItemInOffHand(item);
+            ItemStack item = getRandomItem(offhand);
+            e.getEquipment().setItemInOffHand(item);
         }
     }
 
@@ -280,4 +282,12 @@ public final class MobSpawn {
         return null;
     }
 
+    private static ItemStack getRandomItem(String str) {
+        if (str.isEmpty()) return new ItemStack(Material.AIR);
+        List<String> ln = Parameters.splitSafely(str, ',');
+        ItemStack item = VirtualItem.asItem(Rng.randomElement(ln));
+        if (item == null) return new ItemStack(Material.AIR);
+        item.setAmount(1);
+        return item;
+    }
 }

@@ -28,8 +28,8 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemClickStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.LegacyVirtualItem;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -65,7 +65,7 @@ public class ItemClickActivator extends Activator {
         }
         ItemClickStorage ie = (ItemClickStorage) event;
         if (hand.checkOff(ie.isMainHand())) return false;
-        return ItemUtils.compareItemStr(ie.getItem(), this.item);
+        return VirtualItem.isSimilar(item, ie.getItem());
     }
 
     @Override

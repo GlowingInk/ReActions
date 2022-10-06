@@ -28,9 +28,9 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
         } else switch (value.toLowerCase(Locale.ROOT)) {
             case "mainhand":
             case "hand":
-                return ItemUtils.getPlayerItemInHand(player, false);
+                return ItemUtils.getItemInHand(player, false);
             case "offhand":
-                return ItemUtils.getPlayerItemInHand(player, true);
+                return ItemUtils.getItemInHand(player, true);
             case "head":
             case "helm":
             case "helmet":

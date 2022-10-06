@@ -4,21 +4,19 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.PickupItemStorage;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by MaxDikiy on 2017-09-04.
  */
 public class PickupItemActivator extends Activator {
-    // TODO: Store VirtualItem
-    private final String itemStr;
+    private final VirtualItem item;
 
     private PickupItemActivator(ActivatorLogic base, String item) {
         super(base);
-        this.itemStr = item;
+        this.item = VirtualItem.fromString(item);
     }
 
     public static PickupItemActivator create(ActivatorLogic base, Parameters param) {
@@ -34,12 +32,12 @@ public class PickupItemActivator extends Activator {
     @Override
     public boolean checkStorage(Storage event) {
         PickupItemStorage pie = (PickupItemStorage) event;
-        return checkItem(pie.getItem());
+        return item.isSimilar(pie.getItem());
     }
 
     @Override
     public void saveOptions(ConfigurationSection cfg) {
-        cfg.set("item", itemStr);
+        cfg.set("item", item.toString());
     }
 
     @Override
@@ -47,15 +45,10 @@ public class PickupItemActivator extends Activator {
         return true;
     }
 
-    private boolean checkItem(ItemStack item) {
-        if (this.itemStr.isEmpty()) return true;
-        return ItemUtils.compareItemStr(item, this.itemStr, true);
-    }
-
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                "item:" + this.itemStr +
+                "item:" + item +
                 ")";
         return sb;
     }

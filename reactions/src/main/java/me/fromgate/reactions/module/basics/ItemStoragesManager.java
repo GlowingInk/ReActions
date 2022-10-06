@@ -7,7 +7,7 @@ import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
 import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
 import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
 import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -76,6 +76,6 @@ public final class ItemStoragesManager {
     }
 
     private static boolean isItemHoldProcessable(ItemStack item, String itemStr) {
-        return ItemUtils.isExist(item) && ItemUtils.compareItemStr(item, itemStr);
+        return VirtualItem.isSimilar(itemStr, item);
     }
 }
