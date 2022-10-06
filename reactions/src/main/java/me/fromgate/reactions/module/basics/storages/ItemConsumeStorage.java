@@ -6,7 +6,8 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.ItemConsumeActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
-import me.fromgate.reactions.util.item.LegacyVirtualItem;
+import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -33,10 +34,10 @@ public class ItemConsumeStorage extends Storage {
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
         Map<String, String> tempVars = new HashMap<>();
-        LegacyVirtualItem vItem = LegacyVirtualItem.fromItemStack(item);
         if (item != null) {
+            VirtualItem vItem = VirtualItem.fromItem(item);
             tempVars.put("item", vItem.toString());
-            tempVars.put("item-str", vItem.toDisplayString());
+            tempVars.put("item-str", ItemUtils.toDisplayString(vItem.asParameters()));
         }
         tempVars.put("hand", mainHand ? "MAIN" : "OFF");
         return tempVars;

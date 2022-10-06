@@ -29,7 +29,6 @@ import me.fromgate.reactions.module.basics.ItemStoragesManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
-import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -44,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-// TODO: Rework
+// TODO: Remake from scratch
 public class ActionItems implements Action {
     private final Type actionType;
 
@@ -104,7 +103,7 @@ public class ActionItems implements Action {
         if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
             player.getInventory().setItem(slotNum, null);
         } else {
-            LegacyVirtualItem vi = LegacyVirtualItem.fromString(itemStr);
+            ItemStack vi = VirtualItem.asItem(itemStr);
             if (vi == null) return false;
             player.getInventory().setItem(slotNum, vi);
         }
@@ -183,7 +182,7 @@ public class ActionItems implements Action {
             if (slot == -1) return setItemInOffhand(context, params, null);
             //if (slot == -1) slot = 3;
         } else {
-            item = LegacyVirtualItem.fromString(itemStr);
+            item = VirtualItem.asItem(itemStr);
             if (item == null) return false;
             if (slot == -1) return setItemInOffhand(context, params, item);
             // if (slot == -1) slot = getSlotByItem(item);
@@ -221,13 +220,13 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInInventory(RaContext context, Parameters params) {
-        LegacyVirtualItem search = LegacyVirtualItem.fromMap(params.getMap());
+        VirtualItem search = VirtualItem.fromParameters(params);
         int remAmount = search.getAmount();
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
-            if (search.isSimilar(item)) {
+            if (item != null && search.isSimilar(item)) {
                 if (all) {
                     inventory.setItem(i, null);
                 } else if (item.getAmount() > remAmount) {
@@ -241,12 +240,12 @@ public class ActionItems implements Action {
             }
         }
         context.setVariable("item", search.toString());
-        context.setVariable("item_str", search.toDisplayString());
+        context.setVariable("item_str", ItemUtils.toDisplayString(params));
         return true;
     }
 
     private boolean removeItemInHand(RaContext context, Parameters params) {
-        LegacyVirtualItem search = LegacyVirtualItem.fromMap(params.getMap());
+        VirtualItem search = VirtualItem.fromParameters(params);
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         ItemStack item = inventory.getItemInMainHand();
@@ -258,10 +257,10 @@ public class ActionItems implements Action {
                 inventory.setItemInMainHand(item);
             }
         }
-        LegacyVirtualItem result = LegacyVirtualItem.fromItemStack(item);
-        if (result != null) {
+        VirtualItem result = VirtualItem.fromItem(item);
+        if (!item.getType().isEmpty()) {
             context.setVariable("item", result.toString());
-            context.setVariable("item_str", result.toDisplayString());
+            context.setVariable("item_str", ItemUtils.toDisplayString(item));
         } else {
             context.setVariable("item", "");
             context.setVariable("item_str", "");
@@ -270,7 +269,7 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInOffHand(RaContext context, Parameters params) {
-        LegacyVirtualItem search = LegacyVirtualItem.fromMap(params.getMap());
+        VirtualItem search = VirtualItem.fromParameters(params);
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         ItemStack item = inventory.getItemInOffHand();
@@ -282,10 +281,10 @@ public class ActionItems implements Action {
                 inventory.setItemInOffHand(item);
             }
         }
-        LegacyVirtualItem result = LegacyVirtualItem.fromItemStack(item);
-        if (result != null) {
+        VirtualItem result = VirtualItem.fromItem(item);
+        if (!item.getType().isEmpty()) {
             context.setVariable("item", result.toString());
-            context.setVariable("item_str", result.toDisplayString());
+            context.setVariable("item_str", ItemUtils.toDisplayString(item));
         } else {
             context.setVariable("item", "");
             context.setVariable("item_str", "");
@@ -346,41 +345,42 @@ public class ActionItems implements Action {
         String itemStr = params.getString("item");
         String action = params.getString("item-action", "remove");
 
-        LegacyVirtualItem vi = null;
+        VirtualItem vi = null;
 
         ItemStack[] armor = player.getInventory().getArmorContents();
 
         if (slot == -1 && !itemStr.isEmpty()) {
             for (int i = 0; i < armor.length; i++) {
                 if (VirtualItem.isSimilar(itemStr, armor[i])) {
-                    vi = LegacyVirtualItem.fromItemStack(armor[i]);
+                    vi = VirtualItem.fromItem(armor[i]);
                     slot = i;
                 }
             }
         } else if (slot >= 0) {
             ItemStack itemSlot = armor[slot];
             if (itemStr.isEmpty() || VirtualItem.isSimilar(itemStr, itemSlot))
-                vi = LegacyVirtualItem.fromItemStack(itemSlot);
+                vi = VirtualItem.fromItem(itemSlot);
         }
         if (vi == null || vi.getType() == Material.AIR) return false;
         armor[slot] = null;
         player.getInventory().setArmorContents(armor);
 
+        ItemStack item = vi.asItem();
         if (action.equalsIgnoreCase("drop")) {
-            player.getWorld().dropItemNaturally(LocationUtils.getRadiusLocation(player.getLocation().add(0, 2, 0), 2, false), vi);
+            if (item != null) player.getWorld().dropItemNaturally(LocationUtils.getRadiusLocation(player.getLocation().add(0, 2, 0), 2, false), item);
         } else if (action.equalsIgnoreCase("undress") || action.equalsIgnoreCase("inventory")) {
-            ItemUtils.giveItemOrDrop(player, vi);
+            if (item != null) ItemUtils.giveItemOrDrop(player, item);
         }
 
         context.setVariable("item", vi.toString());
-        context.setVariable("item_str", vi.getDescription());
+        context.setVariable("item_str", ItemUtils.toDisplayString(vi.asParameters()));
         return true;
     }
 
     private int getSlotNum(String slotStr) {
         if (slotStr.equalsIgnoreCase("helmet") || slotStr.equalsIgnoreCase("helm")) return 3;
         if (slotStr.equalsIgnoreCase("chestplate") || slotStr.equalsIgnoreCase("chest")) return 2;
-        if (slotStr.equalsIgnoreCase("leggins") || slotStr.equalsIgnoreCase("leg")) return 1;
+        if (slotStr.equalsIgnoreCase("leggings") || slotStr.equalsIgnoreCase("leg")) return 1;
         if (slotStr.equalsIgnoreCase("boots") || slotStr.equalsIgnoreCase("boot")) return 0;
         return -1;
     }

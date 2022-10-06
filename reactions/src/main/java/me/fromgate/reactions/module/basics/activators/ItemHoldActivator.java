@@ -28,7 +28,6 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
-import me.fromgate.reactions.util.item.LegacyVirtualItem;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -36,16 +35,16 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class ItemHoldActivator extends Activator {
     // TODO: Store VirtualItem
-    private final String itemStr;
+    private final String item;
     private final HandType hand;
 
     private ItemHoldActivator(ActivatorLogic base, String item, HandType hand) {
         super(base);
-        this.itemStr = item;
+        this.item = item;
         this.hand = hand;
     }
 
-    public String getItemStr() {return this.itemStr;}
+    public String getItem() {return this.item;}
 
     public HandType getHand() {return this.hand;}
 
@@ -63,7 +62,7 @@ public class ItemHoldActivator extends Activator {
 
     @Override
     public boolean checkStorage(Storage event) {
-        if (itemStr.isEmpty() || (LegacyVirtualItem.fromString(itemStr) == null)) {
+        if (item.isEmpty() || (VirtualItem.asItem(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorholdempty", "Failed to parse itemStr of activator " + logic.getName());
             return false;
         }
@@ -71,19 +70,19 @@ public class ItemHoldActivator extends Activator {
 
         if (!hand.checkMain(ie.isMainHand())) return false;
 
-        return VirtualItem.isSimilar(this.itemStr, ie.getItem());
+        return VirtualItem.isSimilar(this.item, ie.getItem());
     }
 
     @Override
     public void saveOptions(ConfigurationSection cfg) {
-        cfg.set("item", itemStr);
+        cfg.set("item", item);
         cfg.set("hand", hand.name());
     }
 
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                this.itemStr +
+                this.item +
                 "; hand:" + hand +
                 ")";
         return sb;
@@ -91,7 +90,7 @@ public class ItemHoldActivator extends Activator {
 
     @Override
     public boolean isValid() {
-        return !Utils.isStringEmpty(itemStr);
+        return !Utils.isStringEmpty(item);
     }
 }
 

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +49,8 @@ public final class ItemUtils {
         }
     }
 
+    // TODO: Too much "toDisplayString" utils?
+
     public static String toDisplayString(@NotNull List<ItemStack> items) {
         StringBuilder builder = new StringBuilder();
         for (ItemStack item : items) {
@@ -65,7 +68,10 @@ public final class ItemUtils {
     }
 
     public static String toDisplayString(@NotNull String itemStr) {
-        Parameters itemParams = Parameters.fromString(itemStr);
+        return toDisplayString(Parameters.fromString(itemStr));
+    }
+
+    public static String toDisplayString(@NotNull Parameters itemParams) {
         return itemParams.getStringSafe("name", () -> itemParams.getString("type", "AIR"));
     }
 
@@ -75,7 +81,7 @@ public final class ItemUtils {
      * @param items Set of items, e.g set1:{item1:{}  item2:{} item3:{} chance:50}  set2:{item1:{}  item2:{} item3:{} chance:50}
      * @return List of items
      */
-    public static List<ItemStack> parseRandomItemsStr(String items) { // TODO: Should be refactored
+    public static @NotNull List<ItemStack> parseRandomItemsStr(String items) { // TODO: Should be refactored
         Parameters params = Parameters.fromString(items);
         if (params.matchesAny(SET_D)) {
             Object2IntMap<List<ItemStack>> sets = new Object2IntOpenHashMap<>();
@@ -108,7 +114,7 @@ public final class ItemUtils {
             }
 
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private static List<ItemStack> parseItemsSet(Parameters params) {
@@ -135,6 +141,12 @@ public final class ItemUtils {
      */
     public static @Nullable Material getMaterial(@NotNull String name) {
         return Material.getMaterial(name.toUpperCase(Locale.ROOT));
+    }
+
+    @Contract("_, !null -> !null")
+    public static @Nullable Material getMaterial(@NotNull String name, @Nullable Material def) {
+        Material type = Material.getMaterial(name.toUpperCase(Locale.ROOT));
+        return type == null ? def : type;
     }
 
     /**

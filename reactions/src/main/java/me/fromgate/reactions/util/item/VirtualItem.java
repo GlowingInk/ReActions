@@ -83,6 +83,14 @@ public final class VirtualItem {
         this.itemValue = item;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public @Nullable Material getType() {
+        return type;
+    }
+
     public @Nullable ItemStack asItem() {
         return asItem(true);
     }
@@ -109,7 +117,7 @@ public final class VirtualItem {
                 : clone ? itemValue.clone() : itemValue;
     }
 
-    public @NotNull Parameters asParams() {
+    public @NotNull Parameters asParameters() {
         if (paramsValue != null) {
             return paramsValue;
         }
@@ -126,7 +134,7 @@ public final class VirtualItem {
     }
 
     public @NotNull String asString() {
-        return asParams().toString();
+        return asParameters().toString();
     }
 
     /**
@@ -233,8 +241,8 @@ public final class VirtualItem {
         return fromItem(item).asString();
     }
 
-    public static @NotNull Parameters asParams(@Nullable ItemStack item) {
-        return fromItem(item).asParams();
+    public static @NotNull Parameters asParameters(@Nullable ItemStack item) {
+        return fromItem(item).asParameters();
     }
 
     public static boolean isSimilar(@NotNull String itemStr, @Nullable ItemStack compared) {

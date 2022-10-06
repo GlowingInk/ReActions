@@ -45,7 +45,7 @@ public final class ItemStoragesManager {
         final UUID playerId = player.getUniqueId();
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             for (Activator ih : ReActions.getActivatorTypes().get(ItemHoldActivator.class).getActivators())
-                setFutureItemHoldCheck(playerId, ((ItemHoldActivator) ih).getItemStr(), false);
+                setFutureItemHoldCheck(playerId, ((ItemHoldActivator) ih).getItem(), false);
         }, 1);
     }
 
