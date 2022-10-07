@@ -77,8 +77,8 @@ public class FireworkResolver implements MetaResolver {
 
         public EffectsInst(@NotNull String effectsStr) {
             this.effectsStr = effectsStr;
-            String[] split = effectsStr.split(";");
-            this.effects = new ArrayList<>(split.length);
+            List<String> split = Parameters.splitSafely(effectsStr, ';');
+            this.effects = new ArrayList<>(split.size());
             for (String effectStr : split) {
                 Parameters params = Parameters.fromString(effectStr);
                 FireworkEffect.Builder builder = FireworkEffect.builder();

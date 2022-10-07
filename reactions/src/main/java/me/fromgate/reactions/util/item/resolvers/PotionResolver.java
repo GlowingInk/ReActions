@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +37,7 @@ public class PotionResolver implements MetaResolver {
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
         return base
                 ? new Base(value)
-                : new Effects(value); // TODO
+                : value.isEmpty() ? Effects.EMPTY : new Effects(value);
     }
 
     @Override
@@ -100,28 +99,26 @@ public class PotionResolver implements MetaResolver {
     }
 
     private static final class Effects implements MetaResolver.Instance {
+        public static final Effects EMPTY = new Effects("");
+
         private final List<PotionEffect> effects;
         private final String effectsStr;
 
-        public Effects(@NotNull String effectsStr) {
+        public Effects(@NotNull String effectsStr) { // TODO Particles, etc
             this.effectsStr = effectsStr;
             String[] split = effectsStr.split(";");
-            if (split.length == 0) {
-                this.effects = Collections.emptyList();
-            } else { // TODO Particles, etc
-                this.effects = new ArrayList<>(split.length);
-                for (String effectStr : split) {
-                    String[] effectData = effectStr.split(":");
-                    if (effectData.length < 3) continue;
-                    PotionEffectType type = ItemUtils.searchByKey(effectData[0], PotionEffectType::getByKey);
-                    if (type == null) {
-                        type = PotionEffectType.getByName(effectData[0].toUpperCase(Locale.ROOT));
-                        if (type == null) continue;
-                    }
-                    int level = Math.max(NumberUtils.getInteger(effectData[1], 0), 0);
-                    long duration = TimeUtils.parseTime(effectData[2]) / 50L;
-                    this.effects.add(new PotionEffect(type, NumberUtils.safeLongToInt(duration), level));
+            this.effects = new ArrayList<>(split.length);
+            for (String effectStr : split) {
+                String[] effectData = effectStr.split(":");
+                if (effectData.length < 3) continue;
+                PotionEffectType type = ItemUtils.searchByKey(effectData[0], PotionEffectType::getByKey);
+                if (type == null) {
+                    type = PotionEffectType.getByName(effectData[0].toUpperCase(Locale.ROOT));
+                    if (type == null) continue;
                 }
+                int level = Math.max(NumberUtils.getInteger(effectData[1], 0), 0);
+                long duration = TimeUtils.parseTime(effectData[2]) / 50L;
+                this.effects.add(new PotionEffect(type, NumberUtils.safeLongToInt(duration), level));
             }
         }
 
@@ -134,9 +131,9 @@ public class PotionResolver implements MetaResolver {
                 for (PotionEffect effect : effects) {
                     builder.append(effect.getType().getKey().getKey())
                             .append(':').append(effect.getAmplifier())
-                            .append(':').append(effect.getDuration()).append("t;");
+                            .append(':').append(effect.getDuration()).append("t; ");
                 }
-                this.effectsStr = Utils.cutBuilder(builder, 1);
+                this.effectsStr = Utils.cutBuilder(builder, 2);
             }
         }
 

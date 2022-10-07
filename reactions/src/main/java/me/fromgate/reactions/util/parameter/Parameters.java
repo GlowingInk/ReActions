@@ -63,7 +63,7 @@ public class Parameters implements Iterable<String> {
     // TODO: Escaping
     public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = new CaseInsensitiveMap<>();
+        Map<String, String> params = new CaseInsensitiveMap<>(true);
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;

@@ -1,10 +1,12 @@
 package me.fromgate.reactions.util.item.resolvers;
 
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class NameResolver implements MetaResolver {
     private final boolean regex;
@@ -22,26 +24,30 @@ public class NameResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        return new NameInst(value, regex);
+        return new NameInst(ChatColor.translateAlternateColorCodes('&', value), value, regex);
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (regex || !meta.hasDisplayName()) return null;
-        return new NameInst(meta.getDisplayName(), false);
+        String name = meta.getDisplayName();
+        return new NameInst(name, name.replace(ChatColor.COLOR_CHAR, '&'), false);
     }
 
     private static final class NameInst implements Instance {
         private final String value;
+        private final String decolored;
         private final Pattern namePattern;
 
-        private NameInst(@NotNull String value, boolean regex) {
+        private NameInst(@NotNull String value, @NotNull String decolored, boolean regex) {
             this.value = value;
+            this.decolored = decolored;
             if (regex) {
                 Pattern pattern;
                 try {
-                    pattern = Pattern.compile(value, Pattern.UNICODE_CASE);
-                } catch (Exception ex) {
+                    pattern = Pattern.compile(value);
+                    // TODO: Log error
+                } catch (PatternSyntaxException ex) {
                     pattern = Pattern.compile(Pattern.quote(value));
                 }
                 this.namePattern = pattern;
@@ -75,7 +81,7 @@ public class NameResolver implements MetaResolver {
 
         @Override
         public @NotNull String asString() {
-            return value;
+            return decolored;
         }
     }
 }

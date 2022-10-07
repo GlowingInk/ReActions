@@ -6,6 +6,7 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -25,17 +26,30 @@ public class CaseInsensitiveMap<V> implements Map<String, V> { // TODO Implement
     private final ValueSet valueSet;
     private final EntrySet entrySet;
 
-    public CaseInsensitiveMap() {
-        this(16);
-    }
-
     public CaseInsensitiveMap(@NotNull Map<String, V> copy) {
         this(copy.size());
         putAll(copy);
     }
 
+    public CaseInsensitiveMap(boolean linked, @NotNull Map<String, V> copy) {
+        this(linked, copy.size());
+        putAll(copy);
+    }
+
+    public CaseInsensitiveMap() {
+        this(false, 16);
+    }
+
     public CaseInsensitiveMap(int initSize) {
-        origin = new HashMap<>(initSize);
+        this(false, initSize);
+    }
+
+    public CaseInsensitiveMap(boolean linked) {
+        this(linked, 16);
+    }
+
+    public CaseInsensitiveMap(boolean linked, int initSize) {
+        origin = linked ? new LinkedHashMap<>(initSize) : new HashMap<>(initSize);
         keySet = new KeySet();
         valueSet = new ValueSet();
         entrySet = new EntrySet();

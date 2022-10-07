@@ -11,15 +11,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public final class VirtualItem {
-    private static final Parameters AIR_PARAMS = Parameters.fromMap(Collections.singletonMap("type", "AIR"));
-    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, Collections.emptyList(), AIR_PARAMS);
+    /**
+     * A VirtualItem that accepts only null or air ItemStacks
+     */
+    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, Collections.emptyList(), Parameters.fromMap(Collections.singletonMap("type", "AIR")));
+    /**
+     * A VirtualItem that accepts any ItemStacks but null or air
+     */
     public static final VirtualItem EMPTY = new VirtualItem(null, -1, Collections.emptyList(), Parameters.EMPTY);
 
     private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
@@ -83,12 +87,12 @@ public final class VirtualItem {
         this.itemValue = item;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
     public @Nullable Material getType() {
         return type;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     public @Nullable ItemStack asItem() {
@@ -121,11 +125,10 @@ public final class VirtualItem {
         if (paramsValue != null) {
             return paramsValue;
         }
-        if (type == null) {
-            return paramsValue = Parameters.EMPTY;
+        Map<String, String> paramsMap = new LinkedHashMap<>();
+        if (type != null) {
+            paramsMap.put("type", type.name());
         }
-        Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("type", type.name());
         paramsMap.put("amount", Integer.toString(amount));
         for (MetaResolver.Instance resolver : resolvers) {
             paramsMap.put(resolver.getName(), resolver.asString());
@@ -138,38 +141,37 @@ public final class VirtualItem {
     }
 
     /**
-     * Compare this item's resolvers and another item.
+     * Compare this item with real one.
      * If compared item is null or its type is AIR, expecting this item's type to be AIR.
      * If this item's type is specified, expecting compared item's type to be the same.
      * @param compared item to compare
-     * @return is compared item conforms this item's resolvers
+     * @return is compared item conforms this item's type and resolvers
      */
     public boolean isSimilar(@Nullable ItemStack compared) {
         if (compared == null || compared.getType().isEmpty()) {
             return type != null && type.isEmpty();
         }
-        if (type != null && compared.getType() != type) {
-            return false;
-        }
-        if (!resolvers.isEmpty()) {
-            if (!compared.hasItemMeta()) return false;
-            ItemMeta meta = compared.getItemMeta();
-            for (MetaResolver.Instance resolver : resolvers) {
-                if (!resolver.isSimilar(meta)) return false;
+        if (type == null || compared.getType() == type) {
+            if (!resolvers.isEmpty()) {
+                ItemMeta meta = compared.getItemMeta();
+                for (MetaResolver.Instance resolver : resolvers) {
+                    if (!resolver.isSimilar(meta)) return false;
+                }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
-     * Generate a new VirtualItem from item
-     * Considers null as item type AIR
+     * Generate a new VirtualItem from item.
+     * Considers null as item type AIR.
      * @param item item to generate from
      * @return generated VirtualItem
      */
     public static @NotNull VirtualItem fromItem(@Nullable ItemStack item) {
         if (item == null || item.getType().isEmpty()) {
-            return AIR;
+            return VirtualItem.AIR;
         }
         List<MetaResolver.Instance> resolvers;
         if (!item.hasItemMeta()) {
@@ -207,18 +209,15 @@ public final class VirtualItem {
         for (String key : params) {
             key = key.toLowerCase(Locale.ROOT);
             switch (key) {
-                case "type" -> type = Material.getMaterial(params.getString(key));
-                case "name", "lore" -> {
-                    MetaResolver resolver = RESOLVERS_MAP.get(regex ? key + "-regex" : key);
-                    if (resolver == null) continue; // Literally how
-                    resolvers.add(resolver.fromString(params.getString(key)));
-                }
-                case "amount" -> amount = params.getInteger(key);
-                default -> {
+                case "type": type = params.get(key, ItemUtils::getMaterial); break;
+                case "amount": amount = params.getInteger(key); break;
+                case "name": case "lore":
+                    if (regex) key += "-regex";
+                default:
                     MetaResolver resolver = RESOLVERS_MAP.get(key);
                     if (resolver == null) continue;
                     resolvers.add(resolver.fromString(params.getString(key)));
-                }
+                    break;
             }
         }
         return new VirtualItem(

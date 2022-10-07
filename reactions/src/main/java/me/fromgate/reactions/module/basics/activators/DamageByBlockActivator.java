@@ -6,6 +6,7 @@ import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.DamageByBlockStorage;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
@@ -14,8 +15,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageEvent;
-
-import java.util.Locale;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -29,7 +28,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
 
     private DamageByBlockActivator(ActivatorLogic base, String block, String location, String cause) {
         super(base);
-        this.blockType = Material.getMaterial((block.startsWith("type:") ? block.substring(5) : block).toUpperCase(Locale.ROOT));
+        this.blockType = ItemUtils.getMaterial(block.startsWith("type:") ? block.substring(5) : block);
         this.blockLocation = location;
         this.damageCause = cause;
     }

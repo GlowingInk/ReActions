@@ -301,4 +301,19 @@ public final class Utils {
         }
         return null;
     }
+
+    public static List<String> literalSplit(String str, String delim) {
+        List<String> l = new ArrayList<>();
+        int offset = 0;
+        while (true) {
+            int index = str.indexOf(delim, offset);
+            if (index == -1) {
+                l.add(str.substring(offset));
+                return l;
+            } else {
+                l.add(str.substring(offset, index));
+                offset = index + delim.length();
+            }
+        }
+    }
 }
