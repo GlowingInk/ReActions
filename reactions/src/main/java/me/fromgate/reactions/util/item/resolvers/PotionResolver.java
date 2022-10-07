@@ -57,7 +57,7 @@ public class PotionResolver implements MetaResolver {
         public Base(@NotNull PotionData potionData) {
             this.potionData = potionData;
             StringBuilder builder = new StringBuilder();
-            builder.append("type:").append(potionData.getType().name());
+            builder.append("base-type:").append(potionData.getType().name());
             if (potionData.isExtended()) builder.append(" extended:true");
             if (potionData.isUpgraded()) builder.append(" upgraded:true");
             this.potionDataStr = builder.toString();
@@ -66,7 +66,7 @@ public class PotionResolver implements MetaResolver {
         public Base(@NotNull String potionDataStr) {
             this.potionDataStr = potionDataStr;
             Parameters params = Parameters.fromString(potionDataStr);
-            PotionType type = Utils.getEnum(PotionType.class, params.getString("type").toUpperCase(Locale.ROOT), PotionType.UNCRAFTABLE);
+            PotionType type = params.getEnum("base-type", PotionType.class, PotionType.UNCRAFTABLE);
             boolean extended = type.isExtendable() && params.getBoolean("extended", false);
             boolean upgraded = type.isUpgradeable() && params.getBoolean("upgraded", false);
             this.potionData = new PotionData(type, extended, upgraded);

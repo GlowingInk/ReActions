@@ -64,8 +64,8 @@ public class BookResolver implements MetaResolver {
 
         public PagesInst(@NotNull String pagesStr) {
             this.pagesStr = pagesStr;
-            String[] split = pagesStr.split("\\\\n");
-            this.pages = new ArrayList<>(split.length);
+            List<String> split = Utils.literalSplit(pagesStr, "\\n");
+            this.pages = new ArrayList<>(split.size());
             for (String page : split) this.pages.add(page.replace("&z", "\n"));
         }
 

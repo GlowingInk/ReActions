@@ -31,7 +31,6 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
@@ -39,7 +38,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,14 +55,6 @@ public final class Utils {
 
     private Utils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public static String removeChar(String str, char remove) {
-        StringBuilder bld = new StringBuilder();
-        for (char c : str.toCharArray()) {
-            if (c != remove) bld.append(c);
-        }
-        return bld.toString();
-    }
-
     /**
      * Play sound on location
      *
@@ -72,7 +62,7 @@ public final class Utils {
      * @param params Parameters of sound
      * @return Name of played sound
      */
-    public static String soundPlay(Location loc, Parameters params) {
+    public static String soundPlay(@NotNull Location loc, @NotNull Parameters params) {
         if (params.isEmpty()) return "";
         Location soundLoc = loc;
         String sndstr = "";
@@ -111,7 +101,7 @@ public final class Utils {
      * @param loc   Location where sound should be played
      * @param param Parameters of sound
      */
-    public static void soundPlay(Location loc, String param) {
+    public static void soundPlay(@NotNull Location loc, @NotNull String param) {
         if (param.isEmpty()) return;
         Parameters params = Parameters.fromString(param, "param");
         soundPlay(loc, params);
@@ -135,7 +125,7 @@ public final class Utils {
      * @param str  String with words
      * @return Is word contained
      */
-    public static boolean isWordInList(String word, String str) {
+    public static boolean isWordInList(@NotNull String word, @NotNull String str) {
         String[] ln = str.split(",");
         for (String wordInList : ln) {
             if (wordInList.equalsIgnoreCase(word)) return true;
@@ -143,17 +133,11 @@ public final class Utils {
         return false;
     }
 
-    public static UUID getUUID(OfflinePlayer player) {
-        return Bukkit.getOnlineMode() ?
-                player.getUniqueId() :
-                UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static UUID getUUID(String playerName) {
+    public static @NotNull UUID getUUID(@NotNull String playerName) {
         Player player = Bukkit.getPlayerExact(playerName);
         return player == null ?
-                getUUID(Bukkit.getOfflinePlayer(playerName)) :
-                getUUID(player);
+                Bukkit.getOfflinePlayer(playerName).getUniqueId() :
+                player.getUniqueId();
     }
 
     /**
@@ -162,7 +146,7 @@ public final class Utils {
      * @param doco String to escape
      * @return Escaped string
      */
-    public static String escapeJava(String doco) {
+    public static @NotNull String escapeJava(@Nullable String doco) {
         if (doco == null)
             return "";
 
@@ -185,8 +169,8 @@ public final class Utils {
      * @param size Size of list
      * @return List with specified size
      */
-    public static List<String> getEmptyList(int size) {
-        List<String> l = new ArrayList<>();
+    public static @NotNull List<String> getEmptyList(int size) {
+        List<String> l = new ArrayList<>(size);
         for (int i = 0; i < size; i++) l.add("");
         return l;
     }
@@ -196,7 +180,7 @@ public final class Utils {
      *
      * @return List of names
      */
-    public static List<String> getPlayersList() {
+    public static @NotNull List<String> getPlayersList() {
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         List<String> playersNames = new ArrayList<>(players.size());
         players.forEach(p -> playersNames.add(p.getName()));
@@ -222,8 +206,9 @@ public final class Utils {
      * @param <T> Type of object
      * @return Searched object or default if not found
      */
+    @Contract("!null, _ -> !null")
     @SafeVarargs
-    public static <T> T searchNotNull(T def, T... obj) {
+    public static <T> T searchNotNull(@Nullable T def, @Nullable T @NotNull ... obj) {
         for (T searched : obj)
             if (searched != null) return searched;
         return def;
@@ -237,7 +222,7 @@ public final class Utils {
      * @param name Name of enum
      * @return Corresponding enum, or null if not found
      */
-    public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name) {
+    public static <T extends Enum<T>> @Nullable T getEnum(@NotNull Class<T> clazz, @NotNull String name) {
         return getEnum(clazz, name, null);
     }
 
@@ -249,14 +234,13 @@ public final class Utils {
      * @param def Default value
      * @return Corresponding enum, or {@param def} if not found
      */
-    public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name, T def) {
-        if (clazz != null && !Utils.isStringEmpty(name)) {
-            try {
-                return Enum.valueOf(clazz, name.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException ignored) {
-            }
+    @Contract("_, _, !null -> !null")
+    public static <T extends Enum<T>> @Nullable T getEnum(@NotNull Class<T> clazz, @NotNull String name, @Nullable T def) {
+        try {
+            return Enum.valueOf(clazz, name.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ignored) {
+            return def;
         }
-        return def;
     }
 
     public static @NotNull String[] getAliases(@NotNull Class<?> clazz) {
@@ -302,7 +286,7 @@ public final class Utils {
         return null;
     }
 
-    public static List<String> literalSplit(String str, String delim) {
+    public static @NotNull List<String> literalSplit(@NotNull String str, @NotNull String delim) {
         List<String> l = new ArrayList<>();
         int offset = 0;
         while (true) {

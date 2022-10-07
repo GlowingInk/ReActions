@@ -27,7 +27,7 @@ public class ActionPlayerId implements Action {
             pName = context.getPlayer().getName();
         } else {
             OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(playerParam);
-            uuid = Utils.getUUID(offPlayer).toString();
+            uuid = offPlayer.getUniqueId().toString();
             pName = offPlayer.getName();
             if (pName == null)
                 pName = "";

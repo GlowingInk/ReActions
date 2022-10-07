@@ -60,8 +60,7 @@ public class Parameters implements Iterable<String> {
         return fromString(str, null);
     }
 
-    // TODO: Escaping
-    public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
+    public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) { // TODO: Escaping
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = new CaseInsensitiveMap<>(true);
         IterationState state = IterationState.SPACE;
@@ -190,6 +189,15 @@ public class Parameters implements Iterable<String> {
     public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull NotNullSupplier<R> def) {
         R value = get(key, converter);
         return value == null ? def.get() : value;
+    }
+
+    public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz) {
+        return Utils.getEnum(clazz, key);
+    }
+
+    @Contract("_, _, !null -> !null")
+    public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz, @Nullable R def) {
+        return Utils.getEnum(clazz, key, def);
     }
 
     public @NotNull String getString(@NotNull String key) {

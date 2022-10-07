@@ -53,7 +53,7 @@ public final class ItemUtils {
         }
     }
 
-    // TODO: Too much "toDisplayString" utils?
+    // TODO: Too many "toDisplayString" utils?
 
     public static String toDisplayString(@NotNull List<ItemStack> items) {
         StringBuilder builder = new StringBuilder();
