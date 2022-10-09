@@ -84,7 +84,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.modulesRegistry = new ModulesRegistry(this);
         ReActions.setPlatform(this);
         modulesRegistry.registerModule(new BasicModule());
-        modulesRegistry.loadModules();
+        modulesRegistry.loadFolderModules();
     }
 
     @Override

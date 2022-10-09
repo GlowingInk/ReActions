@@ -6,9 +6,11 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.selectors.Selector;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class ModulesRegistry {
     private List<Module> later;
     private boolean loaded;
 
-    public ModulesRegistry(ReActions.Platform platform) {
+    public ModulesRegistry(@NotNull ReActions.Platform platform) {
         this.platform = platform;
         this.modulesFolder = new File(platform.getDataFolder(), "Modules");
         this.later = new ArrayList<>();
@@ -43,7 +45,7 @@ public class ModulesRegistry {
         later = null;
     }
 
-    public void registerModule(Module module) {
+    public void registerModule(@NotNull Module module) {
         if (module.isPluginDepended() && later != null) {
             later.add(module);
         } else {
@@ -51,7 +53,7 @@ public class ModulesRegistry {
         }
     }
 
-    private void register(Module module) {
+    private void register(@NotNull Module module) {
         platform.logger().info("Registering " + module.getName() + " module (by " + String.join(", ", module.getAuthors()) + ")");
         if (!module.init(platform)) {
             return;
@@ -84,16 +86,15 @@ public class ModulesRegistry {
         }
     }
 
-    public void loadModules() {
+    public void loadFolderModules() {
         if (loaded) throw new IllegalStateException("Modules from folder are already loaded.");
         modulesFolder.mkdirs();
         List<Class<?>> toRegister = new ArrayList<>();
-        for (File file : modulesFolder.listFiles()) {
-            if (!file.getName().endsWith(".jar")) {
-                continue;
-            }
-            try (JarInputStream stream = new JarInputStream(file.toURI().toURL().openStream());
-                 URLClassLoader loader = new URLClassLoader(new URL[]{file.toURI().toURL()}, Module.class.getClassLoader())) {
+        ClassLoader moduleClassLoader = Module.class.getClassLoader();
+        for (File file : modulesFolder.listFiles((dir, name) -> name.endsWith(".jar"))) {
+            URI fileUri = file.toURI();
+            try (JarInputStream stream = new JarInputStream(fileUri.toURL().openStream());
+                URLClassLoader loader = new URLClassLoader(new URL[]{fileUri.toURL()}, moduleClassLoader)) {
                 JarEntry entry;
                 while ((entry = stream.getNextJarEntry()) != null) {
                     String name = entry.getName();
