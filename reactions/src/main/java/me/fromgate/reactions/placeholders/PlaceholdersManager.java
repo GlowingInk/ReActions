@@ -27,8 +27,8 @@ public abstract class PlaceholdersManager {
     public final void registerPlaceholder(@NotNull Placeholder ph) {
         if (ph instanceof Placeholder.Dynamic phDynamic) {
             dynamic.put(phDynamic);
-        } else if (ph instanceof Placeholder.Preprocess phPost) {
-            preprocess.put(phPost);
+        } else if (ph instanceof Placeholder.Preprocess phPreprocess) {
+            preprocess.put(phPreprocess);
         } else if (ph instanceof Placeholder.Keyed phKeyed) {
             if (!keyed.put(phKeyed)) {
                 throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder - its name is already used");
