@@ -8,13 +8,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ModernPlaceholdersManager extends PlaceholdersManager {
-    private static final Pattern SLASH = Pattern.compile("\\\\\\\\|\\\\"); // TODO: We should probably don't even use regex there
-    private static final Pattern SAFE_SLASH = Pattern.compile("\\\\(?![%#]\\[|])"); // TODO: Allow escaping escapement...
+    private static final Pattern PRE_ESCAPE = Pattern.compile("(\\\\+)(?![%#]\\[|[]\\\\])");
 
     @Override
     public String parsePlaceholders(@NotNull RaContext context, @Nullable String text) {
         if (text == null || text.length() < 4) return text;
-        text = escapeSlash(text);
+        text = preEscape(text);
         String oldText;
         int limit = countLimit;
         do {
@@ -22,10 +21,10 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
             text = resolvePreprocess(context, text);
             text = parse(context, text);
         } while (!oldText.equals(text) & --limit > 0);
-        return unescapeSlash(text);
+        return unescapeSpecial(text);
     }
 
-    private @NotNull String parse(@NotNull RaContext context, @NotNull String text) {
+    private String parse(@NotNull RaContext context, @NotNull String text) {
         StringBuilder builder = new StringBuilder(text.length());
         IterationStage stage = IterationStage.TEXT;
         int stepIndex = 0;
@@ -75,7 +74,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(context, substring);
                             if (processed != null) {
-                                builder.append(recursive ? escapeSlash(processed) : escapeFully(processed));
+                                builder.append(recursive ? processed : escapeSpecial(processed));
                             } else {
                                 builder.append(recursive ? "\\%[" : "\\#[").append(substring).append("\\]");
                             }
@@ -103,31 +102,31 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return builder.toString();
     }
 
-    private static String escapeSlash(String text) {
-        Matcher matcher = SAFE_SLASH.matcher(text);
-        StringBuilder builder = new StringBuilder();
-        while (matcher.find()) matcher.appendReplacement(builder, "\\\\\\\\");
+    private static String preEscape(@NotNull String text) {
+        StringBuilder builder = new StringBuilder(text.length());
+        Matcher matcher = PRE_ESCAPE.matcher(text);
+        while (matcher.find()) {
+            String group = matcher.group();
+            matcher.appendReplacement(builder, "");
+            builder.append(group).append(group);
+        }
         return matcher.appendTail(builder).toString();
     }
 
-    private static String escapeFully(String text) {
-        return escapeSlash(text)
+    public static String escapeSpecial(@NotNull String text) {
+        return text
+                .replace("\\", "\\\\")
                 .replace("%[", "\\%[")
                 .replace("#[", "\\#[")
                 .replace("]", "\\]");
     }
 
-    private static String unescapeSlash(String text) {
-        StringBuilder builder = new StringBuilder(text.length());
-        Matcher matcher = SLASH.matcher(text);
-        while (matcher.find()) {
-            matcher.appendReplacement(builder, "");
-            String group = matcher.group();
-            if (group.equals("\\\\")) {
-                builder.append('\\');
-            }
-        }
-        return matcher.appendTail(builder).toString();
+    private static String unescapeSpecial(@NotNull String text) {
+        return text
+                .replace("\\\\", "\\")
+                .replace("\\%[", "%[")
+                .replace("\\#[", "#[")
+                .replace("\\]", "]");
     }
 
     private enum IterationStage {

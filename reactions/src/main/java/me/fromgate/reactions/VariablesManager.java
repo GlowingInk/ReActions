@@ -31,6 +31,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -40,27 +42,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class VariablesManager {
+public class VariablesManager { // TODO: Should probably be reworked from scratch
 
-    // TODO: Something like classes and objects that just contains variables - actually just global variables
     private final Map<String, String> vars;
 
     public VariablesManager() {
         this.vars = new CaseInsensitiveMap<>();
     }
 
-    public String getVariable(String player, String var) {
+    public @Nullable String getVariable(@Nullable String player, @NotNull String var) {
         return vars.get(formatId(player, var));
     }
 
-    public void setVariable(String player, String var, String value) {
+    public void setVariable(@Nullable String player, @NotNull String var, @NotNull String value) {
         String prevVal = vars.put(formatId(player, var), value);
         if (!Cfg.playerSelfVarFile) save();
         else save(player);
         StoragesManager.triggerVariable(var, player, value, prevVal == null ? "" : prevVal);
     }
 
-    public boolean removeVariable(String player, String var) {
+    public boolean removeVariable(@Nullable String player, @NotNull String var) {
         String id = formatId(player, var);
         String prevVal = vars.remove(id);
         if (prevVal == null) return false;
@@ -83,7 +84,7 @@ public class VariablesManager {
         else savePlayer(player);
     }
 
-    public void savePlayer(String player) {
+    public void savePlayer(@Nullable String player) {
         YamlConfiguration cfg = new YamlConfiguration();
         String varDir = ReActions.getPlugin().getDataFolder() + File.separator + "variables";
         File dir = new File(varDir);
