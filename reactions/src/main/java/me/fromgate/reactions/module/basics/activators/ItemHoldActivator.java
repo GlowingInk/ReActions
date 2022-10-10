@@ -67,10 +67,7 @@ public class ItemHoldActivator extends Activator {
             return false;
         }
         ItemHoldStorage ie = (ItemHoldStorage) event;
-
-        if (!hand.checkMain(ie.isMainHand())) return false;
-
-        return VirtualItem.isSimilar(this.item, ie.getItem());
+        return hand.isAllowed(ie.getHand()) && VirtualItem.isSimilar(this.item, ie.getItem());
     }
 
     @Override

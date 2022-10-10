@@ -1,5 +1,10 @@
 package me.fromgate.reactions.util.enums;
 
+import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+
 public enum HandType {
     MAIN,
     OFF,
@@ -7,32 +12,21 @@ public enum HandType {
 
     public static HandType getByName(String clickStr) {
         /*
-        If we parse this Yaml ...
-        hand: off
-        ... we get this:
-        'hand': false
-        In order to use the string 'off' as a key, you need to wrap it with quotes:
-        hand: 'off'
+        Unfortunately, YAML may consider 'off' as 'false'
         http://yaml.org/type/bool.html
          */
-        if (clickStr.equalsIgnoreCase("off") || clickStr.equalsIgnoreCase("false")) return HandType.OFF;
-        if (clickStr.equalsIgnoreCase("any")) return HandType.ANY;
-        return HandType.MAIN;
-    }
-
-    public boolean checkMain(boolean isMain) {
-        return switch (this) {
-            case ANY -> true;
-            case MAIN -> isMain;
-            case OFF -> !isMain;
+        return switch (clickStr.toLowerCase(Locale.ROOT)) {
+            case "off", "false" -> HandType.OFF;
+            case "any" -> HandType.ANY;
+            default -> HandType.MAIN;
         };
     }
 
-    public boolean checkOff(boolean isOff) {
+    public boolean isAllowed(@NotNull EquipmentSlot slot) {
         return switch (this) {
             case ANY -> true;
-            case MAIN -> !isOff;
-            case OFF -> isOff;
+            case MAIN -> slot == EquipmentSlot.HAND;
+            case OFF -> slot == EquipmentSlot.OFF_HAND;
         };
     }
 }

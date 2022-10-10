@@ -10,6 +10,7 @@ import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -64,14 +65,14 @@ public final class ItemStoragesManager {
         String rg = "ih-" + itemStr;
         if (!StoragesManager.isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return;
 
-        if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, true);
-        if (offHandItemExist) processItemHoldActivator(player, offHandItem, false);
+        if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, EquipmentSlot.HAND);
+        if (offHandItemExist) processItemHoldActivator(player, offHandItem, EquipmentSlot.OFF_HAND);
 
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20L * Cfg.itemHoldRecheck);
     }
 
-    private static void processItemHoldActivator(Player player, ItemStack item, boolean mainHand) {
-        ItemHoldStorage ihe = new ItemHoldStorage(player, item, mainHand);
+    private static void processItemHoldActivator(Player player, ItemStack item, EquipmentSlot hand) {
+        ItemHoldStorage ihe = new ItemHoldStorage(player, item, hand);
         ReActions.getActivators().activate(ihe);
     }
 

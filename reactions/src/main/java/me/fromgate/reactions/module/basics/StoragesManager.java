@@ -36,7 +36,6 @@ import me.fromgate.reactions.module.basics.storages.*;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.enums.DeathCause;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.mob.EntityUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -65,7 +64,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.Nullable;
 
@@ -126,24 +124,22 @@ public final class StoragesManager {
     }
 
     public static boolean triggerItemClick(PlayerInteractEntityEvent event) {
-        ItemClickStorage ice;
-        boolean mainHand = event.getHand() == EquipmentSlot.HAND;
-        ItemStack item = mainHand ? event.getPlayer().getInventory().getItemInMainHand() : event.getPlayer().getInventory().getItemInOffHand();
-        if (item.getType() == Material.AIR) return false;
-        ice = new ItemClickStorage(event.getPlayer(), item, mainHand);
-        ReActions.getActivators().activate(ice);
-        return ice.getChangeables() != null && ice.getChangeables().get(Storage.CANCEL_EVENT).asBoolean();
+        Player player = event.getPlayer();
+        ItemClickStorage storage = new ItemClickStorage(
+                player,
+                event.getHand() == EquipmentSlot.HAND
+                        ? player.getInventory().getItemInMainHand()
+                        : player.getInventory().getItemInOffHand(),
+                event.getHand());
+        ReActions.getActivators().activate(storage);
+        return storage.getChangeables() != null && storage.getChangeables().get(Storage.CANCEL_EVENT).asBoolean();
     }
 
     public static boolean triggerItemClick(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
-        ItemClickStorage ice;
-        boolean mainHand = event.getHand() == EquipmentSlot.HAND;
-        ItemStack item = mainHand ? event.getPlayer().getInventory().getItemInMainHand() : event.getPlayer().getInventory().getItemInOffHand();
-        if (!ItemUtils.isExist(item)) return false;
-        ice = new ItemClickStorage(event.getPlayer(), item, mainHand);
-        ReActions.getActivators().activate(ice);
-        return ice.getChangeables() != null && ice.getChangeables().get(Storage.CANCEL_EVENT).asBoolean();
+        ItemClickStorage storage = new ItemClickStorage(event.getPlayer(), event.getItem(), event.getHand());
+        ReActions.getActivators().activate(storage);
+        return storage.getChangeables() != null && storage.getChangeables().get(Storage.CANCEL_EVENT).asBoolean();
     }
 
 

@@ -56,8 +56,7 @@ public class ItemClickActivator extends Activator {
     @Override
     public boolean checkStorage(Storage event) {
         ItemClickStorage ie = (ItemClickStorage) event;
-        if (hand.checkOff(ie.isMainHand())) return false;
-        return item.isSimilar(ie.getItem());
+        return hand.isAllowed(ie.getHand()) && item.isSimilar(ie.getItem());
     }
 
     @Override
@@ -68,10 +67,9 @@ public class ItemClickActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 this.item +
                 "; hand:" + hand +
                 ")";
-        return sb;
     }
 }
