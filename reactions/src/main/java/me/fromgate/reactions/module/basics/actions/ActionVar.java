@@ -25,7 +25,6 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.placeholders.ModernPlaceholdersManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -64,28 +63,18 @@ public class ActionVar implements Action {
         }
 
         if (this.personalVar && player.isEmpty()) return false;
-        boolean escape = params.getBoolean("escape-all", false); // TODO Option to escape params, slashes, placeholders separately
 
         switch (this.actType) {
-            case SET -> { //VAR_SET, VAR_PLAYER_SET
-                ReActions.getVariables().setVariable(player, var, escape ? ModernPlaceholdersManager.escapeSpecial(value) : value);
-            }
-            case TEMPORARY_SET -> { //VAR_TEMP_SET
-                context.setVariable(var, escape ? ModernPlaceholdersManager.escapeSpecial(value) : value);
-            }
-            case CLEAR -> { //VAR_CLEAR, VAR_PLAYER_CLEAR
-                ReActions.getVariables().removeVariable(player, var);
-            }
-            case INCREASE, DECREASE -> { //VAR_INC, VAR_PLAYER_INC, VAR_DEC, VAR_PLAYER_DEC
+            case SET -> ReActions.getVariables().setVariable(player, var, value);   //VAR_SET, VAR_PLAYER_SET
+            case TEMPORARY_SET -> context.setVariable(var, value);                  //VAR_TEMP_SET
+            case CLEAR -> ReActions.getVariables().removeVariable(player, var);     //VAR_CLEAR, VAR_PLAYER_CLEAR
+            case INCREASE, DECREASE -> {                                            //VAR_INC, VAR_PLAYER_INC, VAR_DEC, VAR_PLAYER_DEC
                 String variable = ReActions.getVariables().getVariable(player, var);
                 if (variable == null || !NumberUtils.isNumber(variable)) return false;
                 double variableValue = Double.parseDouble(variable);
                 double mod = value.isEmpty() || !(NumberUtils.isNumber(value)) ? 1 : Double.parseDouble(value);
                 variableValue += actType == Type.INCREASE ? mod : -mod;
                 ReActions.getVariables().setVariable(player, var, NumberUtils.format(variableValue));
-            }
-            default -> {
-                return false;
             }
         }
         return true;

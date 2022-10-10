@@ -7,6 +7,7 @@ import me.fromgate.reactions.util.suppliers.NotNullSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,7 +66,7 @@ public class Parameters implements Iterable<String> {
         Map<String, String> params = new CaseInsensitiveMap<>(true);
         IterationState state = IterationState.SPACE;
         String param = "";
-        StringBuilder bld = null;
+        StringBuilder bld = null; // TODO: Implement building style from placeholders? JMH performance testing required
         int brCount = 0;
         for (int i = 0; i < str.length(); ++i) {
             char c = str.charAt(i);
@@ -300,11 +301,11 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    public @NotNull Set<String> keySet() {
+    public @UnmodifiableView @NotNull Set<String> keySet() {
         return Collections.unmodifiableSet(this.params.keySet());
     }
 
-    public @NotNull Map<String, String> getMap() {
+    public @UnmodifiableView @NotNull Map<String, String> getMap() {
         return Collections.unmodifiableMap(this.params);
     }
 
