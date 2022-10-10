@@ -67,17 +67,14 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(context, substring);
                             if (processed != null) {
-                                boolean escapePhs = false;
-                                if (text.length() > index + 3) {
-                                    if (text.charAt(index + 1) == '(') {
-                                        String options = optionsSearch(text, index + 2);
-                                        if (options != null) {
-                                            index += options.length() + 2;
-                                            escapePhs = options.contains("phs");
-                                        }
+                                if (text.length() > index + 3 && text.charAt(index + 1) == '(') {
+                                    String options = optionsSearch(text, index + 2);
+                                    if (options != null) {
+                                        index += options.length() + 2;
+                                        if (options.contains("phs")) processed = escapeSpecial(processed);
                                     }
                                 }
-                                builder.append(escapePhs ? escapeSpecial(processed) : processed);
+                                builder.append(processed);
                             } else {
                                 builder.append("\\%[").append(substring).append("\\]");
                             }
@@ -122,7 +119,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return matcher.appendTail(builder).toString();
     }
 
-    public static @NotNull String escapeSpecial(@NotNull String text) {
+    private static @NotNull String escapeSpecial(@NotNull String text) {
         return text
                 .replace("\\", "\\\\")
                 .replace("%[", "\\%[")
