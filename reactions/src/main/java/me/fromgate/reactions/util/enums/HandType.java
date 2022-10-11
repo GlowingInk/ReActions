@@ -10,23 +10,23 @@ public enum HandType {
     OFF,
     ANY;
 
-    public static HandType getByName(String clickStr) {
+    public static HandType getByName(@NotNull String clickStr) {
         /*
         Unfortunately, YAML may consider 'off' as 'false'
         http://yaml.org/type/bool.html
          */
-        return switch (clickStr.toLowerCase(Locale.ROOT)) {
-            case "off", "false" -> HandType.OFF;
-            case "any" -> HandType.ANY;
-            default -> HandType.MAIN;
+        return switch (clickStr.toUpperCase(Locale.ROOT)) {
+            case "MAIN" -> HandType.MAIN;
+            case "OFF", "FALSE" -> HandType.OFF;
+            default -> HandType.ANY;
         };
     }
 
     public boolean isAllowed(@NotNull EquipmentSlot slot) {
         return switch (this) {
-            case ANY -> true;
             case MAIN -> slot == EquipmentSlot.HAND;
             case OFF -> slot == EquipmentSlot.OFF_HAND;
+            case ANY -> true;
         };
     }
 }

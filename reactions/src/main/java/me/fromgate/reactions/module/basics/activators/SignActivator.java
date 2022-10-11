@@ -55,7 +55,7 @@ public class SignActivator extends Activator {
         Sign sign = null;
         if (targetBlock != null && BlockUtils.isSign(targetBlock))
             sign = (Sign) targetBlock.getState();
-        ClickType click = ClickType.getByName(param.getString("click", "RIGHT"));
+        ClickType click = ClickType.getByName(param.getString("click", "ANY"));
         List<String> maskLines = new ArrayList<>();
         if (sign == null) {
             maskLines.add(param.getString("line1", ""));
@@ -72,7 +72,7 @@ public class SignActivator extends Activator {
     }
 
     public static SignActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        ClickType click = ClickType.getByName(cfg.getString("click-type", "RIGHT"));
+        ClickType click = ClickType.getByName(cfg.getString("click-type", "ANY"));
         List<String> maskLines = cfg.getStringList("sign-mask");
         return new SignActivator(base, click, maskLines);
     }
