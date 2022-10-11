@@ -46,6 +46,8 @@ public final class VirtualItem {
         registerResolver(new HeadResolver());
         registerResolver(new LoreResolver(true));
         registerResolver(new LoreResolver(false));
+        registerResolver(new MapResolver(true));
+        registerResolver(new MapResolver(false));
         registerResolver(new ModelResolver());
         registerResolver(new NameResolver(true));
         registerResolver(new NameResolver(false));
