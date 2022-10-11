@@ -46,7 +46,7 @@ public class ModelResolver implements MetaResolver {
 
         @Override
         public @NotNull String getName() {
-            return "model";
+            return "custom-model-data";
         }
 
         @Override

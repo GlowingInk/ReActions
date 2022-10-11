@@ -60,11 +60,11 @@ public class EnchantmentsResolver implements MetaResolver {
         if (!enchants.isEmpty()) {
             StringBuilder builder = new StringBuilder();
             for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-                builder.append(entry.getKey().getKey().value()); // TODO: Optionally use names instead of keys
+                builder.append(entry.getKey().getKey().value());
                 if (entry.getValue() != null) {
                     builder.append(':').append(entry.getValue());
                 }
-                builder.append("; ");
+                builder.append(",");
             }
             return new EnchantmentsInst(enchants, cutBuilder(builder, 2));
         }
@@ -72,7 +72,7 @@ public class EnchantmentsResolver implements MetaResolver {
     }
 
     private record EnchantmentsInst(@NotNull Map<Enchantment, Integer> enchantments, @NotNull String value) implements Instance {
-        private static final EnchantmentsInst EMPTY = new EnchantmentsInst(Collections.emptyMap(), "");
+        public static final EnchantmentsInst EMPTY = new EnchantmentsInst(Collections.emptyMap(), "");
 
         @Override
         public void apply(@NotNull ItemMeta meta) {

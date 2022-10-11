@@ -164,7 +164,7 @@ public class Parameters implements Iterable<String> {
         Map<String, String> params = new CaseInsensitiveMap<>(map);
         map.forEach((k, v) -> {
             bld.append(k).append(':');
-            if (v.indexOf(' ') != -1) {
+            if (v.indexOf(' ') != -1 || v.length() >= 20) {
                 bld.append('{').append(v).append('}');
             } else {
                 bld.append(v);

@@ -46,7 +46,7 @@ public class HeadResolver implements MetaResolver { // TODO: Support UUIDs and r
 
         @Override
         public @NotNull String getName() {
-            return "head-resolver";
+            return "head-owner";
         }
 
         @Override

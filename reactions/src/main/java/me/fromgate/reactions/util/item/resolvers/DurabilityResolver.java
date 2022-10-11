@@ -16,18 +16,18 @@ public class DurabilityResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        return new Durability(NumberUtils.getInteger(value, 0));
+        return new DurabilityInst(NumberUtils.getInteger(value, 0));
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof Damageable damageMeta && damageMeta.hasDamage()) {
-            return new Durability(damageMeta.getDamage());
+            return new DurabilityInst(damageMeta.getDamage());
         }
         return null;
     }
 
-    private record Durability(int value) implements Instance {
+    private record DurabilityInst(int value) implements Instance {
         @Override
         public void apply(@NotNull ItemMeta meta) {
             if (meta instanceof Damageable damageMeta) {

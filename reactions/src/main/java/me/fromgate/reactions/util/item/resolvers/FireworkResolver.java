@@ -133,7 +133,7 @@ public class FireworkResolver implements MetaResolver {
                         }
                         builder.deleteCharAt(builder.length() - 1).append('}');
                     }
-                    builder.append("; ");
+                    builder.append(",");
                 }
                 effectsStr = Utils.cutBuilder(builder, 2);
             }

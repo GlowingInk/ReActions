@@ -1,5 +1,6 @@
 package me.fromgate.reactions.util.item;
 
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.resolvers.*;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -15,8 +16,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class VirtualItem {
+    private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z_]+)(?::(\\d+))?(?:\\*(\\d+))?");
+
     /**
      * A VirtualItem that accepts only null or air ItemStacks
      */
@@ -29,6 +34,7 @@ public final class VirtualItem {
     private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaResolver> RESOLVERS = new ArrayList<>();
     static {
+        registerResolver(new BannerResolver());
         registerResolver(new BookResolver(BookResolver.Type.PAGES));
         registerResolver(new BookResolver(BookResolver.Type.TITLE));
         registerResolver(new BookResolver(BookResolver.Type.AUTHOR));
@@ -209,7 +215,19 @@ public final class VirtualItem {
         for (String key : params) {
             key = key.toLowerCase(Locale.ROOT);
             switch (key) {
-                case "type": type = params.get(key, ItemUtils::getMaterial); break;
+                case "item": {
+                    Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
+                    if (!matcher.matches()) break;
+                    type = ItemUtils.getMaterial(matcher.group(1));
+                    if (!matcher.group(1).isEmpty()) {
+                        resolvers.add(RESOLVERS_MAP.get("durability").fromString(matcher.group(1)));
+                    }
+                    if (!matcher.group(2).isEmpty()) {
+                        amount = NumberUtils.getInteger(matcher.group(2), -1);
+                    }
+                    break;
+                }
+                case "type": type = params.get(key, ItemUtils::getMaterial, Material.AIR); break;
                 case "amount": amount = params.getInteger(key); break;
                 case "name": case "lore":
                     if (regex) key += "-regex";

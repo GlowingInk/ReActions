@@ -42,7 +42,7 @@ public class ColorResolver implements MetaResolver {
     }
 
     private record ColorInst(@Nullable Color color) implements MetaResolver.Instance {
-        private static final ColorInst EMPTY = new ColorInst(null);
+        public static final ColorInst EMPTY = new ColorInst(null);
 
         @Override
         public void apply(@NotNull ItemMeta meta) {
