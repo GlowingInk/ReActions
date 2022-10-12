@@ -108,25 +108,25 @@ public final class VirtualItem {
     }
 
     private @Nullable ItemStack asItem(boolean clone) {
-        if (!itemGenerated) {
+        if (itemGenerated) {
+            return itemValue == null
+                    ? null
+                    : clone ? itemValue.clone() : itemValue;
+        } else {
             itemGenerated = true;
             if (type == null || !type.isItem()) {
-                itemValue = null;
+                return null;
             } else {
                 itemValue = new ItemStack(type);
-                if (!type.isEmpty()) {
-                    itemValue.setAmount(Math.max(amount, 1));
-                    if (!resolvers.isEmpty()) {
-                        ItemMeta meta = itemValue.getItemMeta();
-                        resolvers.forEach(resolver -> resolver.apply(meta));
-                        itemValue.setItemMeta(meta);
-                    }
+                itemValue.setAmount(Math.max(amount, 1));
+                if (!type.isEmpty() && !resolvers.isEmpty()) {
+                    ItemMeta meta = itemValue.getItemMeta();
+                    resolvers.forEach(resolver -> resolver.apply(meta));
+                    itemValue.setItemMeta(meta);
                 }
+                return clone ? itemValue.clone() : itemValue;
             }
         }
-        return itemValue == null
-                ? null
-                : clone ? itemValue.clone() : itemValue;
     }
 
     public @NotNull Parameters asParameters() {
