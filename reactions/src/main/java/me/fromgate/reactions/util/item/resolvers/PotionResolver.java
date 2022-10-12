@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -98,13 +99,13 @@ public class PotionResolver implements MetaResolver {
         }
     }
 
-    private static final class Effects implements MetaResolver.Instance {
-        public static final Effects EMPTY = new Effects("");
+    private static final class Effects implements MetaResolver.Instance { // TODO Particles, etc
+        public static final Effects EMPTY = new Effects(Collections.emptyList());
 
         private final List<PotionEffect> effects;
         private final String effectsStr;
 
-        public Effects(@NotNull String effectsStr) { // TODO Particles, etc
+        public Effects(@NotNull String effectsStr) {
             this.effectsStr = effectsStr;
             String[] split = effectsStr.split(";");
             this.effects = new ArrayList<>(split.length);

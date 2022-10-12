@@ -1,5 +1,6 @@
 package me.fromgate.reactions.util.item.resolvers;
 
+import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,7 +42,7 @@ public class BookResolver implements MetaResolver {
         return switch (type) {
             case TITLE -> bookMeta.hasTitle() ? new TextInst(bookMeta.getTitle(), false) : null;
             case AUTHOR -> bookMeta.hasAuthor() ? new TextInst(bookMeta.getAuthor(), true) : null;
-            case PAGES -> bookMeta.hasPages() ? new PagesInst(bookMeta.getPages()) : null;
+            case PAGES -> Cfg.parseBookPages && bookMeta.hasPages() ? new PagesInst(bookMeta.getPages()) : null;
         };
     }
 
