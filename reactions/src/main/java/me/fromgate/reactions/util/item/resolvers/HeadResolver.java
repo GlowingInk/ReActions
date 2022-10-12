@@ -17,12 +17,12 @@ public class HeadResolver implements MetaResolver { // TODO: Support UUIDs and r
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        return new HeadInst(value);
+        return new HeadInst(value.isEmpty() ? null : value);
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
-        if (meta instanceof SkullMeta skullMeta) {
+        if (meta instanceof SkullMeta skullMeta && skullMeta.hasOwner()) {
             return new HeadInst(skullMeta.getOwner());
         }
         return null;

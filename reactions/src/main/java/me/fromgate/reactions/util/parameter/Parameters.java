@@ -21,6 +21,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
@@ -164,7 +165,7 @@ public class Parameters implements Iterable<String> {
         Map<String, String> params = new CaseInsensitiveMap<>(map);
         map.forEach((k, v) -> {
             bld.append(k).append(':');
-            if (v.indexOf(' ') != -1 || v.length() >= 20) {
+            if (v.isEmpty() || v.length() >= 20 || v.indexOf(' ') != -1) {
                 bld.append('{').append(v).append('}');
             } else {
                 bld.append(v);
@@ -187,18 +188,33 @@ public class Parameters implements Iterable<String> {
         return value == null ? def : value;
     }
 
+    public <R> @Nullable R getSupplied(@NotNull String key, @NotNull Function<String, R> converter, @NotNull Supplier<R> def) {
+        R value = get(key, converter);
+        return value == null ? def.get() : value;
+    }
+
     public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull NotNullSupplier<R> def) {
         R value = get(key, converter);
         return value == null ? def.get() : value;
     }
 
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz) {
-        return Utils.getEnum(clazz, key);
+        return get(key, (value) -> Utils.getEnum(clazz, value));
     }
 
     @Contract("_, _, !null -> !null")
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz, @Nullable R def) {
-        return Utils.getEnum(clazz, key, def);
+        return get(key, (value) -> Utils.getEnum(clazz, value, def));
+    }
+
+    public <R extends Enum<R>> @Nullable R getEnumSupplied(@NotNull String key, @NotNull Class<R> clazz, @NotNull Supplier<R> def) {
+        R value = getEnum(key, clazz);
+        return value == null ? def.get() : value;
+    }
+
+    public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull NotNullSupplier<R> def) {
+        R value = getEnum(key, clazz);
+        return value == null ? def.get() : value;
     }
 
     public @NotNull String getString(@NotNull String key) {
@@ -208,6 +224,11 @@ public class Parameters implements Iterable<String> {
     @Contract("_, !null -> !null")
     public @Nullable String getString(@NotNull String key, @Nullable String def) {
         return params.getOrDefault(key, def);
+    }
+
+    public @Nullable String getStringSupplied(@NotNull String key, @NotNull Supplier<String> def) {
+        String value = params.get(key);
+        return value == null ? def.get() : value;
     }
 
     public @NotNull String getStringSafe(@NotNull String key, @NotNull NotNullSupplier<String> def) {
