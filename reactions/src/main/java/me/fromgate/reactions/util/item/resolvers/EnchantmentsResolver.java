@@ -31,6 +31,7 @@ public class EnchantmentsResolver implements MetaResolver {
         String[] split = value.split(";");
         Map<Enchantment, Integer> enchantments = new HashMap<>(split.length);
         for (String enchValue : split) {
+            enchValue = enchValue.trim();
             int index = enchValue.indexOf(':');
             String enchKey;
             String levelStr;

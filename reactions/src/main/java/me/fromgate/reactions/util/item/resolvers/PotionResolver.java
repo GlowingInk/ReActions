@@ -105,11 +105,12 @@ public class PotionResolver implements MetaResolver {
         private final List<PotionEffect> effects;
         private final String effectsStr;
 
-        public Effects(@NotNull String effectsStr) {
-            this.effectsStr = effectsStr;
-            String[] split = effectsStr.split(";");
+        public Effects(@NotNull String value) {
+            this.effectsStr = value;
+            String[] split = value.split(";");
             this.effects = new ArrayList<>(split.length);
             for (String effectStr : split) {
+                effectStr = effectStr.trim();
                 String[] effectData = effectStr.split(":");
                 if (effectData.length < 3) continue;
                 PotionEffectType type = ItemUtils.searchByKey(effectData[0], PotionEffectType::getByKey);

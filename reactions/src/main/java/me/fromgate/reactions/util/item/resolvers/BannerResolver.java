@@ -27,6 +27,7 @@ public class BannerResolver implements MetaResolver {
             String[] split = value.split(";");
             List<Pattern> patterns = new ArrayList<>();
             for (String patternStr : split) {
+                patternStr = patternStr.trim();
                 int index = patternStr.indexOf(':');
                 if (index == -1) continue;
                 PatternType type = Utils.getEnum(PatternType.class, patternStr.substring(0, index));
