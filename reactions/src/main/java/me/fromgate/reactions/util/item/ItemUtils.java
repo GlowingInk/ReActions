@@ -40,8 +40,7 @@ public final class ItemUtils {
     }
 
     public static int getDurability(@NotNull ItemStack item) {
-        if (!item.hasItemMeta()) return 0;
-        return item.getItemMeta() instanceof Damageable damageMeta
+        return item.hasItemMeta() && item.getItemMeta() instanceof Damageable damageMeta
                 ? damageMeta.getDamage()
                 : 0;
     }
