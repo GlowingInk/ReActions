@@ -67,7 +67,7 @@ public class Parameters implements Iterable<String> {
         Map<String, String> params = new CaseInsensitiveMap<>(true);
         IterationState state = IterationState.SPACE;
         String param = "";
-        StringBuilder bld = null; // TODO: Implement building style from placeholders? JMH performance testing required
+        StringBuilder bld = null;
         int brCount = 0;
         for (int i = 0; i < str.length(); ++i) {
             char c = str.charAt(i);

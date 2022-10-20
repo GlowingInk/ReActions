@@ -24,6 +24,7 @@ public class NameResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+        if (value.isEmpty()) return NameInst.EMPTY;
         return new NameInst(ChatColor.translateAlternateColorCodes('&', value), value, regex);
     }
 
@@ -35,20 +36,22 @@ public class NameResolver implements MetaResolver {
     }
 
     private static final class NameInst implements Instance {
-        private final String value;
-        private final String decolored;
+        public static NameInst EMPTY = new NameInst("", "", false);
+
+        private final String colored;
+        private final String plain;
         private final Pattern namePattern;
 
-        private NameInst(@NotNull String value, @NotNull String decolored, boolean regex) {
-            this.value = value;
-            this.decolored = decolored;
+        private NameInst(@NotNull String colored, @NotNull String plain, boolean regex) {
+            this.colored = colored;
+            this.plain = plain;
             if (regex) {
                 Pattern pattern;
                 try {
-                    pattern = Pattern.compile(value);
-                    // TODO: Log error
+                    pattern = Pattern.compile(colored, Pattern.UNICODE_CASE);
                 } catch (PatternSyntaxException ex) {
-                    pattern = Pattern.compile(Pattern.quote(value));
+                    // TODO: Log error
+                    pattern = Pattern.compile(Pattern.quote(colored));
                 }
                 this.namePattern = pattern;
             } else {
@@ -58,7 +61,7 @@ public class NameResolver implements MetaResolver {
 
         @Override
         public void apply(@NotNull ItemMeta meta) {
-            meta.setDisplayName(value);
+            meta.setDisplayName(colored);
         }
 
         @Override
@@ -67,9 +70,9 @@ public class NameResolver implements MetaResolver {
                 String name = meta.hasDisplayName() ? meta.getDisplayName() : "";
                 return namePattern.matcher(name).matches();
             }
-            return value.isEmpty() ?
-                    !meta.hasDisplayName() :
-                    value.equals(meta.getDisplayName());
+            return colored.isEmpty()
+                    ? !meta.hasDisplayName()
+                    : colored.equals(meta.getDisplayName());
         }
 
         @Override
@@ -81,7 +84,7 @@ public class NameResolver implements MetaResolver {
 
         @Override
         public @NotNull String asString() {
-            return decolored;
+            return plain;
         }
     }
 }

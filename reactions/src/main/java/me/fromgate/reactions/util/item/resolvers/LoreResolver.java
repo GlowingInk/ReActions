@@ -1,16 +1,16 @@
 package me.fromgate.reactions.util.item.resolvers;
 
 import me.fromgate.reactions.util.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import static java.lang.String.join;
+import static org.bukkit.ChatColor.COLOR_CHAR;
+import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class LoreResolver implements MetaResolver {
     private final boolean regex;
@@ -28,56 +28,62 @@ public class LoreResolver implements MetaResolver {
 
     @Override
     public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
-        List<String> lore = value.isEmpty() || regex
-                ? Collections.emptyList()
-                : Utils.literalSplit(value, "\\n");
-        return new LoreInst(ChatColor.translateAlternateColorCodes('&', value), lore, value, regex);
+        if (value.isEmpty()) return LoreInst.EMPTY;
+        return new LoreInst(
+                value,
+                translateAlternateColorCodes('&', value),
+                regex
+        );
     }
 
     @Override
     public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
         if (!meta.hasLore() || regex) return null;
-        List<String> lore = meta.getLore();
-        String value = String.join("\\n", lore);
-        return new LoreInst(value, lore, value.replace(ChatColor.COLOR_CHAR, '&'), false);
+        String value = join("\\n", meta.getLore());
+        return new LoreInst(
+                value.replace(COLOR_CHAR, '&'),
+                value,
+                false
+        );
     }
 
     private static final class LoreInst implements Instance {
-        private final List<String> lore;
-        private final Pattern lorePattern;
-        private final String decolored;
+        public static final LoreInst EMPTY = new LoreInst("", "", false);
 
-        private LoreInst(@NotNull String value, @NotNull List<String> lore, @NotNull String decolored, boolean regex) {
-            this.decolored = decolored;
+        private final String plain;
+        private final String colored;
+        private final Pattern lorePattern;
+
+        private LoreInst(@NotNull String plain, @NotNull String colored, boolean regex) {
+            this.plain = plain;
+            this.colored = colored;
             if (regex) {
-                this.lore = null;
                 Pattern pattern;
                 try {
-                    pattern = Pattern.compile(value, Pattern.UNICODE_CASE);
+                    pattern = Pattern.compile(colored, Pattern.UNICODE_CASE);
                 } catch (PatternSyntaxException ex) {
-                    pattern = Pattern.compile(Pattern.quote(value));
+                    // TODO: Log error
+                    pattern = Pattern.compile(Pattern.quote(colored));
                 }
                 this.lorePattern = pattern;
             } else {
-                this.lore = lore;
                 this.lorePattern = null;
             }
         }
 
         @Override
         public void apply(@NotNull ItemMeta meta) {
-            meta.setLore(lore);
+            meta.setLore(Utils.literalSplit(colored, "\\n"));
         }
 
         @Override
         public boolean isSimilar(@NotNull ItemMeta meta) {
             if (lorePattern != null) {
-                String name = meta.hasLore() ? String.join("\\n", meta.getLore()) : "";
-                return lorePattern.matcher(name).matches();
+                return meta.hasLore() && lorePattern.matcher(join("\\n", meta.getLore())).matches();
             }
-            return lore.isEmpty() ?
-                    !meta.hasLore() :
-                    Objects.equals(lore, meta.getLore());
+            return colored.isEmpty()
+                    ? !meta.hasLore()
+                    : meta.hasLore() && colored.equals(join("\\n", meta.getLore()));
         }
 
         @Override
@@ -89,7 +95,7 @@ public class LoreResolver implements MetaResolver {
 
         @Override
         public @NotNull String asString() {
-            return decolored;
+            return plain;
         }
     }
 }
