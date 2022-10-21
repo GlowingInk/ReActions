@@ -45,7 +45,7 @@ public class DeathActivator extends Activator {
     }
 
     public static DeathActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        DeathCause cause = DeathCause.getByName(cfg.getString("death-cause"));
+        DeathCause cause = DeathCause.getByName(cfg.getString("death-cause", "ANY"));
         return new DeathActivator(base, cause);
     }
 

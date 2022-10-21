@@ -26,23 +26,19 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
-import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
 @Aliases({"CONSUME", "EAT"})
 public class ItemConsumeActivator extends Activator {
-    // TODO: Store VirtualItem
-    private final String item;
+    private final VirtualItem item;
     // TODO: Hand option
 
     private ItemConsumeActivator(ActivatorLogic base, String item) {
         super(base);
-        this.item = item;
+        this.item = VirtualItem.fromString(item);
     }
 
     public static ItemConsumeActivator create(ActivatorLogic base, Parameters param) {
@@ -56,21 +52,12 @@ public class ItemConsumeActivator extends Activator {
     }
 
     public boolean checkStorage(Storage event) {
-        if (this.item.isEmpty() || VirtualItem.fromString(this.item) == null) {
-            Msg.logOnce(logic.getName() + "activatoritemempty", "Failed to parse item of activator " + logic.getName());
-            return false;
-        }
         ItemConsumeStorage ie = (ItemConsumeStorage) event;
-        return ItemUtils.compareItemStr(ie.getItem(), this.item);
+        return item.isSimilar(ie.getItem());
     }
 
     public void saveOptions(ConfigurationSection cfg) {
-        cfg.set("item", item);
-    }
-
-    @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(item);
+        cfg.set("item", item.toString());
     }
 
     public String toString() {

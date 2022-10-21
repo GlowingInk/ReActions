@@ -24,33 +24,32 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
         if (NumberUtils.isInteger(value)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
-            vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
+            vi = VirtualItem.fromItem(player.getInventory().getItem(slotNum));
         } else switch (value.toLowerCase(Locale.ROOT)) {
             case "mainhand":
             case "hand":
-                return ItemUtils.getPlayerItemInHand(player, false);
+                return ItemUtils.getItemInHand(player, false);
             case "offhand":
-                return ItemUtils.getPlayerItemInHand(player, true);
+                return ItemUtils.getItemInHand(player, true);
             case "head":
             case "helm":
             case "helmet":
-                vi = VirtualItem.fromItemStack(player.getInventory().getHelmet());
+                vi = VirtualItem.fromItem(player.getInventory().getHelmet());
                 break;
             case "chestplate":
             case "chest":
-                vi = VirtualItem.fromItemStack(player.getInventory().getChestplate());
+                vi = VirtualItem.fromItem(player.getInventory().getChestplate());
                 break;
             case "leggings":
             case "legs":
-                vi = VirtualItem.fromItemStack(player.getInventory().getLeggings());
+                vi = VirtualItem.fromItem(player.getInventory().getLeggings());
                 break;
             case "boots":
             case "boot":
-                vi = VirtualItem.fromItemStack(player.getInventory().getBoots());
+                vi = VirtualItem.fromItem(player.getInventory().getBoots());
                 break;
         }
-        if (vi == null) return "";
-        return vi.toString();
+        return vi == null ? "" : vi.toString();
     }
 
     @Override

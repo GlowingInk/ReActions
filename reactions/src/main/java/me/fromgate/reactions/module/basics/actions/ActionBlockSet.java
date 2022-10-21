@@ -25,14 +25,12 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @Aliases("SET_BLOCK")
@@ -44,27 +42,15 @@ public class ActionBlockSet implements Action {
         //String istr = params.getParam("block", "");
         boolean phys = params.getBoolean("physics", false);
         boolean drop = params.getBoolean("drop", false);
-        Parameters itemParam = Parameters.fromString(params.getString("block", "AIR"), "type");
-        ItemStack item = null;
-        if (!itemParam.getString("type", "AIR").equalsIgnoreCase("air")) {
-            item = VirtualItem.fromMap(itemParam.getMap());
-            if ((item == null) || ((!item.getType().isBlock()))) {
-                Msg.logOnce("wrongblock" + params.getString("block"), "Failed to execute action BLOCK_FILL. Wrong block " + params.getString("block"));
-                return false;
-            }
-        }
+        Material type = params.get("block", ItemUtils::getMaterial, Material.AIR);
 
         Location loc = LocationUtils.parseLocation(params.getString("loc"), null);
         if (loc == null) return false;
         Block b = loc.getBlock();
 
-        if (b.getType() != Material.AIR && drop) b.breakNaturally();
+        if (drop && !b.getType().isEmpty()) b.breakNaturally();
 
-        if (item != null) {
-            b.setType(item.getType());
-            //b.setBlockData(item.getData(),phys);
-            //b.setTypeIdAndData(item.getTypeId(), item.getData().getData(), phys);
-        } else b.setType(Material.AIR, phys);
+        b.setType(type, phys);
         return true;
     }
 

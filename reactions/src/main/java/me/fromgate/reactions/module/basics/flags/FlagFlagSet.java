@@ -26,20 +26,13 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-// TODO: Rewrite
 @Aliases("FLAGS_OR")
 public class FlagFlagSet implements Flag {
-
-    private static final Pattern BRACES = Pattern.compile("(^\\{\\s*)|(\\s*}$)");
-    private static final Pattern BRACES_GROUP = Pattern.compile("\\S+:\\{[^{}]*}|\\S+");
-
     private final ActivitiesRegistry registry;
 
     public FlagFlagSet(ActivitiesRegistry registry) {
@@ -48,15 +41,16 @@ public class FlagFlagSet implements Flag {
 
     @Override
     public boolean check(@NotNull RaContext context, @NotNull String params) {
-        List<String> flagList = parseParamsList(params);
-        if (flagList.isEmpty()) return false;
-        for (String flagStr : flagList) {
-            boolean negative = flagStr.startsWith("!");
-            if (negative) flagStr = flagStr.replaceFirst("!", "");
-            String[] fnv = flagStr.split(":", 2);
-            if (fnv.length != 2) continue;
-            Flag flag = registry.getFlag(fnv[0]);
-            if (flag != null && negative != flag.check(context, BRACES.matcher(fnv[1]).replaceAll(""))) {
+        List<String> split = Parameters.splitSafely(params, ' ');
+        boolean hasPlayer = context.getPlayer() != null;
+        for (String flagFullStr : split) {
+            String[] flagSplit = flagFullStr.split(":", 2);
+            if (flagSplit.length == 1) {
+                continue;
+            }
+            boolean invert = flagSplit[0].startsWith("!");
+            Flag flag = registry.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
+            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && flag.check(context, flagSplit[1])) {
                 return true;
             }
         }
@@ -71,32 +65,5 @@ public class FlagFlagSet implements Flag {
     @Override
     public boolean requiresPlayer() {
         return false;
-    }
-
-    private static String hideBkts(String s) {
-        int count = 0;
-        StringBuilder r = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            String a = String.valueOf(c);
-            if (c == '{') {
-                count++;
-                if (count != 1) a = "#BKT1#";
-            } else if (c == '}') {
-                if (count != 1) a = "#BKT2#";
-                count--;
-            }
-            r.append(a);
-        }
-        return r.toString();
-    }
-
-    private List<String> parseParamsList(String param) {
-        List<String> paramList = new ArrayList<>();
-        Matcher matcher = BRACES_GROUP.matcher(hideBkts(param));
-        while (matcher.find()) {
-            paramList.add(matcher.group().trim().replace("#BKT1#", "{").replace("#BKT2#", "}"));
-        }
-        return paramList;
     }
 }

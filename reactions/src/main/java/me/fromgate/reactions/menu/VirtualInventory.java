@@ -73,7 +73,7 @@ public class VirtualInventory {
         holder.setInventory(inv);
         for (int i = 0; i < slots.size(); i++) {
             if (slots.get(i).isEmpty()) continue;
-            ItemStack item = VirtualItem.fromString(slots.get(i));
+            ItemStack item = VirtualItem.asItem(slots.get(i));
             if (item == null) continue;
             inv.setItem(i, item);
         }

@@ -34,7 +34,7 @@ public class StringValue implements DataValue {
 
     @Override
     public ItemStack asItemStack() {
-        return VirtualItem.fromString(value);
+        return VirtualItem.asItem(value);
     }
 
     @Override

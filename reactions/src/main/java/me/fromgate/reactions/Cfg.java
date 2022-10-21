@@ -27,6 +27,7 @@ public class Cfg {
     public static int godActivatorCheckTicks = 10;
     public static boolean altOperator = false; // experimental, disabled by default
     public static boolean modernPlaceholders = false;
+    public static boolean parseBookPages = false;
 
     public static void save(FileConfiguration config) {
         config.set("general.language", language);
@@ -38,6 +39,8 @@ public class Cfg {
         config.set("general.placeholder-limit", 32);
         config.set("general.waiter-hours-limit", WaitingManager.getTimeLimit() / 3600000L);
         config.set("general.use-modern-placeholders", modernPlaceholders);
+        config.set("general.parse-book-pages", parseBookPages);
+
         config.set("reactions.activators.god.enable", godActivatorEnable);
         config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
@@ -64,6 +67,8 @@ public class Cfg {
         PlaceholdersManager.setCountLimit(config.getInt("general.placeholder-limit", 127));
         WaitingManager.setTimeLimit(config.getLong("general.waiter-hours-limit", 4380) * 3600000L);
         modernPlaceholders = config.getBoolean("general.use-modern-placeholders", false);
+        parseBookPages = config.getBoolean("general.parse-book-pages", false);
+
         godActivatorEnable = config.getBoolean("reactions.activators.god.enable", true);
         godActivatorCheckTicks = config.getInt("reactions.activators.god.recheck-ticks", 10);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
@@ -76,6 +81,7 @@ public class Cfg {
         horizontalPushback = config.getBoolean("reactions.horizontal-pushback-action", false);
         Shoot.actionShootBreak = config.getString("actions.shoot.break-block", Shoot.actionShootBreak);
         Shoot.actionShootThrough = config.getString("actions.shoot.penetrable", Shoot.actionShootThrough);
+        Shoot.reload();
         altOperator = config.getBoolean("actions.cmd_op.proxy-operator", false);
     }
 }

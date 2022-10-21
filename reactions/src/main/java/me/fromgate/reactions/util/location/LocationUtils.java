@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class LocationUtils {
+public final class LocationUtils { // TODO: Requires refactoring
     public static final Location ZERO_LOCATION = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
 
     private LocationUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}

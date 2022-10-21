@@ -4,7 +4,7 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.InventoryClickStorage;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
@@ -19,7 +19,7 @@ public class InventoryClickActivator extends Activator {
     private final SlotType slotType;
     private final String numberKey;
     private final String slotStr;
-    private final String itemStr;
+    private final VirtualItem item;
 
     private InventoryClickActivator(ActivatorLogic base, String inventoryName, ClickType click, InventoryAction action,
                                     InventoryType inventory, SlotType slotType, String numberKey, String slotStr, String itemStr) {
@@ -31,7 +31,7 @@ public class InventoryClickActivator extends Activator {
         this.slotType = slotType;
         this.numberKey = numberKey;
         this.slotStr = slotStr;
-        this.itemStr = itemStr;
+        this.item = VirtualItem.fromString(itemStr);
     }
 
     private static String getNumberKeyByName(String keyStr) {
@@ -103,7 +103,7 @@ public class InventoryClickActivator extends Activator {
         cfg.set("slot-type", slotType.name());
         cfg.set("key", numberKey);
         cfg.set("slot", slotStr);
-        cfg.set("item", itemStr);
+        cfg.set("item", item.toString());
     }
 
     private boolean clickCheck(org.bukkit.event.inventory.ClickType ct) {
@@ -127,9 +127,8 @@ public class InventoryClickActivator extends Activator {
     }
 
     private boolean checkItem(ItemStack item, int key, Inventory bottomInventory) {
-        if (this.itemStr.isEmpty()) return true;
-        boolean result = ItemUtils.compareItemStr(item, this.itemStr, true);
-        if (!result && key > -1) return ItemUtils.compareItemStr(bottomInventory.getItem(key), this.itemStr, true);
+        boolean result = this.item.isSimilar(item);
+        if (!result && key > -1) return this.item.isSimilar(bottomInventory.getItem(key));
         return result;
     }
 

@@ -27,12 +27,11 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.MobDamageStorage;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.Locale;
 
@@ -40,13 +39,13 @@ public class MobDamageActivator extends Activator {
     private final String mobName;
     // TODO: EntityType
     private final String mobType;
-    private final String itemStr;
+    private final VirtualItem item;
 
     private MobDamageActivator(ActivatorLogic base, String type, String name, String item) {
         super(base);
         this.mobType = type;
         this.mobName = name;
-        this.itemStr = item;
+        this.item = VirtualItem.fromString(item);
     }
 
     public static MobDamageActivator create(ActivatorLogic base, Parameters param) {
@@ -77,12 +76,7 @@ public class MobDamageActivator extends Activator {
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         if (!isActivatorMob(me.getEntity())) return false;
-        return checkItem(me.getPlayer());
-    }
-
-    private boolean checkItem(Player player) {
-        if (this.itemStr.isEmpty()) return true;
-        return ItemUtils.compareItemStr(player.getInventory().getItemInMainHand(), this.itemStr, true);
+        return item.isSimilar(me.getPlayer().getInventory().getItemInMainHand());
     }
 
     private boolean isActivatorMob(LivingEntity mob) {
@@ -102,7 +96,7 @@ public class MobDamageActivator extends Activator {
     public void saveOptions(ConfigurationSection cfg) {
         cfg.set("mob-type", mobType);
         cfg.set("mob-name", mobName);
-        cfg.set("item", itemStr);
+        cfg.set("item", item.toString());
     }
 
     @Override

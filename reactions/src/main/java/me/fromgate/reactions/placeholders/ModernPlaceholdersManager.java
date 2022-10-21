@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ModernPlaceholdersManager extends PlaceholdersManager {
-    private static final Pattern PRE_ESCAPE = Pattern.compile("(\\\\+)(?![%#]\\[|[]\\\\])");
+    private static final Pattern PRE_ESCAPE = Pattern.compile("(\\\\+)(?!%\\[|[\\\\\\]])"); // "(\\+)(?!%\[|[\\\]])"
 
     @Override
     public String parsePlaceholders(@NotNull RaContext context, @Nullable String text) {
@@ -29,7 +29,6 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         IterationStage stage = IterationStage.TEXT;
         int stepIndex = 0;
         boolean allowSpecial = true;
-        boolean recursive = false;
         for (int index = 0; index < text.length(); index++) {
             char c = text.charAt(index);
             if (c == '\\' && stage != IterationStage.PLACEHOLDER_CHECK) {
@@ -47,12 +46,6 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                 case TEXT -> {
                     if (c == '%') {
                         if (allowSpecial) {
-                            recursive = true;
-                            stage = IterationStage.PLACEHOLDER_CHECK;
-                        }
-                    } else if (c == '#') {
-                        if (allowSpecial) {
-                            recursive = false;
                             stage = IterationStage.PLACEHOLDER_CHECK;
                         }
                     }
@@ -74,21 +67,22 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(context, substring);
                             if (processed != null) {
-                                builder.append(recursive ? processed : escapeSpecial(processed));
+                                if (text.length() > index + 3 && text.charAt(index + 1) == '(') {
+                                    String options = optionsSearch(text, index + 2);
+                                    if (options != null) {
+                                        index += options.length() + 2;
+                                        if (options.contains("phs")) processed = escapeSpecial(processed);
+                                    }
+                                }
+                                builder.append(processed);
                             } else {
-                                builder.append(recursive ? "\\%[" : "\\#[").append(substring).append("\\]");
+                                builder.append("\\%[").append(substring).append("\\]");
                             }
                             stepIndex = index + 1;
                             stage = IterationStage.TEXT;
                         }
                     } else if (c == '%') {
                         if (allowSpecial) {
-                            recursive = true;
-                            stage = IterationStage.PLACEHOLDER_CHECK;
-                        }
-                    } else if (c == '#') {
-                        if (allowSpecial) {
-                            recursive = false;
                             stage = IterationStage.PLACEHOLDER_CHECK;
                         }
                     }
@@ -102,30 +96,40 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return builder.toString();
     }
 
-    private static String preEscape(@NotNull String text) {
+    private static @Nullable String optionsSearch(@NotNull String text, int startIndex) {
+        for (int index = startIndex; index < text.length(); ++index) {
+            char c = text.charAt(index);
+            if (c == ')') {
+                return text.substring(startIndex, index);
+            } else if ((c > 'z' || c < 'a') && c != ',') {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static @NotNull String preEscape(@NotNull String text) {
         StringBuilder builder = new StringBuilder(text.length());
         Matcher matcher = PRE_ESCAPE.matcher(text);
         while (matcher.find()) {
-            String group = matcher.group();
+            String group = matcher.group(1);
             matcher.appendReplacement(builder, "");
             builder.append(group).append(group);
         }
         return matcher.appendTail(builder).toString();
     }
 
-    public static String escapeSpecial(@NotNull String text) {
+    private static @NotNull String escapeSpecial(@NotNull String text) {
         return text
                 .replace("\\", "\\\\")
                 .replace("%[", "\\%[")
-                .replace("#[", "\\#[")
                 .replace("]", "\\]");
     }
 
-    private static String unescapeSpecial(@NotNull String text) {
+    private static @NotNull String unescapeSpecial(@NotNull String text) {
         return text
                 .replace("\\\\", "\\")
                 .replace("\\%[", "%[")
-                .replace("\\#[", "#[")
                 .replace("\\]", "]");
     }
 

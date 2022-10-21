@@ -6,34 +6,53 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Basically this is a wrapper for HashMap<String, V> which allows to ignore case of the string key
+ * Doesn't allow null keys
  * For Map#get and Map#put works with O(1), while TreeMap<String, V>(String.CASE_INSENSITIVE_ORDER) is O(log(n))
  *
  * Should be used when keys are needed to save/proceed, otherwise HashMap<String, V> with String#toLowerCase
  * @param <V> Type of value
  * @author imDaniX
  */
-public class CaseInsensitiveMap<V> implements Map<String, V> {
+public class CaseInsensitiveMap<V> implements Map<String, V> { // TODO Implement simpler singleton
     private final Map<String, KeyedValue<V>> origin;
     private final KeySet keySet;
     private final ValueSet valueSet;
     private final EntrySet entrySet;
 
+    public CaseInsensitiveMap(@NotNull Map<String, V> copy) {
+        this(copy.size());
+        putAll(copy);
+    }
+
+    public CaseInsensitiveMap(boolean linked, @NotNull Map<String, V> copy) {
+        this(linked, copy.size());
+        putAll(copy);
+    }
+
     public CaseInsensitiveMap() {
-        origin = new HashMap<>();
+        this(false, 16);
+    }
+
+    public CaseInsensitiveMap(int initSize) {
+        this(false, initSize);
+    }
+
+    public CaseInsensitiveMap(boolean linked) {
+        this(linked, 16);
+    }
+
+    public CaseInsensitiveMap(boolean linked, int initSize) {
+        origin = linked ? new LinkedHashMap<>(initSize) : new HashMap<>(initSize);
         keySet = new KeySet();
         valueSet = new ValueSet();
         entrySet = new EntrySet();
-    }
-
-    public CaseInsensitiveMap(Map<String, V> copy) {
-        this();
-        putAll(copy);
     }
 
     @Override
@@ -48,7 +67,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @Override
     public boolean containsKey(Object o) {
-        return origin.containsKey(((String)o).toLowerCase(Locale.ROOT));
+        return o instanceof String str && origin.containsKey(str.toLowerCase(Locale.ROOT));
     }
 
     @Override
@@ -58,19 +77,25 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @Override
     public V get(Object o) {
-        return origin.getOrDefault(((String)o).toLowerCase(Locale.ROOT), KeyedValue.empty()).getValue();
+        return o instanceof String str
+                ? origin.getOrDefault(str.toLowerCase(Locale.ROOT), KeyedValue.empty()).getValue() // TODO: getOrDefault may return null
+                : null;
     }
 
     @Override
     public V put(String s, V v) {
         KeyedValue<V> result = origin.put(s.toLowerCase(Locale.ROOT), new KeyedValue<>(s, v));
-        return result == null ? null : result.getValue();
+        return result == null
+                ? null
+                : result.getValue();
     }
 
     @Override
     public V remove(Object o) {
         KeyedValue<V> result = origin.remove(((String)o).toLowerCase(Locale.ROOT));
-        return result == null ? null : result.getValue();
+        return result == null
+                ? null
+                : result.getValue();
     }
 
     @Override

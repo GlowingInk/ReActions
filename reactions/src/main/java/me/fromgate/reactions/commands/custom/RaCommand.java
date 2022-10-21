@@ -9,6 +9,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * Custom implementation of Bukkit's Command just for ReActions - not a part of API
+ * Custom implementation of Bukkit Command
  */
+@ApiStatus.Internal
 public final class RaCommand extends Command implements PluginIdentifiableCommand {
     private final String permission;
     private final boolean consoleAllowed;

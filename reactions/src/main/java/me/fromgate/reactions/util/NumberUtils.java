@@ -1,7 +1,10 @@
 package me.fromgate.reactions.util;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
+// TODO: In the current state it's bloated mess. Refactor
 public final class NumberUtils {
     // Byte
     public static final Pattern BYTE = Pattern.compile("(2[1-5][1-6]|\\d{1,2})");
@@ -26,13 +29,22 @@ public final class NumberUtils {
         return Integer.parseInt(str);
     }
 
+    public static double getDouble(String str, DoubleSupplier def) {
+        if (Utils.isStringEmpty(str) || !FLOAT.matcher(str).matches()) return def.getAsDouble();
+        return Double.parseDouble(str);
+    }
+
+    public static int getInteger(String str, IntSupplier def) {
+        if (Utils.isStringEmpty(str) || !INT.matcher(str).matches()) return def.getAsInt();
+        return Integer.parseInt(str);
+    }
+
     public static String format(double d) {
         return (d == (long) d) ?
                Long.toString((long) d) :
                Double.toString(d);
     }
 
-    // TODO: Should be removed or refactored
     public static boolean isIntegerSigned(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
@@ -67,6 +79,10 @@ public final class NumberUtils {
         for (String s : str)
             if (!FLOAT.matcher(s).matches()) return false;
         return true;
+    }
+
+    public static boolean isNumber(String str) {
+        return FLOAT.matcher(str).matches();
     }
 
     /**

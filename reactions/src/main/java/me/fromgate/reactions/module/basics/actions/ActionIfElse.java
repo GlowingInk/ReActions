@@ -59,7 +59,7 @@ public class ActionIfElse implements Action {
         if (!param.contains("run")) return false;
         param = Parameters.fromString(param.getString("run"));
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return false;
-        param.put("player", p == null ? "null" : p.getName());
+        param.put("player", p == null ? "~null" : p.getName());
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("condition", condition);
         StoragesManager.triggerExec(p, param, tempVars);

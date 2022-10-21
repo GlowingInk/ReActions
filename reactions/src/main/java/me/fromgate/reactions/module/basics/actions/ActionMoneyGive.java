@@ -71,7 +71,7 @@ public class ActionMoneyGive implements Action {
             String[] m = mstr.split("/");
             if (m.length >= 2) {
                 newParams.put("amount", m[0].contains("-") ? Integer.toString(Rng.nextIntRanged(m[0])) : m[0]);
-                newParams.put("sourse", m[1]);
+                newParams.put("source", m[1]);
             }
         } else newParams.put("amount", mstr.contains("-") ? Integer.toString(Rng.nextIntRanged(mstr)) : mstr);
         return Parameters.fromMap(newParams);

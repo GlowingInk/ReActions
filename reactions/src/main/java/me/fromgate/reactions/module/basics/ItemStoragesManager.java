@@ -7,9 +7,10 @@ import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
 import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
 import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
 import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -45,7 +46,7 @@ public final class ItemStoragesManager {
         final UUID playerId = player.getUniqueId();
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             for (Activator ih : ReActions.getActivatorTypes().get(ItemHoldActivator.class).getActivators())
-                setFutureItemHoldCheck(playerId, ((ItemHoldActivator) ih).getItemStr(), false);
+                setFutureItemHoldCheck(playerId, ((ItemHoldActivator) ih).getItem(), false);
         }, 1);
     }
 
@@ -64,18 +65,18 @@ public final class ItemStoragesManager {
         String rg = "ih-" + itemStr;
         if (!StoragesManager.isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return;
 
-        if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, true);
-        if (offHandItemExist) processItemHoldActivator(player, offHandItem, false);
+        if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, EquipmentSlot.HAND);
+        if (offHandItemExist) processItemHoldActivator(player, offHandItem, EquipmentSlot.OFF_HAND);
 
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20L * Cfg.itemHoldRecheck);
     }
 
-    private static void processItemHoldActivator(Player player, ItemStack item, boolean mainHand) {
-        ItemHoldStorage ihe = new ItemHoldStorage(player, item, mainHand);
+    private static void processItemHoldActivator(Player player, ItemStack item, EquipmentSlot hand) {
+        ItemHoldStorage ihe = new ItemHoldStorage(player, item, hand);
         ReActions.getActivators().activate(ihe);
     }
 
     private static boolean isItemHoldProcessable(ItemStack item, String itemStr) {
-        return ItemUtils.isExist(item) && ItemUtils.compareItemStr(item, itemStr);
+        return VirtualItem.isSimilar(itemStr, item);
     }
 }

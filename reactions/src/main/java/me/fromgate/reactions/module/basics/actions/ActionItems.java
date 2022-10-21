@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-// TODO: Rework
+// TODO: Remake from scratch
 public class ActionItems implements Action {
     private final Type actionType;
 
@@ -103,7 +103,7 @@ public class ActionItems implements Action {
         if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
             player.getInventory().setItem(slotNum, null);
         } else {
-            VirtualItem vi = VirtualItem.fromString(itemStr);
+            ItemStack vi = VirtualItem.asItem(itemStr);
             if (vi == null) return false;
             player.getInventory().setItem(slotNum, vi);
         }
@@ -126,7 +126,7 @@ public class ActionItems implements Action {
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);
         String actionItems = "";
-        if (item != null) actionItems = ItemUtils.itemToString(item);
+        if (item != null) actionItems = VirtualItem.asString(item);
         context.setVariable("item_str", actionItems);
         context.setVariable("item_str_esc", Utils.escapeJava(actionItems));
 
@@ -141,7 +141,7 @@ public class ActionItems implements Action {
         ItemStack[] armour = player.getInventory().getArmorContents();
         ItemStack item = armour[slot];
         String actionItems = "";
-        if (item != null) actionItems = ItemUtils.itemToString(item);
+        if (item != null) actionItems = VirtualItem.asString(item);
         context.setVariable("item_str", actionItems);
         context.setVariable("item_str_esc", Utils.escapeJava(actionItems));
         return true;
@@ -156,7 +156,7 @@ public class ActionItems implements Action {
             context.setVariable("item_str_esc", "");
             return true;
         }
-        String item = ItemUtils.itemToString(player.getInventory().getItemInOffHand());
+        String item = VirtualItem.asString(player.getInventory().getItemInOffHand());
         context.setVariable("item_str", item);
         context.setVariable("item_str_esc", Utils.escapeJava(item));
         return true;
@@ -182,7 +182,7 @@ public class ActionItems implements Action {
             if (slot == -1) return setItemInOffhand(context, params, null);
             //if (slot == -1) slot = 3;
         } else {
-            item = VirtualItem.fromString(itemStr);
+            item = VirtualItem.asItem(itemStr);
             if (item == null) return false;
             if (slot == -1) return setItemInOffhand(context, params, item);
             // if (slot == -1) slot = getSlotByItem(item);
@@ -220,13 +220,13 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInInventory(RaContext context, Parameters params) {
-        VirtualItem search = VirtualItem.fromMap(params.getMap());
+        VirtualItem search = VirtualItem.fromParameters(params);
         int remAmount = search.getAmount();
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
-            if (search.isSimilar(item)) {
+            if (item != null && search.isSimilar(item)) {
                 if (all) {
                     inventory.setItem(i, null);
                 } else if (item.getAmount() > remAmount) {
@@ -240,12 +240,12 @@ public class ActionItems implements Action {
             }
         }
         context.setVariable("item", search.toString());
-        context.setVariable("item_str", search.toDisplayString());
+        context.setVariable("item_str", ItemUtils.toDisplayString(params));
         return true;
     }
 
     private boolean removeItemInHand(RaContext context, Parameters params) {
-        VirtualItem search = VirtualItem.fromMap(params.getMap());
+        VirtualItem search = VirtualItem.fromParameters(params);
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         ItemStack item = inventory.getItemInMainHand();
@@ -257,10 +257,10 @@ public class ActionItems implements Action {
                 inventory.setItemInMainHand(item);
             }
         }
-        VirtualItem result = VirtualItem.fromItemStack(item);
-        if (result != null) {
+        VirtualItem result = VirtualItem.fromItem(item);
+        if (!item.getType().isEmpty()) {
             context.setVariable("item", result.toString());
-            context.setVariable("item_str", result.toDisplayString());
+            context.setVariable("item_str", ItemUtils.toDisplayString(item));
         } else {
             context.setVariable("item", "");
             context.setVariable("item_str", "");
@@ -269,7 +269,7 @@ public class ActionItems implements Action {
     }
 
     private boolean removeItemInOffHand(RaContext context, Parameters params) {
-        VirtualItem search = VirtualItem.fromMap(params.getMap());
+        VirtualItem search = VirtualItem.fromParameters(params);
         boolean all = !params.contains("amount");
         PlayerInventory inventory = context.getPlayer().getInventory();
         ItemStack item = inventory.getItemInOffHand();
@@ -281,10 +281,10 @@ public class ActionItems implements Action {
                 inventory.setItemInOffHand(item);
             }
         }
-        VirtualItem result = VirtualItem.fromItemStack(item);
-        if (result != null) {
+        VirtualItem result = VirtualItem.fromItem(item);
+        if (!item.getType().isEmpty()) {
             context.setVariable("item", result.toString());
-            context.setVariable("item_str", result.toDisplayString());
+            context.setVariable("item_str", ItemUtils.toDisplayString(item));
         } else {
             context.setVariable("item", "");
             context.setVariable("item_str", "");
@@ -294,7 +294,7 @@ public class ActionItems implements Action {
 
     private boolean giveItemPlayer(RaContext context, final String param) {
         Player player = context.getPlayer();
-        final List<ItemStack> items = ItemUtils.parseRandomItemsStr(param);
+        List<ItemStack> items = ItemUtils.parseRandomItemsStr(param);
         if (items == null || items.isEmpty()) return false;
         String actionItems = ItemUtils.toDisplayString(items);
         context.setVariable("item_str", actionItems);
@@ -351,35 +351,36 @@ public class ActionItems implements Action {
 
         if (slot == -1 && !itemStr.isEmpty()) {
             for (int i = 0; i < armor.length; i++) {
-                if (ItemUtils.compareItemStr(armor[i], itemStr)) {
-                    vi = VirtualItem.fromItemStack(armor[i]);
+                if (VirtualItem.isSimilar(itemStr, armor[i])) {
+                    vi = VirtualItem.fromItem(armor[i]);
                     slot = i;
                 }
             }
         } else if (slot >= 0) {
             ItemStack itemSlot = armor[slot];
-            if (itemStr.isEmpty() || ItemUtils.compareItemStr(itemSlot, itemStr))
-                vi = VirtualItem.fromItemStack(itemSlot);
+            if (itemStr.isEmpty() || VirtualItem.isSimilar(itemStr, itemSlot))
+                vi = VirtualItem.fromItem(itemSlot);
         }
         if (vi == null || vi.getType() == Material.AIR) return false;
         armor[slot] = null;
         player.getInventory().setArmorContents(armor);
 
+        ItemStack item = vi.asItem();
         if (action.equalsIgnoreCase("drop")) {
-            player.getWorld().dropItemNaturally(LocationUtils.getRadiusLocation(player.getLocation().add(0, 2, 0), 2, false), vi);
+            if (item != null) player.getWorld().dropItemNaturally(LocationUtils.getRadiusLocation(player.getLocation().add(0, 2, 0), 2, false), item);
         } else if (action.equalsIgnoreCase("undress") || action.equalsIgnoreCase("inventory")) {
-            ItemUtils.giveItemOrDrop(player, vi);
+            if (item != null) ItemUtils.giveItemOrDrop(player, item);
         }
 
         context.setVariable("item", vi.toString());
-        context.setVariable("item_str", vi.getDescription());
+        context.setVariable("item_str", ItemUtils.toDisplayString(vi.asParameters()));
         return true;
     }
 
     private int getSlotNum(String slotStr) {
         if (slotStr.equalsIgnoreCase("helmet") || slotStr.equalsIgnoreCase("helm")) return 3;
         if (slotStr.equalsIgnoreCase("chestplate") || slotStr.equalsIgnoreCase("chest")) return 2;
-        if (slotStr.equalsIgnoreCase("leggins") || slotStr.equalsIgnoreCase("leg")) return 1;
+        if (slotStr.equalsIgnoreCase("leggings") || slotStr.equalsIgnoreCase("leg")) return 1;
         if (slotStr.equalsIgnoreCase("boots") || slotStr.equalsIgnoreCase("boot")) return 0;
         return -1;
     }

@@ -128,7 +128,7 @@ public class InventoryMenu implements Listener {
             for (int i = 1; i <= size; i++) {
                 String slotStr = "slot" + i;
                 if (!param.contains(slotStr)) continue;
-                ItemStack slotItem = VirtualItem.fromString(param.getString(slotStr));
+                ItemStack slotItem = VirtualItem.asItem(param.getString(slotStr));
                 if (slotItem == null) continue;
                 inv.setItem(i - 1, slotItem);
             }
@@ -202,7 +202,7 @@ public class InventoryMenu implements Listener {
 
     private static String itemToString(String itemStr) {
         if (itemStr.isEmpty()) return "AIR";
-        ItemStack item = VirtualItem.fromString(itemStr);
+        ItemStack item = VirtualItem.asItem(itemStr);
         if (item == null || item.getType() == Material.AIR) return "AIR";
         String returnStr = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
         String itemTypeData = item.getType().name() + (ItemUtils.getDurability(item) == 0 ? "" : ":" + ItemUtils.getDurability(item)) + (item.getAmount() == 1 ? "" : "*" + item.getAmount());

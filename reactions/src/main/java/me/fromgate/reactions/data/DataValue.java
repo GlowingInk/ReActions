@@ -3,7 +3,7 @@ package me.fromgate.reactions.data;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-public interface DataValue {
+public interface DataValue { // TODO: Should probably be refactored.. somehow
     String asString();
 
     double asDouble();

@@ -6,6 +6,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.ItemHeldActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -41,18 +42,14 @@ public class ItemHeldStorage extends Storage {
     protected @NotNull Map<String, String> prepareVariables() {
         Map<String, String> tempVars = new HashMap<>();
         if (newItem != null) {
-            VirtualItem vi = VirtualItem.fromItemStack(newItem);
-            if (vi != null) {
-                tempVars.put("itemnew", vi.toString());
-                tempVars.put("itemnew-str", vi.toDisplayString());
-            }
+            VirtualItem vItem = VirtualItem.fromItem(newItem);
+            tempVars.put("itemnew", vItem.toString());
+            tempVars.put("itemnew-str", ItemUtils.toDisplayString(vItem.asParameters()));
         }
         if (previousItem != null) {
-            VirtualItem vi = VirtualItem.fromItemStack(previousItem);
-            if (vi != null) {
-                tempVars.put("itemprev", vi.toString());
-                tempVars.put("itemprev-str", vi.toDisplayString());
-            }
+            VirtualItem vItem = VirtualItem.fromItem(previousItem);
+            tempVars.put("itemprev", vItem.toString());
+            tempVars.put("itemprev-str", ItemUtils.toDisplayString(vItem.asParameters()));
         }
         tempVars.put("slotNew", Integer.toString(newSlot + 1));
         tempVars.put("slotPrev", Integer.toString(previousSlot + 1));

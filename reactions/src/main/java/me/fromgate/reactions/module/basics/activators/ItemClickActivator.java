@@ -26,22 +26,18 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemClickStorage;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
-import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class ItemClickActivator extends Activator {
-    // TODO: Store VirtualItem
-    private final String item;
+    private final VirtualItem item;
     private final HandType hand;
 
     private ItemClickActivator(ActivatorLogic base, String item, HandType hand) {
         super(base);
-        this.item = item;
+        this.item = VirtualItem.fromString(item);
         this.hand = hand;
     }
 
@@ -59,32 +55,21 @@ public class ItemClickActivator extends Activator {
 
     @Override
     public boolean checkStorage(Storage event) {
-        if (item.isEmpty() || (VirtualItem.fromString(item) == null)) {
-            Msg.logOnce(logic.getName() + "activatoritemempty", "Failed to parse item of activator " + logic.getName());
-            return false;
-        }
         ItemClickStorage ie = (ItemClickStorage) event;
-        if (hand.checkOff(ie.isMainHand())) return false;
-        return ItemUtils.compareItemStr(ie.getItem(), this.item);
+        return hand.isAllowed(ie.getHand()) && item.isSimilar(ie.getItem());
     }
 
     @Override
     public void saveOptions(ConfigurationSection cfg) {
-        cfg.set("item", item);
+        cfg.set("item", item.toString());
         cfg.set("hand", hand.name());
     }
 
     @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(item);
-    }
-
-    @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 this.item +
                 "; hand:" + hand +
                 ")";
-        return sb;
     }
 }

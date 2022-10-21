@@ -1,5 +1,7 @@
 package me.fromgate.reactions.module.basics;
 
+import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.MineDownParser;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
@@ -269,5 +271,9 @@ public class BasicModule implements Module {
                 new PermSelector(),
                 new RegionSelector()
         );
+    }
+
+    public static @NotNull MineDown getMineDown(@NotNull String text) {
+        return new MineDown(text).disable(MineDownParser.Option.SIMPLE_FORMATTING);
     }
 }

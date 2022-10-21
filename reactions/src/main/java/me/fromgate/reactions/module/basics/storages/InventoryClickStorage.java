@@ -29,7 +29,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.InventoryClickActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -86,9 +86,9 @@ public class InventoryClickStorage extends Storage {
                 .put("action", action.name())
                 .put("slotType", slotType.name())
                 .put("inventory", inventoryType.name())
-                .put("item", ItemUtils.itemToString(item))
+                .put("item", VirtualItem.asString(item))
                 .put("key", Integer.toString(numberKey + 1))
-                .put("itemkey", (numberKey > -1) ? ItemUtils.itemToString(getBottomInventory().getItem(numberKey)) : "")
+                .put("itemkey", (numberKey > -1) ? VirtualItem.asString(getBottomInventory().getItem(numberKey)) : "")
                 .put("slot", Integer.toString(slot))
                 .build();
     }

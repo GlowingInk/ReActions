@@ -25,15 +25,16 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+// TODO: Rewrite
 public class FlagItem implements Flag {
     private final Type flagType;
 
@@ -46,9 +47,9 @@ public class FlagItem implements Flag {
         Player player = context.getPlayer();
         switch (flagType) {
             case HAND:
-                ItemStack inHand = player.getInventory().getItemInMainHand();
-                context.setVariable("item_amount", String.valueOf(inHand.getAmount()));
-                return ItemUtils.compareItemStr(inHand, params, true);
+                ItemStack item = player.getInventory().getItemInMainHand();
+                context.setVariable("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
+                return VirtualItem.fromString(params).isSimilar(item);
             case INVENTORY:
                 return hasItemInInventory(context, params);
             case WEAR:
@@ -56,14 +57,15 @@ public class FlagItem implements Flag {
             case OFFHAND:
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
                 context.setVariable("item_amount", String.valueOf(inOffhand.getAmount()));
-                return ItemUtils.compareItemStr(inOffhand, params, true);
+                return VirtualItem.fromString(params).isSimilar(inOffhand);
         }
         return false;
     }
 
     private boolean isItemWeared(Player player, String itemStr) {
+        VirtualItem compared = VirtualItem.fromString(itemStr);
         for (ItemStack armour : player.getInventory().getArmorContents())
-            if (ItemUtils.compareItemStr(armour, itemStr)) return true;
+            if (compared.isSimilar(armour)) return true;
         return false;
     }
 
@@ -72,33 +74,28 @@ public class FlagItem implements Flag {
         Parameters params = Parameters.fromString(itemStr);
 
         if (!params.containsEvery("slot", "item")) {
-            int countAmount = ItemUtils.countItemsInInventory(player.getInventory(), itemStr);
+            int countAmount = countItemsInInventory(player.getInventory(), itemStr);
             context.setVariable("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
-            int amount = ItemUtils.getAmount(itemStr);
+            int amount = params.getInteger("amount", 1);
             return countAmount >= amount;
         }
 
         String slotStr = params.getString("slot", "");
         if (slotStr.isEmpty()) return false;
-        int slotNum = NumberUtils.isInteger(slotStr) ? Integer.parseInt(slotStr) : -1;
+        int slotNum = NumberUtils.getInteger(slotStr, -1);
         if (slotNum >= player.getInventory().getSize()) return false;
 
-        VirtualItem vi = null;
+        VirtualItem item = VirtualItem.fromParameters(params);
 
         if (slotNum < 0) {
-            switch (slotStr.toLowerCase(Locale.ROOT)) {
-                case "helm", "helmet" -> vi = VirtualItem.fromItemStack(player.getInventory().getHelmet());
-                case "chest", "chestplate" -> vi = VirtualItem.fromItemStack(player.getInventory().getChestplate());
-                case "legs", "leggings" -> vi = VirtualItem.fromItemStack(player.getInventory().getLeggings());
-                case "boot", "boots" -> vi = VirtualItem.fromItemStack(player.getInventory().getBoots());
-            }
-        } else vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
-
-        // vi = VirtualItem.fromItemStack(player.getInventoryType().getItem(slotNum));
-
-        if (vi == null) return false;
-
-        return vi.compare(itemStr);
+            return switch (slotStr.toLowerCase(Locale.ROOT)) {
+                case "helm", "helmet" -> item.isSimilar(player.getInventory().getHelmet());
+                case "chest", "chestplate" -> item.isSimilar(player.getInventory().getChestplate());
+                case "legs", "leggings" -> item.isSimilar(player.getInventory().getLeggings());
+                case "boot", "boots" -> item.isSimilar(player.getInventory().getBoots());
+                default -> false;
+            };
+        } else return item.isSimilar(player.getInventory().getItem(slotNum));
     }
 
     @Override
@@ -114,6 +111,17 @@ public class FlagItem implements Flag {
     @Override
     public boolean requiresPlayer() {
         return false;
+    }
+
+    private static int countItemsInInventory(Inventory inventory, String itemStr) {
+        VirtualItem virtualItem = VirtualItem.fromString(itemStr);
+        int count = 0;
+        for (ItemStack item : inventory) {
+            if (virtualItem.isSimilar(item)) {
+                count += item == null ? 1 : item.getAmount();
+            }
+        }
+        return count;
     }
 
     public enum Type {

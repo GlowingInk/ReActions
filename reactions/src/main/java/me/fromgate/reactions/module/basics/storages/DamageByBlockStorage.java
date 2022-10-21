@@ -7,7 +7,6 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.DamageByBlockActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -44,7 +43,7 @@ public class DamageByBlockStorage extends Storage {
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("blocklocation", LocationUtils.locationToString(blockDamager.getLocation()));
         tempVars.put("blocktype", blockDamager.getType().name());
-        tempVars.put("block", ItemUtils.itemFromBlock(blockDamager).toString());
+        tempVars.put("block", blockDamager.getType().name());
         tempVars.put("cause", cause.name());
         return tempVars;
     }

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>reactions-project</artifactId>
         <groupId>me.fromgate.reactions</groupId>
-        <version>0.14</version>
+        <version>0.14.2</version>
     </parent>
 
     <artifactId>reactions</artifactId>
@@ -15,25 +15,6 @@
     <name>ReActions</name>
 
     <description>Simplest scripting engine for Bukkit</description>
-    <properties>
-        <buildNumber>0</buildNumber>
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>ci</id>
-            <activation>
-                <property>
-                    <name>env.GITHUB_RUN_NUMBER</name>
-                </property>
-            </activation>
-            <properties>
-                <buildNumber>${env.GITHUB_RUN_NUMBER}</buildNumber>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <finalName>ReActions</finalName>
@@ -52,19 +33,19 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>me.fromgate.reactions.bstats</shadedPattern>
+                                    <shadedPattern>me.fromgate.reactions.externals.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.quartz</pattern>
                                     <shadedPattern>me.fromgate.reactions.time</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>de.themoep.minedown</pattern>
-                                    <shadedPattern>me.fromgate.reactions.minedown</shadedPattern>
+                                    <pattern>de.themoep.minedown.adventure</pattern>
+                                    <shadedPattern>me.fromgate.reactions.util.message.minedown</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>me.imdanix.math</pattern>
-                                    <shadedPattern>me.fromgate.reactions.math</shadedPattern>
+                                    <shadedPattern>me.fromgate.reactions.util.math</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -85,12 +66,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
     </build>
 
     <dependencies>
@@ -111,7 +86,7 @@
         <dependency>
             <groupId>com.github.imDaniX</groupId>
             <artifactId>EzMath</artifactId>
-            <version>v3.1</version>
+            <version>v3.2</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

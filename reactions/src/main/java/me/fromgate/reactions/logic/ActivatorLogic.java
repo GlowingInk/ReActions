@@ -145,7 +145,6 @@ public final class ActivatorLogic {
                                 ReActions.getPlaceholders().parsePlaceholders(context, action.getParameters()) : // TODO Placeholders DI
                                 action.getParameters();
                 if (action.getAction().execute(context, params) && action.getAction() instanceof Stopper stopAction) {
-                    // TODO: Stopper (WAIT action)
                     stopAction.stop(context, action.getParameters(), actions.subList(i, actions.size()));
                     break;
                 }

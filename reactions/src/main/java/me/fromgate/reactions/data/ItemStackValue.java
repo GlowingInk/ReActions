@@ -1,6 +1,5 @@
 package me.fromgate.reactions.data;
 
-import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
@@ -15,7 +14,7 @@ public class ItemStackValue implements DataValue {
 
     @Override
     public String asString() {
-        return ItemUtils.itemToString(value);
+        return VirtualItem.asString(value);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class ItemStackValue implements DataValue {
 
     @Override
     public boolean set(String value) {
-        ItemStack item = VirtualItem.fromString(value);
+        ItemStack item = VirtualItem.asItem(value);
         if (item != null) {
             this.value = item;
             return true;

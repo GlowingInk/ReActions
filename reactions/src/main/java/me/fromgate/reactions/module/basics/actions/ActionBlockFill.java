@@ -27,38 +27,26 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @Aliases("FILL_BLOCK")
 public class ActionBlockFill implements Action {
-
     @Override
     public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
+        if (!params.contains("region") && !params.containsEvery("loc1", "loc2")) return false;
         boolean phys = params.getBoolean("physics", false);
         boolean drop = params.getBoolean("drop", false);
-        Parameters itemParam = Parameters.fromString(params.getString("block", "AIR"), "type");
-        ItemStack item = null;
-        if (!itemParam.getString("type", "AIR").equalsIgnoreCase("air")) {
-            item = VirtualItem.fromMap(itemParam.getMap());
-            if (item == null || !item.getType().isBlock()) {
-                Msg.logOnce("wrongblockfill" + params.getString("block"),
-                        "Failed to execute action BLOCK_FILL. Wrong block " + params.getString("block"));
-                return false;
-            }
-        }
-
-        if (!params.contains("region") && !params.containsEvery("loc1", "loc2")) return false;
+        Material type = params.get("block", ItemUtils::getMaterial, Material.AIR);
 
         Location loc1 = null;
         Location loc2 = null;
@@ -80,7 +68,7 @@ public class ActionBlockFill implements Action {
 
         if (!loc1.getWorld().equals(loc2.getWorld())) return false;
         int chance = params.getInteger("chance", 100);
-        fillArea(item, loc1, loc2, chance, phys, drop);
+        fillArea(type, loc1, loc2, chance, phys, drop);
         return true;
     }
 
@@ -94,18 +82,16 @@ public class ActionBlockFill implements Action {
         return false;
     }
 
-    private void fillArea(ItemStack blockItem, Location loc1, Location loc2, int chance, boolean phys, boolean drop) {
-        Location min = new Location(loc1.getWorld(), Math.min(loc1.getBlockX(), loc2.getBlockX()),
-                Math.min(loc1.getBlockY(), loc2.getBlockY()), Math.min(loc1.getBlockZ(), loc2.getBlockZ()));
-        Location max = new Location(loc1.getWorld(), Math.max(loc1.getBlockX(), loc2.getBlockX()),
-                Math.max(loc1.getBlockY(), loc2.getBlockY()), Math.max(loc1.getBlockZ(), loc2.getBlockZ()));
-        for (int x = min.getBlockX(); x <= max.getBlockX(); x++)
-            for (int y = min.getBlockY(); y <= max.getBlockY(); y++)
-                for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++)
+    private void fillArea(Material type, Location loc1, Location loc2, int chance, boolean phys, boolean drop) {
+        World world = loc1.getWorld();
+        for (int x = Math.min(loc1.getBlockX(), loc2.getBlockX()), xMax = Math.max(loc1.getBlockX(), loc2.getBlockX()); x <= xMax; ++x)
+            for (int z = Math.min(loc1.getBlockZ(), loc2.getBlockZ()), zMax = Math.max(loc1.getBlockZ(), loc2.getBlockZ()); z <= zMax; ++z)
+                for (int y = Math.min(loc1.getBlockY(), loc2.getBlockY()), yMax = Math.max(loc1.getBlockY(), loc2.getBlockY()); y <= yMax; ++y) {
                     if (Rng.percentChance(chance)) {
-                        Block block = min.getWorld().getBlockAt(x, y, z);
-                        if (block.getType() != Material.AIR && drop) block.breakNaturally();
-                        block.setType(blockItem == null ? Material.AIR : blockItem.getType(), phys);
+                        Block block = world.getBlockAt(x, y, z);
+                        if (drop && !block.getType().isEmpty()) block.breakNaturally();
+                        block.setType(type, phys);
                     }
+                }
     }
 }

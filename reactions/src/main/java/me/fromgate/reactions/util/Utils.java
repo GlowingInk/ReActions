@@ -26,33 +26,34 @@ import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static me.fromgate.reactions.util.NumberUtils.getInteger;
 
 public final class Utils {
+    private static final Pattern HEX_COLOR = Pattern.compile("#([a-fA-F\\d]{6})");
+    private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
     private static final String[] EMPTY_ARRAY = new String[0];
 
     private Utils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
-
-    public static String removeChar(String str, char remove) {
-        StringBuilder bld = new StringBuilder();
-        for (char c : str.toCharArray()) {
-            if (c != remove) bld.append(c);
-        }
-        return bld.toString();
-    }
 
     /**
      * Play sound on location
@@ -61,7 +62,7 @@ public final class Utils {
      * @param params Parameters of sound
      * @return Name of played sound
      */
-    public static String soundPlay(Location loc, Parameters params) {
+    public static String soundPlay(@NotNull Location loc, @NotNull Parameters params) {
         if (params.isEmpty()) return "";
         Location soundLoc = loc;
         String sndstr = "";
@@ -100,7 +101,7 @@ public final class Utils {
      * @param loc   Location where sound should be played
      * @param param Parameters of sound
      */
-    public static void soundPlay(Location loc, String param) {
+    public static void soundPlay(@NotNull Location loc, @NotNull String param) {
         if (param.isEmpty()) return;
         Parameters params = Parameters.fromString(param, "param");
         soundPlay(loc, params);
@@ -113,7 +114,7 @@ public final class Utils {
      * @return Is string empty or null
      */
     @Contract("null -> true")
-    public static boolean isStringEmpty(String str) {
+    public static boolean isStringEmpty(@Nullable String str) {
         return str == null || str.isEmpty();
     }
 
@@ -124,7 +125,7 @@ public final class Utils {
      * @param str  String with words
      * @return Is word contained
      */
-    public static boolean isWordInList(String word, String str) {
+    public static boolean isWordInList(@NotNull String word, @NotNull String str) {
         String[] ln = str.split(",");
         for (String wordInList : ln) {
             if (wordInList.equalsIgnoreCase(word)) return true;
@@ -132,17 +133,11 @@ public final class Utils {
         return false;
     }
 
-    public static UUID getUUID(OfflinePlayer player) {
-        return Bukkit.getOnlineMode() ?
-                player.getUniqueId() :
-                UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static UUID getUUID(String playerName) {
+    public static @NotNull UUID getUUID(@NotNull String playerName) {
         Player player = Bukkit.getPlayerExact(playerName);
         return player == null ?
-                getUUID(Bukkit.getOfflinePlayer(playerName)) :
-                getUUID(player);
+                Bukkit.getOfflinePlayer(playerName).getUniqueId() :
+                player.getUniqueId();
     }
 
     /**
@@ -151,7 +146,7 @@ public final class Utils {
      * @param doco String to escape
      * @return Escaped string
      */
-    public static String escapeJava(String doco) {
+    public static @NotNull String escapeJava(@Nullable String doco) {
         if (doco == null)
             return "";
 
@@ -174,8 +169,8 @@ public final class Utils {
      * @param size Size of list
      * @return List with specified size
      */
-    public static List<String> getEmptyList(int size) {
-        List<String> l = new ArrayList<>();
+    public static @NotNull List<String> getEmptyList(int size) {
+        List<String> l = new ArrayList<>(size);
         for (int i = 0; i < size; i++) l.add("");
         return l;
     }
@@ -185,10 +180,11 @@ public final class Utils {
      *
      * @return List of names
      */
-    public static List<String> getPlayersList() {
-        List<String> players = new ArrayList<>(Bukkit.getOnlinePlayers().size());
-        Bukkit.getOnlinePlayers().forEach(p -> players.add(p.getName()));
-        return players;
+    public static @NotNull List<String> getPlayersList() {
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        List<String> playersNames = new ArrayList<>(players.size());
+        players.forEach(p -> playersNames.add(p.getName()));
+        return playersNames;
     }
 
     /**
@@ -198,7 +194,7 @@ public final class Utils {
      * @param perm Permission to check
      * @return Is permission is null or user has permissions
      */
-    public static boolean checkPermission(Permissible user, String perm) {
+    public static boolean checkPermission(@NotNull Permissible user, @Nullable String perm) {
         return perm == null || user.hasPermission(perm);
     }
 
@@ -210,8 +206,9 @@ public final class Utils {
      * @param <T> Type of object
      * @return Searched object or default if not found
      */
+    @Contract("!null, _ -> !null")
     @SafeVarargs
-    public static <T> T searchNotNull(T def, T... obj) {
+    public static <T> T searchNotNull(@Nullable T def, @Nullable T @NotNull ... obj) {
         for (T searched : obj)
             if (searched != null) return searched;
         return def;
@@ -219,33 +216,31 @@ public final class Utils {
     }
 
     /**
-     * Get any enum by it's name
-     *
-     * @param <T>   Enum type
+     * Get any enum by its name
+     * @param <T> Enum type
      * @param clazz Enum class
-     * @param name  Name of enum
+     * @param name Name of enum
      * @return Corresponding enum, or null if not found
      */
-    public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name) {
+    public static <T extends Enum<T>> @Nullable T getEnum(@NotNull Class<T> clazz, @NotNull String name) {
         return getEnum(clazz, name, null);
     }
 
     /**
-     * Get any enum by it's name or default value if not found
-     *
-     * @param <T>   Enum type
+     * Get any enum by its name or default value if not found
+     * @param <T> Enum type
      * @param clazz Enum class
-     * @param name  Name of enum
-     * @return Corresponding enum, or null if not found
+     * @param name Name of enum
+     * @param def Default value
+     * @return Corresponding enum, or {@param def} if not found
      */
-    public static <T extends Enum<T>> T getEnum(Class<T> clazz, String name, T def) {
-        if (clazz != null && !Utils.isStringEmpty(name)) {
-            try {
-                return Enum.valueOf(clazz, name.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException ignored) {
-            }
+    @Contract("_, _, !null -> !null")
+    public static <T extends Enum<T>> @Nullable T getEnum(@NotNull Class<T> clazz, @NotNull String name, @Nullable T def) {
+        try {
+            return Enum.valueOf(clazz, name.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ignored) {
+            return def;
         }
-        return def;
     }
 
     public static @NotNull String[] getAliases(@NotNull Class<?> clazz) {
@@ -255,8 +250,54 @@ public final class Utils {
         return EMPTY_ARRAY;
     }
 
-    public static @NotNull String[] getAliases(@NotNull Object obj) {
-        return obj instanceof Aliased aliased ?
-               aliased.getAliases() : getAliases(obj.getClass());
+    public static @NotNull String @NotNull [] getAliases(@NotNull Object obj) {
+        return obj instanceof Aliased aliased
+                ? aliased.getAliases()
+                : getAliases(obj.getClass());
+    }
+
+    public static @NotNull String cutBuilder(@NotNull StringBuilder builder, int offset) {
+        return offset < builder.length()
+                ? builder.substring(0, builder.length() - offset)
+                : "";
+    }
+
+    public static @Nullable Color getColor(@NotNull String value) {
+        if (value.startsWith("#")) {
+            Matcher matcher = HEX_COLOR.matcher(value);
+            if (matcher.matches()) {
+                return Color.fromRGB(Integer.parseInt(matcher.group(1), 16));
+            }
+        } else {
+            Matcher matcher = BYTE_COLOR.matcher(value);
+            if (matcher.matches()) {
+                return Color.fromRGB(
+                        Math.min(getInteger(matcher.group(1), 0), 255),
+                        Math.min(getInteger(matcher.group(2), 0), 255),
+                        Math.min(getInteger(matcher.group(3), 0), 255)
+                );
+            } else if (!value.isEmpty()) {
+                TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));
+                if (color != null) {
+                    return Color.fromRGB(color.value());
+                }
+            }
+        }
+        return null;
+    }
+
+    public static @NotNull List<String> literalSplit(@NotNull String str, @NotNull String delim) {
+        List<String> l = new ArrayList<>();
+        int offset = 0;
+        while (true) {
+            int index = str.indexOf(delim, offset);
+            if (index == -1) {
+                l.add(str.substring(offset));
+                return l;
+            } else {
+                l.add(str.substring(offset, index));
+                offset = index + delim.length();
+            }
+        }
     }
 }

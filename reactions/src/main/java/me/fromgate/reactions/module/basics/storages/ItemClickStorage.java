@@ -28,8 +28,10 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.ItemClickActivator;
 import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,13 +40,13 @@ import java.util.Map;
 
 public class ItemClickStorage extends Storage {
 
-    private final boolean mainHand;
+    private final EquipmentSlot hand;
     private final ItemStack item;
 
-    public ItemClickStorage(Player p, ItemStack item, boolean mainHand) {
+    public ItemClickStorage(Player p, ItemStack item, EquipmentSlot hand) {
         super(p);
         this.item = item;
-        this.mainHand = mainHand;
+        this.hand = hand;
     }
 
     @Override
@@ -55,12 +57,12 @@ public class ItemClickStorage extends Storage {
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
         Map<String, String> tempVars = new HashMap<>();
-        VirtualItem vItem = VirtualItem.fromItemStack(item);
         if (item != null) {
+            VirtualItem vItem = VirtualItem.fromItem(item);
             tempVars.put("item", vItem.toString());
-            tempVars.put("item-str", vItem.toDisplayString());
+            tempVars.put("item-str", ItemUtils.toDisplayString(vItem.asParameters()));
         }
-        tempVars.put("hand", mainHand ? "MAIN" : "OFF");
+        tempVars.put("hand", hand == EquipmentSlot.HAND ? "MAIN" : "OFF");
         return tempVars;
     }
 
@@ -69,7 +71,11 @@ public class ItemClickStorage extends Storage {
         return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
-    public boolean isMainHand() {return this.mainHand;}
+    public EquipmentSlot getHand() {
+        return hand;
+    }
 
-    public ItemStack getItem() {return this.item;}
+    public ItemStack getItem() {
+        return this.item;
+    }
 }

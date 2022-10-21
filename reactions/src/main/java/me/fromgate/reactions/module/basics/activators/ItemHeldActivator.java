@@ -4,7 +4,7 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemHeldStorage;
-import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -48,9 +48,9 @@ public class ItemHeldActivator extends Activator {
         ItemHeldStorage ihe = (ItemHeldStorage) event;
         ItemStack itemNew = ihe.getNewItem();
         ItemStack itemPrev = ihe.getPreviousItem();
-        if (!this.itemNewStr.isEmpty() && (!ItemUtils.compareItemStr(itemNew, this.itemNewStr)))
+        if (!this.itemNewStr.isEmpty() && (!VirtualItem.isSimilar(this.itemNewStr, itemNew)))
             return false;
-        if (!this.itemPrevStr.isEmpty() && (!ItemUtils.compareItemStr(itemPrev, this.itemPrevStr)))
+        if (!this.itemPrevStr.isEmpty() && (!VirtualItem.isSimilar(this.itemPrevStr, itemPrev)))
             return false;
         if (newSlot > -1 && newSlot != ihe.getNewSlot()) return false;
         return previousSlot <= -1 || previousSlot == ihe.getPreviousSlot();

@@ -10,6 +10,7 @@ import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,26 +22,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 // TODO: Assemble to one activator
 public class DamageByBlockActivator extends Activator implements Locatable {
 
-    private final String blockStr;
+    private final Material blockType;
     private final String blockLocation;
     private final String damageCause;
 
     private DamageByBlockActivator(ActivatorLogic base, String block, String location, String cause) {
         super(base);
-        this.blockStr = block;
+        this.blockType = ItemUtils.getMaterial(block.startsWith("type:") ? block.substring(5) : block);
         this.blockLocation = location;
         this.damageCause = cause;
-    }
-
-    private static String getCauseByName(String damageCauseStr) {
-        if (damageCauseStr != null) {
-            for (EntityDamageEvent.DamageCause damageCause : EntityDamageEvent.DamageCause.values()) {
-                if (damageCauseStr.equalsIgnoreCase(damageCause.name())) {
-                    return damageCause.name();
-                }
-            }
-        }
-        return "ANY";
     }
 
     public static DamageByBlockActivator create(ActivatorLogic base, Parameters param) {
@@ -73,7 +63,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     private boolean isActivatorBlock(Block block) {
-        if (!this.blockStr.isEmpty() && !ItemUtils.compareItemStr(block, this.blockStr)) return false;
+        if (blockType != null && block.getType() != blockType) return false;
         return checkLocations(block);
     }
 
@@ -99,7 +89,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(ConfigurationSection cfg) {
-        cfg.set("block", blockStr);
+        cfg.set("block", blockType.name());
         cfg.set("location", Utils.isStringEmpty(blockLocation) ? null : this.blockLocation);
         cfg.set("cause", this.damageCause);
     }
@@ -107,7 +97,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                "block:" + (blockStr.isEmpty() ? "-" : blockStr) +
+                "block:" + (blockType == null ? "-" : blockType.name()) +
                 "; loc:" + (blockLocation.isEmpty() ? "-" : blockLocation) +
                 "; cause:" + damageCause +
                 ")";

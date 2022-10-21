@@ -25,9 +25,11 @@ package me.fromgate.reactions.util;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -39,6 +41,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +53,22 @@ public final class Shoot {
 
     public static String actionShootBreak = "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON";
     public static String actionShootThrough = "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE";
+
+    private static Set<Material> breakTypes;
+    private static Set<Material> throughTypes;
+
+    public static void reload() {
+        breakTypes = EnumSet.noneOf(Material.class);
+        for (String typeStr : actionShootBreak.split(",")) {
+            Material type = ItemUtils.getMaterial(typeStr);
+            if (type != null) breakTypes.add(type);
+        }
+        throughTypes = EnumSet.noneOf(Material.class);
+        for (String typeStr : actionShootThrough.split(",")) {
+            Material type = ItemUtils.getMaterial(typeStr);
+            if (type != null) throughTypes.add(type);
+        }
+    }
 
     private Shoot() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
@@ -69,20 +88,15 @@ public final class Shoot {
         }
     }
 
-    private static String getMobName(LivingEntity mob) {
-        if (mob.getCustomName() == null) return mob.getType().name();
-        return mob.getCustomName();
-    }
-
     private static void executeActivator(Player shooter, LivingEntity target, String paramStr) {
         Parameters param = Parameters.fromString(paramStr);
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return;
         Player player = target instanceof Player ? (Player) target : null;
         if (player == null && param.getBoolean("playeronly", true)) return;
-        param.put("player", player == null ? "null" : player.getName());
+        param.put("player", player == null ? "~null" : player.getName());
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("targettype", target.getType().name());
-        tempVars.put("targetname", (player == null) ? getMobName(target) : player.getName());
+        tempVars.put("targetname", (player == null) ? EntityUtils.getMobName(target) : player.getName());
         tempVars.put("targetloc", LocationUtils.locationToString(target.getLocation()));
         if (shooter != null) {
             tempVars.put("shooter", shooter.getName());
@@ -117,8 +131,8 @@ public final class Shoot {
     }
 
     private static boolean isEmpty(Block b, LivingEntity shooter) {
-        if (!b.getType().isSolid()) return true;
-        if (ItemUtils.isItemInList(b.getType(), 0, actionShootThrough)) return true;
+        if (!b.getType().isCollidable()) return true;
+        if (!throughTypes.contains(b.getType())) return true;
         if ((shooter instanceof Player) && (isShotAndBreak(b, (Player) shooter))) {
             b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getType());
             b.breakNaturally();
@@ -135,7 +149,7 @@ public final class Shoot {
     }
 
     private static boolean isShotAndBreak(Block b, Player p) {
-        if (ItemUtils.isItemInList(b.getType(), 0, actionShootBreak)) return breakBlock(b, p);
+        if (breakTypes.contains(b.getType())) return breakBlock(b, p);
         return false;
     }
 
