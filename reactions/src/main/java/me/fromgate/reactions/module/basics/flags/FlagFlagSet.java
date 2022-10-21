@@ -50,7 +50,7 @@ public class FlagFlagSet implements Flag {
             }
             boolean invert = flagSplit[0].startsWith("!");
             Flag flag = registry.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
-            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && flag.check(context, flagSplit[1])) {
+            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.check(context, flagSplit[1])) {
                 return true;
             }
         }
