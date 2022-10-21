@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionBlockSet implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         //String istr = params.getParam("block", "");
         boolean phys = params.getBoolean("physics", false);

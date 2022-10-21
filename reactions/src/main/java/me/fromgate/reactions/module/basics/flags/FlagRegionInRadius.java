@@ -28,9 +28,10 @@ import me.fromgate.reactions.logic.activity.flags.Flag;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+// TODO: WG module
 public class FlagRegionInRadius implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         int radius = 0;
         if (!params.isEmpty()) radius = Integer.parseInt(params);

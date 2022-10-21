@@ -128,7 +128,7 @@ public final class ActivatorLogic {
             String params = flag.hasPlaceholders() ?
                             ReActions.getPlaceholders().parsePlaceholders(context, flag.getParameters()) : // TODO Placeholders DI
                             flag.getParameters();
-            if (!flag.getFlag().check(context, params)) {
+            if (!flag.getFlag().proceed(context, params)) {
                 executeActions(context, reactions, !noPlayer);
                 return;
             }
@@ -144,8 +144,8 @@ public final class ActivatorLogic {
                 String params = action.hasPlaceholders() ?
                                 ReActions.getPlaceholders().parsePlaceholders(context, action.getParameters()) : // TODO Placeholders DI
                                 action.getParameters();
-                if (action.getAction().execute(context, params) && action.getAction() instanceof Stopper stopAction) {
-                    stopAction.stop(context, action.getParameters(), actions.subList(i, actions.size()));
+                if (action.getAction().proceed(context, params) && action.getAction() instanceof Stopper stopAction) {
+                    stopAction.stop(context, action.getParameters(), new ArrayList<>(actions.subList(i, actions.size())));
                     break;
                 }
             }

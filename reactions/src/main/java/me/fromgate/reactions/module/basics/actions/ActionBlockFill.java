@@ -41,7 +41,7 @@ import java.util.List;
 @Aliases("FILL_BLOCK")
 public class ActionBlockFill implements Action {
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!params.contains("region") && !params.containsEvery("loc1", "loc2")) return false;
         boolean phys = params.getBoolean("physics", false);

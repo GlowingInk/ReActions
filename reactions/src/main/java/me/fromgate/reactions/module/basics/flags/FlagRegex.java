@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagRegex implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String regex = params.getString("regex", "");
         if (regex.isEmpty()) return false;

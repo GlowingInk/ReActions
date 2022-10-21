@@ -50,7 +50,7 @@ public class WaitTask implements Runnable {
         Player p = playerName == null ? null : Bukkit.getPlayerExact(playerName);
         if (System.currentTimeMillis() > executionTime + WaitingManager.getTimeLimit()) this.executed = true;
         if (p == null && playerName != null) return;
-        Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> actions.forEach(action -> action.getAction().execute(RaContext.EMPTY_CONTEXT, action.getParameters())));
+        Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> actions.forEach(action -> action.getAction().proceed(RaContext.EMPTY_CONTEXT, action.getParameters())));
         this.executed = true;
     }
 

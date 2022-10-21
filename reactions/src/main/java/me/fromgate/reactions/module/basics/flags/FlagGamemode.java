@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases({"GM", "GAME_MODE"})
 public class FlagGamemode implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         return context.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, params);
     }
 

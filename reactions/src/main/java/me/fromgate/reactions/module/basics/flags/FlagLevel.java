@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class FlagLevel implements Flag {
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         return NumberUtils.isInteger(params) && player.getLevel() >= Integer.parseInt(params);
     }

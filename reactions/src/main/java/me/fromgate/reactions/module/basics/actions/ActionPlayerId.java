@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionPlayerId implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         String uuid;
         String pName;
 

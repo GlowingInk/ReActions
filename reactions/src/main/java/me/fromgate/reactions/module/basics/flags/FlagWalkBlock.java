@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagWalkBlock implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Location loc = context.getPlayer().getLocation();
         Block walk;
         if (loc.getY() == Math.floor(loc.getY())) {

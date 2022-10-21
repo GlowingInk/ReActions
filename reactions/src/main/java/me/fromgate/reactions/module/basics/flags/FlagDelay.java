@@ -39,7 +39,7 @@ public class FlagDelay implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");

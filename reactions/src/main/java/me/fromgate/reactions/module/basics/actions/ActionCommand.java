@@ -55,7 +55,7 @@ public class ActionCommand implements Action {
     }
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         if (commandAs != Type.CONSOLE && player == null) return false;
         String commandLine = params;

@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("PROBABILITY")
 public class FlagChance implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         context.setVariable("chance", params + "%");
         double d = 50;
         if (NumberUtils.isFloat(params)) d = Double.parseDouble(params);

@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("WE_SEL_BLOCKS")
 public class FlagSelectionBlocks implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         int selectionBlocks = RaWorldEdit.getArea(player);
         Vector minPoint = RaWorldEdit.getMinimumPoint(player);

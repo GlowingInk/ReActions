@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionDelayed implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         long delay = TimeUtils.parseTime(params.getString("time", "0"));
         if (delay == 0) return false;

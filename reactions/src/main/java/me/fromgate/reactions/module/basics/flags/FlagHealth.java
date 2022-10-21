@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("HP")
 public class FlagHealth implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         return NumberUtils.FLOAT.matcher(params).matches() && player.getHealth() >= Double.parseDouble(params);
     }

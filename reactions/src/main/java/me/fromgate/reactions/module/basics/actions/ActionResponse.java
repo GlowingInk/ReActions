@@ -12,7 +12,7 @@ import java.util.Objects;
 @Aliases("RESPOND")
 public class ActionResponse implements Action {
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Objects.requireNonNullElseGet(context.getPlayer(), Bukkit::getConsoleSender).sendMessage(BasicModule.getMineDown(params).toComponent());
         return true;
     }

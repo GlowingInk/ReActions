@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("WALKSPEED")
 public class FlagWalkSpeed implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         if (!NumberUtils.isInteger(params)) return false;
-        long walkSpeed = Math.round(player.getWalkSpeed() * 10);
+        long walkSpeed = Math.round(player.getWalkSpeed() * 10); // TODO: Why?
         context.setVariable("walkspeed", Long.toString(walkSpeed));
         return walkSpeed >= Integer.parseInt(params);
     }

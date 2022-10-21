@@ -40,7 +40,7 @@ public class FlagPerm implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         return context.getPlayer().hasPermission(params);
     }
 }

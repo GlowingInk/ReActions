@@ -67,7 +67,7 @@ public class ActionIfElse implements Action {
     }
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         if (!engineCheck()) return false;
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
@@ -126,7 +126,7 @@ public class ActionIfElse implements Action {
             actions.add(new StoredAction(action, param));
         }
         if (!actions.isEmpty())
-            actions.forEach(action -> action.getAction().execute(context, action.getParameters()));
+            actions.forEach(action -> action.getAction().proceed(context, action.getParameters()));
         return true;
     }
 

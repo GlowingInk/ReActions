@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases({"FOODLEVEL", "FOOD"})
 public class FlagFoodLevel implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         if (!NumberUtils.isInteger(params)) return false;
         return player.getFoodLevel() >= Integer.parseInt(params);

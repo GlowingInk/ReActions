@@ -42,7 +42,7 @@ public class FlagTime implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         saveTempVar(context, params);
         long currentTime = Bukkit.getWorlds().get(0).getTime();
@@ -68,7 +68,7 @@ public class FlagTime implements Flag {
 
     private void saveTempVar(RaContext context, String time) {
         StringBuilder result = new StringBuilder(time);
-        if (!(time.equals("day") || time.equals("night"))) {
+        if (!(time.equalsIgnoreCase("day") || time.equalsIgnoreCase("night"))) {
             String[] ln = time.split(",");
             if (ln.length > 0)
                 for (int i = 0; i < ln.length; i++) {

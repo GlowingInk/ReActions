@@ -17,7 +17,7 @@ public class ActionFile implements Action {
     private static final String dir = new File("").getAbsolutePath();
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String action = params.getString("action");
         String fileName = params.getString("fileName");

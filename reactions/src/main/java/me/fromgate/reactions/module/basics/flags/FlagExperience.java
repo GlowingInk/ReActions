@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases({"XP", "EXP"})
 public class FlagExperience implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         if (!NumberUtils.isInteger(params)) return false;
         return player.getTotalExperience() >= Integer.parseInt(params);

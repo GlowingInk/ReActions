@@ -40,7 +40,7 @@ public class FlagFlagSet implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         List<String> split = Parameters.splitSafely(params, ' ');
         boolean hasPlayer = context.getPlayer() != null;
         for (String flagFullStr : split) {
@@ -50,7 +50,7 @@ public class FlagFlagSet implements Flag {
             }
             boolean invert = flagSplit[0].startsWith("!");
             Flag flag = registry.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
-            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.check(context, flagSplit[1])) {
+            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.proceed(context, flagSplit[1])) {
                 return true;
             }
         }

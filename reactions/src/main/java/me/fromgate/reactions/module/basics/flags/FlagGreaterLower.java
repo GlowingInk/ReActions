@@ -16,7 +16,7 @@ public class FlagGreaterLower implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         double paramValue = params.getDouble("param", 0d);
         double value = params.getDouble("value", 0d);

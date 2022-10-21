@@ -33,7 +33,7 @@ import java.util.Locale;
 
 public class FlagCompare implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String paramValue = params.getString("param", "");
         if (paramValue.isEmpty()) return false;

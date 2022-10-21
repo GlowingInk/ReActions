@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 public class FlagDirection implements Flag {
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         Direction d1 = Direction.getByName(params);
         if (d1 == null) return false;

@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionPowerSet implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Location loc = LocationUtils.parseLocation(params.getString("loc"), null);
         if (loc == null) return false;

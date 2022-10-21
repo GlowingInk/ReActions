@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("POWER")
 public class FlagPowered implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String locStr = params.getString("loc", params.toString());
         if (locStr.isEmpty()) return false;

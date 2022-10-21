@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("PLAY_SOUND")
 public class ActionSound implements Action {
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         String str = Utils.soundPlay(player == null ? null : player.getLocation(), params);

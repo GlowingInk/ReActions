@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class FlagState implements Flag {
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         Posture pt = Posture.getByName(params);
         if (pt == null) return false;

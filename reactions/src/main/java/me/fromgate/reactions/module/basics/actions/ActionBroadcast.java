@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionBroadcast implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Bukkit.broadcastMessage(Msg.colorize(params));
         return true;
     }

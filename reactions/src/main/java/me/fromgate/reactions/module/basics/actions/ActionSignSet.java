@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionSignSet implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         // loc:world,x,y,z line1:text line2:text line3:text line4:text clear:1,2,3,4
         String locStr = params.getString("loc", context.getVariable("sign_loc"));

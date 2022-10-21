@@ -37,7 +37,7 @@ public class ActionTimer implements Action {
     }
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String timer = params.getString("timer");
         if (timer.isEmpty()) return false;

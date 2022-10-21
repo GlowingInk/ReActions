@@ -37,7 +37,7 @@ public class FlagSQL implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!SQLManager.isEnabled()) return false;
         if (!params.containsEvery("value", "select", "from") &&

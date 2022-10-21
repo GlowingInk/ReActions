@@ -28,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagWorld implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
-        return context.getPlayer().getWorld().getName().equals(params);
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+        return context.getPlayer().getWorld().getName().equalsIgnoreCase(params);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class ActionItems implements Action {
     }
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
             case GIVE_ITEM -> giveItemPlayer(context, params.toString());

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagTimerActive implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         return TimersManager.isTimerWorking(params);
     }
 

@@ -41,7 +41,7 @@ public class ActionVar implements Action {
     }
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
         Parameters params = Parameters.fromString(paramsStr);
         Player p = context.getPlayer();
 

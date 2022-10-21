@@ -43,7 +43,7 @@ public class FlagGroup implements Flag {
     }
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         return RaVault.playerInGroup(context.getPlayer(), params);
     }
 }

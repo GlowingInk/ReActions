@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliases("SLOT")
 public class FlagHeldSlot implements Flag {
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
         return NumberUtils.INT_POSITIVE.matcher(params).matches() && player.getInventory().getHeldItemSlot() == Integer.parseInt(params);
     }

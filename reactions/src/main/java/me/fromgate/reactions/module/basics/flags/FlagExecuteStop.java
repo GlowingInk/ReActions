@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class FlagExecuteStop implements Flag {
 
     @Override
-    public boolean check(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         // TODO Custom ActivatorType to handle exec stopping
         Player player = context.getPlayer();
         Msg.logOnce("flagexecstopnotworking", "Sorry, but flag EXECUTE_STOP doesn't work yet.");

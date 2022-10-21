@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionHeal implements Action {
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (params.contains("player"))

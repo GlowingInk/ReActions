@@ -41,7 +41,7 @@ public class ActionSql implements Action {
     }
 
     @Override
-    public boolean execute(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String playerName = params.getString("player");
         String varName = params.getString("variable");
