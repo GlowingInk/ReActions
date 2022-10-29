@@ -340,7 +340,7 @@ public class BukkitListener implements Listener {
     }
 
     // TODO: Rework
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         triggerItemClick(event);
         triggerItemWear(event.getPlayer());
