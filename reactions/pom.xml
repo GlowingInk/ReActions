@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.github.imDaniX</groupId>
             <artifactId>EzMath</artifactId>
-            <version>v3.2</version>
+            <version>v3.4</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

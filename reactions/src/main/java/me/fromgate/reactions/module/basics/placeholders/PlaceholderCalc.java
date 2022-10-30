@@ -6,7 +6,6 @@ import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.imdanix.math.ExpressionEvaluator;
-import me.imdanix.math.MathDictionary;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +14,7 @@ public class PlaceholderCalc implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
         if (Cfg.modernPlaceholders || !param.contains("%")) try {
-            return NumberUtils.format(ExpressionEvaluator.eval(param, MathDictionary.INSTANCE));
+            return NumberUtils.format(ExpressionEvaluator.eval(param));
         } catch (NumberFormatException | ArithmeticException ignore) {
             // TODO: Error
         }
