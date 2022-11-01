@@ -78,7 +78,7 @@ public class CmdCreate extends Cmd {
             if (type.isNeedBlock()) return false;
             params = Parameters.fromString(param);
         }
-        Activator activator = type.createActivator(new ActivatorLogic(name, "activators"), params);
+        Activator activator = type.createActivator(new ActivatorLogic(type.getName().toUpperCase(Locale.ROOT), name, "activators"), params);
         if (activator == null || !activator.isValid()) {
             Msg.CMD_NOTADDBADDEDSYNTAX.print(sender, name, type);
             return true;

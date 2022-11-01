@@ -14,19 +14,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class ActivatorsManager {
@@ -100,7 +93,10 @@ public class ActivatorsManager {
                 ConfigurationSection cfgType = Objects.requireNonNull(cfg.getConfigurationSection(strType));
                 for (String name : cfgType.getKeys(false)) {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
-                    Activator activator = type.loadActivator(new ActivatorLogic(name, group, cfgActivator, activity), cfgActivator);
+                    Activator activator = type.loadActivator(new ActivatorLogic(
+                            type.getName().toUpperCase(Locale.ROOT),
+                            name, group, cfgActivator, activity
+                    ), cfgActivator);
                     if (activator == null || !activator.isValid()) {
                         logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'.");
                         continue;
@@ -140,7 +136,7 @@ public class ActivatorsManager {
     }
 
     public void clearActivators() {
-        types.types().forEach(ActivatorType::clearActivators);
+        types.getTypes().forEach(ActivatorType::clearActivators);
         activatorsNames.clear();
         activatorsGroups.clear();
     }
@@ -149,8 +145,7 @@ public class ActivatorsManager {
         return activatorsNames.containsKey(name);
     }
 
-    @Nullable
-    public Activator removeActivator(@NotNull String name) {
+    public @Nullable Activator removeActivator(@NotNull String name) {
         Activator activator = activatorsNames.remove(name);
         if (activator == null) return null;
         activatorsGroups.get(activator.getLogic().getGroup()).remove(activator);
@@ -159,9 +154,12 @@ public class ActivatorsManager {
         return activator;
     }
 
-    @Nullable
-    public Activator getActivator(@NotNull String name) {
+    public @Nullable Activator getActivator(@NotNull String name) {
         return activatorsNames.get(name);
+    }
+
+    public @NotNull @UnmodifiableView Collection<String> getActivatorNames() {
+        return Collections.unmodifiableCollection(activatorsNames.keySet());
     }
 
     public boolean saveGroup(@NotNull String name) {
@@ -247,7 +245,7 @@ public class ActivatorsManager {
         @NotNull
         public Collection<Activator> byRawLocation(@NotNull World world, int x, int y, int z) {
             List<Activator> found = new ArrayList<>();
-            for (ActivatorType type : types.types()) {
+            for (ActivatorType type : types.getTypes()) {
                 if (Locatable.class.isAssignableFrom(type.getActivatorClass())) {
                     type.getActivators().stream().filter(act -> ((Locatable) act).isLocatedAt(world, x, y, z)).forEach(found::add);
                 }

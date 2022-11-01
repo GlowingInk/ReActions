@@ -47,7 +47,7 @@ public class CmdInfo extends Cmd {
         }
 
         Msg.printMSG(sender, "&5☆ &d&l" + Msg.MSG_ACTINFOTITLE.getText("NOCOLOR") + " &r&5☆");
-        Msg.printMSG(sender, "msg_actinfo", base.getName(), act.getClass().getSimpleName(), base.getGroup());
+        Msg.printMSG(sender, "msg_actinfo", base.getName(), base.getType(), base.getGroup());
         Msg.printMSG(sender, "msg_actinfo2", base.getFlags().size(), base.getActions().size(), base.getReactions().size());
         if (f && (!base.getFlags().isEmpty())) {
             List<String> flg = new ArrayList<>();

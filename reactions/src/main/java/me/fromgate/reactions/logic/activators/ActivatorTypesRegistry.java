@@ -8,9 +8,11 @@ import me.fromgate.reactions.util.suppliers.RaGenerator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -64,8 +66,12 @@ public class ActivatorTypesRegistry {
         return types.get(type);
     }
 
-    public @NotNull Collection<ActivatorType> types() {
-        return types.values();
+    public @NotNull @UnmodifiableView Collection<ActivatorType> getTypes() {
+        return Collections.unmodifiableCollection(types.values());
+    }
+
+    public @NotNull @UnmodifiableView Collection<String> getTypeNames() {
+        return Collections.unmodifiableCollection(typesAliases.keySet());
     }
 
     public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, @NotNull RaGenerator<ConfigurationSection> loader) {

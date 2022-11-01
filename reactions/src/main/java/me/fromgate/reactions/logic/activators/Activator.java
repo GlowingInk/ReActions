@@ -2,11 +2,12 @@ package me.fromgate.reactions.logic.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Activator {
     protected final ActivatorLogic logic;
 
-    public Activator(ActivatorLogic logic) {
+    public Activator(@NotNull ActivatorLogic logic) {
         this.logic = logic;
     }
 

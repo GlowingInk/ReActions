@@ -43,11 +43,13 @@ import java.util.function.BiConsumer;
 public final class ActivatorLogic {
     private String group; // TODO Should not be there
     private final String name;
+    private final String type;
     private final List<StoredFlag> flags;
     private final List<StoredAction> actions;
     private final List<StoredAction> reactions;
 
-    public ActivatorLogic(@NotNull String name, @Nullable String group) {
+    public ActivatorLogic(@NotNull String type, @NotNull String name, @Nullable String group) {
+        this.type = type;
         this.name = name;
         this.group = Utils.isStringEmpty(group) ? "activators" : group;
         this.flags = new ArrayList<>();
@@ -55,19 +57,23 @@ public final class ActivatorLogic {
         this.reactions = new ArrayList<>();
     }
 
-    public ActivatorLogic(@NotNull String name, @Nullable String group, @NotNull ConfigurationSection cfg, @NotNull ActivitiesRegistry activity) {
-        this(name, group);
+    public ActivatorLogic(@NotNull String type, @NotNull String name, @Nullable String group, @NotNull ConfigurationSection cfg, @NotNull ActivitiesRegistry activity) {
+        this(type, name, group);
         loadData(cfg.getStringList("flags"), (s, v) -> storeFlag(s, v, flags, activity));
         loadData(cfg.getStringList("actions"), (s, v) -> storeAction(s, v, actions, activity));
         loadData(cfg.getStringList("reactions"), (s, v) -> storeAction(s, v, reactions, activity));
     }
 
-    public @NotNull String getGroup() {
-        return this.group;
+    public @NotNull String getType() {
+        return type;
     }
 
     public @NotNull String getName() {
         return this.name;
+    }
+
+    public @NotNull String getGroup() {
+        return this.group;
     }
 
     public @NotNull List<StoredFlag> getFlags() {
