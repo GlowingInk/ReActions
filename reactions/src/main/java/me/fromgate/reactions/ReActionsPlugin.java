@@ -95,7 +95,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         Commander.init(this);
         TimersManager.init();
-        FakeCommander.init();
+        FakeCommander.init(this);
         Externals.init();
         RaVault.init();
         WaitingManager.init();

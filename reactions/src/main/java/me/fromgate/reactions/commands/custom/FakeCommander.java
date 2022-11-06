@@ -1,15 +1,14 @@
 package me.fromgate.reactions.commands.custom;
 
-import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.module.basics.storages.CommandStorage;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,22 +23,23 @@ import java.util.Set;
 public final class FakeCommander {
     // TODO: Use Paper's async tab completer
     private static final Map<String, RaCommand> commands = new HashMap<>();
+    private static File file;
 
     private FakeCommander() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public static void init() {
-        ReActions.getPlugin().saveResource("commands.yml", false);
+    public static void init(Plugin plugin) {
+        file = new File(plugin.getDataFolder(), "commands.yml");
+        if (!file.exists()) plugin.saveResource("commands.yml", false);
         updateCommands();
     }
 
     public static void updateCommands() {
-        File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "commands.yml");
         YamlConfiguration cfg = new YamlConfiguration();
-        if (!FileUtils.loadCfg(cfg, f, "Failed to load commands")) return;
-        CommandMap commandMap = Bukkit.getCommandMap();
+        if (!FileUtils.loadCfg(cfg, file, "Failed to load commands")) return;
         commands.clear();
         for (String cmdKey : cfg.getKeys(false)) {
             ConfigurationSection cmdSection = cfg.getConfigurationSection(cmdKey);
+            if (cmdSection == null) continue;
             String command = cmdSection.getString("command");
             // TODO: Error message
             if (command == null) continue;
@@ -47,11 +47,11 @@ public final class FakeCommander {
             List<String> aliases = cmdSection.getStringList("alias");
             boolean toBukkit = cmdSection.getBoolean("register", true);
             // TODO: Error message
-            register(command, prefix, aliases, commandMap, new RaCommand(cmdSection, toBukkit), toBukkit);
+            register(command, prefix, aliases, new RaCommand(cmdSection, toBukkit), toBukkit);
         }
     }
 
-    public static boolean raiseRaCommand(CommandStorage storage, boolean activated) {
+    public static boolean triggerRaCommand(CommandStorage storage, boolean activated) {
         RaCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ROOT));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
@@ -63,19 +63,17 @@ public final class FakeCommander {
         return raCmd.isOverride();
     }
 
-    private static boolean register(String command, String prefix, List<String> aliases, CommandMap commandMap, RaCommand raCommand, boolean toBukkit) {
+    private static boolean register(String command, String prefix, List<String> aliases, RaCommand raCommand, boolean toBukkit) {
         if (Utils.isStringEmpty(command)) return false;
         command = command.toLowerCase(Locale.ROOT);
         prefix = Utils.isStringEmpty(prefix) ? command : prefix.toLowerCase(Locale.ROOT);
-        if (aliases == null)
-            aliases = new ArrayList<>();
         // Registering main command
-        if (toBukkit) commandMap.register(prefix, raCommand);
+        if (toBukkit) Bukkit.getCommandMap().register(prefix, raCommand);
         commands.put(command, raCommand);
         commands.put(prefix + ":" + command, raCommand);
         // Registering aliases
         for (String alias : aliases) {
-            if (toBukkit) commandMap.register(alias, prefix, raCommand);
+            if (toBukkit) Bukkit.getCommandMap().register(alias, prefix, raCommand);
             commands.put(alias, raCommand);
             commands.put(prefix + ":" + alias, raCommand);
         }

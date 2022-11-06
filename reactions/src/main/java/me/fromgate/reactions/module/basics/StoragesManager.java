@@ -87,7 +87,7 @@ public final class StoragesManager {
         boolean activated = ReActions.getActivators().activate(storage);
         return storage.getChangeables() != null && (
                 storage.getChangeables().get(Storage.CANCEL_EVENT).asBoolean() |
-                FakeCommander.raiseRaCommand(storage, activated)
+                FakeCommander.triggerRaCommand(storage, activated)
         );
     }
 
