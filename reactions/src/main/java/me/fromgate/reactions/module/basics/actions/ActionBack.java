@@ -33,7 +33,7 @@ public class ActionBack implements Action {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return PushBack.teleportToPrev(context.getPlayer(), params.getInteger(Parameters.ORIGIN_KEY, 1));
+        return PushBack.teleportToPrev(context.getPlayer(), params.getInteger(Parameters.ORIGIN, 1));
     }
 
     @Override

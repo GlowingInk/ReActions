@@ -39,7 +39,7 @@ public class JoinActivator extends Activator {
     }
 
     public static JoinActivator create(ActivatorLogic base, Parameters param) {
-        boolean firstJoin = param.toString().contains("first");
+        boolean firstJoin = param.getOrigin().contains("first");
         return new JoinActivator(base, firstJoin);
     }
 

@@ -40,7 +40,7 @@ public class RespawnActivator extends Activator {
     }
 
     public static RespawnActivator create(ActivatorLogic base, Parameters param) {
-        DeathCause cause = DeathCause.getByName(param.getString("cause", param.toString()));
+        DeathCause cause = DeathCause.getByName(param.getString("cause", param.getOrigin()));
         return new RespawnActivator(base, cause);
     }
 

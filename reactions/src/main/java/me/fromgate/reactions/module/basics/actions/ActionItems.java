@@ -55,13 +55,13 @@ public class ActionItems implements Action {
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
-            case GIVE_ITEM -> giveItemPlayer(context, params.toString());
+            case GIVE_ITEM -> giveItemPlayer(context, params.getOrigin());
             case REMOVE_ITEM_HAND -> removeItemInHand(context, params);
             case REMOVE_ITEM_OFFHAND -> removeItemInOffHand(context, params);
             case REMOVE_ITEM_INVENTORY -> removeItemInInventory(context, params);
             case DROP_ITEM -> dropItems(context, params);
             case WEAR_ITEM -> wearItem(context, params);
-            case OPEN_INVENTORY -> openInventory(context, params.toString());
+            case OPEN_INVENTORY -> openInventory(context, params.getOrigin());
             case SET_INVENTORY -> setInventorySlot(context, params);
             case GET_INVENTORY -> getInventorySlot(context, params);
             case UNWEAR_ITEM -> unwearItem(context, params);
@@ -167,7 +167,7 @@ public class ActionItems implements Action {
         String itemStr = params.getString("item");
         int slot = -1; //4 - auto, 3 - helmete, 2 - chestplate, 1 - leggins, 0 - boots
         int existDrop = 1; // 0 - remove, 1 - undress, 2 - drop, 3 - keep
-        if (itemStr.isEmpty()) itemStr = params.getString(Parameters.ORIGIN_KEY, "");
+        if (itemStr.isEmpty()) itemStr = params.getString(Parameters.ORIGIN, "");
         else {
             slot = this.getSlotNum(params.getString("slot", "auto"));
             String existStr = params.getString("exist", "undress");

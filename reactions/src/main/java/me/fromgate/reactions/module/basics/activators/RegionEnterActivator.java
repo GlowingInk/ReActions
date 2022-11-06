@@ -49,7 +49,7 @@ public class RegionEnterActivator extends Activator implements Locatable {
     public String getRegion() {return this.region;}
 
     public static RegionEnterActivator create(ActivatorLogic base, Parameters param) {
-        String region = param.getString("region", param.toString());
+        String region = param.getString("region", param.getOrigin());
         RaWorldGuard.updateRegionCache();
         return new RegionEnterActivator(base, region);
     }

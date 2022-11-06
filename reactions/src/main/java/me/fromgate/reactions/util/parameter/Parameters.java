@@ -11,6 +11,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -25,15 +26,27 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
-    public static final String ORIGIN_KEY = "origin-string";
-    public static final Parameters EMPTY = new Parameters("", Collections.emptyMap());
+    public static final String ORIGIN = "origin-string";
+    public static final Parameters EMPTY = new Parameters("", new HashMap<>(1));
+
+    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)([{}]|\\\\$)");
 
     private final String origin;
     private final Map<String, String> params;
 
+    private String fixed;
+
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
         this.params = params;
+        params.put(Parameters.ORIGIN, origin);
+    }
+
+    protected Parameters(@NotNull String origin, String fixed, @NotNull Map<String, String> params) {
+        this.origin = origin;
+        this.fixed = fixed;
+        this.params = params;
+        params.put(Parameters.ORIGIN, origin);
     }
 
     public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) { // TODO: Edge case "test:value,value"
@@ -62,7 +75,7 @@ public class Parameters implements Iterable<String> {
         return fromString(str, null);
     }
 
-    public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) { // TODO: Escaping
+    public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = new CaseInsensitiveMap<>(true);
         IterationState state = IterationState.SPACE;
@@ -71,6 +84,21 @@ public class Parameters implements Iterable<String> {
         int brCount = 0;
         for (int i = 0; i < str.length(); ++i) {
             char c = str.charAt(i);
+            if (c == '\\') {
+                int next = i + 1;
+                if (next < str.length()) {
+                    char n = str.charAt(next);
+                    if (n == '{' || n == '}' || (n == '\\' && i + 2 < str.length() && str.charAt(i + 2) == '}')) {
+                        if (state == IterationState.SPACE) {
+                            bld = new StringBuilder();
+                            state = IterationState.TEXT;
+                        }
+                        bld.append(n);
+                        i = next;
+                        continue;
+                    }
+                }
+            }
             switch (state) {
                 case SPACE -> {
                     if (c == ' ') {
@@ -82,8 +110,7 @@ public class Parameters implements Iterable<String> {
                 case TEXT -> {
                     if (c == ' ') {
                         if (hasDefKey) {
-                            String value = bld.toString();
-                            params.put(defKey, value);
+                            params.put(defKey, bld.toString());
                         }
                         state = IterationState.SPACE;
                         continue;
@@ -99,6 +126,7 @@ public class Parameters implements Iterable<String> {
                 case COLON -> {
                     if (c == ' ') {
                         state = IterationState.SPACE;
+                        params.put(param, "");
                         continue;
                     }
                     if (c == '{') {
@@ -111,15 +139,14 @@ public class Parameters implements Iterable<String> {
                 case PARAM -> {
                     if (c == ' ') {
                         state = IterationState.SPACE;
-                        String value = bld.toString();
-                        params.put(param, value);
+                        params.put(param, bld.toString());
                         continue;
                     }
                     bld.append(c);
                 }
                 case BR_PARAM -> {
                     if (c == '}') {
-                        if (brCount == 0) {
+                        if (brCount < 1) {
                             state = IterationState.SPACE;
                             String value = bld.toString();
                             params.put(param, value);
@@ -139,7 +166,6 @@ public class Parameters implements Iterable<String> {
             params.put(defKey, bld.toString());
         }
 
-        params.put(Parameters.ORIGIN_KEY, str);
         return new Parameters(str, params);
     }
 
@@ -149,30 +175,63 @@ public class Parameters implements Iterable<String> {
 
     public static @NotNull Parameters noParse(@NotNull String str) {
         Map<String, String> params = new CaseInsensitiveMap<>(1);
-        params.put(Parameters.ORIGIN_KEY, str);
         return new Parameters(str, params);
     }
 
     public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
         Map<String, String> params = new CaseInsensitiveMap<>();
         params.put(defKey, str);
-        params.put(Parameters.ORIGIN_KEY, str);
         return new Parameters(str, params);
     }
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
-        StringBuilder bld = new StringBuilder();
         Map<String, String> params = new CaseInsensitiveMap<>(map);
-        map.forEach((k, v) -> {
-            bld.append(k).append(':');
-            if (v.isEmpty() || v.length() >= 20 || v.indexOf(' ') != -1) {
-                bld.append('{').append(v).append('}');
+        String str = mapAsParamsString(map);
+        return new Parameters(str, str, params);
+    }
+
+    public static @NotNull String mapAsParamsString(@NotNull Map<String, String> map) {
+        StringBuilder bld = new StringBuilder();
+        map.forEach((key, value) -> {
+            if (key.equals(Parameters.ORIGIN)) return;
+            bld.append(key).append(':');
+            String escaped = escapeParameters(value);
+            if (value.isEmpty() || value.length() >= 20 || value.indexOf(' ') != -1 || value.indexOf('{') != -1 || escaped.length() != value.length()) {
+                bld.append('{').append(escaped).append('}');
             } else {
-                bld.append(v);
+                bld.append(value);
             }
             bld.append(' ');
         });
-        return new Parameters(Utils.cutBuilder(bld, 1), params);
+        return Utils.cutBuilder(bld, 1);
+    }
+
+    public static @NotNull String escapeParameters(@NotNull String str) {
+        if (str.isEmpty()) return str;
+        int brackets = 0;
+        boolean escaped = false;
+        boolean requiresEscaping = false;
+        for (int i = 0; i < str.length(); i++) {
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            char ch = str.charAt(i);
+            if (ch == '\\') {
+                escaped = true;
+            } else if (ch == '{') {
+                ++brackets;
+            } else if (ch == '}' && --brackets < 0) {
+                requiresEscaping = true;
+                break;
+            }
+        }
+        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || str.charAt(str.length() - 2) != '\\')) {
+            str += '\\';
+        }
+        return requiresEscaping
+                ? UNESCAPED.matcher(str).replaceAll("\\\\$1")
+                : str;
     }
 
     public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter) {
@@ -322,6 +381,16 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
+    public @NotNull String getFixed() {
+        return fixed == null
+                ? (fixed = mapAsParamsString(params))
+                : fixed;
+    }
+
+    public @NotNull String getOrigin() {
+        return origin;
+    }
+
     public @UnmodifiableView @NotNull Set<String> keySet() {
         return Collections.unmodifiableSet(this.params.keySet());
     }
@@ -345,7 +414,7 @@ public class Parameters implements Iterable<String> {
 
     @Override
     public @NotNull String toString() {
-        return this.origin;
+        return getFixed();
     }
 
     @Override

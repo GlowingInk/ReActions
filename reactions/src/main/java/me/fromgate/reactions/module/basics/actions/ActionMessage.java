@@ -79,7 +79,7 @@ public class ActionMessage implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = params.getStringSafe("text", () -> removeParams(params.toString()));
+        String message = params.getStringSafe("text", () -> removeParams(params.getOrigin()));
         if (message.isEmpty()) return;
         String annoymentTime = params.getString("hide");
         for (Player p : players) {

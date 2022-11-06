@@ -58,7 +58,7 @@ public class LeverActivator extends Activator implements Locatable {
     public static LeverActivator create(ActivatorLogic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
-        String line = param.toString();
+        String line = param.getOrigin();
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
             String state = "ANY";
             if (line.equalsIgnoreCase("on")) state = "ON";

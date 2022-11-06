@@ -51,7 +51,7 @@ public class ActionTp implements Action {
             loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
             radius = params.getInteger("radius", 0);
         } else {
-            loc = LocationUtils.parseLocation(params.toString(), player.getLocation());
+            loc = LocationUtils.parseLocation(params.getOrigin(), player.getLocation());
         }
         boolean land = params.getBoolean("land", true);
 

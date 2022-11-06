@@ -32,7 +32,7 @@ public class FlagBlock implements Flag {
         String istr = params.getString("block", "");
         if (istr.isEmpty()) return loc.getBlock().getType() != Material.AIR;
         Parameters block = Parameters.fromString(istr);
-        String type = block.getString("type", block.getString(Parameters.ORIGIN_KEY, "AIR"));
+        String type = block.getString("type", block.getString(Parameters.ORIGIN, "AIR"));
         return loc.getBlock().getType().name().equalsIgnoreCase(type);
     }
 }

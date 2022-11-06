@@ -52,7 +52,7 @@ public class ActionDelay implements Action {
             timeStr = params.getStringSafe("delay", () -> params.getString("time"));
             add = params.getBoolean("add", false);
         } else {
-            String oldFormat = params.toString();
+            String oldFormat = params.getOrigin();
             if (oldFormat.contains("/")) {
                 String[] m = oldFormat.split("/");
                 if (m.length >= 2) {

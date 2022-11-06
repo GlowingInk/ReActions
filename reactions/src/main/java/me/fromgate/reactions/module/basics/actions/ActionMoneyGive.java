@@ -43,7 +43,7 @@ public class ActionMoneyGive implements Action {
         Player player = context.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
         if (params.isEmpty()) return false;
-        if (params.size() <= 2) params = parseOldFormat(player, params.toString());
+        if (params.size() <= 2) params = parseOldFormat(player, params.getOrigin());
         String amountStr = params.getString("amount");
         if (amountStr.isEmpty()) return false;
         String worldName = params.getString("world");

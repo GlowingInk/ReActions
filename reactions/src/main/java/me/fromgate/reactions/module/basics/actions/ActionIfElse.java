@@ -115,7 +115,7 @@ public class ActionIfElse implements Action {
         if (!params.contains("action1")) return false;
         for (String actionKey : params.keySet()) {
             if (!((actionKey.toLowerCase(Locale.ROOT)).startsWith("action"))) continue;
-            if (params.isEmpty() || !params.toString().contains("=")) continue;
+            if (params.isEmpty() || !params.getOrigin().contains("=")) continue;
             String actionStr = params.getString(actionKey);
 
             String name = actionStr.substring(0, actionStr.indexOf("="));

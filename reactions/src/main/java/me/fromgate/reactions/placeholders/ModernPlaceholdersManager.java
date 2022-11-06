@@ -1,6 +1,7 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,8 +63,8 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                 case PLACEHOLDER_INSIDE -> {
                     if (c == ' ') {
                         stage = IterationStage.TEXT;
-                    } else if (c == ']') {
-                        if (allowSpecial) {
+                    } else if (allowSpecial) {
+                        if (c == ']') {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(context, substring);
                             if (processed != null) {
@@ -71,6 +72,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                                     String options = optionsSearch(text, index + 2);
                                     if (options != null) {
                                         index += options.length() + 2;
+                                        if (options.contains("prms")) processed = Parameters.escapeParameters(processed);
                                         if (options.contains("phs")) processed = escapeSpecial(processed);
                                     }
                                 }
@@ -80,9 +82,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             }
                             stepIndex = index + 1;
                             stage = IterationStage.TEXT;
-                        }
-                    } else if (c == '%') {
-                        if (allowSpecial) {
+                        } else if (c == '%') {
                             stage = IterationStage.PLACEHOLDER_CHECK;
                         }
                     }

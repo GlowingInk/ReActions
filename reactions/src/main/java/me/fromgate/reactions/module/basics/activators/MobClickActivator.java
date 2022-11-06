@@ -53,14 +53,14 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     public static MobClickActivator create(ActivatorLogic base, Parameters param) {
-        String type = param.toString();
+        String type = param.getOrigin();
         String name = "";
         String location = "";
         if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name");
             location = param.getString("loc");
-        } else if (param.toString().contains("$")) {
+        } else if (param.getOrigin().contains("$")) {
             name = type.substring(0, type.indexOf("$"));
             type = type.substring(name.length() + 1);
         }

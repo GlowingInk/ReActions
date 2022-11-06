@@ -38,7 +38,7 @@ public class FlagPowered implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        String locStr = params.getString("loc", params.toString());
+        String locStr = params.getString("loc", params.getOrigin());
         if (locStr.isEmpty()) return false;
         Location loc = LocationUtils.parseLocation(locStr, null);
         if (loc == null) return false;
