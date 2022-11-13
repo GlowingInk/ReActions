@@ -43,7 +43,7 @@ public class ActionMoneyPay implements Action {
         Player player = context.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
         if (params.size() == 0) return false;
-        if (params.size() <= 2) params = parseOldFormat(player, params.getOrigin());
+        if (params.size() <= 2) params = parseOldFormat(player, params.origin());
         String amountStr = params.getString("amount");
         if (amountStr.isEmpty()) return false;
         String worldName = params.getString("world");

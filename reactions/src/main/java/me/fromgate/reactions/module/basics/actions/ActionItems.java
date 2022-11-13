@@ -55,13 +55,13 @@ public class ActionItems implements Action {
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
-            case GIVE_ITEM -> giveItemPlayer(context, params.getOrigin());
+            case GIVE_ITEM -> giveItemPlayer(context, params.origin());
             case REMOVE_ITEM_HAND -> removeItemInHand(context, params);
             case REMOVE_ITEM_OFFHAND -> removeItemInOffHand(context, params);
             case REMOVE_ITEM_INVENTORY -> removeItemInInventory(context, params);
             case DROP_ITEM -> dropItems(context, params);
             case WEAR_ITEM -> wearItem(context, params);
-            case OPEN_INVENTORY -> openInventory(context, params.getOrigin());
+            case OPEN_INVENTORY -> openInventory(context, params.origin());
             case SET_INVENTORY -> setInventorySlot(context, params);
             case GET_INVENTORY -> getInventorySlot(context, params);
             case UNWEAR_ITEM -> unwearItem(context, params);

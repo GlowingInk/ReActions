@@ -19,7 +19,7 @@ public class ActionRegex implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         String prefix = params.getString("prefix");
         String regex = params.getString("regex");
-        String input = params.getString("input", removeParams(params.getOrigin()));
+        String input = params.getString("input", removeParams(params.origin()));
 
         if (input.isEmpty()) return false;
 

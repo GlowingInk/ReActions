@@ -3,6 +3,8 @@ package me.fromgate.reactions.util.parameter;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static me.fromgate.reactions.util.parameter.Parameters.escapeParameters;
 import static me.fromgate.reactions.util.parameter.Parameters.fromString;
 import static org.testng.Assert.assertEquals;
@@ -35,11 +37,20 @@ public class ParametersTest {
         };
     }
 
+    @DataProvider
+    public static Object[][] keyListOfData() {
+        return new Object[][] {
+                {"key1:value key2:value key3:value", List.of("key1", "key2", "key3")},
+                {"key:value key1:value key2:value key3:value", List.of("key1", "key2", "key3")},
+                {"key:value key2:value", List.of("key", "key2")}
+        };
+    }
+
     @Test(dataProvider = "fromStringData")
     public void testFromString(String input, String expected) {
         String result = fromString(input).toString();
         assertEquals(result, expected);
-        assertEquals(fromString(result).toString(), expected);
+        assertEquals(fromString(result).originFormatted(), expected);
     }
 
     @Test(dataProvider = "escapeParametersData")
@@ -47,5 +58,10 @@ public class ParametersTest {
         String result = escapeParameters(input);
         assertEquals(result, expected);
         assertEquals(escapeParameters(result), expected);
+    }
+
+    @Test(dataProvider = "keyListOfData")
+    public void testKeyListOf(String input, List<String> expected) {
+        assertEquals(Parameters.fromString(input).keyListOf("key"), expected);
     }
 }

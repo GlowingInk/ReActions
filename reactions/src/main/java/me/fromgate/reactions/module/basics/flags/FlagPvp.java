@@ -37,7 +37,7 @@ public class FlagPvp implements Flag {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (!player.hasMetadata("reactions-pvp-time")) return false;
-        String timeStr = params.getString("time", params.getOrigin());
+        String timeStr = params.getString("time", params.origin());
         long delay = TimeUtils.parseTime(timeStr);
         if (delay == 0) return false;
         return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").get(0).asLong()) < delay);

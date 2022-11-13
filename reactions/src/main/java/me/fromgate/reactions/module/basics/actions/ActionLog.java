@@ -84,7 +84,7 @@ public class ActionLog implements Action {
             boolean prefix = params.getBoolean("prefix", true);
             boolean color = params.getBoolean("color", false);
             String file = params.getString("file");
-            String message = params.getString("text", removeParams(params.getOrigin()));
+            String message = params.getString("text", removeParams(params.origin()));
             if (message.isEmpty()) return false;
             if (file.isEmpty()) {
                 if (prefix) {
@@ -93,7 +93,7 @@ public class ActionLog implements Action {
             } else {
                 saveToFile(context, file, message);
             }
-        } else Msg.logMessage(params.getOrigin());
+        } else Msg.logMessage(params.origin());
 
         return true;
     }

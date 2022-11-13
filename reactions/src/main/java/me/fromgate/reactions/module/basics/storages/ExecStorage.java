@@ -48,7 +48,7 @@ public class ExecStorage extends Storage {
 
     public ExecStorage(Player player, Parameters tempVars) {
         super(player);
-        this.tempVars = tempVars.getMap();
+        this.tempVars = tempVars.originMap();
     }
 
     public ExecStorage(Player player, Map<String, String> tempVars) {

@@ -44,7 +44,7 @@ public class FlagDelay implements Flag {
         Player player = context.getPlayer();
         String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
-        String id = params.getOrigin();
+        String id = params.origin();
         if (params.contains("id")) {
             id = params.getString("id");
             updateTime = TimeUtils.parseTime(params.getString("set-delay", params.getString("set-time", "0")));

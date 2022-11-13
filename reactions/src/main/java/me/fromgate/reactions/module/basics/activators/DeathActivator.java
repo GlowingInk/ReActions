@@ -40,7 +40,7 @@ public class DeathActivator extends Activator {
     }
 
     public static DeathActivator create(ActivatorLogic base, Parameters param) {
-        DeathCause cause = DeathCause.getByName(param.getString("cause", param.getOrigin()));
+        DeathCause cause = DeathCause.getByName(param.getString("cause", param.origin()));
         return new DeathActivator(base, cause);
     }
 

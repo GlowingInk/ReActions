@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -219,13 +220,13 @@ public class TimersManager {
                 for (String timerId : cs.getKeys(false)) {
                     ConfigurationSection csParams = cs.getConfigurationSection(timerId);
                     if (csParams == null) continue;
-                    Parameters params = Parameters.fromString("");
+                    Map<String, String> params = new HashMap<>();
                     params.put("timer-type", timerType);
                     for (String param : csParams.getKeys(true)) {
                         if (!csParams.isString(param)) continue;
                         params.put(param, csParams.getString(param));
                     }
-                    addTimer(timerId, params);
+                    addTimer(timerId, Parameters.fromMap(params));
                 }
             }
     }

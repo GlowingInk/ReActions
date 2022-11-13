@@ -42,7 +42,7 @@ public class ItemConsumeActivator extends Activator {
     }
 
     public static ItemConsumeActivator create(ActivatorLogic base, Parameters param) {
-        String item = param.getString("item", param.getOrigin());
+        String item = param.getString("item", param.origin());
         return new ItemConsumeActivator(base, item);
     }
 

@@ -57,9 +57,9 @@ public class ActionIfElse implements Action {
     private static boolean executeActivator(Player p, String condition, String paramStr) {
         Parameters param = Parameters.fromString(paramStr);
         if (!param.contains("run")) return false;
-        param = Parameters.fromString(param.getString("run"));
+        param = param.getParams("run");
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return false;
-        param.put("player", p == null ? "~null" : p.getName());
+        param = param.with(Map.of("player", p == null ? "~null" : p.getName()));
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("condition", condition);
         StoragesManager.triggerExec(p, param, tempVars);
@@ -115,7 +115,7 @@ public class ActionIfElse implements Action {
         if (!params.contains("action1")) return false;
         for (String actionKey : params.keySet()) {
             if (!((actionKey.toLowerCase(Locale.ROOT)).startsWith("action"))) continue;
-            if (params.isEmpty() || !params.getOrigin().contains("=")) continue;
+            if (params.isEmpty() || !params.origin().contains("=")) continue;
             String actionStr = params.getString(actionKey);
 
             String name = actionStr.substring(0, actionStr.indexOf("="));

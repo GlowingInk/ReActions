@@ -34,7 +34,7 @@ public class Parameters implements Iterable<String> {
     private final String origin;
     private final Map<String, String> params;
 
-    private String fixed;
+    private String formatted;
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
@@ -42,9 +42,9 @@ public class Parameters implements Iterable<String> {
         params.put(Parameters.ORIGIN, origin);
     }
 
-    protected Parameters(@NotNull String origin, String fixed, @NotNull Map<String, String> params) {
+    protected Parameters(@NotNull String origin, String formatted, @NotNull Map<String, String> params) {
         this.origin = origin;
-        this.fixed = fixed;
+        this.formatted = formatted;
         this.params = params;
         params.put(Parameters.ORIGIN, origin);
     }
@@ -76,6 +76,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
+        if (str.isEmpty()) return Parameters.EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = new CaseInsensitiveMap<>(true);
         IterationState state = IterationState.SPACE;
@@ -179,18 +180,18 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
-        Map<String, String> params = new CaseInsensitiveMap<>();
+        Map<String, String> params = new CaseInsensitiveMap<>(2);
         params.put(defKey, str);
         return new Parameters(str, params);
     }
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
-        Map<String, String> params = new CaseInsensitiveMap<>(map);
-        String str = mapAsParamsString(map);
+        Map<String, String> params = new CaseInsensitiveMap<>(true, map);
+        String str = formatMap(map);
         return new Parameters(str, str, params);
     }
 
-    public static @NotNull String mapAsParamsString(@NotNull Map<String, String> map) {
+    public static @NotNull String formatMap(@NotNull Map<String, String> map) {
         StringBuilder bld = new StringBuilder();
         map.forEach((key, value) -> {
             if (key.equals(Parameters.ORIGIN)) return;
@@ -276,6 +277,10 @@ public class Parameters implements Iterable<String> {
         return value == null ? def.get() : value;
     }
 
+    public @NotNull Parameters getParams(@NotNull String key) {
+        return Parameters.fromString(getString(key));
+    }
+
     public @NotNull String getString(@NotNull String key) {
         return getString(key, "");
     }
@@ -343,11 +348,28 @@ public class Parameters implements Iterable<String> {
         } else return def.getAsBoolean();
     }
 
+    public @NotNull List<@NotNull String> keyListOf(@NotNull String baseKey) {
+        List<String> keys = new ArrayList<>();
+        if (contains(baseKey + "1")) {
+            keys.add(baseKey + "1");
+        } else if (contains(baseKey)) {
+            keys.add(baseKey);
+        } else {
+            return keys;
+        }
+        int i = 2;
+        String key;
+        while (contains(key = baseKey + (i++))) {
+            keys.add(key);
+        }
+        return keys;
+    }
+
     public boolean contains(@NotNull String key) {
         return params.containsKey(key);
     }
 
-    public boolean containsEvery(@NotNull Iterable<String> keys) {
+    public boolean containsEvery(@NotNull Iterable<@NotNull String> keys) {
         for (String key : keys) {
             if (!params.containsKey(key)) {
                 return false;
@@ -360,7 +382,7 @@ public class Parameters implements Iterable<String> {
         return containsEvery(List.of(keys));
     }
 
-    public boolean containsAny(@NotNull Iterable<String> keys) {
+    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
         for (String key : keys) {
             if (params.containsKey(key)) return true;
         }
@@ -381,13 +403,13 @@ public class Parameters implements Iterable<String> {
         return false;
     }
 
-    public @NotNull String getFixed() {
-        return fixed == null
-                ? (fixed = mapAsParamsString(params))
-                : fixed;
+    public @NotNull String originFormatted() {
+        return formatted == null
+                ? (formatted = formatMap(params))
+                : formatted;
     }
 
-    public @NotNull String getOrigin() {
+    public @NotNull String origin() {
         return origin;
     }
 
@@ -395,7 +417,7 @@ public class Parameters implements Iterable<String> {
         return Collections.unmodifiableSet(this.params.keySet());
     }
 
-    public @UnmodifiableView @NotNull Map<String, String> getMap() {
+    public @UnmodifiableView @NotNull Map<String, String> originMap() {
         return Collections.unmodifiableMap(this.params);
     }
 
@@ -403,9 +425,11 @@ public class Parameters implements Iterable<String> {
         return this.params.isEmpty();
     }
 
-    @Deprecated
-    public @Nullable String put(@NotNull String key, @NotNull String value) {
-        return params.put(key, value);
+    @Contract(pure = true)
+    public @NotNull Parameters with(@NotNull Map<String, String> params) {
+        Map<String, String> updated = new CaseInsensitiveMap<>(true, this.params);
+        updated.putAll(params);
+        return Parameters.fromMap(updated);
     }
 
     public int size() {
@@ -414,12 +438,12 @@ public class Parameters implements Iterable<String> {
 
     @Override
     public @NotNull String toString() {
-        return getFixed();
+        return originFormatted();
     }
 
     @Override
     public @NotNull Iterator<String> iterator() {
-        return getMap().keySet().iterator();
+        return originMap().keySet().iterator();
     }
 
     public void forEach(@NotNull BiConsumer<String, String> consumer) {

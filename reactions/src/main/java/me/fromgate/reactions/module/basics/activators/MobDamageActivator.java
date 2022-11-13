@@ -49,14 +49,14 @@ public class MobDamageActivator extends Activator {
     }
 
     public static MobDamageActivator create(ActivatorLogic base, Parameters param) {
-        String type = param.getOrigin();
+        String type = param.origin();
         String name = "";
         String itemStr = "";
         if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name");
             itemStr = param.getString("item");
-        } else if (param.getOrigin().contains("$")) {
+        } else if (param.origin().contains("$")) {
             name = type.substring(0, type.indexOf("$"));
             type = type.substring(name.length() + 1);
         }

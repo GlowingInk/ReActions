@@ -21,7 +21,7 @@ public class DropActivator extends Activator {
     }
 
     public static DropActivator create(ActivatorLogic base, Parameters param) {
-        String itemStr = param.getString("item", param.getOrigin());
+        String itemStr = param.getString("item", param.origin());
         return new DropActivator(base, itemStr);
     }
 

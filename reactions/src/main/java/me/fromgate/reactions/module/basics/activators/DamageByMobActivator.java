@@ -58,7 +58,7 @@ public class DamageByMobActivator extends Activator {
     }
 
     public static DamageByMobActivator create(ActivatorLogic base, Parameters param) {
-        String damagerType = param.getOrigin();
+        String damagerType = param.origin();
         String damagerName;
         if (damagerType.contains("$")) {
             damagerName = getEntityTypeByName(damagerType.substring(0, damagerType.indexOf("$")));

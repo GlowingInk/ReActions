@@ -79,7 +79,7 @@ public class CommandActivator extends Activator {
     }
 
     public static CommandActivator create(ActivatorLogic base, Parameters param) {
-        String command = param.getString("command", param.getOrigin());
+        String command = param.getString("command", param.origin());
         boolean starts = param.getBoolean("starts", true);
         boolean useRegex = param.getBoolean("regex", false);
         boolean consoleAllowed = param.getBoolean("console", true);

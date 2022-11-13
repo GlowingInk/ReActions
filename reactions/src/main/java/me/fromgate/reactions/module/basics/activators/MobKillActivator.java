@@ -46,12 +46,12 @@ public class MobKillActivator extends Activator {
     }
 
     public static MobKillActivator create(ActivatorLogic base, Parameters param) {
-        String type = param.getOrigin();
+        String type = param.origin();
         String name = "";
         if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name");
-        } else if (param.getOrigin().contains("$")) {
+        } else if (param.origin().contains("$")) {
             name = type.substring(0, type.indexOf("$"));
             type = type.substring(name.length() + 1);
         }

@@ -15,7 +15,7 @@ import java.util.Set;
  * Basically this is a wrapper for HashMap<String, V> which allows to ignore case of the string key
  * Doesn't allow null keys
  * For Map#get and Map#put works with O(1), while TreeMap<String, V>(String.CASE_INSENSITIVE_ORDER) is O(log(n))
- *
+ * <p>
  * Should be used when keys are needed to save/proceed, otherwise HashMap<String, V> with String#toLowerCase
  * @param <V> Type of value
  * @author imDaniX
@@ -27,8 +27,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> { // TODO Implement
     private final EntrySet entrySet;
 
     public CaseInsensitiveMap(@NotNull Map<String, V> copy) {
-        this(copy.size());
-        putAll(copy);
+        this(false, copy);
     }
 
     public CaseInsensitiveMap(boolean linked, @NotNull Map<String, V> copy) {
@@ -37,7 +36,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> { // TODO Implement
     }
 
     public CaseInsensitiveMap() {
-        this(false, 16);
+        this(16);
     }
 
     public CaseInsensitiveMap(int initSize) {

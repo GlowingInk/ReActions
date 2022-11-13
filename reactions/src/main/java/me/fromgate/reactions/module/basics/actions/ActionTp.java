@@ -51,7 +51,7 @@ public class ActionTp implements Action {
             loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
             radius = params.getInteger("radius", 0);
         } else {
-            loc = LocationUtils.parseLocation(params.getOrigin(), player.getLocation());
+            loc = LocationUtils.parseLocation(params.origin(), player.getLocation());
         }
         boolean land = params.getBoolean("land", true);
 
@@ -68,10 +68,6 @@ public class ActionTp implements Action {
             context.setVariable("loc-to", LocationUtils.locationToString(loc));
             context.setVariable("loc-to-str", LocationUtils.locationToStringFormatted(loc));
             Teleporter.teleport(player, loc);
-            String playeffect = params.getString("effect");
-            if (!playeffect.isEmpty()) {
-                if (playeffect.equalsIgnoreCase("smoke") && (!params.contains("wind"))) params.put("wind", "all");
-            }
         }
         return loc;
     }
