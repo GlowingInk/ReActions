@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Deprecated
 public class Messenger {
     private final JavaPlugin plugin;
     private final DecimalFormat TWO_DECIMALS = new DecimalFormat("####0.##");

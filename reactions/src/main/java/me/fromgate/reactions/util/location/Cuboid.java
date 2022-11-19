@@ -59,19 +59,33 @@ public class Cuboid {
         return (y >= yMin && y <= yMax) || (head && (y + 1.75 >= yMin && y + 1.75 <= yMax));
     }
 
-    public String getWorld() {return this.world;}
+    public String getWorld() {
+        return this.world;
+    }
 
-    public int getXMin() {return this.xMin;}
+    public int getXMin() {
+        return this.xMin;
+    }
 
-    public int getXMax() {return this.xMax;}
+    public int getXMax() {
+        return this.xMax;
+    }
 
-    public int getZMin() {return this.zMin;}
+    public int getZMin() {
+        return this.zMin;
+    }
 
-    public int getZMax() {return this.zMax;}
+    public int getZMax() {
+        return this.zMax;
+    }
 
-    public Integer getYMin() {return this.yMin;}
+    public Integer getYMin() {
+        return this.yMin;
+    }
 
-    public Integer getYMax() {return this.yMax;}
+    public Integer getYMax() {
+        return this.yMax;
+    }
 
     // TODO: toString method
 }

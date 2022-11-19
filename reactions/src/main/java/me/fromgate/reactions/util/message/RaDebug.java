@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+@Deprecated
 public final class RaDebug {
     private static final Object2BooleanMap<UUID> debug = new Object2BooleanOpenHashMap<>();
 

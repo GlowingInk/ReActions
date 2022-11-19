@@ -28,6 +28,7 @@ import org.bukkit.World;
 
 import java.text.DecimalFormat;
 
+@Deprecated
 public class TpLocation {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("####0.##");
@@ -69,21 +70,32 @@ public class TpLocation {
                 (Math.round(loc.getZ()) == Math.round(z)));
     }
 
+    public String getWorld() {
+        return this.world;
+    }
+
+    public double getX() {
+        return this.x;
+    }
+
+    public double getY() {
+        return this.y;
+    }
+
+    public double getZ() {
+        return this.z;
+    }
+
+    public float getYaw() {
+        return this.yaw;
+    }
+
+    public float getPitch() {
+        return this.pitch;
+    }
+
     @Override
     public String toString() {
         return "[" + this.world + "] " + FORMAT.format(x) + ", " + FORMAT.format(y) + ", " + FORMAT.format(z);
     }
-
-
-    public String getWorld() {return this.world;}
-
-    public double getX() {return this.x;}
-
-    public double getY() {return this.y;}
-
-    public double getZ() {return this.z;}
-
-    public float getYaw() {return this.yaw;}
-
-    public float getPitch() {return this.pitch;}
 }

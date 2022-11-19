@@ -173,11 +173,19 @@ public class VirtualLocation {
         return world == null && x == null && y == null && z == null;
     }
 
-    public String getWorld() {return this.world;}
+    public String getWorld() {
+        return this.world;
+    }
 
-    public Integer getX() {return this.x;}
+    public Integer getX() {
+        return this.x;
+    }
 
-    public Integer getY() {return this.y;}
+    public Integer getY() {
+        return this.y;
+    }
 
-    public Integer getZ() {return this.z;}
+    public Integer getZ() {
+        return this.z;
+    }
 }

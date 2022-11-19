@@ -16,7 +16,7 @@ public final class VelocityUtils {
 
         // Block locations
         int endGain = to.getBlockY() - from.getBlockY();
-        double horizDist = Math.sqrt(distanceSquared(from, to));
+        double horizDist = from.distance(to);
 
         // Height gain
 
@@ -47,11 +47,5 @@ public final class VelocityUtils {
         double vz = vh * dirz;
 
         return new Vector(vx, vy, vz);
-    }
-
-    public static double distanceSquared(Vector from, Vector to) {
-        double dx = to.getBlockX() - from.getBlockX();
-        double dz = to.getBlockZ() - from.getBlockZ();
-        return dx * dx + dz * dz;
     }
 }

@@ -53,7 +53,7 @@ public final class LocationUtils { // TODO: Requires refactoring
      * @param param           String that contains parameters:
      *                        parameter1:value1 parameter2:value2 ... parameterN:valueN
      *                        Parameters:
-     *                        <WorldName,X,Y,Z[,Yaw,Pitch]> - default, simplest way to define location
+     *                        <WorldName,X,Y,Z[,Yaw,Pitch]> - default, the simplest way to define location
      *                        loc:<WorldName,X,Y,Z[,Yaw,Pitch]> - same as previous
      *                        <p>
      *                        loc:<WorldName,X,Y,Z[,Yaw,Pitch]> radius:<Radius> - find random location around the defined block
