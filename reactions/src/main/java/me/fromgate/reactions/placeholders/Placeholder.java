@@ -4,12 +4,12 @@ import me.fromgate.reactions.logic.RaContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface Placeholder {
+public sealed interface Placeholder permits Placeholder.Keyed, Placeholder.Dynamic, Placeholder.Preprocess {
     @NotNull String getName();
 
     // TODO: boolean requiresPlayer?
 
-    interface Keyed extends Placeholder {
+    non-sealed interface Keyed extends Placeholder {
         /**
          * Process this placeholder
          * @param context Context of activation
@@ -20,7 +20,7 @@ public interface Placeholder {
         @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String params);
     }
 
-    interface Dynamic extends Placeholder {
+    non-sealed interface Dynamic extends Placeholder {
         /**
          * Process this placeholder
          * @param context Context of activation
@@ -30,7 +30,7 @@ public interface Placeholder {
         @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String phText);
     }
 
-    interface Preprocess extends Placeholder {
+    non-sealed interface Preprocess extends Placeholder {
         /**
          * Process this placeholder
          * @param context Context of activation

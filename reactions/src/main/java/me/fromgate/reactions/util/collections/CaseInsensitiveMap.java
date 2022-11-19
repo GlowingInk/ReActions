@@ -20,7 +20,7 @@ import java.util.Set;
  * @param <V> Type of value
  * @author imDaniX
  */
-public class CaseInsensitiveMap<V> implements Map<String, V> { // TODO Implement simpler singleton
+public class CaseInsensitiveMap<V> implements Map<String, V> {
     private final Map<String, KeyedValue<V>> origin;
     private final KeySet keySet;
     private final ValueSet valueSet;
@@ -175,7 +175,6 @@ public class CaseInsensitiveMap<V> implements Map<String, V> { // TODO Implement
         public void clear() {
             CaseInsensitiveMap.this.clear();
         }
-        // TODO etc?
 
         public abstract class InternalIterator implements Iterator<E> {
             final Iterator<KeyedValue<V>> internal;
