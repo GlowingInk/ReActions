@@ -204,12 +204,11 @@ public final class VirtualItem {
     }
 
     public static @NotNull VirtualItem fromString(@NotNull String paramsStr) {
-        return paramsStr.isEmpty()
-                ? VirtualItem.EMPTY
-                : fromParameters(Parameters.fromString(paramsStr));
+        return fromParameters(Parameters.fromString(paramsStr));
     }
 
     public static @NotNull VirtualItem fromParameters(@NotNull Parameters params) {
+        if (params.isEmpty()) return VirtualItem.EMPTY;
         List<MetaResolver.Instance> resolvers = new ArrayList<>();
         Material type = null;
         int amount = -1;

@@ -7,12 +7,13 @@ import me.fromgate.reactions.util.suppliers.NotNullSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,15 +39,15 @@ public class Parameters implements Iterable<String> {
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
-        this.params = params;
         params.put(Parameters.ORIGIN, origin);
+        this.params = Collections.unmodifiableMap(params);
     }
 
     protected Parameters(@NotNull String origin, String formatted, @NotNull Map<String, String> params) {
         this.origin = origin;
         this.formatted = formatted;
-        this.params = params;
         params.put(Parameters.ORIGIN, origin);
+        this.params = Collections.unmodifiableMap(params);
     }
 
     public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) { // TODO: Edge case "test:value,value"
@@ -348,7 +349,7 @@ public class Parameters implements Iterable<String> {
         } else return def.getAsBoolean();
     }
 
-    public @NotNull List<@NotNull String> keyListOf(@NotNull String baseKey) {
+    public @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
         List<String> keys = new ArrayList<>();
         if (contains(baseKey + "1")) {
             keys.add(baseKey + "1");
@@ -357,9 +358,9 @@ public class Parameters implements Iterable<String> {
         } else {
             return keys;
         }
-        int i = 2;
+        int i = 1;
         String key;
-        while (contains(key = baseKey + (i++))) {
+        while (contains(key = baseKey + (++i))) {
             keys.add(key);
         }
         return keys;
@@ -413,12 +414,12 @@ public class Parameters implements Iterable<String> {
         return origin;
     }
 
-    public @UnmodifiableView @NotNull Set<String> keySet() {
-        return Collections.unmodifiableSet(this.params.keySet());
+    public @Unmodifiable @NotNull Set<String> keySet() {
+        return this.params.keySet();
     }
 
-    public @UnmodifiableView @NotNull Map<String, String> originMap() {
-        return Collections.unmodifiableMap(this.params);
+    public @Unmodifiable @NotNull Map<String, String> originMap() {
+        return this.params;
     }
 
     public boolean isEmpty() {
@@ -427,7 +428,7 @@ public class Parameters implements Iterable<String> {
 
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull Map<String, String> params) {
-        Map<String, String> updated = new CaseInsensitiveMap<>(true, this.params);
+        Map<String, String> updated = new LinkedHashMap<>(this.params);
         updated.putAll(params);
         return Parameters.fromMap(updated);
     }
@@ -442,8 +443,8 @@ public class Parameters implements Iterable<String> {
     }
 
     @Override
-    public @NotNull Iterator<String> iterator() {
-        return originMap().keySet().iterator();
+    public @Unmodifiable @NotNull Iterator<String> iterator() {
+        return keySet().iterator();
     }
 
     public void forEach(@NotNull BiConsumer<String, String> consumer) {

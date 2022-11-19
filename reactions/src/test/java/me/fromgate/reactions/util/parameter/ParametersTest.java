@@ -15,6 +15,7 @@ public class ParametersTest {
         return new Object[][] {
                 {"test:{value} test2:value\\ test3:va:lue test4:value}", "test:value test2:{value\\\\} test3:va:lue test4:{value\\}}"},
                 {"test:value1 test:value2", "test:value2"},
+                {"test:{{additional brackets}}", "test:{{additional brackets}}"},
                 {"test:{value broken\\}", ""},
                 {"test:{value{ broken}", ""},
                 {"key:{s p a c e:fake\\}} e:test", "key:{s p a c e:fake\\}} e:test"},
@@ -38,7 +39,7 @@ public class ParametersTest {
     }
 
     @DataProvider
-    public static Object[][] keyListOfData() {
+    public static Object[][] getKeyListData() {
         return new Object[][] {
                 {"key1:value key2:value key3:value", List.of("key1", "key2", "key3")},
                 {"key:value key1:value key2:value key3:value", List.of("key1", "key2", "key3")},
@@ -60,8 +61,8 @@ public class ParametersTest {
         assertEquals(escapeParameters(result), expected);
     }
 
-    @Test(dataProvider = "keyListOfData")
-    public void testKeyListOf(String input, List<String> expected) {
-        assertEquals(Parameters.fromString(input).keyListOf("key"), expected);
+    @Test(dataProvider = "getKeyListData")
+    public void testGetKeyList(String input, List<String> expected) {
+        assertEquals(Parameters.fromString(input).getKeyList("key"), expected);
     }
 }
