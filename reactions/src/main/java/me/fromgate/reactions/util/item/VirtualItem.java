@@ -220,11 +220,11 @@ public final class VirtualItem {
                     Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
                     if (!matcher.matches()) break;
                     type = ItemUtils.getMaterial(matcher.group(1));
-                    if (!matcher.group(1).isEmpty()) {
+                    if (!Utils.isStringEmpty(matcher.group(2))) {
                         resolvers.add(RESOLVERS_MAP.get("durability").fromString(matcher.group(1)));
                     }
-                    if (!matcher.group(2).isEmpty()) {
-                        amount = NumberUtils.getInteger(matcher.group(2), -1);
+                    if (!Utils.isStringEmpty(matcher.group(3))) {
+                        amount = NumberUtils.getInteger(matcher.group(3), -1);
                     }
                     break;
                 }
