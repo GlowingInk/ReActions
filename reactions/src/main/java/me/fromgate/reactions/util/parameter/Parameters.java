@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
@@ -213,7 +212,6 @@ public class Parameters implements Iterable<String> {
         if (str.isEmpty()) return str;
         int brackets = 0;
         boolean escaped = false;
-        boolean requiresEscaping = false;
         for (int i = 0; i < str.length(); i++) {
             if (escaped) {
                 escaped = false;
@@ -225,14 +223,13 @@ public class Parameters implements Iterable<String> {
             } else if (ch == '{') {
                 ++brackets;
             } else if (ch == '}' && --brackets < 0) {
-                requiresEscaping = true;
                 break;
             }
         }
         if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || str.charAt(str.length() - 2) != '\\')) {
             str += '\\';
         }
-        return requiresEscaping
+        return brackets != 0
                 ? UNESCAPED.matcher(str).replaceAll("\\\\$1")
                 : str;
     }
@@ -438,9 +435,5 @@ public class Parameters implements Iterable<String> {
     @Override
     public @Unmodifiable @NotNull Iterator<String> iterator() {
         return keySet().iterator();
-    }
-
-    public void forEach(@NotNull BiConsumer<String, String> consumer) {
-        params.forEach(consumer);
     }
 }
