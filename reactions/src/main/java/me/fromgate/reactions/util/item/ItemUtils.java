@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
@@ -30,13 +29,11 @@ public final class ItemUtils {
     private ItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static <T> @Nullable T searchByKey(@NotNull String key, @NotNull Function<NamespacedKey, T> search) {
-        NamespacedKey namespaced;
         try {
-            namespaced = NamespacedKey.minecraft(key.toLowerCase(Locale.ROOT));
+            return search.apply(NamespacedKey.minecraft(key.toLowerCase(Locale.ROOT)));
         } catch (Exception ignored) {
             return null;
         }
-        return search.apply(namespaced);
     }
 
     public static int getDurability(@NotNull ItemStack item) {
@@ -113,11 +110,11 @@ public final class ItemUtils {
         } else {
             ItemStack vi = VirtualItem.asItem(items);
             if (vi != null) {
-                return Collections.singletonList(vi);
+                return List.of(vi);
             }
 
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     private static List<ItemStack> parseItemsSet(Parameters params) {

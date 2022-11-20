@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 
 import me.fromgate.reactions.util.NumberUtils;
@@ -8,27 +8,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliases({"custommodeldata", "model"})
-public class ModelResolver implements MetaResolver {
+public class ModelAspect implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return "custom-model-data";
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return NumberUtils.isInteger(value)
                 ? new ModelInst(Integer.valueOf(value))
                 : ModelInst.EMPTY;
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         return meta.hasCustomModelData()
                 ? new ModelInst(meta.getCustomModelData())
                 : null;
     }
 
-    private record ModelInst(Integer value) implements MetaResolver.Instance {
+    private record ModelInst(Integer value) implements MetaAspect.Instance {
         private static final ModelInst EMPTY = new ModelInst(null);
 
         @Override

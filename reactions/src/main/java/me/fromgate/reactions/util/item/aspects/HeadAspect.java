@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.alias.Aliases;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -9,19 +9,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @Aliases("skull-owner")
-public class HeadResolver implements MetaResolver { // TODO: Support UUIDs and raw values
+public class HeadAspect implements MetaAspect { // TODO: Support UUIDs and raw values
     @Override
     public @NotNull String getName() {
         return "head-owner";
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return new HeadInst(value.isEmpty() ? null : value);
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof SkullMeta skullMeta && skullMeta.hasOwner()) {
             return new HeadInst(skullMeta.getOwner());
         }

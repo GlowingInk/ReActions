@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -8,10 +8,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class NameResolver implements MetaResolver {
+public class NameAspect implements MetaAspect {
     private final boolean regex;
 
-    public NameResolver(boolean regex) {
+    public NameAspect(boolean regex) {
         this.regex = regex;
     }
 
@@ -23,13 +23,13 @@ public class NameResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         if (value.isEmpty()) return NameInst.EMPTY;
         return new NameInst(ChatColor.translateAlternateColorCodes('&', value), value, regex);
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (regex || !meta.hasDisplayName()) return null;
         String name = meta.getDisplayName();
         return new NameInst(name, name.replace(ChatColor.COLOR_CHAR, '&'), false);

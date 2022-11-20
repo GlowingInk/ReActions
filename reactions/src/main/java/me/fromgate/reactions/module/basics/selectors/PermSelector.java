@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,13 +16,18 @@ public class PermSelector implements Selector {
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(String param) {
-        if (param.isEmpty()) return Collections.emptySet();
-        String[] perms = param.split(",\\s*");
+    public @NotNull Set<Player> getPlayers(@NotNull String param) {
+        if (param.isEmpty()) return Set.of();
+        String[] perms = param.split(",");
         Set<Player> players = new HashSet<>();
-        for (Player player : Bukkit.getOnlinePlayers())
-            for (String p : perms)
-                if (player.hasPermission(p)) players.add(player);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (String p : perms) {
+                if (player.hasPermission(p.trim())) {
+                    players.add(player);
+                    break;
+                }
+            }
+        }
         return players;
     }
 

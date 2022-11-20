@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -7,10 +7,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class MapResolver implements MetaResolver { // TODO: MapView handling
+public class MapAspect implements MetaAspect { // TODO: MapView handling
     private final boolean scale;
 
-    public MapResolver(boolean scale) {
+    public MapAspect(boolean scale) {
         this.scale = scale;
     }
 
@@ -22,7 +22,7 @@ public class MapResolver implements MetaResolver { // TODO: MapView handling
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         if (scale) {
             return value.equalsIgnoreCase("true")
                     ? ScaleInst.TRUE
@@ -33,7 +33,7 @@ public class MapResolver implements MetaResolver { // TODO: MapView handling
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof MapMeta mapMeta) {
             if (scale) {
                 return mapMeta.isScaling()

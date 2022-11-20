@@ -67,13 +67,6 @@ public final class NumberUtils {
         return INT_NONZERO_POSITIVE.matcher(str).matches();
     }
 
-    public static boolean isNonzeroInteger(String... str) {
-        if (str.length == 0) return false;
-        for (String s : str)
-            if (!INT_NONZERO_POSITIVE.matcher(s).matches()) return false;
-        return true;
-    }
-
     public static boolean isNumber(String... str) {
         if (str.length == 0) return false;
         for (String s : str)
@@ -105,26 +98,6 @@ public final class NumberUtils {
         if (l < Integer.MIN_VALUE) return Integer.MIN_VALUE;
         if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;
         return (int) l;
-    }
-
-    /**
-     * Get array of integers sorted by value
-     *
-     * @param arg1 First integer
-     * @param arg2 Second integer
-     * @return Array of integers, where first value is minimal
-     */
-    @Deprecated
-    public static int[] sortedIntPair(int arg1, int arg2) {
-        int[] pair = new int[2];
-        if (arg1 > arg2) {
-            pair[0] = arg2;
-            pair[1] = arg1;
-        } else {
-            pair[0] = arg1;
-            pair[1] = arg2;
-        }
-        return pair;
     }
 
     /**

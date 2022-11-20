@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.TimeUtils;
@@ -15,15 +15,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-public class PotionResolver implements MetaResolver {
+public class PotionAspect implements MetaAspect {
     private final boolean base;
 
-    public PotionResolver(boolean base) {
+    public PotionAspect(boolean base) {
         this.base = base;
     }
 
@@ -35,14 +34,14 @@ public class PotionResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return base
                 ? new Base(value)
                 : value.isEmpty() ? Effects.EMPTY : new Effects(value);
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof PotionMeta potionMeta) {
             return base
                     ? new Base(potionMeta.getBasePotionData())
@@ -51,7 +50,7 @@ public class PotionResolver implements MetaResolver {
         return null;
     }
 
-    private static final class Base implements MetaResolver.Instance {
+    private static final class Base implements MetaAspect.Instance {
         private final PotionData potionData;
         private final String potionDataStr;
 
@@ -99,8 +98,8 @@ public class PotionResolver implements MetaResolver {
         }
     }
 
-    private static final class Effects implements MetaResolver.Instance { // TODO Particles, etc
-        public static final Effects EMPTY = new Effects(Collections.emptyList());
+    private static final class Effects implements MetaAspect.Instance { // TODO Particles, etc
+        public static final Effects EMPTY = new Effects(List.of());
 
         private final List<PotionEffect> effects;
         private final String effectsStr;

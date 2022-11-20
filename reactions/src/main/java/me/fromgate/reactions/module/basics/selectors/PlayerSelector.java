@@ -16,7 +16,7 @@ public class PlayerSelector implements Selector {
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(String param) {
+    public @NotNull Set<Player> getPlayers(@NotNull String param) {
         Set<Player> players = new HashSet<>();
         if (param.isEmpty()) return players;
         if (param.equalsIgnoreCase("~null")) {
@@ -24,9 +24,9 @@ public class PlayerSelector implements Selector {
         } else if (param.equalsIgnoreCase("~all")) {
             players.addAll(Bukkit.getOnlinePlayers());
         } else {
-            String[] arrPlayers = param.split(",\\s*");
+            String[] arrPlayers = param.split(",");
             for (String playerName : arrPlayers) {
-                Player targetPlayer = Bukkit.getPlayerExact(playerName);
+                Player targetPlayer = Bukkit.getPlayerExact(playerName.trim());
                 if ((targetPlayer != null) && (targetPlayer.isOnline())) players.add(targetPlayer);
             }
         }

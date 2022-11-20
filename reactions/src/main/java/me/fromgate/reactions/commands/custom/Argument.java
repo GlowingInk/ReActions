@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +45,7 @@ public class Argument {
                 } else {
                     this.type = Type.TEXT;
                     if (argument.startsWith("\\~") || argument.equals("\\*")) argument = argument.substring(1);
-                    multiple = Collections.singleton(argument);
+                    multiple = Set.of(argument);
                 }
         }
         this.argument = argument;

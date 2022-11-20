@@ -51,7 +51,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) { // TODO: Edge case "test:value,value"
-        if (str.indexOf(splitCh) == -1) return Collections.singletonList(str);
+        if (str.indexOf(splitCh) == -1) return List.of(str);
         List<String> splits = new ArrayList<>();
         int lastSplit = 0;
         int brCount = 0;

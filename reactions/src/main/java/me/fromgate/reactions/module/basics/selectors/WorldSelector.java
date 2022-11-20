@@ -17,12 +17,12 @@ public class WorldSelector implements Selector {
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(String worldNames) {
+    public @NotNull Set<Player> getPlayers(@NotNull String worldNames) {
         Set<Player> players = new HashSet<>();
         if (!worldNames.isEmpty()) {
-            String[] arrWorlds = worldNames.split(",\\s*");
+            String[] arrWorlds = worldNames.split(",");
             for (String worldName : arrWorlds) {
-                World world = Bukkit.getWorld(worldName);
+                World world = Bukkit.getWorld(worldName.trim());
                 if (world == null) continue;
                 players.addAll(world.getPlayers());
             }

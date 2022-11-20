@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.util.Utils;
@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class BookResolver implements MetaResolver {
+public class BookAspect implements MetaAspect {
     private final Type type;
 
-    public BookResolver(@NotNull Type type) {
+    public BookAspect(@NotNull Type type) {
         this.type = type;
     }
 
@@ -28,7 +28,7 @@ public class BookResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return switch (type) {
             case TITLE -> new TextInst(value, false);
             case AUTHOR -> new TextInst(value, true);
@@ -37,7 +37,7 @@ public class BookResolver implements MetaResolver {
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (!(meta instanceof BookMeta bookMeta)) return null;
         return switch (type) {
             case TITLE -> bookMeta.hasTitle() ? new TextInst(bookMeta.getTitle(), false) : null;

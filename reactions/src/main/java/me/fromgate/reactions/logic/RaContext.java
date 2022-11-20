@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class RaContext {
         this.variables = variables != null ? new HashMap<>(variables) : new HashMap<>();
         this.activatorName = activator;
         if (changeables == null || changeables.isEmpty()) {
-            this.changeables = Collections.emptyMap();
+            this.changeables = Map.of();
         } else {
             this.changeables = changeables;
             changeables.keySet().forEach(key -> this.variables.put(key, changeables.get(key).asString()));

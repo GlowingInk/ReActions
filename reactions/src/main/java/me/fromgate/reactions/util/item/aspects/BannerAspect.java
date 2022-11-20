@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.DyeColor;
@@ -10,17 +10,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class BannerResolver implements MetaResolver {
+public class BannerAspect implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return "banner-pattern";
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         if (value.isEmpty()) {
             return PatternInst.EMPTY;
         } else {
@@ -41,7 +40,7 @@ public class BannerResolver implements MetaResolver {
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof BannerMeta bannerMeta) {
             if (bannerMeta.numberOfPatterns() == 0) {
                 return PatternInst.EMPTY;
@@ -58,7 +57,7 @@ public class BannerResolver implements MetaResolver {
     }
 
     private record PatternInst(@NotNull String value, @NotNull List<Pattern> patterns) implements Instance {
-        public static final PatternInst EMPTY = new PatternInst("", Collections.emptyList());
+        public static final PatternInst EMPTY = new PatternInst("", List.of());
 
         @Override
         public void apply(@NotNull ItemMeta meta) {

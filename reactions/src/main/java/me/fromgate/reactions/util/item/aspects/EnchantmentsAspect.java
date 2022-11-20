@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.alias.Aliases;
@@ -8,7 +8,6 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -17,14 +16,14 @@ import java.util.function.ToIntFunction;
 import static me.fromgate.reactions.util.Utils.cutBuilder;
 
 @Aliases({"enchants", "stored-enchantments", "stored-enchants"})
-public class EnchantmentsResolver implements MetaResolver {
+public class EnchantmentsAspect implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return "enchantments";
     }
 
     @Override
-    public @NotNull EnchantmentsResolver.EnchantmentsInst fromString(@NotNull String value) {
+    public @NotNull EnchantmentsAspect.EnchantmentsInst fromString(@NotNull String value) {
         if (value.isEmpty()) {
             return EnchantmentsInst.EMPTY;
         }
@@ -73,7 +72,7 @@ public class EnchantmentsResolver implements MetaResolver {
     }
 
     private record EnchantmentsInst(@NotNull Map<Enchantment, Integer> enchantments, @NotNull String value) implements Instance {
-        public static final EnchantmentsInst EMPTY = new EnchantmentsInst(Collections.emptyMap(), "");
+        public static final EnchantmentsInst EMPTY = new EnchantmentsInst(Map.of(), "");
 
         @Override
         public void apply(@NotNull ItemMeta meta) {

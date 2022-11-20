@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Color;
@@ -11,14 +11,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class ColorResolver implements MetaResolver {
+public class ColorAspect implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return "color";
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         Color color = Utils.getColor(value);
         return color != null
                 ? new ColorInst(color)
@@ -26,7 +26,7 @@ public class ColorResolver implements MetaResolver {
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         Color color = null;
         if (meta instanceof LeatherArmorMeta leatherMeta) {
             color = leatherMeta.getColor();
@@ -41,7 +41,7 @@ public class ColorResolver implements MetaResolver {
         return null;
     }
 
-    private record ColorInst(@Nullable Color color) implements MetaResolver.Instance {
+    private record ColorInst(@Nullable Color color) implements MetaAspect.Instance {
         public static final ColorInst EMPTY = new ColorInst(null);
 
         @Override

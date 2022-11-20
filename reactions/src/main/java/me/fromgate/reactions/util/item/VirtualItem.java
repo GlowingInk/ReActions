@@ -2,7 +2,7 @@ package me.fromgate.reactions.util.item;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.item.resolvers.*;
+import me.fromgate.reactions.util.item.aspects.*;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,46 +24,46 @@ public final class VirtualItem {
     /**
      * A VirtualItem that accepts only null or air ItemStacks
      */
-    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, Collections.emptyList(), Parameters.fromMap(Collections.singletonMap("type", "AIR")));
+    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, List.of(), Parameters.fromMap(Map.of("type", "AIR")));
     /**
      * A VirtualItem that accepts any ItemStacks but null or air
      */
-    public static final VirtualItem EMPTY = new VirtualItem(null, -1, Collections.emptyList(), Parameters.EMPTY);
+    public static final VirtualItem EMPTY = new VirtualItem(null, -1, List.of(), Parameters.EMPTY);
 
-    private static final Map<String, MetaResolver> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
-    private static final List<MetaResolver> RESOLVERS = new ArrayList<>();
+    private static final Map<String, MetaAspect> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
+    private static final List<MetaAspect> RESOLVERS = new ArrayList<>();
     static {
-        registerResolver(new BannerResolver());
-        registerResolver(new BookResolver(BookResolver.Type.PAGES));
-        registerResolver(new BookResolver(BookResolver.Type.TITLE));
-        registerResolver(new BookResolver(BookResolver.Type.AUTHOR));
-        registerResolver(new ColorResolver());
-        registerResolver(new DurabilityResolver());
-        registerResolver(new EnchantmentsResolver());
-        registerResolver(new FireworkResolver(true));
-        registerResolver(new FireworkResolver(false));
-        registerResolver(new HeadResolver());
-        registerResolver(new LoreResolver(true));
-        registerResolver(new LoreResolver(false));
-        registerResolver(new MapResolver(true));
-        registerResolver(new MapResolver(false));
-        registerResolver(new ModelResolver());
-        registerResolver(new NameResolver(true));
-        registerResolver(new NameResolver(false));
-        registerResolver(new PotionResolver(true));
-        registerResolver(new PotionResolver(false));
+        registerAspect(new BannerAspect());
+        registerAspect(new BookAspect(BookAspect.Type.PAGES));
+        registerAspect(new BookAspect(BookAspect.Type.TITLE));
+        registerAspect(new BookAspect(BookAspect.Type.AUTHOR));
+        registerAspect(new ColorAspect());
+        registerAspect(new DurabilityAspect());
+        registerAspect(new EnchantmentsAspect());
+        registerAspect(new FireworkAspect(true));
+        registerAspect(new FireworkAspect(false));
+        registerAspect(new HeadAspect());
+        registerAspect(new LoreAspect(true));
+        registerAspect(new LoreAspect(false));
+        registerAspect(new MapAspect(true));
+        registerAspect(new MapAspect(false));
+        registerAspect(new ModelAspect());
+        registerAspect(new NameAspect(true));
+        registerAspect(new NameAspect(false));
+        registerAspect(new PotionAspect(true));
+        registerAspect(new PotionAspect(false));
     }
-    private static void registerResolver(@NotNull MetaResolver resolver) {
-        RESOLVERS_MAP.put(resolver.getName().toLowerCase(Locale.ROOT), resolver);
-        RESOLVERS.add(resolver);
-        for (String alias : Utils.getAliases(resolver)) {
-            RESOLVERS_MAP.putIfAbsent(alias.toLowerCase(Locale.ROOT), resolver);
+    private static void registerAspect(@NotNull MetaAspect aspect) {
+        RESOLVERS_MAP.put(aspect.getName().toLowerCase(Locale.ROOT), aspect);
+        RESOLVERS.add(aspect);
+        for (String alias : Utils.getAliases(aspect)) {
+            RESOLVERS_MAP.putIfAbsent(alias.toLowerCase(Locale.ROOT), aspect);
         }
     }
 
     private final @Nullable Material type;
     private final int amount;
-    private final @NotNull List<MetaResolver.Instance> resolvers;
+    private final @NotNull List<MetaAspect.Instance> aspects;
 
     private boolean itemGenerated;
     private ItemStack itemValue;
@@ -73,24 +72,24 @@ public final class VirtualItem {
     private VirtualItem(
             @Nullable Material type,
             int amount,
-            @NotNull List<MetaResolver.Instance> resolvers,
+            @NotNull List<MetaAspect.Instance> aspects,
             @NotNull Parameters params
     ) {
         this.type = type;
         this.amount = amount;
-        this.resolvers = resolvers;
+        this.aspects = aspects;
         this.paramsValue = params;
     }
 
     private VirtualItem(
             @Nullable Material type,
             int amount,
-            @NotNull List<MetaResolver.Instance> resolvers,
+            @NotNull List<MetaAspect.Instance> aspects,
             @NotNull ItemStack item
     ) {
         this.type = type;
         this.amount = amount;
-        this.resolvers = resolvers;
+        this.aspects = aspects;
         this.itemGenerated = true;
         this.itemValue = item;
     }
@@ -107,11 +106,11 @@ public final class VirtualItem {
         return asItem(true);
     }
 
-    private @Nullable ItemStack asItem(boolean clone) {
+    private @Nullable ItemStack asItem(boolean initClone) {
         if (itemGenerated) {
             return itemValue == null
                     ? null
-                    : clone ? itemValue.clone() : itemValue;
+                    : itemValue.clone();
         } else {
             itemGenerated = true;
             if (type == null || !type.isItem()) {
@@ -119,12 +118,12 @@ public final class VirtualItem {
             } else {
                 itemValue = new ItemStack(type);
                 itemValue.setAmount(Math.max(amount, 1));
-                if (!type.isEmpty() && !resolvers.isEmpty()) {
+                if (!type.isEmpty() && !aspects.isEmpty()) {
                     ItemMeta meta = itemValue.getItemMeta();
-                    resolvers.forEach(resolver -> resolver.apply(meta));
+                    aspects.forEach(aspect -> aspect.apply(meta));
                     itemValue.setItemMeta(meta);
                 }
-                return clone ? itemValue.clone() : itemValue;
+                return initClone ? itemValue.clone() : itemValue;
             }
         }
     }
@@ -138,8 +137,8 @@ public final class VirtualItem {
             paramsMap.put("type", type.name());
         }
         paramsMap.put("amount", Integer.toString(amount));
-        for (MetaResolver.Instance resolver : resolvers) {
-            paramsMap.put(resolver.getName(), resolver.asString());
+        for (MetaAspect.Instance aspect : aspects) {
+            paramsMap.put(aspect.getName(), aspect.asString());
         }
         return paramsValue = Parameters.fromMap(paramsMap);
     }
@@ -153,17 +152,17 @@ public final class VirtualItem {
      * If compared item is null or its type is AIR, expecting this item's type to be AIR.
      * If this item's type is specified, expecting compared item's type to be the same.
      * @param compared item to compare
-     * @return is compared item conforms this item's type and resolvers
+     * @return is compared item conforms this item's type and aspects
      */
     public boolean isSimilar(@Nullable ItemStack compared) {
         if (compared == null || compared.getType().isEmpty()) {
             return type != null && type.isEmpty();
         }
         if (type == null || compared.getType() == type) {
-            if (!resolvers.isEmpty()) {
+            if (!aspects.isEmpty()) {
                 ItemMeta meta = compared.getItemMeta();
-                for (MetaResolver.Instance resolver : resolvers) {
-                    if (!resolver.isSimilar(meta)) return false;
+                for (MetaAspect.Instance aspect : aspects) {
+                    if (!aspect.isSimilar(meta)) return false;
                 }
             }
             return true;
@@ -181,24 +180,24 @@ public final class VirtualItem {
         if (item == null || item.getType().isEmpty()) {
             return VirtualItem.AIR;
         }
-        List<MetaResolver.Instance> resolvers;
+        List<MetaAspect.Instance> aspects;
         if (!item.hasItemMeta()) {
-            resolvers = Collections.emptyList();
+            aspects = List.of();
         } else {
-            resolvers = new ArrayList<>();
+            aspects = new ArrayList<>();
             ItemMeta meta = item.getItemMeta();
-            for (MetaResolver resolver : RESOLVERS) {
-                MetaResolver.Instance resolverInst = resolver.fromItem(meta);
-                if (resolverInst != null) resolvers.add(resolverInst);
+            for (MetaAspect aspect : RESOLVERS) {
+                MetaAspect.Instance aspectInst = aspect.fromItem(meta);
+                if (aspectInst != null) aspects.add(aspectInst);
             }
-            if (resolvers.isEmpty()) {
-                resolvers = Collections.emptyList();
+            if (aspects.isEmpty()) {
+                aspects = List.of();
             }
         }
         return new VirtualItem(
                 item.getType(),
                 item.getAmount(),
-                resolvers,
+                aspects,
                 item
         );
     }
@@ -209,7 +208,7 @@ public final class VirtualItem {
 
     public static @NotNull VirtualItem fromParameters(@NotNull Parameters params) {
         if (params.isEmpty()) return VirtualItem.EMPTY;
-        List<MetaResolver.Instance> resolvers = new ArrayList<>();
+        List<MetaAspect.Instance> aspects = new ArrayList<>();
         Material type = null;
         int amount = -1;
         boolean regex = params.getBoolean("regex", false);
@@ -221,28 +220,28 @@ public final class VirtualItem {
                     if (!matcher.matches()) break;
                     type = ItemUtils.getMaterial(matcher.group(1));
                     if (!Utils.isStringEmpty(matcher.group(2))) {
-                        resolvers.add(RESOLVERS_MAP.get("durability").fromString(matcher.group(1)));
+                        aspects.add(RESOLVERS_MAP.get("durability").fromString(matcher.group(1)));
                     }
                     if (!Utils.isStringEmpty(matcher.group(3))) {
                         amount = NumberUtils.getInteger(matcher.group(3), -1);
                     }
                     break;
                 }
-                case "type": type = params.get(key, ItemUtils::getMaterial, Material.AIR); break;
+                case "type": type = params.get(key, ItemUtils::getMaterial); break;
                 case "amount": amount = params.getInteger(key); break;
                 case "name": case "lore":
                     if (regex) key += "-regex";
                 default:
-                    MetaResolver resolver = RESOLVERS_MAP.get(key);
-                    if (resolver == null) continue;
-                    resolvers.add(resolver.fromString(params.getString(key)));
+                    MetaAspect aspect = RESOLVERS_MAP.get(key);
+                    if (aspect == null) continue;
+                    aspects.add(aspect.fromString(params.getString(key)));
                     break;
             }
         }
         return new VirtualItem(
                 type,
                 amount,
-                resolvers,
+                aspects,
                 params
         );
     }

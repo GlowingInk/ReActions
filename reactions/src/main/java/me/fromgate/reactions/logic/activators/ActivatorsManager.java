@@ -232,13 +232,13 @@ public class ActivatorsManager {
 
         @NotNull
         public Collection<Activator> byGroup(@NotNull String group) {
-            return Collections.unmodifiableCollection(activatorsGroups.getOrDefault(group, Collections.emptySet()));
+            return Collections.unmodifiableCollection(activatorsGroups.getOrDefault(group, Set.of()));
         }
 
         @NotNull
         public Collection<Activator> byType(String typeStr) {
             ActivatorType type = types.get(typeStr);
-            if (type == null) return Collections.emptySet();
+            if (type == null) return Set.of();
             return Collections.unmodifiableCollection(type.getActivators());
         }
 

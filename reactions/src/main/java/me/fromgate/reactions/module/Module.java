@@ -9,7 +9,7 @@ import me.fromgate.reactions.selectors.Selector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 public interface Module {
 
@@ -24,22 +24,22 @@ public interface Module {
     @NotNull Collection<String> getAuthors();
 
     default @NotNull Collection<ActivatorType> getActivatorTypes(@NotNull ReActions.Platform platform) {
-        return Collections.emptyList();
+        return List.of();
     }
 
     default @NotNull Collection<Action> getActions(@NotNull ReActions.Platform platform) {
-        return Collections.emptyList();
+        return List.of();
     }
 
     default @NotNull Collection<Flag> getFlags(@NotNull ReActions.Platform platform) {
-        return Collections.emptyList();
+        return List.of();
     }
 
     default @NotNull Collection<Placeholder> getPlaceholders(@NotNull ReActions.Platform platform) {
-        return Collections.emptyList();
+        return List.of();
     }
 
     default @NotNull Collection<Selector> getSelectors(@NotNull ReActions.Platform platform) {
-        return Collections.emptyList();
+        return List.of();
     }
 }

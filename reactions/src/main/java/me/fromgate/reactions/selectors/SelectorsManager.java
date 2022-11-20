@@ -33,13 +33,13 @@ public class SelectorsManager {
         }
     }
 
-    public Set<Player> getPlayerList(Parameters param) {
+    public Set<Player> getPlayerList(Parameters param) { // TODO: Honestly, I'm not even sure what's going on here. Rework from scratch
         Set<Player> players = new HashSet<>();
-        // TODO Optimize
         for (Selector selector : selectors) {
             String selectorParam = param.getString(selector.getName());
-            if (selector.getName().equalsIgnoreCase("loc") && param.contains("radius"))
+            if (selector.getName().equalsIgnoreCase("loc") && param.contains("radius")) {
                 selectorParam = "loc:" + selectorParam + " " + "radius:" + param.getString("radius", "1");
+            }
             players.addAll(selector.getPlayers(selectorParam));
         }
         return players;

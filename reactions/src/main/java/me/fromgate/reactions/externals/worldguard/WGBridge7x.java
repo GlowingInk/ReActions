@@ -24,7 +24,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -202,7 +201,7 @@ public class WGBridge7x extends WGBridge {
         String regionName = getRegionName(region);
         ProtectedRegion rg = container.get(BukkitAdapter.adapt(world)).getRegion(regionName);
         if (rg == null) return false;
-        return localPlayer.getAssociation(Collections.singletonList(rg)) != Association.NON_MEMBER;
+        return localPlayer.getAssociation(List.of(rg)) != Association.NON_MEMBER;
     }
 
 
@@ -216,7 +215,7 @@ public class WGBridge7x extends WGBridge {
         String regionName = getRegionName(region);
         ProtectedRegion rg = container.get(BukkitAdapter.adapt(world)).getRegion(regionName);
         if (rg == null) return false;
-        return localPlayer.getAssociation(Collections.singletonList(rg)) == Association.OWNER;
+        return localPlayer.getAssociation(List.of(rg)) == Association.OWNER;
     }
 
     @Override
@@ -229,7 +228,7 @@ public class WGBridge7x extends WGBridge {
         String regionName = getRegionName(region);
         ProtectedRegion rg = container.get(BukkitAdapter.adapt(world)).getRegion(regionName);
         if (rg == null) return false;
-        return localPlayer.getAssociation(Collections.singletonList(rg)) == Association.MEMBER;
+        return localPlayer.getAssociation(List.of(rg)) == Association.MEMBER;
     }
 
     @Override

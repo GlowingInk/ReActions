@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FireworkResolver implements MetaResolver {
+public class FireworkAspect implements MetaAspect {
     private final boolean effects;
 
-    public FireworkResolver(boolean effects) {
+    public FireworkAspect(boolean effects) {
         this.effects = effects;
     }
 
@@ -28,14 +28,14 @@ public class FireworkResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return effects
                 ? new EffectsInst(value)
                 : new PowerInst(NumberUtils.getInteger(value, 1));
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof FireworkMeta fireworkMeta) {
             return effects
                     ? fireworkMeta.hasEffects() ? new EffectsInst(fireworkMeta.getEffects()) : null

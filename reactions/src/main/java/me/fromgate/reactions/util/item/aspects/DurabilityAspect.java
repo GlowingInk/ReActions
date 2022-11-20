@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.alias.Aliases;
@@ -8,19 +8,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliases("data")
-public class DurabilityResolver implements MetaResolver {
+public class DurabilityAspect implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return "durability";
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return new DurabilityInst(NumberUtils.getInteger(value, 0));
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof Damageable damageMeta && damageMeta.hasDamage()) {
             return new DurabilityInst(damageMeta.getDamage());
         }

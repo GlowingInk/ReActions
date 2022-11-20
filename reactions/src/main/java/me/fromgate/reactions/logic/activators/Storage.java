@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -42,7 +41,7 @@ public abstract class Storage {
     private final boolean async; // TODO
 
     // Default temporary placeholders
-    private Map<String, String> variables = Collections.emptyMap();
+    private Map<String, String> variables = Map.of();
     private Map<String, DataValue> changeables; // TODO Separate into own class
 
     public Storage() {
@@ -67,11 +66,11 @@ public abstract class Storage {
 
     // TODO: dynamicVariables Supplier<String> for expensive calculations? E.g. CommandStorage
     protected @NotNull Map<String, String> prepareVariables() {
-        return Collections.emptyMap();
+        return Map.of();
     }
 
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Collections.emptyMap();
+        return Map.of();
     }
 
     @Contract(pure = true)

@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.item.resolvers;
+package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,10 +12,10 @@ import static java.lang.String.join;
 import static org.bukkit.ChatColor.COLOR_CHAR;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
-public class LoreResolver implements MetaResolver {
+public class LoreAspect implements MetaAspect {
     private final boolean regex;
 
-    public LoreResolver(boolean regex) {
+    public LoreAspect(boolean regex) {
         this.regex = regex;
     }
 
@@ -27,7 +27,7 @@ public class LoreResolver implements MetaResolver {
     }
 
     @Override
-    public @NotNull MetaResolver.Instance fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         if (value.isEmpty()) return LoreInst.EMPTY;
         return new LoreInst(
                 value,
@@ -37,7 +37,7 @@ public class LoreResolver implements MetaResolver {
     }
 
     @Override
-    public @Nullable MetaResolver.Instance fromItem(@NotNull ItemMeta meta) {
+    public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (!meta.hasLore() || regex) return null;
         String value = join("\\n", meta.getLore());
         return new LoreInst(

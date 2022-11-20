@@ -30,7 +30,7 @@ public final class WaitingManager {
 
     public static void schedule(Player player, StoredAction action, long time) {
         if (action == null) return;
-        schedule(player, Collections.singletonList(action), time);
+        schedule(player, List.of(action), time);
     }
 
     public static void schedule(Player player, List<StoredAction> actions, long time) {
