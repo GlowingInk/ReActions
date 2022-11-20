@@ -1,8 +1,8 @@
 # ReActions
 [**Тема на RuBukkit**](http://rubukkit.org/threads/165857/) | [**Документация**](https://github.com/imDaniX/ReActions/wiki) | [**Оригинал**](https://github.com/Redolith/ReActions)
 
-The project is currently (still) in its early state and not available on large platforms like SpigotMC. Because of that,
-this README file's language is Russian, as most of project's users are Russian-speaking. Although, 
+The project is currently (still) in its early state and is not available on large platforms like SpigotMC. Because of 
+that, and as the most of project's users are Russian-speaking, this README file's language is Russian too. 
 [README-EN.md](README-EN.md) is still available.
 
 Плагин ReActions для Paper представляет собой инструмент обработки событий. Он позволяет проверять выполнение условий и,
@@ -25,7 +25,11 @@ this README file's language is Russian, as most of project's users are Russian-s
 
 Для компиляции плагина требуется Maven. Имея его на руках, достаточно войти в корневую папку проекта и ввести `mvn clean package`.
 
-Если вы просто хотите скачать плагин - возьмите его из вкладки [Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)
+Последний стабильный релиз доступен во вкладке
+**[Releases ![Release](https://img.shields.io/github/release/imDaniX/ReActions.svg)](https://github.com/imDaniX/ReActions/releases/latest/)**
+
+Готовый снапшот можно скачать из вкладки 
+**[Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)** 
 
 ## Лицензия
 

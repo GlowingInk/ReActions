@@ -21,7 +21,11 @@ EVENT:
 
 To compile the plugin all you need is to have Maven. So, if you already have it, just execute `mvn clean package`.
 
-If you just want to download the plugin - get it from the [Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions) tab.
+You can get the latest stable release from the
+**[Releases ![Release](https://img.shields.io/github/release/imDaniX/ReActions.svg)](https://github.com/imDaniX/ReActions/releases/latest/)** tab.
+
+Latest snapshot is available in the
+**[Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)** tab.
 
 ## License
 
