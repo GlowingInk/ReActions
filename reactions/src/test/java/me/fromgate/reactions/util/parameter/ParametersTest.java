@@ -27,14 +27,16 @@ public class ParametersTest {
     public static Object[][] escapeParametersData() {
         return new Object[][] {
                 {"basic text", "basic text"},
+                {"", ""},
                 {"\\", "\\\\"},
                 {"}", "\\}"},
                 {"already\\{escaped", "already\\{escaped"},
-                {"only \\the last\\", "only \\the last\\\\"},
+                {"on\\ly \\the last\\", "on\\ly \\the last\\\\"},
                 {"{equal amount}", "{equal amount}"},
                 {"{unequal amount}}", "\\{unequal amount\\}\\}"},
                 {"{{unequal amount}", "\\{\\{unequal amount\\}"},
                 {"{unequal escaped\\}}", "{unequal escaped\\}}"},
+                {"{unequal with last}}\\", "\\{unequal with last\\}\\}\\\\"},
                 {"}wrong order{", "\\}wrong order\\{"}
         };
     }

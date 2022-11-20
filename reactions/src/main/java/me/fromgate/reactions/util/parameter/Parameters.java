@@ -28,7 +28,7 @@ public class Parameters implements Iterable<String> {
     public static final String ORIGIN = "origin-string";
     public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap<>(1));
 
-    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)([{}]|\\\\$)");
+    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
     private final String origin;
     private final Map<String, String> params;
@@ -230,7 +230,7 @@ public class Parameters implements Iterable<String> {
             str += '\\';
         }
         return brackets != 0
-                ? UNESCAPED.matcher(str).replaceAll("\\\\$1")
+                ? UNESCAPED.matcher(str).replaceAll("\\\\$0")
                 : str;
     }
 
