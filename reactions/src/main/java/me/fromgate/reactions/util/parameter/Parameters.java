@@ -3,7 +3,7 @@ package me.fromgate.reactions.util.parameter;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
-import me.fromgate.reactions.util.suppliers.NotNullSupplier;
+import me.fromgate.reactions.util.suppliers.SafeSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
     public static final String ORIGIN = "origin-string";
-    public static final Parameters EMPTY = new Parameters("", new HashMap<>(1));
+    public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap<>(1));
 
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)([{}]|\\\\$)");
 
@@ -168,7 +167,9 @@ public class Parameters implements Iterable<String> {
             params.put(defKey, bld.toString());
         }
 
-        return new Parameters(str, params);
+        return params.isEmpty()
+                ? Parameters.EMPTY
+                : new Parameters(str, params);
     }
 
     private enum IterationState {
@@ -254,7 +255,7 @@ public class Parameters implements Iterable<String> {
         return value == null ? def.get() : value;
     }
 
-    public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull NotNullSupplier<R> def) {
+    public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull SafeSupplier<R> def) {
         R value = get(key, converter);
         return value == null ? def.get() : value;
     }
@@ -273,11 +274,12 @@ public class Parameters implements Iterable<String> {
         return value == null ? def.get() : value;
     }
 
-    public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull NotNullSupplier<R> def) {
+    public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull SafeSupplier<R> def) {
         R value = getEnum(key, clazz);
         return value == null ? def.get() : value;
     }
 
+    @Contract(pure = true)
     public @NotNull Parameters getParams(@NotNull String key) {
         return Parameters.fromString(getString(key));
     }
@@ -296,7 +298,7 @@ public class Parameters implements Iterable<String> {
         return value == null ? def.get() : value;
     }
 
-    public @NotNull String getStringSafe(@NotNull String key, @NotNull NotNullSupplier<String> def) {
+    public @NotNull String getStringSafe(@NotNull String key, @NotNull SafeSupplier<String> def) {
         String value = params.get(key);
         return value == null ? def.get() : value;
     }
@@ -349,21 +351,22 @@ public class Parameters implements Iterable<String> {
         } else return def.getAsBoolean();
     }
 
-    public @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
-        List<String> keys = new ArrayList<>();
+    public @Unmodifiable @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
+        baseKey = baseKey.toLowerCase(Locale.ROOT);
         if (contains(baseKey + "1")) {
+            List<String> keys = new ArrayList<>();
             keys.add(baseKey + "1");
+            int i = 1;
+            String key;
+            while (contains(key = baseKey + (++i))) {
+                keys.add(key);
+            }
+            return Collections.unmodifiableList(keys);
         } else if (contains(baseKey)) {
-            keys.add(baseKey);
+            return List.of(baseKey);
         } else {
-            return keys;
+            return List.of();
         }
-        int i = 1;
-        String key;
-        while (contains(key = baseKey + (++i))) {
-            keys.add(key);
-        }
-        return keys;
     }
 
     public boolean contains(@NotNull String key) {
@@ -392,16 +395,6 @@ public class Parameters implements Iterable<String> {
 
     public boolean containsAny(@NotNull String @NotNull ... keys) {
         return containsAny(List.of(keys));
-    }
-
-    @Deprecated
-    public boolean matchesAny(@NotNull Pattern @NotNull ... patterns) { // TODO: Quite useless
-        for (Pattern pattern : patterns) {
-            for (String param : params.keySet()) {
-                if (pattern.matcher(param).matches()) return true;
-            }
-        }
-        return false;
     }
 
     public @NotNull String originFormatted() {

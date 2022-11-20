@@ -20,12 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public final class ItemUtils {
-    private static final Pattern ITEM_D = Pattern.compile("item\\d+|ITEM\\d+");
-    private static final Pattern SET_D = Pattern.compile("set\\d+|SET\\d+");
-
     private ItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static <T> @Nullable T searchByKey(@NotNull String key, @NotNull Function<NamespacedKey, T> search) {
@@ -83,14 +79,14 @@ public final class ItemUtils {
      */
     public static @NotNull List<ItemStack> parseRandomItemsStr(String items) { // TODO: Should be refactored
         Parameters params = Parameters.fromString(items);
-        if (params.matchesAny(SET_D)) {
+        List<String> keys;
+        if (!(keys = params.getKeyList("set")).isEmpty()) {
             Object2IntMap<List<ItemStack>> sets = new Object2IntOpenHashMap<>();
             int maxChance = 0;
             int nochcount = 0;
-            for (String key : params.keySet()) {
-                if (!SET_D.matcher(key).matches()) continue;
+            for (String key : keys) {
                 Parameters itemParams = Parameters.fromString(params.getString(key));
-                List<ItemStack> itemList = parseItemsSet(itemParams);
+                List<ItemStack> itemList = parseItemsSet(itemParams, itemParams.getKeyList("item"));
                 if (itemList.isEmpty()) continue;
                 int chance = itemParams.getInteger("chance", -1);
                 if (chance > 0) maxChance += chance;
@@ -102,11 +98,11 @@ public final class ItemUtils {
             int rnd = Rng.nextInt(maxChance);
             int curchance = 0;
             for (List<ItemStack> stack : sets.keySet()) {
-                curchance = curchance + (sets.get(stack) < 0 ? eqperc : sets.get(stack));
+                curchance = curchance + (sets.getInt(stack) < 0 ? eqperc : sets.getInt(stack));
                 if (rnd <= curchance) return stack;
             }
-        } else if (params.matchesAny(ITEM_D)) {
-            return parseItemsSet(params);
+        } else if (!(keys = params.getKeyList("item")).isEmpty()) {
+            return parseItemsSet(params, keys);
         } else {
             ItemStack vi = VirtualItem.asItem(items);
             if (vi != null) {
@@ -117,14 +113,11 @@ public final class ItemUtils {
         return List.of();
     }
 
-    private static List<ItemStack> parseItemsSet(Parameters params) {
+    private static List<ItemStack> parseItemsSet(Parameters params, List<String> keys) {
         List<ItemStack> items = new ArrayList<>();
-        for (String key : params.keySet()) {
-            if (ITEM_D.matcher(key).matches()) {
-                String itemStr = params.getString(key, "");
-                ItemStack vi = VirtualItem.asItem(itemStr);
-                if (vi != null) items.add(vi);
-            }
+        for (String key : keys) {
+            ItemStack item = params.get(key, VirtualItem::asItem);
+            if (item != null) items.add(item);
         }
         if (items.isEmpty()) {
             ItemStack item = VirtualItem.asItem(params);
