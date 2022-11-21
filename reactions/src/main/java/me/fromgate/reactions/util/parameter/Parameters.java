@@ -48,7 +48,9 @@ public class Parameters implements Iterable<String> {
         this.params = Collections.unmodifiableMap(params);
     }
 
-    public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) { // TODO: Edge case "test:value,value"
+    // TODO: Edge case ("test:value,value", ',')
+    // TODO: Escaping support
+    public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) {
         if (str.indexOf(splitCh) == -1) return List.of(str);
         List<String> splits = new ArrayList<>();
         int lastSplit = 0;
@@ -372,7 +374,7 @@ public class Parameters implements Iterable<String> {
 
     public boolean containsEvery(@NotNull Iterable<@NotNull String> keys) {
         for (String key : keys) {
-            if (!params.containsKey(key)) {
+            if (!contains(key)) {
                 return false;
             }
         }
@@ -385,7 +387,9 @@ public class Parameters implements Iterable<String> {
 
     public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
         for (String key : keys) {
-            if (params.containsKey(key)) return true;
+            if (contains(key)) {
+                return true;
+            }
         }
         return false;
     }
