@@ -30,8 +30,8 @@ public final class VirtualItem {
      */
     public static final VirtualItem EMPTY = new VirtualItem(null, -1, List.of(), Parameters.EMPTY);
 
-    private static final Map<String, MetaAspect> RESOLVERS_MAP = new LinkedHashMap<>(); // TODO: Registry
-    private static final List<MetaAspect> RESOLVERS = new ArrayList<>();
+    private static final Map<String, MetaAspect> ASPECTS_BY_NAME = new LinkedHashMap<>(); // TODO: Registry
+    private static final List<MetaAspect> ASPECTS = new ArrayList<>();
     static {
         registerAspect(new BannerAspect());
         registerAspect(new BookAspect(BookAspect.Type.PAGES));
@@ -54,10 +54,10 @@ public final class VirtualItem {
         registerAspect(new PotionAspect(false));
     }
     private static void registerAspect(@NotNull MetaAspect aspect) {
-        RESOLVERS_MAP.put(aspect.getName().toLowerCase(Locale.ROOT), aspect);
-        RESOLVERS.add(aspect);
+        ASPECTS_BY_NAME.put(aspect.getName().toLowerCase(Locale.ROOT), aspect);
+        ASPECTS.add(aspect);
         for (String alias : Utils.getAliases(aspect)) {
-            RESOLVERS_MAP.putIfAbsent(alias.toLowerCase(Locale.ROOT), aspect);
+            ASPECTS_BY_NAME.putIfAbsent(alias.toLowerCase(Locale.ROOT), aspect);
         }
     }
 
@@ -186,7 +186,7 @@ public final class VirtualItem {
         } else {
             aspects = new ArrayList<>();
             ItemMeta meta = item.getItemMeta();
-            for (MetaAspect aspect : RESOLVERS) {
+            for (MetaAspect aspect : ASPECTS) {
                 MetaAspect.Instance aspectInst = aspect.fromItem(meta);
                 if (aspectInst != null) aspects.add(aspectInst);
             }
@@ -220,7 +220,7 @@ public final class VirtualItem {
                     if (!matcher.matches()) break;
                     type = ItemUtils.getMaterial(matcher.group(1));
                     if (!Utils.isStringEmpty(matcher.group(2))) {
-                        aspects.add(RESOLVERS_MAP.get("durability").fromString(matcher.group(1)));
+                        aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
                     }
                     if (!Utils.isStringEmpty(matcher.group(3))) {
                         amount = NumberUtils.getInteger(matcher.group(3), -1);
@@ -232,7 +232,7 @@ public final class VirtualItem {
                 case "name": case "lore":
                     if (regex) key += "-regex";
                 default:
-                    MetaAspect aspect = RESOLVERS_MAP.get(key);
+                    MetaAspect aspect = ASPECTS_BY_NAME.get(key);
                     if (aspect == null) continue;
                     aspects.add(aspect.fromString(params.getString(key)));
                     break;

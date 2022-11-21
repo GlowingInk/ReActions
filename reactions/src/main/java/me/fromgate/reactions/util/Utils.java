@@ -192,10 +192,10 @@ public final class Utils {
      *
      * @param user User to check
      * @param perm Permission to check
-     * @return Is permission is null or user has permissions
+     * @return Is permission not-null and user doesn't have it
      */
-    public static boolean checkPermission(@NotNull Permissible user, @Nullable String perm) {
-        return perm == null || user.hasPermission(perm);
+    public static boolean isRestricted(@NotNull Permissible user, @Nullable String perm) {
+        return perm != null && !user.hasPermission(perm);
     }
 
     /**

@@ -64,7 +64,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
 
         if (sender instanceof ConsoleCommandSender) {
             if (!consoleAllowed) return;
-        } else if (!Utils.checkPermission(sender, permission)) return;
+        } else if (Utils.isRestricted(sender, permission)) return;
 
         for (int i = 0; i < args.length; i++) {
             if (i != args.length - 1) {
@@ -98,7 +98,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
         if (sender instanceof ConsoleCommandSender) {
             if (!consoleAllowed)
                 return new ExecResult(ExecType.CONSOLE_DISALLOWED, getErroredExec(ExecType.CONSOLE_DISALLOWED));
-        } else if (!Utils.checkPermission(sender, permission))
+        } else if (Utils.isRestricted(sender, permission))
             return new ExecResult(ExecType.NO_PERMISSIONS, getErroredExec(ExecType.NO_PERMISSIONS));
 
         for (int i = 0; i < arguments.size(); i++) {
