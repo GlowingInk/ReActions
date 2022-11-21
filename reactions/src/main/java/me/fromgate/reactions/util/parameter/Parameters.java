@@ -259,6 +259,13 @@ public class Parameters implements Iterable<String> {
         return value == null ? def.get() : value;
     }
 
+    public <R extends Enum<R>> @NotNull R getEnum(@NotNull String key, @NotNull R def) {
+        String value = params.get(key);
+        return value == null
+                ? def
+                : Utils.getEnum(value, def);
+    }
+
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz) {
         return get(key, (value) -> Utils.getEnum(clazz, value));
     }

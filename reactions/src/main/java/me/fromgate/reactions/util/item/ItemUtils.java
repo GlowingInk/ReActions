@@ -77,7 +77,7 @@ public final class ItemUtils {
      * @param items Set of items, e.g set1:{item1:{}  item2:{} item3:{} chance:50}  set2:{item1:{}  item2:{} item3:{} chance:50}
      * @return List of items
      */
-    public static @NotNull List<ItemStack> parseRandomItemsStr(String items) { // TODO: Should be refactored
+    public static @NotNull List<ItemStack> parseRandomItemsStr(@NotNull String items) { // TODO: Should be refactored
         Parameters params = Parameters.fromString(items);
         List<String> keys;
         if (!(keys = params.getKeyList("set")).isEmpty()) {
@@ -148,6 +148,7 @@ public final class ItemUtils {
      * @param item Item to check
      * @return Is item not null and not air
      */
+    @Contract("null -> false")
     public static boolean isExist(@Nullable ItemStack item) {
         return item != null && !item.getType().isEmpty();
     }

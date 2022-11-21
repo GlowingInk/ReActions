@@ -98,19 +98,21 @@ public class ActionItems implements Action {
         if (!NumberUtils.isInteger(slotStr)) return wearItem(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
-        String existStr = params.getString("exist", "remove");
-        ItemStack oldItem = player.getInventory().getItem(slotNum) == null ? null : player.getInventory().getItem(slotNum).clone();
-        if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
+        ItemStack oldItem = player.getInventory().getItem(slotNum);
+        if (oldItem != null) oldItem = oldItem.clone();
+        if (itemStr.equalsIgnoreCase("AIR")) {
             player.getInventory().setItem(slotNum, null);
         } else {
             ItemStack vi = VirtualItem.asItem(itemStr);
             if (vi == null) return false;
             player.getInventory().setItem(slotNum, vi);
         }
-        if (ItemUtils.isExist(oldItem)) return true;
-        if (existStr.equalsIgnoreCase("drop")) player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
-        else if (existStr.equalsIgnoreCase("undress")) ItemUtils.giveItemOrDrop(player, oldItem);
-        else if (existStr.equalsIgnoreCase("keep")) player.getInventory().setItem(slotNum, oldItem);
+        if (!ItemUtils.isExist(oldItem)) return true;
+        switch (params.getEnum("exist", ItemPolicy.REMOVE)) {
+            case DROP -> player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
+            case UNDRESS -> ItemUtils.giveItemOrDrop(player, oldItem);
+            case KEEP -> player.getInventory().setItem(slotNum, oldItem);
+        }
         String actionItems = ItemUtils.toDisplayString(itemStr);
         context.setVariable("item_str", actionItems);
 
@@ -166,16 +168,12 @@ public class ActionItems implements Action {
         Player player = context.getPlayer();
         String itemStr = params.getString("item");
         int slot = -1; //4 - auto, 3 - helmete, 2 - chestplate, 1 - leggins, 0 - boots
-        int existDrop = 1; // 0 - remove, 1 - undress, 2 - drop, 3 - keep
-        if (itemStr.isEmpty()) itemStr = params.getString(Parameters.ORIGIN, "");
-        else {
+        ItemPolicy existDrop = ItemPolicy.UNDRESS;
+        if (itemStr.isEmpty()) {
+            itemStr = params.origin();
+        } else {
             slot = this.getSlotNum(params.getString("slot", "auto"));
-            String existStr = params.getString("exist", "undress");
-            if (existStr.equalsIgnoreCase("remove")) existDrop = 0;
-            else if (existStr.equalsIgnoreCase("undress")) existDrop = 1;
-            else if (existStr.equalsIgnoreCase("drop")) existDrop = 2;
-            else if (existStr.equalsIgnoreCase("keep")) existDrop = 3;
-            else existDrop = 1;
+            existDrop = params.getEnum("exist", ItemPolicy.UNDRESS);
         }
         ItemStack item = null;
         if (itemStr.equalsIgnoreCase("AIR") || itemStr.equalsIgnoreCase("NULL")) {
@@ -190,6 +188,10 @@ public class ActionItems implements Action {
         return setArmourItem(player, slot, item, existDrop);
     }
 
+    private enum ItemPolicy {
+        REMOVE, UNDRESS, DROP, KEEP
+    }
+
     private boolean setItemInOffhand(RaContext context, Parameters params, ItemStack item) {
         Player player = context.getPlayer();
         String itemStr = params.getString("slot");
@@ -200,18 +202,18 @@ public class ActionItems implements Action {
         return true;
     }
 
-    private boolean setArmourItem(Player player, int slot, ItemStack item, int existDrop) {
+    private boolean setArmourItem(Player player, int slot, ItemStack item, ItemPolicy existDrop) {
         ItemStack[] armour = player.getInventory().getArmorContents().clone();
         ItemStack oldItem = armour[slot] == null ? null : armour[slot].clone();
-        if (ItemUtils.isExist(oldItem) && (existDrop == 3)) {
+        if (ItemUtils.isExist(oldItem) && existDrop == ItemPolicy.KEEP) {
             return false; // сохраняем и уходим
         }
         armour[slot] = item;
         player.getInventory().setArmorContents(armour);
         if (oldItem != null) {
-            if (existDrop == 1) {
+            if (existDrop == ItemPolicy.UNDRESS) {
                 ItemUtils.giveItemOrDrop(player, oldItem);
-            } else if (existDrop == 2) {
+            } else if (existDrop == ItemPolicy.DROP) {
                 player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
             }
         }
@@ -295,7 +297,7 @@ public class ActionItems implements Action {
     private boolean giveItemPlayer(RaContext context, final String param) {
         Player player = context.getPlayer();
         List<ItemStack> items = ItemUtils.parseRandomItemsStr(param);
-        if (items == null || items.isEmpty()) return false;
+        if (items.isEmpty()) return false;
         String actionItems = ItemUtils.toDisplayString(items);
         context.setVariable("item_str", actionItems);
         Bukkit.getScheduler().scheduleSyncDelayedTask(ReActions.getPlugin(), () -> {
@@ -327,7 +329,7 @@ public class ActionItems implements Action {
         boolean scatter = params.getBoolean("scatter", true);
         boolean land = params.getBoolean("land", true);
         List<ItemStack> items = ItemUtils.parseRandomItemsStr(params.getString("item"));
-        if (items == null || items.isEmpty()) return false;
+        if (items.isEmpty()) return false;
         if (radius == 0) scatter = false;
         Location l = LocationUtils.getRadiusLocation(loc, radius, land);
         for (ItemStack i : items) {

@@ -243,6 +243,22 @@ public final class Utils {
         }
     }
 
+
+    /**
+     * Get any enum by its name or default value if not found
+     * @param <T> Enum type
+     * @param name Name of enum
+     * @param def Default value
+     * @return Corresponding enum, or {@param def} if not found
+     */
+    public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String name, @NotNull T def) {
+        try {
+            return (T) Enum.valueOf(def.getClass(), name.toUpperCase(Locale.ROOT)); // That feels ingenious and absolutely stupid
+        } catch (IllegalArgumentException ignored) {
+            return def;
+        }
+    }
+
     public static @NotNull String[] getAliases(@NotNull Class<?> clazz) {
         if (clazz.isAnnotationPresent(Aliases.class)) {
             return clazz.getAnnotation(Aliases.class).value();

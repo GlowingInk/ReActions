@@ -32,21 +32,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagVar implements Flag {
     private final Type flagType;
-    private final boolean personalVar;
+    private final boolean personal;
 
-    public FlagVar(Type flagType, boolean personalVar) {
+    public FlagVar(Type flagType, boolean personal) {
         this.flagType = flagType;
-        this.personalVar = personalVar;
+        this.personal = personal;
     }
 
     @Override
     public @NotNull String getName() {
         return switch (flagType) {
-            case EXIST -> personalVar ? "VAR_PLAYER_EXIST" : "VAR_EXIST";
-            case COMPARE -> personalVar ? "VAR_PLAYER_COMPARE" : "VAR_COMPARE";
-            case GREATER -> personalVar ? "VAR_PLAYER_GREATER" : "VAR_GREATER";
-            case LOWER -> personalVar ? "VAR_PLAYER_LOWER" : "VAR_LOWER";
-            case MATCH -> personalVar ? "VAR_PLAYER_MATCH" : "VAR_MATCH";
+            case EXIST -> personal ? "VAR_PLAYER_EXIST" : "VAR_EXIST";
+            case COMPARE -> personal ? "VAR_PLAYER_COMPARE" : "VAR_COMPARE";
+            case GREATER -> personal ? "VAR_PLAYER_GREATER" : "VAR_GREATER";
+            case LOWER -> personal ? "VAR_PLAYER_LOWER" : "VAR_LOWER";
+            case MATCH -> personal ? "VAR_PLAYER_MATCH" : "VAR_MATCH";
         };
     }
 
@@ -61,7 +61,7 @@ public class FlagVar implements Flag {
         Player player = context.getPlayer();
         String variableId;
         String value;
-        String playerName = this.personalVar && (player != null) ? player.getName() : "";
+        String playerName = this.personal && (player != null) ? player.getName() : "";
 
         if (params.contains("id")) {
             variableId = params.getString("id", "");
@@ -69,16 +69,17 @@ public class FlagVar implements Flag {
             value = params.getString("value", "");
             playerName = params.getString("player", playerName);
         } else {
-            String[] ln = params.getString(Parameters.ORIGIN, "").split("/", 2);
+            String[] ln = params.origin().split("/", 2);
             if (ln.length == 0) return false;
             variableId = ln[0];
             value = (ln.length > 1) ? ln[1] : "";
         }
-        if (playerName.isEmpty() && this.personalVar) return false;
+        if (playerName.isEmpty() && this.personal) return false;
 
         String variable = ReActions.getVariables().getVariable(playerName, variableId);
-        if (variable == null)
+        if (variable == null) {
             return false;
+        }
 
         switch (this.flagType) {
             case EXIST: // VAR_EXIST
@@ -97,8 +98,10 @@ public class FlagVar implements Flag {
 
             case MATCH: // VAR_MATCH
                 return variable.matches(value);
+
+            default:
+                return false;
         }
-        return false;
     }
 
     public enum Type {

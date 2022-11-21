@@ -66,7 +66,7 @@ public class PotionAspect implements MetaAspect {
         public Base(@NotNull String potionDataStr) {
             this.potionDataStr = potionDataStr;
             Parameters params = Parameters.fromString(potionDataStr);
-            PotionType type = params.getEnum("base-type", PotionType.class, PotionType.UNCRAFTABLE);
+            PotionType type = params.getEnum("base-type", PotionType.UNCRAFTABLE);
             boolean extended = type.isExtendable() && params.getBoolean("extended", false);
             boolean upgraded = type.isUpgradeable() && params.getBoolean("upgraded", false);
             this.potionData = new PotionData(type, extended, upgraded);

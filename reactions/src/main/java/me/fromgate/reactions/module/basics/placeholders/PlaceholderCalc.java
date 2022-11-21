@@ -13,10 +13,8 @@ import org.jetbrains.annotations.Nullable;
 public class PlaceholderCalc implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-        if (Cfg.modernPlaceholders || !param.contains("%")) try {
+        if (Cfg.modernPlaceholders || !param.contains("%")) {
             return NumberUtils.format(ExpressionEvaluator.eval(param));
-        } catch (NumberFormatException | ArithmeticException ignore) {
-            // TODO: Error
         }
         return null;
     }
