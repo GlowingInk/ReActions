@@ -16,7 +16,7 @@ public class ModelAspect implements MetaAspect {
 
     @Override
     public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
-        return NumberUtils.isInteger(value)
+        return NumberUtils.isPositiveInt(value)
                 ? new ModelInst(Integer.valueOf(value))
                 : ModelInst.EMPTY;
     }

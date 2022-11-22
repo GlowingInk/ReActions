@@ -70,8 +70,8 @@ public class ActionPotion implements Action {
                 String[] prm = param.split("/");
                 if (prm.length > 1) {
                     peffstr = prm[0];
-                    if (NumberUtils.isNonzeroInteger(prm[1])) duration = Integer.parseInt(prm[1]);
-                    if ((prm.length > 2) && NumberUtils.isNonzeroInteger(prm[2])) amplifier = Integer.parseInt(prm[2]);
+                    if (NumberUtils.isPositiveNonzeroInt(prm[1])) duration = Integer.parseInt(prm[1]);
+                    if ((prm.length > 2) && NumberUtils.isPositiveNonzeroInt(prm[2])) amplifier = Integer.parseInt(prm[2]);
                 }
             } else peffstr = param;
         } else {

@@ -64,7 +64,7 @@ public class ActionSignSet implements Action {
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {
-                if (!NumberUtils.isInteger(cl)) continue;
+                if (!NumberUtils.isPositiveInt(cl)) continue;
                 int num = Integer.parseInt(cl) - 1;
                 if (num < 0) continue;
                 if (num >= 4) continue;

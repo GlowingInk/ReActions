@@ -82,7 +82,7 @@ public class FlagItem implements Flag {
 
         String slotStr = params.getString("slot", "");
         if (slotStr.isEmpty()) return false;
-        int slotNum = NumberUtils.getInteger(slotStr, -1);
+        int slotNum = NumberUtils.asInt(slotStr, -1);
         if (slotNum >= player.getInventory().getSize()) return false;
 
         VirtualItem item = VirtualItem.fromParameters(params);

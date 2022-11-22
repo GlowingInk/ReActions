@@ -49,7 +49,7 @@ public class FlagSelectionBlocks implements Flag {
         context.setVariable("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
         context.setVariable("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
         context.setVariable("selblocks", Integer.toString(selectionBlocks));
-        return NumberUtils.isInteger(params) && selectionBlocks <= Integer.parseInt(params);
+        return NumberUtils.isPositiveInt(params) && selectionBlocks <= Integer.parseInt(params);
     }
 
     @Override

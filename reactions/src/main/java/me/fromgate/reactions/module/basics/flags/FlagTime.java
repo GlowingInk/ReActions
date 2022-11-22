@@ -72,7 +72,7 @@ public class FlagTime implements Flag {
             String[] ln = time.split(",");
             if (ln.length > 0)
                 for (int i = 0; i < ln.length; i++) {
-                    if (!NumberUtils.isInteger(ln[i])) continue;
+                    if (!NumberUtils.isPositiveInt(ln[i])) continue;
                     String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
                     if (i == 0) result = new StringBuilder(tmp);
                     else result.append(", ").append(tmp);

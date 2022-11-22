@@ -21,7 +21,7 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
 
     private static String getPlayerInventory(Player player, String value) {
         VirtualItem vi = null;
-        if (NumberUtils.isInteger(value)) {
+        if (NumberUtils.isPositiveInt(value)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
             vi = VirtualItem.fromItem(player.getInventory().getItem(slotNum));

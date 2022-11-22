@@ -18,7 +18,7 @@ public class CmdCheck extends Cmd {
 
     @Override
     public boolean execute(Player player, String[] args) {
-        int radius = args.length > 1 && NumberUtils.isNonzeroInteger(args[1]) ? Integer.parseInt(args[1]) : 8;
+        int radius = args.length > 1 && NumberUtils.isPositiveNonzeroInt(args[1]) ? Integer.parseInt(args[1]) : 8;
         printActivatorsAround(player, radius);
         return true;
     }

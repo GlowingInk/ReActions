@@ -35,7 +35,7 @@ public class FlagChance implements Flag {
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         context.setVariable("chance", params + "%");
         double d = 50;
-        if (NumberUtils.isFloat(params)) d = Double.parseDouble(params);
+        if (NumberUtils.isPositive(params)) d = Double.parseDouble(params);
         d = Math.max(Math.min(d, 100), 0);
         return Rng.percentChance(d);
     }

@@ -95,7 +95,7 @@ public class ActionItems implements Action {
         if (itemStr.isEmpty()) return false;
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!NumberUtils.isInteger(slotStr)) return wearItem(context, params);
+        if (!NumberUtils.isPositiveInt(slotStr)) return wearItem(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack oldItem = player.getInventory().getItem(slotNum);
@@ -123,7 +123,7 @@ public class ActionItems implements Action {
         Player player = context.getPlayer();
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!NumberUtils.isInteger(slotStr)) return wearItemView(context, params);
+        if (!NumberUtils.isPositiveInt(slotStr)) return wearItemView(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);

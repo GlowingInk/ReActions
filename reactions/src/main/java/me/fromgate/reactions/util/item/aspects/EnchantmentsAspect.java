@@ -46,7 +46,7 @@ public class EnchantmentsAspect implements MetaAspect {
                 enchantment = Enchantment.getByName(enchKey.toUpperCase(Locale.ROOT));
                 if (enchantment == null) continue;
             }
-            int level = NumberUtils.getInteger(levelStr, 0);
+            int level = NumberUtils.asInt(levelStr, 0);
             enchantments.put(enchantment, level > 0 ? level : null);
         }
         return new EnchantmentsInst(enchantments, value);

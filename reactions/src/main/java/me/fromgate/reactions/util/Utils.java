@@ -46,8 +46,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.fromgate.reactions.util.NumberUtils.getInteger;
-
 public final class Utils {
     private static final Pattern HEX_COLOR = Pattern.compile("#([a-fA-F\\d]{6})");
     private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
@@ -251,9 +249,10 @@ public final class Utils {
      * @param def Default value
      * @return Corresponding enum, or {@param def} if not found
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String name, @NotNull T def) {
         try {
-            return (T) Enum.valueOf(def.getClass(), name.toUpperCase(Locale.ROOT)); // That feels ingenious and absolutely stupid
+            return (T) Enum.valueOf(def.getClass(), name.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException ignored) {
             return def;
         }
@@ -288,9 +287,9 @@ public final class Utils {
             Matcher matcher = BYTE_COLOR.matcher(value);
             if (matcher.matches()) {
                 return Color.fromRGB(
-                        Math.min(getInteger(matcher.group(1), 0), 255),
-                        Math.min(getInteger(matcher.group(2), 0), 255),
-                        Math.min(getInteger(matcher.group(3), 0), 255)
+                        Math.min(NumberUtils.asInt(matcher.group(1), 0), 255),
+                        Math.min(NumberUtils.asInt(matcher.group(2), 0), 255),
+                        Math.min(NumberUtils.asInt(matcher.group(3), 0), 255)
                 );
             } else if (!value.isEmpty()) {
                 TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));

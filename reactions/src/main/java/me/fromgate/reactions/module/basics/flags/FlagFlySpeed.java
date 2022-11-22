@@ -13,7 +13,7 @@ public class FlagFlySpeed implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        if (!NumberUtils.isInteger(params)) return false;
+        if (!NumberUtils.isPositiveInt(params)) return false;
         long flySpeed = Math.round(player.getFlySpeed() * 10);
         context.setVariable("flyspeed", Integer.toString((int) flySpeed));
         return flySpeed >= Integer.parseInt(params);

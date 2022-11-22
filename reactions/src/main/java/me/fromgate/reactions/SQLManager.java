@@ -82,7 +82,7 @@ public final class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
-        if (NumberUtils.isInteger(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
+        if (NumberUtils.isPositiveInt(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
         return result.equalsIgnoreCase(value);
     }
 

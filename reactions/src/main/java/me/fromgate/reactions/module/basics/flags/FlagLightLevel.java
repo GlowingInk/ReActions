@@ -34,7 +34,7 @@ public class FlagLightLevel implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        return NumberUtils.isInteger(params) && player.getEyeLocation().getBlock().getLightLevel() >= Integer.parseInt(params);
+        return NumberUtils.isPositiveInt(params) && player.getEyeLocation().getBlock().getLightLevel() >= Integer.parseInt(params);
     }
 
     @Override

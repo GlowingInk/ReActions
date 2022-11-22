@@ -46,7 +46,7 @@ public class CmdRemove extends Cmd {
             else Msg.printMSG(sender, "msg_removemenufail", 'c', '4', arg2);
         } else if (ReActions.getActivators().containsActivator(arg1)) {
             ActivatorLogic act = ReActions.getActivators().getActivator(arg1).getLogic();
-            if (NumberUtils.isNonzeroInteger(arg3.toString())) {
+            if (NumberUtils.isPositiveNonzeroInt(arg3.toString())) {
                 int num = Integer.parseInt(arg3.toString());
                 if (arg2.equalsIgnoreCase("f") || arg2.equalsIgnoreCase("flag")) {
                     if (act.removeFlag(num - 1))

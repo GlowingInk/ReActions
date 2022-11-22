@@ -16,7 +16,7 @@ public class DurabilityAspect implements MetaAspect {
 
     @Override
     public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
-        return new DurabilityInst(NumberUtils.getInteger(value, 0));
+        return new DurabilityInst(NumberUtils.asInt(value, 0));
     }
 
     @Override

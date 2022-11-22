@@ -65,7 +65,7 @@ public final class TimeUtils {
     }
 
     public static long parseTime(String timeStr) {
-        if (NumberUtils.isInteger(timeStr)) {
+        if (NumberUtils.isPositiveInt(timeStr)) {
             return Long.parseLong(timeStr) * 1000L;
         }
         Matcher matcher = TIME_SPLITTED.matcher(timeStr);

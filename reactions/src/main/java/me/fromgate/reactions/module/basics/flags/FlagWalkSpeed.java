@@ -15,7 +15,7 @@ public class FlagWalkSpeed implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        if (!NumberUtils.isInteger(params)) return false;
+        if (!NumberUtils.isPositiveInt(params)) return false;
         long walkSpeed = Math.round(player.getWalkSpeed() * 10); // TODO: Why?
         context.setVariable("walkspeed", Long.toString(walkSpeed));
         return walkSpeed >= Integer.parseInt(params);

@@ -61,9 +61,9 @@ public final class VirtualItem {
         }
     }
 
-    private final @Nullable Material type;
+    private final Material type;
     private final int amount;
-    private final @NotNull List<MetaAspect.Instance> aspects;
+    private final List<MetaAspect.Instance> aspects;
 
     private boolean itemGenerated;
     private ItemStack itemValue;
@@ -223,7 +223,7 @@ public final class VirtualItem {
                         aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
                     }
                     if (!Utils.isStringEmpty(matcher.group(3))) {
-                        amount = NumberUtils.getInteger(matcher.group(3), -1);
+                        amount = NumberUtils.asInt(matcher.group(3), -1);
                     }
                     break;
                 }

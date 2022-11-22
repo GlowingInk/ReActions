@@ -50,7 +50,7 @@ public class FlagMoney implements Flag {
         Player player = context.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
         String amountStr = params.getString("amount", "a");
-        if (!NumberUtils.isFloat(amountStr)) return false;
+        if (!NumberUtils.isPositive(amountStr)) return false;
         double amount = Double.parseDouble(amountStr);
         String account = params.getString("account", params.getString("player", player == null ? "" : player.getName()));
         if (account.isEmpty()) return false;

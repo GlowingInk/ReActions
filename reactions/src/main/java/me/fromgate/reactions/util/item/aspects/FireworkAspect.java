@@ -31,7 +31,7 @@ public class FireworkAspect implements MetaAspect {
     public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         return effects
                 ? new EffectsInst(value)
-                : new PowerInst(NumberUtils.getInteger(value, 1));
+                : new PowerInst(NumberUtils.asInt(value, 1));
     }
 
     @Override

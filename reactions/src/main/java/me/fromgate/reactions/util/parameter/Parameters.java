@@ -314,11 +314,11 @@ public class Parameters implements Iterable<String> {
     }
 
     public double getDouble(@NotNull String key, double def) {
-        return NumberUtils.getDouble(params.get(key), def);
+        return NumberUtils.asDouble(params.get(key), def);
     }
 
     public double getDouble(@NotNull String key, @NotNull DoubleSupplier def) {
-        return NumberUtils.getDouble(params.get(key), def);
+        return NumberUtils.asDouble(params.get(key), def);
     }
 
     public int getInteger(@NotNull String key) {
@@ -326,11 +326,11 @@ public class Parameters implements Iterable<String> {
     }
 
     public int getInteger(@NotNull String key, int def) {
-        return NumberUtils.getInteger(params.get(key), def);
+        return NumberUtils.asInt(params.get(key), def);
     }
 
     public int getInteger(@NotNull String key, @NotNull IntSupplier def) {
-        return NumberUtils.getInteger(params.get(key), def);
+        return NumberUtils.asInt(params.get(key), def);
     }
 
     public boolean getBoolean(@NotNull String key) {

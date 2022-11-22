@@ -35,7 +35,7 @@ public class FlagLevel implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        return NumberUtils.isInteger(params) && player.getLevel() >= Integer.parseInt(params);
+        return NumberUtils.isPositiveInt(params) && player.getLevel() >= Integer.parseInt(params);
     }
 
     @Override

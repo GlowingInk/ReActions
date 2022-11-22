@@ -261,7 +261,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
             pef = ln[0];
             PotionEffectType pet = PotionEffectType.getByName(pef);
             if (pet == null) continue;
-            if ((ln.length == 2) && NumberUtils.isInteger(ln[1])) level = Integer.parseInt(ln[1]);
+            if ((ln.length == 2) && NumberUtils.isPositiveInt(ln[1])) level = Integer.parseInt(ln[1]);
             PotionEffect pe = new PotionEffect(pet, Integer.MAX_VALUE, level, true);
             e.addPotionEffect(pe);
         }

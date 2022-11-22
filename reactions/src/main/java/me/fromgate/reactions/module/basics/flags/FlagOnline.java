@@ -34,7 +34,7 @@ public class FlagOnline implements Flag {
 
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
-        return NumberUtils.isNonzeroInteger(params) && Integer.parseInt(params) <= Bukkit.getOnlinePlayers().size();
+        return NumberUtils.isPositiveNonzeroInt(params) && Integer.parseInt(params) <= Bukkit.getOnlinePlayers().size();
     }
 
     @Override
