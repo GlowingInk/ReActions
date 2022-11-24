@@ -22,7 +22,7 @@ import java.util.Set;
 // TODO: Remove statics
 public final class FakeCommander {
     // TODO: Use Paper's async tab completer
-    private static final Map<String, RaCommand> commands = new HashMap<>();
+    private static final Map<String, UserCommand> commands = new HashMap<>();
     private static File file;
 
     private FakeCommander() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
@@ -47,12 +47,12 @@ public final class FakeCommander {
             List<String> aliases = cmdSection.getStringList("alias");
             boolean toBukkit = cmdSection.getBoolean("register", true);
             // TODO: Error message
-            register(command, prefix, aliases, new RaCommand(cmdSection, toBukkit), toBukkit);
+            register(command, prefix, aliases, new UserCommand(cmdSection, toBukkit), toBukkit);
         }
     }
 
     public static boolean triggerRaCommand(CommandStorage storage, boolean activated) {
-        RaCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ROOT));
+        UserCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ROOT));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
         if (exec != null) {
@@ -63,30 +63,30 @@ public final class FakeCommander {
         return raCmd.isOverride();
     }
 
-    private static boolean register(String command, String prefix, List<String> aliases, RaCommand raCommand, boolean toBukkit) {
+    private static boolean register(String command, String prefix, List<String> aliases, UserCommand userCommand, boolean toBukkit) {
         if (Utils.isStringEmpty(command)) return false;
         command = command.toLowerCase(Locale.ROOT);
         prefix = Utils.isStringEmpty(prefix) ? command : prefix.toLowerCase(Locale.ROOT);
         // Registering main command
-        if (toBukkit) Bukkit.getCommandMap().register(prefix, raCommand);
-        commands.put(command, raCommand);
-        commands.put(prefix + ":" + command, raCommand);
+        if (toBukkit) Bukkit.getCommandMap().register(prefix, userCommand);
+        commands.put(command, userCommand);
+        commands.put(prefix + ":" + command, userCommand);
         // Registering aliases
         for (String alias : aliases) {
-            if (toBukkit) Bukkit.getCommandMap().register(alias, prefix, raCommand);
-            commands.put(alias, raCommand);
-            commands.put(prefix + ":" + alias, raCommand);
+            if (toBukkit) Bukkit.getCommandMap().register(alias, prefix, userCommand);
+            commands.put(alias, userCommand);
+            commands.put(prefix + ":" + alias, userCommand);
         }
         return true;
     }
 
-    private static Set<RaCommand> getCommandsSet() {
+    private static Set<UserCommand> getCommandsSet() {
         return new HashSet<>(commands.values());
     }
 
     public static List<String> list() {
         List<String> list = new ArrayList<>();
-        for (RaCommand cmd : getCommandsSet()) {
+        for (UserCommand cmd : getCommandsSet()) {
             List<String> sublist = cmd.list();
             sublist.forEach(s -> list.add(ChatColor.UNDERLINE + "/" + cmd.getName() + ChatColor.RESET + " " + s));
         }

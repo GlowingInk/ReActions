@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -64,14 +65,17 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
 
         if (sender instanceof ConsoleCommandSender) {
             if (!consoleAllowed) return;
-        } else if (Utils.isRestricted(sender, permission)) return;
+        } else if (Utils.isRestricted(sender, permission)) {
+            return;
+        }
 
         for (int i = 0; i < args.length; i++) {
             if (i != args.length - 1) {
                 if (arguments.get(i).check(args[i]) == ExecType.BACKUP)
                     return;
-            } else
+            } else {
                 arguments.get(i).tabComplete(complete, args[i]);
+            }
         }
     }
 
@@ -92,21 +96,26 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
      * @return Result of command
      */
     public ExecResult executeChain(CommandSender sender, String[] args) {
-        if (args.length < arguments.size() || (!ignoreAfter && args.length > arguments.size()))
+        if (args.length < arguments.size() || (!ignoreAfter && args.length > arguments.size())) {
             return ExecResult.BLANK_BACKUP;
+        }
 
-        if (sender instanceof ConsoleCommandSender) {
-            if (!consoleAllowed)
+        if (!(sender instanceof Player)) {
+            if (!consoleAllowed) {
                 return new ExecResult(ExecType.CONSOLE_DISALLOWED, getErroredExec(ExecType.CONSOLE_DISALLOWED));
-        } else if (Utils.isRestricted(sender, permission))
+            }
+        } else if (Utils.isRestricted(sender, permission)) {
             return new ExecResult(ExecType.NO_PERMISSIONS, getErroredExec(ExecType.NO_PERMISSIONS));
+        }
 
         for (int i = 0; i < arguments.size(); i++) {
             ExecType resultType = arguments.get(i).check(args[i].toLowerCase(Locale.ROOT));
-            if (resultType != ExecType.DEFAULT)
+            if (resultType != ExecType.DEFAULT) {
                 return new ExecResult(resultType, getErroredExec(resultType));
-            if (i == arguments.size() - 1)
+            }
+            if (i == arguments.size() - 1) {
                 return new ExecResult(ExecType.DEFAULT, execs.get(ExecType.DEFAULT));
+            }
         }
 
         return ExecResult.BLANK_BACKUP;

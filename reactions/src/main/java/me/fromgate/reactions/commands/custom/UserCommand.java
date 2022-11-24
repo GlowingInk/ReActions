@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ import java.util.TreeSet;
  * Custom implementation of Bukkit Command
  */
 @ApiStatus.Internal
-public final class RaCommand extends Command implements PluginIdentifiableCommand {
+public final class UserCommand extends Command implements PluginIdentifiableCommand {
     private final String permission;
     private final boolean consoleAllowed;
     private final boolean override;
@@ -35,7 +36,7 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
     // Sorted by priority
     private final SortedSet<ArgumentsChain> chains;
 
-    public RaCommand(ConfigurationSection cmdSection, boolean register) {
+    public UserCommand(ConfigurationSection cmdSection, boolean register) {
         super(Objects.requireNonNull(cmdSection.getString("command")));
         this.permission = cmdSection.getString("permission");
         this.consoleAllowed = cmdSection.getBoolean("console_allowed", true);
@@ -74,11 +75,14 @@ public final class RaCommand extends Command implements PluginIdentifiableComman
      * @return Name of result EXEC activator
      */
     public String executeCommand(CommandSender sender, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
-            if (!consoleAllowed) return getErroredExec(ExecType.CONSOLE_DISALLOWED);
+        if (!(sender instanceof Player)) {
+            if (!consoleAllowed) {
+                return getErroredExec(ExecType.CONSOLE_DISALLOWED);
+            }
         } else if (Utils.isRestricted(sender, permission)) return getErroredExec(ExecType.NO_PERMISSIONS);
-        if (args.length == 0)
+        if (args.length == 0) {
             return execs.get(ExecType.DEFAULT);
+        }
         ExecResult prioritizedResult = null;
         for (ArgumentsChain chain : chains) {
             ExecResult result = chain.executeChain(sender, args);

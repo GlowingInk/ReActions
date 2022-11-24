@@ -108,6 +108,8 @@ public class Argument {
             this.priority = priority;
         }
 
-        public int getPriority() {return this.priority;}
+        public int getPriority() {
+            return this.priority;
+        }
     }
 }
