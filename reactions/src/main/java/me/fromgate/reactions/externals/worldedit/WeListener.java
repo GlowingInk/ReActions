@@ -52,13 +52,15 @@ public class WeListener {
                 selection.getArea(), BukkitAdapter.adapt(selection.getWorld()), region.toString());
         WeSelectionRegionStorage e = new WeSelectionRegionStorage(player, weSelection);
         ReActions.getActivators().activate(e);
-        return e.getChangeables().get(Storage.CANCEL_EVENT).asBoolean();
+        var changeables = e.getChangeables();
+        return changeables != null && changeables.get(Storage.CANCEL_EVENT) != null && changeables.get(Storage.CANCEL_EVENT).asBoolean();
     }
 
     public static boolean triggerWEChange(Player player, Location location, Material blockType) {
         WeChangeStorage e = new WeChangeStorage(player, location, blockType);
         ReActions.getActivators().activate(e);
-        return e.getChangeables().get(Storage.CANCEL_EVENT).asBoolean();
+        var changeables = e.getChangeables();
+        return changeables != null && changeables.get(Storage.CANCEL_EVENT) != null && changeables.get(Storage.CANCEL_EVENT).asBoolean();
     }
 
     @Subscribe
