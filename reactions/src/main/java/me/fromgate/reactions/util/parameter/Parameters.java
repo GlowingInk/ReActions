@@ -3,7 +3,7 @@ package me.fromgate.reactions.util.parameter;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
-import me.fromgate.reactions.util.suppliers.SafeSupplier;
+import me.fromgate.reactions.util.function.SafeSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -338,8 +338,9 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean getBoolean(@NotNull String key, boolean def) {
-        if (params.containsKey(key)) {
-            return switch (params.get(key).toLowerCase(Locale.ROOT)) {
+        String value = params.get(key);
+        if (value != null) {
+            return switch (value.toLowerCase(Locale.ROOT)) {
                 case "true" -> true;
                 case "false" -> false;
                 default -> def;
@@ -348,8 +349,9 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean getBoolean(@NotNull String key, @NotNull BooleanSupplier def) {
-        if (params.containsKey(key)) {
-            return switch (params.get(key).toLowerCase(Locale.ROOT)) {
+        String value = params.get(key);
+        if (value != null) {
+            return switch (value.toLowerCase(Locale.ROOT)) {
                 case "true" -> true;
                 case "false" -> false;
                 default -> def.getAsBoolean();
@@ -424,7 +426,19 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean isEmpty() {
-        return this.params.isEmpty();
+        return this.params.size() > 1;
+    }
+
+    @Contract(pure = true)
+    public @NotNull Parameters with(@NotNull String key, @NotNull String value) {
+        Map<String, String> updated = new LinkedHashMap<>(this.params);
+        updated.put(key, value);
+        return Parameters.fromMap(updated);
+    }
+
+    @Contract(pure = true)
+    public @NotNull Parameters with(@NotNull Parameters params) {
+        return with(params.originMap());
     }
 
     @Contract(pure = true)

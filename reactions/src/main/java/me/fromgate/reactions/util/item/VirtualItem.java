@@ -7,6 +7,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public final class VirtualItem {
     private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z_]+)(?::(\\d+))?(?:\\*(\\d+))?");
@@ -100,6 +102,43 @@ public final class VirtualItem {
 
     public int getAmount() {
         return amount;
+    }
+
+    @Contract(pure = true)
+    public @NotNull ItemStack affect(@NotNull ItemStack item) {
+        return affect(item, true);
+    }
+
+    public @NotNull ItemStack affect(@NotNull ItemStack item, boolean clone) {
+        if (clone) {
+            item = item.clone();
+        }
+        if (type != null && type.isItem() && item.getType() != type) {
+            item.setType(type);
+        }
+        if (amount > 0) {
+            item.setAmount(amount);
+        }
+        if (!aspects.isEmpty()) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                aspects.forEach(aspect -> aspect.apply(meta));
+                itemValue.setItemMeta(meta);
+            }
+        }
+        return item;
+    }
+
+    @Contract(pure = true)
+    public @NotNull VirtualItem affect(@NotNull VirtualItem item) {
+        Map<String, MetaAspect.Instance> aspectsMap = item.aspects.stream().collect(Collectors.toMap(MetaAspect.Instance::getName, a -> a));
+        aspects.forEach(a -> aspectsMap.put(a.getName(), a));
+        return new VirtualItem(
+                item.getType(),
+                item.getAmount(),
+                new ArrayList<>(aspectsMap.values()),
+                item.asParameters().with(asParameters())
+        );
     }
 
     public @Nullable ItemStack asItem() {

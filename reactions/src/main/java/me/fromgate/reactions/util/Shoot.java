@@ -93,7 +93,7 @@ public final class Shoot {
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return;
         Player player = target instanceof Player ? (Player) target : null;
         if (player == null && param.getBoolean("playeronly", true)) return;
-        param = param.with(Map.of("player", player == null ? "~null" : player.getName()));
+        param = param.with("player", player == null ? "~null" : player.getName());
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("targettype", target.getType().name());
         tempVars.put("targetname", (player == null) ? EntityUtils.getMobName(target) : player.getName());

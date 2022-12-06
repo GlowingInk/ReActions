@@ -31,7 +31,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class Timer {
@@ -48,7 +47,7 @@ public class Timer {
         this.timesIngame = new HashSet<>();
         this.ingameTimer = params.getString("timer-type", "ingame").equalsIgnoreCase("ingame");
         this.paused = params.getBoolean("paused", false);
-        this.params = params.with(Map.of("paused", String.valueOf(this.paused)));
+        this.params = params.with("paused", String.valueOf(this.paused));
         this.parseTime();
 
     }

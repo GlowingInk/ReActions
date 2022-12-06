@@ -1,4 +1,4 @@
-package me.fromgate.reactions.util.suppliers;
+package me.fromgate.reactions.util.function;
 
 import org.jetbrains.annotations.NotNull;
 
