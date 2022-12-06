@@ -449,7 +449,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public int size() {
-        return this.params.size();
+        return this.params.size() - 1;
     }
 
     @Override
