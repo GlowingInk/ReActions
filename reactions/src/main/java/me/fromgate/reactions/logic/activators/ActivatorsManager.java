@@ -3,7 +3,6 @@ package me.fromgate.reactions.logic.activators;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
-import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -16,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
+import org.springframework.util.CaseInsensitiveMap;
 
 import java.io.File;
 import java.io.IOException;

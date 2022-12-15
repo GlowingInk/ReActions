@@ -2,12 +2,12 @@ package me.fromgate.reactions.util.parameter;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
 import me.fromgate.reactions.util.function.SafeSupplier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.springframework.util.CaseInsensitiveMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +79,7 @@ public class Parameters implements Iterable<String> {
     public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return Parameters.EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = new CaseInsensitiveMap<>(true);
+        Map<String, String> params = new CaseInsensitiveMap<>();
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;
@@ -189,7 +189,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
-        Map<String, String> params = new CaseInsensitiveMap<>(true, map);
+        Map<String, String> params = new CaseInsensitiveMap<>(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
     }
@@ -407,28 +407,6 @@ public class Parameters implements Iterable<String> {
         return containsAny(List.of(keys));
     }
 
-    public @NotNull String originFormatted() {
-        return formatted == null
-                ? (formatted = formatMap(params))
-                : formatted;
-    }
-
-    public @NotNull String origin() {
-        return origin;
-    }
-
-    public @Unmodifiable @NotNull Set<String> keySet() {
-        return this.params.keySet();
-    }
-
-    public @Unmodifiable @NotNull Map<String, String> originMap() {
-        return this.params;
-    }
-
-    public boolean isEmpty() {
-        return this.params.size() > 1;
-    }
-
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull String key, @NotNull String value) {
         Map<String, String> updated = new LinkedHashMap<>(this.params);
@@ -448,17 +426,45 @@ public class Parameters implements Iterable<String> {
         return Parameters.fromMap(updated);
     }
 
-    public int size() {
-        return this.params.size() - 1;
+    public @NotNull String originFormatted() {
+        return formatted == null
+                ? (formatted = formatMap(params))
+                : formatted;
     }
 
-    @Override
-    public @NotNull String toString() {
-        return originFormatted();
+    public @NotNull String origin() {
+        return origin;
     }
 
     @Override
     public @Unmodifiable @NotNull Iterator<String> iterator() {
         return keySet().iterator();
+    }
+
+    public @Unmodifiable @NotNull Set<String> keySet() {
+        return this.params.keySet();
+    }
+
+    public @Unmodifiable @NotNull Map<String, String> originMap() {
+        return this.params;
+    }
+
+    public boolean isEmpty() {
+        return this.params.size() > 1;
+    }
+
+    public int size() {
+        return this.params.size() - 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Parameters other &&
+                other.originMap().equals(originMap());
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return originFormatted();
     }
 }

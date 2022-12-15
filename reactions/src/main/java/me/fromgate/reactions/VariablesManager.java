@@ -25,7 +25,6 @@ package me.fromgate.reactions;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.CaseInsensitiveMap;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -33,6 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.util.CaseInsensitiveMap;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -92,7 +92,6 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
         saveGeneral();
         if (player == null || player.isEmpty()) return;
         UUID id = Utils.getUUID(player);
-        if (id == null) return;
         File f = new File(varDir + File.separator + id + ".yml");
         for (String key : vars.keySet()) {
             if (key.contains(player)) cfg.set(key, vars.get(key));

@@ -40,6 +40,10 @@
                                     <shadedPattern>me.fromgate.reactions.time</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>org.springframework.util</pattern>
+                                    <shadedPattern>me.fromgate.reactions.util.collections</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>de.themoep.minedown.adventure</pattern>
                                     <shadedPattern>me.fromgate.reactions.util.message.minedown</shadedPattern>
                                 </relocation>
@@ -86,7 +90,7 @@
         <dependency>
             <groupId>com.github.imDaniX</groupId>
             <artifactId>EzMath</artifactId>
-            <version>v3.13</version>
+            <version>v3.14</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
