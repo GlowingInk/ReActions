@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
-    public static final String ORIGIN = "origin-string";
+    public static final String ORIGIN = "origin string";
     public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap<>(1));
 
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
