@@ -128,7 +128,6 @@ public class Parameters implements Iterable<String> {
                 case COLON -> {
                     if (c == ' ') {
                         state = IterationState.SPACE;
-                        params.put(param, "");
                         continue;
                     }
                     if (c == '{') {
