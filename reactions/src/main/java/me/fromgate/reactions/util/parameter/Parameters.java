@@ -11,6 +11,7 @@ import org.springframework.util.CaseInsensitiveMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Parameters implements Iterable<String> {
     private final Map<String, String> params;
 
     private String formatted;
+    private Set<String> keys;
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
@@ -439,7 +441,12 @@ public class Parameters implements Iterable<String> {
     }
 
     public @Unmodifiable @NotNull Set<String> keySet() {
-        return this.params.keySet();
+        if (this.keys == null) {
+            Set<String> keys = new HashSet<>(params.keySet());
+            keys.remove(Parameters.ORIGIN);
+            this.keys = Collections.unmodifiableSet(keys);
+        }
+        return this.keys;
     }
 
     public @Unmodifiable @NotNull Map<String, String> originMap() {
