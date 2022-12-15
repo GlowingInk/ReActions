@@ -41,11 +41,9 @@ public class Parameters implements Iterable<String> {
         this.params = Collections.unmodifiableMap(params);
     }
 
-    protected Parameters(@NotNull String origin, String formatted, @NotNull Map<String, String> params) {
-        this.origin = origin;
+    protected Parameters(@NotNull String origin, @NotNull String formatted, @NotNull Map<String, String> params) {
+        this(origin, params);
         this.formatted = formatted;
-        params.put(Parameters.ORIGIN, origin);
-        this.params = Collections.unmodifiableMap(params);
     }
 
     // TODO: Edge case ("test:value,value", ',')
