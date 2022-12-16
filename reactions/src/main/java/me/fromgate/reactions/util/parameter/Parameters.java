@@ -437,16 +437,20 @@ public class Parameters implements Iterable<String> {
 
     @Override
     public @Unmodifiable @NotNull Iterator<String> iterator() {
-        return keySet().iterator();
+        return keySetSafe().iterator();
     }
 
-    public @Unmodifiable @NotNull Set<String> keySet() {
+    public @Unmodifiable @NotNull Set<String> keySetSafe() {
         if (this.keys == null) {
             Set<String> keys = new HashSet<>(params.keySet());
             keys.remove(Parameters.ORIGIN);
             this.keys = Collections.unmodifiableSet(keys);
         }
         return this.keys;
+    }
+
+    public @Unmodifiable @NotNull Set<String> keySet() {
+        return params.keySet();
     }
 
     public @Unmodifiable @NotNull Map<String, String> originMap() {

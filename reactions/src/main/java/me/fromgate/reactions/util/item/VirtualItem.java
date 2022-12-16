@@ -251,7 +251,7 @@ public final class VirtualItem {
         Material type = null;
         int amount = -1;
         boolean regex = params.getBoolean("regex", false);
-        for (String key : params) {
+        for (String key : params.keySet()) {
             key = key.toLowerCase(Locale.ROOT);
             switch (key) {
                 case "item": {
