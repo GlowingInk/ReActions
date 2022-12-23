@@ -3,21 +3,16 @@ package me.fromgate.reactions.util.parameter;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.function.SafeSupplier;
+import me.fromgate.reactions.util.item.VirtualItem;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.util.CaseInsensitiveMap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
@@ -70,6 +65,47 @@ public class Parameters implements Iterable<String> {
             }
         }
         return splits;
+    }
+
+    public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg) {
+        return fromConfiguration(cfg, Set.of());
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg, @NotNull Collection<String> ignoredKeys) {
+        Map<String, String> params = new LinkedHashMap<>();
+        for (String key : cfg.getKeys(false)) {
+            if (ignoredKeys.contains(key)) continue;
+            if (cfg.isString(key)) {
+                params.put(key, cfg.getString(key, ""));
+            } else if (cfg.isList(key)) {
+                int i = 1;
+                for (Object obj : cfg.getList(key, List.of())) {
+                    if (obj instanceof ItemStack item) {
+                        params.put(key + i, VirtualItem.asString(item));
+                    } else if (obj instanceof ConfigurationSection listCfg) {
+                        params.put(key + i, fromConfiguration(listCfg, ignoredKeys).toString());
+                    } else {
+                        params.put(key + i, obj.toString());
+                    }
+                    ++i;
+                }
+            } else if (cfg.isConfigurationSection(key)) {
+                params.put(key, fromConfiguration(cfg.getConfigurationSection(key), ignoredKeys).toString());
+            } else if (cfg.isItemStack(key)) {
+                params.put(key, VirtualItem.asString(cfg.getItemStack(key)));
+            } else {
+                params.put(key, cfg.get(key).toString());
+            }
+        }
+        return fromMap(params);
+    }
+
+    public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
+        if (map.isEmpty()) return Parameters.EMPTY;
+        Map<String, String> params = new CaseInsensitiveMap<>(map);
+        String str = formatMap(map);
+        return new Parameters(str, str, params);
     }
 
     public static @NotNull Parameters fromString(@NotNull String str) {
@@ -187,12 +223,6 @@ public class Parameters implements Iterable<String> {
         return new Parameters(str, params);
     }
 
-    public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
-        Map<String, String> params = new CaseInsensitiveMap<>(map);
-        String str = formatMap(map);
-        return new Parameters(str, str, params);
-    }
-
     public static @NotNull String formatMap(@NotNull Map<String, String> map) {
         StringBuilder bld = new StringBuilder();
         map.forEach((key, value) -> {
@@ -200,7 +230,7 @@ public class Parameters implements Iterable<String> {
             bld.append(key).append(':');
             String escaped = escapeParameters(value);
             if (value.length() >= 20 || escaped.length() != value.length() ||
-                    value.isEmpty() || value.indexOf(' ') != -1 || value.indexOf('{') != -1) {
+                    value.isEmpty() || value.indexOf(' ') != -1 || value.charAt(0) == '{') {
                 bld.append('{').append(escaped).append('}');
             } else {
                 bld.append(value);
@@ -276,13 +306,11 @@ public class Parameters implements Iterable<String> {
     }
 
     public <R extends Enum<R>> @Nullable R getEnumSupplied(@NotNull String key, @NotNull Class<R> clazz, @NotNull Supplier<R> def) {
-        R value = getEnum(key, clazz);
-        return value == null ? def.get() : value;
+        return getSupplied(key, (value) -> Utils.getEnum(clazz, value), def);
     }
 
     public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull SafeSupplier<R> def) {
-        R value = getEnum(key, clazz);
-        return value == null ? def.get() : value;
+        return getSafe(key, (value) -> Utils.getEnum(clazz, value), def);
     }
 
     @Contract(pure = true)
@@ -360,7 +388,6 @@ public class Parameters implements Iterable<String> {
     }
 
     public @Unmodifiable @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
-        baseKey = baseKey.toLowerCase(Locale.ROOT);
         if (contains(baseKey + "1")) {
             List<String> keys = new ArrayList<>();
             keys.add(baseKey + "1");

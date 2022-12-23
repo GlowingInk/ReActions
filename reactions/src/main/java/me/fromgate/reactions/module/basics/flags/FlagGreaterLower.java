@@ -18,8 +18,8 @@ public class FlagGreaterLower implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        double paramValue = params.getDouble("param", 0d);
-        double value = params.getDouble("value", 0d);
+        double paramValue = params.getDouble("param");
+        double value = params.getDouble("value");
         if (greater) {
             context.setVariable("gparam", Double.toString(paramValue));
             return paramValue > value;

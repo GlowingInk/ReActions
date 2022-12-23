@@ -23,7 +23,7 @@ public class WESelectionActivator extends Activator {
     }
 
     public static WESelectionActivator create(ActivatorLogic base, Parameters param) {
-        int minBlocks = param.getInteger("minblocks", 0);
+        int minBlocks = param.getInteger("minblocks");
         int maxBlocks = param.getInteger("maxblocks", Integer.MAX_VALUE);
         String typeSelection = param.getString("type", "ANY");
         return new WESelectionActivator(base, minBlocks, maxBlocks, typeSelection);

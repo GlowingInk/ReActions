@@ -75,7 +75,7 @@ public final class Shoot {
     public static void shoot(LivingEntity shooter, Parameters params) {
         boolean onehit = params.getBoolean("singlehit", true);
         int distance = params.getInteger("distance", 100);
-        float knockbackTarget = params.getInteger("knockbackTarget", 0);
+        float knockbackTarget = params.getInteger("knockbackTarget");
         for (LivingEntity le : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
             double damage = Rng.nextIntRanged(params.getString("damage", "1"));
             boolean shoot = true;

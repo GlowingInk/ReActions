@@ -66,7 +66,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
         String locationStr = params.getString("loc", "");
         Location loc = LocationUtils.parseLocation(locationStr, p == null ? null : p.getLocation());
         String region = params.getString("region", "");
-        int radius = params.getInteger("radius", 0);
+        int radius = params.getInteger("radius");
         int num = Rng.nextIntRanged(params.getString("num", "1"));
         double health = Rng.nextIntRanged(params.getString("health", "0"));
         String dtheffect = params.getString("dtheffect", "");

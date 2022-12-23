@@ -49,7 +49,7 @@ public class ActionTp implements Action {
         if (params.isEmpty()) return null;
         if (params.contains("loc")) {
             loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
-            radius = params.getInteger("radius", 0);
+            radius = params.getInteger("radius");
         } else {
             loc = LocationUtils.parseLocation(params.origin(), player.getLocation());
         }

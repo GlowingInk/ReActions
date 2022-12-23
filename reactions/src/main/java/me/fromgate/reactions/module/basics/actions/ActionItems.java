@@ -323,7 +323,7 @@ public class ActionItems implements Action {
 
     public boolean dropItems(RaContext context, Parameters params) {
         Player player = context.getPlayer();
-        int radius = params.getInteger("radius", 0);
+        int radius = params.getInteger("radius");
         Location loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
         if (loc == null) loc = player.getLocation();
         boolean scatter = params.getBoolean("scatter", true);

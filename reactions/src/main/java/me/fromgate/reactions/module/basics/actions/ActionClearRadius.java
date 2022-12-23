@@ -27,7 +27,7 @@ public class ActionClearRadius implements Action {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        int radius = params.getInteger("radius", 0);
+        int radius = params.getInteger("radius");
         String type = params.getString("type", "all");
         if (radius == 0) return false;
         List<Location> locs = LocationUtils.getMinMaxRadiusLocations(context.getPlayer(), radius);

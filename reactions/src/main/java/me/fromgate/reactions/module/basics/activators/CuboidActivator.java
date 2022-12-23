@@ -33,8 +33,8 @@ public class CuboidActivator extends Activator implements Locatable {
     public static CuboidActivator create(ActivatorLogic base, Parameters param) {
         CuboidMode mode = CuboidMode.getByName(param.getString("mode", "ENTER"));
         String world = param.getString("world", Bukkit.getWorlds().get(0).getName());
-        VirtualLocation loc1 = new VirtualLocation(world, param.getInteger("loc1.x", 0), param.getInteger("loc1.y", 0), param.getInteger("loc1.z", 0));
-        VirtualLocation loc2 = new VirtualLocation(world, param.getInteger("loc2.x", 0), param.getInteger("loc2.y", 0), param.getInteger("loc2.z", 0));
+        VirtualLocation loc1 = new VirtualLocation(world, param.getInteger("loc1.x"), param.getInteger("loc1.y"), param.getInteger("loc1.z"));
+        VirtualLocation loc2 = new VirtualLocation(world, param.getInteger("loc2.x"), param.getInteger("loc2.y"), param.getInteger("loc2.z"));
         return new CuboidActivator(base, new Cuboid(loc1, loc2), mode);
     }
 
