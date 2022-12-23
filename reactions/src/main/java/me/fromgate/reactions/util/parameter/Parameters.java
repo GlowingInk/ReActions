@@ -199,7 +199,8 @@ public class Parameters implements Iterable<String> {
             if (key.equals(Parameters.ORIGIN)) return;
             bld.append(key).append(':');
             String escaped = escapeParameters(value);
-            if (value.isEmpty() || value.length() >= 20 || value.indexOf(' ') != -1 || escaped.length() != value.length() || value.indexOf('{') != -1) {
+            if (value.length() >= 20 || escaped.length() != value.length() ||
+                    value.isEmpty() || value.indexOf(' ') != -1 || value.indexOf('{') != -1) {
                 bld.append('{').append(escaped).append('}');
             } else {
                 bld.append(value);
@@ -454,15 +455,15 @@ public class Parameters implements Iterable<String> {
     }
 
     public @Unmodifiable @NotNull Map<String, String> originMap() {
-        return this.params;
+        return params;
     }
 
     public boolean isEmpty() {
-        return this.params.size() > 1;
+        return size() == 0;
     }
 
     public int size() {
-        return this.params.size() - 1;
+        return params.size() - 1;
     }
 
     @Override
