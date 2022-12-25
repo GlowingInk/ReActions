@@ -17,7 +17,7 @@ public class ParametersTest {
     @DataProvider
     public Object[][] fromStringData() {
         return new Object[][] {
-                {"test:{value} test2:value\\ test3:va:lue test4:value}", "test:value test2:{value\\\\} test3:va:lue test4:{value\\}}"},
+                {"test:{value} test2:value\\ test3:va:lue test4:value}", "test:value test2:{value\\\\} test3:{va:lue} test4:{value\\}}"},
                 {"test:ignored test:value1 test2:\\{value2 test3:value3}", "test:value1 test2:{\\{value2} test3:{value3\\}}"},
                 {"test:{{additional brackets}} empty:{} test2:\\{brackets2\\}", "test:{{additional brackets}} empty:{} test2:{{brackets2}}"},
                 {"test:{value broken\\}", ""},

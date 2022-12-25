@@ -232,8 +232,8 @@ public class Parameters implements Iterable<String> {
             if (key.equals(Parameters.ORIGIN)) return;
             bld.append(key).append(':');
             String escaped = escapeParameters(value);
-            if (value.length() >= 20 || escaped.length() != value.length() ||
-                    value.isEmpty() || value.indexOf(' ') != -1 || value.charAt(0) == '{') {
+            if (value.length() >= 20 || escaped.length() != value.length() || value.isEmpty() ||
+                    value.indexOf(' ') != -1 || value.indexOf(':') != -1 || value.charAt(0) == '{') {
                 bld.append('{').append(escaped).append('}');
             } else {
                 bld.append(value);
