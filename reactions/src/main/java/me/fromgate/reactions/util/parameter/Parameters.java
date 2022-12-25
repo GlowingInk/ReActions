@@ -55,7 +55,7 @@ public class Parameters implements Iterable<String> {
             if (ch == splitCh) {
                 if (brCount == 0) {
                     int nextIndex = index + 1;
-                    splits.add(str.substring(lastSplit, nextIndex));
+                    splits.add(str.substring(lastSplit, index));
                     lastSplit = nextIndex;
                 }
             } else if (ch == '{') {
@@ -63,6 +63,9 @@ public class Parameters implements Iterable<String> {
             } else if (ch == '}') {
                 --brCount;
             }
+        }
+        if (lastSplit != 0) {
+            splits.add(str.substring(lastSplit));
         }
         return splits;
     }
