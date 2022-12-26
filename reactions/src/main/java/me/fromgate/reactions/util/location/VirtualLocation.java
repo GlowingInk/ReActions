@@ -146,6 +146,13 @@ public class VirtualLocation implements BlockPosition {
         return toCenter().toLocation(world == null ? Bukkit.getWorlds().get(0) : world);
     }
 
+    @Override
+    public @NotNull Location toLocation(@NotNull World world) {
+        Location loc = toLocation();
+        loc.setWorld(world);
+        return loc;
+    }
+
     public boolean isEmpty() {
         return world == null && x == null && y == null && z == null;
     }
