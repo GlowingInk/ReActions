@@ -23,17 +23,17 @@ public class Cuboid {
     }
 
     public Cuboid(VirtualLocation loc1, VirtualLocation loc2) {
-        this.world = loc1.getWorld();
-        this.xMin = Math.min(loc1.getX(0), loc2.getX(0));
-        this.xMax = Math.max(loc1.getX(0), loc2.getX(0));
-        this.zMin = Math.min(loc1.getZ(0), loc2.getZ(0));
-        this.zMax = Math.max(loc1.getZ(0), loc2.getZ(0));
-        if (loc1.getY() == null || loc2.getY() == null) {
+        this.world = loc1.worldName();
+        this.xMin = Math.min(loc1.blockX(0), loc2.blockX(0));
+        this.xMax = Math.max(loc1.blockX(0), loc2.blockX(0));
+        this.zMin = Math.min(loc1.blockZ(0), loc2.blockZ(0));
+        this.zMax = Math.max(loc1.blockZ(0), loc2.blockZ(0));
+        if (loc1.virtualY() == null || loc2.virtualY() == null) {
             yMin = null;
             yMax = null;
         } else {
-            this.yMin = Math.min(loc1.getY(), loc2.getY());
-            this.yMax = Math.max(loc1.getY(), loc2.getY());
+            this.yMin = Math.min(loc1.virtualY(), loc2.virtualY());
+            this.yMax = Math.max(loc1.virtualY(), loc2.virtualY());
         }
     }
 

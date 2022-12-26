@@ -46,8 +46,8 @@ public final class Teleporter {
     public static void teleport(Player player, Location location) {
         if (location == null) return;
         PlayerTeleportEvent event = events.get(player);
-        if (event != null)
+        if (event != null) {
             event.setTo(location);
-        else player.teleport(location);
+        } else player.teleport(location);
     }
 }
