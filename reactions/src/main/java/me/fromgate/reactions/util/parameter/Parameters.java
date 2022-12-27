@@ -17,6 +17,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -43,29 +44,48 @@ public class Parameters implements Iterable<String> {
         this.formatted = formatted;
     }
 
-    // TODO: Edge case ("test:value,value", ',')
-    // TODO: Escaping support
     public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) {
         if (str.indexOf(splitCh) == -1) return List.of(str);
         List<String> splits = new ArrayList<>();
         int lastSplit = 0;
         int brCount = 0;
+        boolean inside = false;
         for (int index = 0; index < str.length(); ++index) {
             char ch = str.charAt(index);
             if (ch == splitCh) {
-                if (brCount == 0) {
-                    int nextIndex = index + 1;
+                int nextIndex = index + 1;
+                if (brCount == 0 && !inside || (inside && (str.length() == nextIndex || str.charAt(nextIndex) == ' '))) {
                     splits.add(str.substring(lastSplit, index));
                     lastSplit = nextIndex;
                 }
-            } else if (ch == '{') {
-                ++brCount;
-            } else if (ch == '}') {
-                --brCount;
+            } else switch (ch) {
+                case '\\' -> {
+                    int next = index + 1;
+                    if (str.length() != next) {
+                        char n = str.charAt(next);
+                        if (n == '{' || n == '}') {
+                            ++index;
+                        }
+                    }
+                }
+                case '{' -> ++brCount;
+                case '}' -> brCount = Math.max(0, brCount - 1);
+                case ':' -> {
+                    int next = index + 1;
+                    if (str.length() != next) {
+                        char n = str.charAt(next);
+                        if (n != '{') {
+                            inside = true;
+                        }
+                    }
+                }
+                case ' ' -> inside = false;
             }
         }
         if (lastSplit != 0) {
             splits.add(str.substring(lastSplit));
+        } else if (splits.isEmpty()) {
+            splits.add(str);
         }
         return splits;
     }
@@ -405,6 +425,10 @@ public class Parameters implements Iterable<String> {
         } else {
             return List.of();
         }
+    }
+
+    public boolean checkValue(@NotNull String key, @NotNull Predicate<String> check) {
+        return check.test(getString(key));
     }
 
     public boolean contains(@NotNull String key) {

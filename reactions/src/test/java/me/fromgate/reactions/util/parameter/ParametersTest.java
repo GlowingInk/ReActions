@@ -117,8 +117,10 @@ public class ParametersTest {
     @DataProvider
     public static Object[][] splitSafelyData() {
         return new Object[][] {
-                {"key:value other:value ; another:{value; value}", "key:value other:value ", " another:{value; value}"}
-                //{"key:value;value another:{value; value}", "key:value;value", " another:{value; value}"}
+                {"key:value other:value; another:{value; value}", "key:value other:value", " another:{value; value}"},
+                {"key:value;value ; another:{value; value}", "key:value;value ", " another:{value; value}"},
+                {"key:{my_value}; another:{value ;\\} value}", "key:{my_value}", " another:{value ;\\} value}"},
+                {"key:my_value;", "key:my_value", ""}
         };
     }
 
