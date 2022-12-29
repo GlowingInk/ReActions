@@ -5,7 +5,7 @@ import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.BlockBreakActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -45,7 +45,7 @@ public class BlockBreakStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new MapBuilder<String, DataValue>(CANCEL_EVENT, new BooleanValue(false))
+        return new Maps.Builder<String, DataValue>(CANCEL_EVENT, new BooleanValue(false))
                 .put(DO_DROP, new BooleanValue(dropItems))
                 .build();
     }

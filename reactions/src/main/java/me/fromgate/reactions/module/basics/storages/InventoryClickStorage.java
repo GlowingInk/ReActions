@@ -28,7 +28,7 @@ import me.fromgate.reactions.data.ItemStackValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.InventoryClickActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -80,7 +80,7 @@ public class InventoryClickStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return new MapBuilder<String, String>()
+        return new Maps.Builder<String, String>()
                 .put("name", inventoryName)
                 .put("click", clickType.name())
                 .put("action", action.name())
@@ -95,7 +95,7 @@ public class InventoryClickStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new MapBuilder<String, DataValue>()
+        return new Maps.Builder<String, DataValue>()
                 .put(CANCEL_EVENT, new BooleanValue(false))
                 .put(ITEM, new ItemStackValue(item))
                 .build();

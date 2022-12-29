@@ -3,7 +3,7 @@ package me.fromgate.reactions.module.basics.storages;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.SneakActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class SneakStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return MapBuilder.single("sneak", Boolean.toString(sneaking));
+        return Maps.Builder.single("sneak", Boolean.toString(sneaking));
     }
 
     public boolean isSneaking() {return this.sneaking;}

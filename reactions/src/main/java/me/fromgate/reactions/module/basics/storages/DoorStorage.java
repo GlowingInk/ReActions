@@ -28,7 +28,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.DoorActivator;
 import me.fromgate.reactions.util.BlockUtils;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -70,7 +70,7 @@ public class DoorStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
     public Block getDoorBlock() {return this.doorBlock;}

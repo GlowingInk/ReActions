@@ -36,7 +36,7 @@ import java.util.function.Function;
  * @author Phillip Webb
  * @param <V> the value type
  */
-public class CaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
+public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     private final LinkedHashMap<String, V> targetMap;
@@ -51,20 +51,20 @@ public class CaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
     @Nullable
     private transient volatile Set<Entry<String, V>> entrySet;
 
-    public CaseInsensitiveMap(@NotNull Map<String, V> other) {
+    public LinkedCaseInsensitiveMap(@NotNull Map<String, V> other) {
         this(other.size());
         putAll(other);
     }
 
-    public CaseInsensitiveMap() {
+    public LinkedCaseInsensitiveMap() {
         this(12);
     }
 
-    public CaseInsensitiveMap(int expectedSize) {
+    public LinkedCaseInsensitiveMap(int expectedSize) {
         this.targetMap = new LinkedHashMap<>((int) (expectedSize / DEFAULT_LOAD_FACTOR), DEFAULT_LOAD_FACTOR) {
             @Override
             public boolean containsKey(Object key) {
-                return CaseInsensitiveMap.this.containsKey(key);
+                return LinkedCaseInsensitiveMap.this.containsKey(key);
             }
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, V> eldest) {
@@ -75,7 +75,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
     }
 
     @SuppressWarnings("unchecked")
-    private CaseInsensitiveMap(CaseInsensitiveMap<V> other) {
+    private LinkedCaseInsensitiveMap(LinkedCaseInsensitiveMap<V> other) {
         this.targetMap = (LinkedHashMap<String, V>) other.targetMap.clone();
         this.caseInsensitiveKeys = (HashMap<String, String>) other.caseInsensitiveKeys.clone();
     }
@@ -224,8 +224,8 @@ public class CaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
     }
 
     @Override
-    public CaseInsensitiveMap<V> clone() {
-        return new CaseInsensitiveMap<>(this);
+    public LinkedCaseInsensitiveMap<V> clone() {
+        return new LinkedCaseInsensitiveMap<>(this);
     }
 
     @Override
@@ -277,12 +277,12 @@ public class CaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
 
         @Override
         public boolean remove(Object o) {
-            return CaseInsensitiveMap.this.remove(o) != null;
+            return LinkedCaseInsensitiveMap.this.remove(o) != null;
         }
 
         @Override
         public void clear() {
-            CaseInsensitiveMap.this.clear();
+            LinkedCaseInsensitiveMap.this.clear();
         }
 
         @Override
@@ -320,7 +320,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
 
         @Override
         public void clear() {
-            CaseInsensitiveMap.this.clear();
+            LinkedCaseInsensitiveMap.this.clear();
         }
 
         @Override

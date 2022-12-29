@@ -5,7 +5,7 @@ import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.WeatherChangeActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ public class WeatherChangeStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(Storage.CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(Storage.CANCEL_EVENT, new BooleanValue(false));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class WeatherChangeStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return new MapBuilder<String, String>()
+        return new Maps.Builder<String, String>()
                 .put("world", world)
                 .put("weather", raining ? "RAINING" : "CLEAR")
                 .build();

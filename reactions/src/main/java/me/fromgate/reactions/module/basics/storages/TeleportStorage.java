@@ -6,7 +6,7 @@ import me.fromgate.reactions.data.LocationValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.TeleportActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -35,7 +35,7 @@ public class TeleportStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new MapBuilder<String, DataValue>()
+        return new Maps.Builder<String, DataValue>()
                 .put(CANCEL_EVENT, new BooleanValue(false))
                 .put(LOCATION_TO, new LocationValue(to))
                 .build();

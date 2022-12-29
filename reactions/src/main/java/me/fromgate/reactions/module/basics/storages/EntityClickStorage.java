@@ -5,7 +5,7 @@ import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.EntityClickActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public class EntityClickStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
     public Entity getEntity() {return this.entity;}

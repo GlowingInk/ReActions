@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.storages;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.VariableActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +51,7 @@ public class VariableStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return new MapBuilder<String, String>()
+        return new Maps.Builder<String, String>()
                 .put("var-id", variableId)
                 .put("var-old", oldValue)
                 .put("var-new", newValue)

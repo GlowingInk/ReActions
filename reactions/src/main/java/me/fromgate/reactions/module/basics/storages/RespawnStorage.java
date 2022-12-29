@@ -28,7 +28,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.RespawnActivator;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.enums.DeathCause;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -77,7 +77,7 @@ public class RespawnStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(RESPAWN_LOCATION, new LocationValue(respawnLoc));
+        return Maps.Builder.single(RESPAWN_LOCATION, new LocationValue(respawnLoc));
     }
 
     public DeathCause getDeathCause() {return this.deathCause;}

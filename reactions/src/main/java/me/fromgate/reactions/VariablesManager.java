@@ -25,6 +25,7 @@ package me.fromgate.reactions;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.util.CaseInsensitiveMap;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -47,7 +47,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
     private final Map<String, String> vars;
 
     public VariablesManager() {
-        this.vars = new CaseInsensitiveMap<>();
+        this.vars = Maps.caseInsensitive();
     }
 
     public @Nullable String getVariable(@Nullable String player, @NotNull String var) {
@@ -169,7 +169,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
     }
 
     private void removePlayerVars(String player) {
-        Map<String, String> varsTmp = new CaseInsensitiveMap<>();
+        Map<String, String> varsTmp = Maps.caseInsensitive();
         YamlConfiguration cfg = new YamlConfiguration();
         String fileName = ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml";
         File f = new File(fileName);

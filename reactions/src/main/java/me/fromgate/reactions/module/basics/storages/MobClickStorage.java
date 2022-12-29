@@ -28,7 +28,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.MobClickActivator;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class MobClickStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
     public LivingEntity getEntity() {return this.entity;}

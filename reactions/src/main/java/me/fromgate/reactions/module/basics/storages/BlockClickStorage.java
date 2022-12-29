@@ -27,7 +27,7 @@ import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.BlockClickActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class BlockClickStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
     public Block getBlock() {return this.block;}

@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.storages;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.PvpKillActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +47,7 @@ public class PvpKillStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return MapBuilder.single("targetplayer", killedPlayer.getName());
+        return Maps.Builder.single("targetplayer", killedPlayer.getName());
     }
 
     public Player getKilledPlayer() {return this.killedPlayer;}

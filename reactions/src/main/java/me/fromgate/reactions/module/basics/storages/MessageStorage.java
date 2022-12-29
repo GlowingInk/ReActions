@@ -30,7 +30,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.MessageActivator;
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,7 +90,7 @@ public class MessageStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new MapBuilder<String, DataValue>()
+        return new Maps.Builder<String, DataValue>()
                 .put(CANCEL_EVENT, new BooleanValue(false))
                 .put(MESSAGE, new StringValue(message))
                 .build();

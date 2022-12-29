@@ -6,7 +6,7 @@ import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.WEChangeActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class WeChangeStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return new MapBuilder<String, String>()
+        return new Maps.Builder<String, String>()
                 .put("blocktype", blockType.name())
                 .put("blocklocation", LocationUtils.locationToString(location))
                 .build();
@@ -44,7 +44,7 @@ public class WeChangeStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
     public Location getLocation() {return this.location;}

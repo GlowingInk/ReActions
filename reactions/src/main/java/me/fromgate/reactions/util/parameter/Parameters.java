@@ -2,6 +2,7 @@ package me.fromgate.reactions.util.parameter;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.function.SafeSupplier;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,7 +11,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.springframework.util.CaseInsensitiveMap;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String> {
     public static final String ORIGIN = "origin string";
-    public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap<>(1));
+    public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
 
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
@@ -126,7 +126,7 @@ public class Parameters implements Iterable<String> {
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return Parameters.EMPTY;
-        Map<String, String> params = new CaseInsensitiveMap<>(map);
+        Map<String, String> params = Maps.caseInsensitive(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
     }
@@ -138,7 +138,7 @@ public class Parameters implements Iterable<String> {
     public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return Parameters.EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = new CaseInsensitiveMap<>();
+        Map<String, String> params = Maps.caseInsensitive();
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;
@@ -236,12 +236,12 @@ public class Parameters implements Iterable<String> {
     }
 
     public static @NotNull Parameters noParse(@NotNull String str) {
-        Map<String, String> params = new CaseInsensitiveMap<>(1);
+        Map<String, String> params = Maps.caseInsensitive(1);
         return new Parameters(str, params);
     }
 
     public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
-        Map<String, String> params = new CaseInsensitiveMap<>(2);
+        Map<String, String> params = Maps.caseInsensitive(2);
         params.put(defKey, str);
         return new Parameters(str, params);
     }

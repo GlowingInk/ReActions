@@ -7,7 +7,7 @@ import me.fromgate.reactions.data.ItemStackValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.DropActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class DropStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new MapBuilder<String, DataValue>()
+        return new Maps.Builder<String, DataValue>()
                 .put(CANCEL_EVENT, new BooleanValue(false))
                 .put(PICKUP_DELAY, new DoubleValue(pickupDelay))
                 .put(ITEM, new ItemStackValue(item))

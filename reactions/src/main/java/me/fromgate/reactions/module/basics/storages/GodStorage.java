@@ -5,7 +5,7 @@ import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.activators.GodActivator;
-import me.fromgate.reactions.util.collections.MapBuilder;
+import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,12 +30,12 @@ public class GodStorage extends Storage {
 
     @Override
     protected @NotNull Map<String, String> prepareVariables() {
-        return MapBuilder.single("god", Boolean.toString(god));
+        return Maps.Builder.single("god", Boolean.toString(god));
     }
 
     @Override
     protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return MapBuilder.single(CANCEL_EVENT, new BooleanValue(false));
+        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
     }
 
     public boolean isGod() {return this.god;}
