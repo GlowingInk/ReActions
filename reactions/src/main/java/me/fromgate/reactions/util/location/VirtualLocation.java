@@ -97,7 +97,7 @@ public class VirtualLocation implements BlockPosition {
         ));
     }
 
-    public void toConfiguration(@NotNull ConfigurationSection cfg) {
+    public void intoConfiguration(@NotNull ConfigurationSection cfg) {
         cfg.set("world", format(worldName));
         cfg.set("x", format(x));
         cfg.set("y", format(y));
