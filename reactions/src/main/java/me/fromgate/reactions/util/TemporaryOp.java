@@ -1,5 +1,6 @@
 package me.fromgate.reactions.util;
 
+import net.kyori.adventure.util.TriState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,15 +16,16 @@ public final class TemporaryOp {
     private TemporaryOp() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static void setOp(CommandSender sender) {
-        if (sender instanceof Player && !sender.isOp()) {
-            tempOps.add(((Player) sender).getUniqueId());
+        if (sender instanceof Player player && !player.isOp()) {
+            tempOps.add(player.getUniqueId());
             sender.setOp(true);
         }
     }
 
     public static void removeOp(CommandSender sender) {
-        if (sender instanceof Player && tempOps.remove(((Player) sender).getUniqueId()))
-            sender.setOp(false);
+        if (sender instanceof Player player && tempOps.remove(player.getUniqueId())) {
+            player.setOp(false);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -33,6 +35,7 @@ public final class TemporaryOp {
                 sender.getClass().getInterfaces(),
                 (proxy, method, args) -> switch (method.getName()) {
                     case "isOp", "hasPermission" -> true;
+                    case "permissionValue" -> TriState.TRUE;
                     default -> method.invoke(sender, args);
                 }
         );

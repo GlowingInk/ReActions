@@ -109,6 +109,7 @@ public final class VirtualItem {
         return affect(item, true);
     }
 
+    @Contract("_, true -> new")
     public @NotNull ItemStack affect(@NotNull ItemStack item, boolean clone) {
         if (clone) {
             item = item.clone();

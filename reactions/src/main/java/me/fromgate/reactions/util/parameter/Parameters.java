@@ -52,13 +52,7 @@ public class Parameters implements Iterable<String> {
         boolean inside = false;
         for (int index = 0; index < str.length(); ++index) {
             char ch = str.charAt(index);
-            if (ch == splitCh) {
-                int nextIndex = index + 1;
-                if (brCount == 0 && !inside || (inside && (str.length() == nextIndex || str.charAt(nextIndex) == ' '))) {
-                    splits.add(str.substring(lastSplit, index));
-                    lastSplit = nextIndex;
-                }
-            } else switch (ch) {
+            switch (ch) {
                 case '\\' -> {
                     int next = index + 1;
                     if (str.length() != next) {
@@ -80,6 +74,15 @@ public class Parameters implements Iterable<String> {
                     }
                 }
                 case ' ' -> inside = false;
+                default -> {
+                    if (ch == splitCh) {
+                        int nextIndex = index + 1;
+                        if (brCount == 0 && !inside || (inside && (str.length() == nextIndex || str.charAt(nextIndex) == ' '))) {
+                            splits.add(str.substring(lastSplit, index));
+                            lastSplit = nextIndex;
+                        }
+                    }
+                }
             }
         }
         if (lastSplit != 0) {
@@ -427,7 +430,7 @@ public class Parameters implements Iterable<String> {
         }
     }
 
-    public boolean checkValue(@NotNull String key, @NotNull Predicate<String> check) {
+    public boolean contains(@NotNull String key, @NotNull Predicate<String> check) {
         return check.test(getString(key));
     }
 
@@ -445,7 +448,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean containsEvery(@NotNull String @NotNull ... keys) {
-        return containsEvery(List.of(keys));
+        return containsEvery(Arrays.asList(keys));
     }
 
     public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
@@ -458,7 +461,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return containsAny(List.of(keys));
+        return containsAny(Arrays.asList(keys));
     }
 
     @Contract(pure = true)
@@ -513,7 +516,7 @@ public class Parameters implements Iterable<String> {
     }
 
     public boolean isEmpty() {
-        return size() == 0;
+        return params.size() == 1;
     }
 
     public int size() {

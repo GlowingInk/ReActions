@@ -41,7 +41,7 @@ public class Argument {
             default:
                 if (argument.contains("|") && !argument.contains("\\|")) {
                     this.type = Type.MULTIPLE_TEXT;
-                    multiple = new HashSet<>(List.of(argument.split("\\|")));
+                    multiple = Set.of(argument.split("\\|"));
                 } else {
                     this.type = Type.TEXT;
                     if (argument.startsWith("\\~") || argument.equals("\\*")) argument = argument.substring(1);

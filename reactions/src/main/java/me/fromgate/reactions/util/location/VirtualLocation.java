@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,11 +35,11 @@ public class VirtualLocation implements BlockPosition {
     private final Integer y;
     private final Integer z;
 
-    public static VirtualLocation of(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
+    public static @NotNull VirtualLocation of(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
         return (worldName == null && x == null && y == null && z == null) ? EMPTY : new VirtualLocation(worldName, x, y, z);
     }
 
-    public static VirtualLocation of(@Nullable String loc) {
+    public static @NotNull VirtualLocation of(@Nullable String loc) {
         if (Utils.isStringEmpty(loc)) return EMPTY;
         Matcher matcher = LOCATION_PATTERN.matcher(loc);
         if (matcher.matches()) {
@@ -53,7 +54,7 @@ public class VirtualLocation implements BlockPosition {
         }
     }
 
-    public static VirtualLocation of(@Nullable Location loc) {
+    public static @NotNull VirtualLocation of(@Nullable Location loc) {
         if (loc == null) return EMPTY;
         return new VirtualLocation(
                 loc.getWorld().getName(),
@@ -63,7 +64,7 @@ public class VirtualLocation implements BlockPosition {
         );
     }
 
-    public static VirtualLocation fromConfiguration(@NotNull ConfigurationSection cfg) {
+    public static @NotNull VirtualLocation fromConfiguration(@NotNull ConfigurationSection cfg) {
         return new VirtualLocation(
                 !cfg.getString("world", "*").equals("*") ? cfg.getString("world") : null,
                 cfg.contains("x") ? cfg.getInt("x") : null,
@@ -72,7 +73,7 @@ public class VirtualLocation implements BlockPosition {
         );
     }
 
-    public static VirtualLocation fromParameters(@NotNull Parameters params) {
+    public static @NotNull VirtualLocation fromParameters(@NotNull Parameters params) {
         return new VirtualLocation(
                 !params.getString("world", "*").equals("*") ? params.getString("world") : null,
                 params.contains("x") ? params.getInteger("x") : null,
@@ -148,6 +149,7 @@ public class VirtualLocation implements BlockPosition {
     }
 
     @Override
+    @Contract(pure = true)
     public @NotNull VirtualLocation offset(int x, int y, int z) {
         return new VirtualLocation(
                 worldName,
@@ -158,6 +160,7 @@ public class VirtualLocation implements BlockPosition {
     }
 
     @Override
+    @Contract(pure = true)
     public @NotNull VirtualLocation offset(@NotNull Axis axis, int amount) {
         return amount == 0 ? this : switch (axis) {
             case X -> new VirtualLocation(worldName, blockX(amount), y, z);
@@ -167,6 +170,7 @@ public class VirtualLocation implements BlockPosition {
     }
 
     @Override
+    @Contract(pure = true)
     public @NotNull VirtualLocation offset(@NotNull BlockFace face, int amount) {
         if (amount == 0 || face == BlockFace.SELF) return this;
         Integer modX = face.getModX() == 0 ? x : Integer.valueOf(face.getModX() * amount + blockX());
@@ -208,8 +212,11 @@ public class VirtualLocation implements BlockPosition {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VirtualLocation that)) return false;
-        return Objects.equals(worldName, that.worldName) && Objects.equals(x, that.x) && Objects.equals(y, that.y) && Objects.equals(z, that.z);
+        return o instanceof VirtualLocation other &&
+                Objects.equals(worldName, other.worldName) &&
+                Objects.equals(x, other.x) &&
+                Objects.equals(y, other.y) &&
+                Objects.equals(z, other.z);
     }
 
     @Override
@@ -222,7 +229,7 @@ public class VirtualLocation implements BlockPosition {
         return format(worldName) + "," + format(x) + "," + format(y) + "," + format(z) + ",0,0";
     }
 
-    private static String format(Object obj) {
+    private static @NotNull String format(@Nullable Object obj) {
         return obj == null ? "*" : obj.toString();
     }
 }

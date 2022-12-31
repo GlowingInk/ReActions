@@ -17,21 +17,22 @@ public class ParametersTest {
     @DataProvider
     public Object[][] fromStringData() {
         return new Object[][] {
-                {"test:{value} test2:value\\ test3:va:lue test4:value}", "test:value test2:{value\\\\} test3:{va:lue} test4:{value\\}}"},
-                {"test:ignored test:value1 test2:\\{value2 test3:value3}", "test:value1 test2:{\\{value2} test3:{value3\\}}"},
-                {"test:{{additional brackets}} empty:{} test2:\\{brackets2\\}", "test:{{additional brackets}} empty:{} test2:{{brackets2}}"},
-                {"test:{value broken\\}", ""},
-                {"test:{value{ broken}", ""},
-                {"key:{s p a c e:fake\\}} e:test", "key:{s p a c e:fake\\}} e:test"},
-                {"key:someverylongvaluewow!", "key:{someverylongvaluewow!}"}
+                {"test:{value} test2:value\\ test3:va:lue test4:value}", "test:value test2:{value\\\\} test3:{va:lue} test4:{value\\}}", 4},
+                {"test:ignored test:value1 test2:\\{value2 test3:value3}", "test:value1 test2:{\\{value2} test3:{value3\\}}", 3},
+                {"test:{{additional brackets}} empty:{} test2:\\{brackets2\\}", "test:{{additional brackets}} empty:{} test2:{{brackets2}}", 3},
+                {"test:{value broken\\}", "", 0},
+                {"test:{value{ broken}", "", 0},
+                {"key:{s p a c e:fake\\}} e:test", "key:{s p a c e:fake\\}} e:test", 2},
+                {"key:someverylongvaluewow!", "key:{someverylongvaluewow!}", 1}
         };
     }
 
     @Test(dataProvider = "fromStringData")
-    public void testFromString(String input, String expected) {
-        String result = fromString(input).toString();
-        assertEquals(result, expected);
-        assertEquals(fromString(result).originFormatted(), expected); // We expect the result to be the same
+    public void testFromString(String input, String expected, int size) {
+        Parameters result = fromString(input);
+        assertEquals(result.originFormatted(), expected);
+        assertEquals(fromString(result.originFormatted()).originFormatted(), expected); // We expect the result to be the same
+        assertEquals(result.size(), size);
     }
 
     @DataProvider
@@ -59,8 +60,12 @@ public class ParametersTest {
                                 wow: '{it works}'
                             ignored: totally
                         another: a bit longer value
+                        list:
+                        - a list
+                        - of
+                        - values
                         """,
-                        "test:value key:{child:{another value} num:4 level-further:{wow:{{it works}}}} another:{a bit longer value}"
+                        "test:value key:{child:{another value} num:4 level-further:{wow:{{it works}}}} another:{a bit longer value} list1:{a list} list2:of list3:values"
                 }
         };
     }
@@ -120,7 +125,7 @@ public class ParametersTest {
                 {"key:value other:value; another:{value; value}", "key:value other:value", " another:{value; value}"},
                 {"key:value;value ; another:{value; value}", "key:value;value ", " another:{value; value}"},
                 {"key:{my_value}; another:{value ;\\} value}", "key:{my_value}", " another:{value ;\\} value}"},
-                {"key:my_value;", "key:my_value", ""}
+                {"key:my_value; multiple:times; with zero:length;", "key:my_value", " multiple:times", " with zero:length", ""}
         };
     }
 
