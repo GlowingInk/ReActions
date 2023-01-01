@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Iterable<String>, Parameterizable {
-    public static final String ORIGIN = "origin string";
+    public static final String ORIGIN = "origin:string";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
 
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
@@ -44,7 +44,7 @@ public class Parameters implements Iterable<String>, Parameterizable {
         this.formatted = formatted;
     }
 
-    public static @NotNull List<String> splitSafely(@NotNull String str, char splitCh) {
+    public static @NotNull List<@NotNull String> splitSafely(@NotNull String str, char splitCh) {
         if (str.indexOf(splitCh) == -1) return List.of(str);
         List<String> splits = new ArrayList<>();
         int lastSplit = 0;
@@ -438,7 +438,12 @@ public class Parameters implements Iterable<String>, Parameterizable {
         return params.containsKey(key);
     }
 
-    public boolean containsEvery(@NotNull Iterable<@NotNull String> keys) {
+    public boolean containsEvery(@NotNull String @NotNull ... keys) {
+        return containsEvery(Arrays.asList(keys));
+    }
+
+    public boolean containsEvery(@NotNull Collection<@NotNull String> keys) {
+        if (keys.size() > size()) return false;
         for (String key : keys) {
             if (!contains(key)) {
                 return false;
@@ -447,21 +452,18 @@ public class Parameters implements Iterable<String>, Parameterizable {
         return true;
     }
 
-    public boolean containsEvery(@NotNull String @NotNull ... keys) {
-        return containsEvery(Arrays.asList(keys));
+    public boolean containsAny(@NotNull String @NotNull ... keys) {
+        return containsAny(Arrays.asList(keys));
     }
 
-    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
+    public boolean containsAny(@NotNull Collection<@NotNull String> keys) {
+        if (isEmpty()) return false;
         for (String key : keys) {
             if (contains(key)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return containsAny(Arrays.asList(keys));
     }
 
     @Contract(pure = true)

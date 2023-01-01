@@ -36,8 +36,8 @@ that, and as the most of project's users are Russian-speaking, this README file'
 Проект опубликован под лицензией [GPL v3](LICENSE.md).
 
 Кроме того, в проекте используется редактированная часть исходного кода 
-[Quartz Scheduler](https://github.com/quartz-scheduler/quartz) под лицензией 
-[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). Изменения включают в себя: рекомендации Intellij IDEA; 
-рефакторинг коллекций с использованием библиотеки [FastUtil](https://fastutil.di.unimi.it/).
+[Quartz Scheduler](https://github.com/quartz-scheduler/quartz) (класс `CronExpression`) и 
+[SpringFramework](https://github.com/spring-projects/spring-framework) (класс `LinkedCaseInsensitiveMap`) под лицензией 
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## [Разработано с IntelliJ IDEA от JetBrains](https://www.jetbrains.com/)
