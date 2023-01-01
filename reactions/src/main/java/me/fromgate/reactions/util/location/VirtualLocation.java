@@ -3,6 +3,7 @@ package me.fromgate.reactions.util.location;
 import io.papermc.paper.math.BlockPosition;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.parameter.Parameterizable;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Axis;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
  * If coordinate is null, it will be ignored in comparison
  */
 @SuppressWarnings("UnstableApiUsage")
-public class VirtualLocation implements BlockPosition {
+public class VirtualLocation implements BlockPosition, Parameterizable {
     public static final VirtualLocation EMPTY = new VirtualLocation(null, null, null, null);
     private static final Pattern LOCATION_PATTERN = Pattern.compile("(\\w+|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*)(?:(?:,-?\\d+(?:\\.\\d+)?){2})?");
 
@@ -34,6 +35,13 @@ public class VirtualLocation implements BlockPosition {
     private final Integer x;
     private final Integer y;
     private final Integer z;
+
+    public VirtualLocation(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
+        this.worldName = worldName;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public static @NotNull VirtualLocation of(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
         return (worldName == null && x == null && y == null && z == null) ? EMPTY : new VirtualLocation(worldName, x, y, z);
@@ -82,13 +90,7 @@ public class VirtualLocation implements BlockPosition {
         );
     }
 
-    public VirtualLocation(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
-        this.worldName = worldName;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
+    @Override
     public @NotNull Parameters asParameters() {
         return Parameters.fromMap(Map.of(
                 "world", format(worldName),
@@ -135,17 +137,17 @@ public class VirtualLocation implements BlockPosition {
 
     @Override
     public int blockX() {
-        return x == null ? 0 : x;
+        return blockX(0);
     }
 
     @Override
     public int blockY() {
-        return y == null ? 0 : y;
+        return blockY(0);
     }
 
     @Override
     public int blockZ() {
-        return z == null ? 0 : z;
+        return blockZ(0);
     }
 
     @Override

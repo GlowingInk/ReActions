@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-public class Parameters implements Iterable<String> {
+public class Parameters implements Iterable<String>, Parameterizable {
     public static final String ORIGIN = "origin string";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
 
@@ -513,6 +513,11 @@ public class Parameters implements Iterable<String> {
 
     public @Unmodifiable @NotNull Map<String, String> originMap() {
         return params;
+    }
+
+    @Override
+    public @NotNull Parameters asParameters() {
+        return this;
     }
 
     public boolean isEmpty() {

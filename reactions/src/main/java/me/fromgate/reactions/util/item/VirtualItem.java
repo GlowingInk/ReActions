@@ -3,6 +3,7 @@ package me.fromgate.reactions.util.item;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.aspects.*;
+import me.fromgate.reactions.util.parameter.Parameterizable;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public final class VirtualItem {
+public final class VirtualItem implements Parameterizable {
     private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z_]+)(?::(\\d+))?(?:\\*(\\d+))?");
 
     /**
@@ -168,6 +169,7 @@ public final class VirtualItem {
         }
     }
 
+    @Override
     public @NotNull Parameters asParameters() {
         if (paramsValue != null) {
             return paramsValue;

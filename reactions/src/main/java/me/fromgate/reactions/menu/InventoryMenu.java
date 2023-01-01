@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,10 +34,11 @@ public class InventoryMenu implements Listener {
     private static final Map<String, VirtualInventory> menu = new HashMap<>();
     private static Map<String, String> tempvars;
 
-    public static void init() {
+    public static void init(ReActions.Platform platform) {
         load();
         save();
-        Bukkit.getPluginManager().registerEvents(new InventoryMenu(), ReActions.getPlugin());
+        Plugin plugin = platform.getPlugin();
+        plugin.getServer().getPluginManager().registerEvents(new InventoryMenu(), plugin);
     }
 
     public static void load() {
