@@ -183,7 +183,7 @@ public class TimersManager {
     public static void initIngameTimer() {
         if (ingameTimer != null) return;
         ingameTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), () -> {
-            String currentTime = TimeUtils.formattedIngameTime();
+            String currentTime = TimeUtils.formatIngameTime();
             if (currentIngameTime.equalsIgnoreCase(currentTime)) return;
             currentIngameTime = currentTime;
             if (!timersIngame.contains(currentIngameTime)) return;

@@ -23,6 +23,7 @@
 package me.fromgate.reactions.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,62 +31,79 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class TimeUtils {
-    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+))?");
-    private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)([dhmst]|ms)");
+public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
+    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+(?:\\.\\d+)?))?");
+    private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)(ms|[dhmst])?");
     private static final DateFormat DEF_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+    public static final long MS_PER_SECOND = 1000L;
+    public static final long MS_PER_MINUTE = MS_PER_SECOND * 60L;
+    public static final long MS_PER_HOUR = MS_PER_MINUTE * 60L;
+    public static final long MS_PER_DAY = MS_PER_HOUR * 24L;
+    public static final long MS_PER_TICK = MS_PER_SECOND / 20;
 
     private TimeUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public static String formattedIngameTime() {
-        return formattedIngameTime(Bukkit.getWorlds().get(0).getTime(), false);
+    public static String formatIngameTime() {
+        return formatIngameTime(Bukkit.getWorlds().get(0));
     }
 
-    public static String formattedIngameTime(long time, boolean showms) {
-        return showms && (time < 1000) ?
-                time + "ms" :
-                (long) ((time / 1000D + 6) % 24) + ":" + (long) (60 * (time % 1000D) / 1000);
+    public static String formatIngameTime(World world) {
+        return formatIngameTime(world.getTime(), false);
     }
 
-    public static String fullTimeToString(long time, DateFormat format) {
-        return format.format(new Date(time));
+    public static String formatIngameTime(long msTime, boolean simpleFormat) {
+        return simpleFormat && msTime < MS_PER_SECOND
+                ? msTime + "ms"
+                : (long) ((msTime / (double) MS_PER_SECOND + 6) % 24) + ":" + (long) (60 * (msTime % (double) MS_PER_SECOND) / MS_PER_SECOND);
     }
 
-    public static String fullTimeToString(long time, String format) {
-        return fullTimeToString(time, new SimpleDateFormat(format));
+    public static String formatTime(long msTime, String format) {
+        return formatTime(msTime, new SimpleDateFormat(format));
     }
 
-    public static String fullTimeToString(long time) {
-        return fullTimeToString(time, DEF_FORMAT);
+    public static String formatTime(long msTime) {
+        return formatTime(msTime, DEF_FORMAT);
     }
 
-    public static long timeToTicks(long time) {
-        // 1000 ms = 20 ticks; 50 ms = 1 tick
-        return Math.max(1, (time / 50));
+    public static String formatTime(long msTime, DateFormat format) {
+        return format.format(new Date(msTime));
+    }
+
+    public static long timeToTicks(long msTime) {
+        return Math.max(1, (msTime / MS_PER_TICK));
     }
 
     public static long parseTime(String timeStr) {
-        if (NumberUtils.isPositiveInt(timeStr)) {
-            return Long.parseLong(timeStr) * 1000L;
-        }
+        long time = parseTimeSplitted(timeStr);
+        return time == -1
+                ? parseTimePrecise(timeStr)
+                : time;
+    }
+
+    public static long parseTimeSplitted(String timeStr) {
         Matcher matcher = TIME_SPLITTED.matcher(timeStr);
-        if (matcher.matches()) {
-            long time = 3600000L * Long.parseLong(matcher.group(1)) + 60000L * Long.parseLong(matcher.group(2));
-            if (matcher.groupCount() == 3) time += 1000L * Long.parseLong(matcher.group(3));
-            return time;
-        }
-        matcher = TIME_PRECISE.matcher(timeStr);
+        if (!matcher.matches()) return -1;
+        long time = MS_PER_HOUR * Long.parseLong(matcher.group(1)) + MS_PER_MINUTE * Long.parseLong(matcher.group(2));
+        if (matcher.group(3) != null) time += MS_PER_SECOND * Double.parseDouble(matcher.group(3));
+        return time;
+    }
+
+    public static long parseTimePrecise(String timeStr) {
+        Matcher matcher = TIME_PRECISE.matcher(timeStr);
         long time = 0;
         while (matcher.find()) {
-            time += Long.parseLong(matcher.group(1)) * switch (matcher.group(2)) {
-                case "d" -> 86400000L;
-                case "h" -> 3600000L;
-                case "m" -> 60000L;
-                default -> 1000L; // seconds
-                case "t" -> 50L;
+            String unit = matcher.group(2);
+            if (unit == null) unit = "s";
+            time += Long.parseLong(matcher.group(1)) * switch (unit) {
+                case "d" -> MS_PER_DAY;
+                case "h" -> MS_PER_HOUR;
+                case "m" -> MS_PER_MINUTE;
+                default -> MS_PER_SECOND;
+                case "t" -> MS_PER_TICK;
                 case "ms" -> 1L;
             };
         }
-        return Math.max(time, 1);
+        return Math.max(time, 0);
     }
 }

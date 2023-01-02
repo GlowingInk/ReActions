@@ -104,7 +104,7 @@ public final class Delayer {
             if (delayTime < System.currentTimeMillis()) continue;
             String[] ln = key.split("\\.", 2);
             if (ln.length != 2) continue;
-            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.fullTimeToString(delays.get(key)));
+            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.formatTime(delays.get(key)));
         }
         Msg.printPage(sender, lst, Msg.MSG_LISTDELAY, pageNum, linePerPage, true);
     }
@@ -115,8 +115,8 @@ public final class Delayer {
         if (!delays.containsKey(fullId)) return null;
         long time = delays.get(fullId);
         String[] times = new String[8];
-        times[0] = TimeUtils.fullTimeToString(time);
-        times[1] = TimeUtils.fullTimeToString(time, HH_MM_SS);
+        times[0] = TimeUtils.formatTime(time);
+        times[1] = TimeUtils.formatTime(time, HH_MM_SS);
         time = time - System.currentTimeMillis();
 
         long sec = time / 1000;

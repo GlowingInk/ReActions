@@ -81,7 +81,7 @@ public class Timer {
     }
 
     private boolean isIngameTimeToRun() {
-        return ingameTimer && timesIngame.contains(TimeUtils.formattedIngameTime());
+        return ingameTimer && timesIngame.contains(TimeUtils.formatIngameTime());
     }
 
     @Override

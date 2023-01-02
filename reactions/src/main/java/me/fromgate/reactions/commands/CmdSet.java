@@ -35,7 +35,7 @@ public class CmdSet extends Cmd {
             long time = /*System.currentTimeMillis()+*/TimeUtils.parseTime(params.getString("delay", "3s")); //дефолтная задержка три секунды
             if (player.isEmpty()) Delayer.setDelay(id, time, add);
             else Delayer.setPersonalDelay(player, id, time, add);
-            Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.fullTimeToString(System.currentTimeMillis() + time));
+            Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(System.currentTimeMillis() + time));
         } else if (var.equalsIgnoreCase("var") || var.equalsIgnoreCase("variable") || var.equalsIgnoreCase("v")) {
             String value = params.getString("value", "");
             String player = params.getString("player", "");
