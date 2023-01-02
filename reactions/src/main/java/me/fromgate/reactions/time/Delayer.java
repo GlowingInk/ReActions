@@ -61,20 +61,22 @@ public final class Delayer {
         delays.clear();
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
-        if (FileUtils.loadCfg(cfg, f, "Failed to load delay configuration file"))
+        if (FileUtils.loadCfg(cfg, f, "Failed to load delay configuration file")) {
             for (String key : cfg.getKeys(true)) {
                 if (!key.contains(".")) continue;
                 long delayTime = cfg.getLong(key);
-                if (delayTime > System.currentTimeMillis())
+                if (delayTime > System.currentTimeMillis()) {
                     delays.put(key, delayTime);
+                }
             }
+        }
     }
 
     public static boolean checkDelay(String id, long updateTime) {
-        String idd = (id.contains(".") ? id : "global." + id);
-        Long delay = delays.get(idd);
+        if (id.indexOf('.') == -1) id = "global." + id;
+        Long delay = delays.get(id);
         boolean result = delay == null || delay < System.currentTimeMillis();
-        if (result && updateTime > 0) Delayer.setDelay(idd, updateTime, false);
+        if (result && updateTime > 0) Delayer.setDelay(id, updateTime, false);
         return result;
     }
 
@@ -87,9 +89,9 @@ public final class Delayer {
     }
 
     public static void setDelaySave(String id, long delayTime, boolean save, boolean add) {
-        String delayId = id.contains(".") ? id : "global." + id;
-        long currentDelay = add && delays.containsKey(delayId) ? delays.get(delayId) : System.currentTimeMillis();
-        delays.put(delayId, delayTime + currentDelay);
+        if (id.indexOf('.') == -1) id = "global." + id;
+        long currentDelay = add && delays.containsKey(id) ? delays.get(id) : System.currentTimeMillis();
+        delays.put(id, delayTime + currentDelay);
         if (save) save();
     }
 

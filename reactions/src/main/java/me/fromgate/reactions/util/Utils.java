@@ -287,9 +287,9 @@ public final class Utils {
             Matcher matcher = BYTE_COLOR.matcher(value);
             if (matcher.matches()) {
                 return Color.fromRGB(
-                        Math.min(NumberUtils.asInt(matcher.group(1), 0), 255),
-                        Math.min(NumberUtils.asInt(matcher.group(2), 0), 255),
-                        Math.min(NumberUtils.asInt(matcher.group(3), 0), 255)
+                        Math.min(NumberUtils.asInteger(matcher.group(1), 0), 255),
+                        Math.min(NumberUtils.asInteger(matcher.group(2), 0), 255),
+                        Math.min(NumberUtils.asInteger(matcher.group(3), 0), 255)
                 );
             } else if (!value.isEmpty()) {
                 TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));

@@ -53,7 +53,7 @@ public class FlagRegion implements Flag {
     private boolean playersInRegion(String param) {
         String[] split = param.split("/");
         if (split.length != 2) return false;
-        return (NumberUtils.asInt(split[1], 1) <= RaWorldGuard.countPlayersInRegion(split[0]));
+        return (NumberUtils.asInteger(split[1], 1) <= RaWorldGuard.countPlayersInRegion(split[0]));
     }
 
     @Override

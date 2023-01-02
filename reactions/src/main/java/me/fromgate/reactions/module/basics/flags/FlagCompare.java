@@ -41,7 +41,7 @@ public class FlagCompare implements Flag {
         for (String valueKey : params.keySet()) {
             if (!((valueKey.toLowerCase(Locale.ROOT)).startsWith("value"))) continue;
             String value = params.getString(valueKey);
-            if (NumberUtils.isInt(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
+            if (NumberUtils.isInteger(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
                 return true;
             else if (paramValue.equalsIgnoreCase(value)) return true;
         }

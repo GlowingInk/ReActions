@@ -26,7 +26,6 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
-import me.fromgate.reactions.util.location.VelocityUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
@@ -46,7 +45,7 @@ public class ActionVelocityJump implements Action {
         Location loc = LocationUtils.parseCoordinates(locStr);
         if (loc == null) return false;
         int jumpHeight = params.getInteger("jump", 5);
-        Vector velocity = VelocityUtils.calculateVelocity(player.getLocation(), loc, jumpHeight);
+        Vector velocity = LocationUtils.calculateVelocity(player.getLocation(), loc, jumpHeight);
         player.setVelocity(velocity);
         return false;
     }

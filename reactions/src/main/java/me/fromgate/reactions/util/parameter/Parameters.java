@@ -380,11 +380,11 @@ public class Parameters implements Iterable<String>, Parameterizable {
     }
 
     public int getInteger(@NotNull String key, int def) {
-        return NumberUtils.asInt(params.get(key), def);
+        return NumberUtils.asInteger(params.get(key), def);
     }
 
     public int getInteger(@NotNull String key, @NotNull IntSupplier def) {
-        return NumberUtils.asInt(params.get(key), def);
+        return NumberUtils.asInteger(params.get(key), def);
     }
 
     public boolean getBoolean(@NotNull String key) {
@@ -532,8 +532,12 @@ public class Parameters implements Iterable<String>, Parameterizable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Parameters other &&
-                other.originMap().equals(originMap());
+        return obj instanceof Parameters other && other.originMap().equals(originMap());
+    }
+
+    @Override
+    public int hashCode() {
+        return params.hashCode();
     }
 
     @Override

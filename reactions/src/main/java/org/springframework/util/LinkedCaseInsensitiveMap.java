@@ -92,7 +92,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
 
     @Override
     public boolean containsKey(Object key) {
-        return (key instanceof String && this.caseInsensitiveKeys.containsKey(convertKey((String) key)));
+        return (key instanceof String string && this.caseInsensitiveKeys.containsKey(convertKey(string)));
     }
 
     @Override
@@ -230,12 +230,23 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Cloneable {
 
     @Override
     public boolean equals(@Nullable Object other) {
-        return (this == other || this.targetMap.equals(other));
+        if (this == other) return true;
+        if (other instanceof Map<?, ?> map) {
+            if (map.size() != size()) return false;
+            for (Map.Entry<?,?> entry : map.entrySet()) {
+                if (!Objects.equals(get(entry.getKey()), entry.getValue())) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public int hashCode() {
-        return this.targetMap.hashCode();
+        return caseInsensitiveKeys.keySet().hashCode() * targetMap.values().hashCode();
     }
 
     @Override

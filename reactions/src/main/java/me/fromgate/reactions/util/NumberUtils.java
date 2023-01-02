@@ -31,23 +31,23 @@ public final class NumberUtils {
         return Double.parseDouble(str);
     }
 
-    public static int asInt(@Nullable String str, int def) {
+    public static int asInteger(@Nullable String str, int def) {
         if (Utils.isStringEmpty(str) || !INT.matcher(str).matches()) return def;
         return Integer.parseInt(str);
     }
 
-    public static int asInt(@Nullable String str, IntSupplier def) {
+    public static int asInteger(@Nullable String str, IntSupplier def) {
         if (Utils.isStringEmpty(str) || !INT.matcher(str).matches()) return def.getAsInt();
         return Integer.parseInt(str);
     }
 
     public static @NotNull String format(double d) {
-        return (d == (long) d) ?
-               Long.toString((long) d) :
-               Double.toString(d);
+        return d == (long) d
+                ? Long.toString((long) d)
+                : Double.toString(d);
     }
 
-    public static boolean isInt(@NotNull String @NotNull ... str) {
+    public static boolean isInteger(@NotNull String @NotNull ... str) {
         if (str.length == 0) return false;
         for (String s : str)
             if (!INT.matcher(s).matches()) return false;

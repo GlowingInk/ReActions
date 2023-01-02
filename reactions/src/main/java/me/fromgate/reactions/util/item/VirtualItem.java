@@ -244,10 +244,12 @@ public final class VirtualItem implements Parameterizable {
         );
     }
 
+    @Contract(pure = true)
     public static @NotNull VirtualItem fromString(@NotNull String paramsStr) {
         return fromParameters(Parameters.fromString(paramsStr));
     }
 
+    @Contract(pure = true)
     public static @NotNull VirtualItem fromParameters(@NotNull Parameters params) {
         if (params.isEmpty()) return VirtualItem.EMPTY;
         List<MetaAspect.Instance> aspects = new ArrayList<>();
@@ -265,7 +267,7 @@ public final class VirtualItem implements Parameterizable {
                         aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
                     }
                     if (!Utils.isStringEmpty(matcher.group(3))) {
-                        amount = NumberUtils.asInt(matcher.group(3), -1);
+                        amount = NumberUtils.asInteger(matcher.group(3), -1);
                     }
                     break;
                 }
