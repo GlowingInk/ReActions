@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-public class Parameters implements Iterable<String>, Parameterizable {
+public class Parameters implements Parameterizable {
     public static final String ORIGIN = "origin:string";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
 
@@ -31,7 +31,8 @@ public class Parameters implements Iterable<String>, Parameterizable {
     private final Map<String, String> params;
 
     private String formatted;
-    private Set<String> keys;
+    private Set<String> safeKeys;
+    private Integer hash;
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
@@ -495,18 +496,13 @@ public class Parameters implements Iterable<String>, Parameterizable {
         return origin;
     }
 
-    @Override
-    public @Unmodifiable @NotNull Iterator<String> iterator() {
-        return keySetSafe().iterator();
-    }
-
     public @Unmodifiable @NotNull Set<String> keySetSafe() {
-        if (this.keys == null) {
+        if (this.safeKeys == null) {
             Set<String> keys = new HashSet<>(params.keySet());
             keys.remove(Parameters.ORIGIN);
-            this.keys = Collections.unmodifiableSet(keys);
+            this.safeKeys = Collections.unmodifiableSet(keys);
         }
-        return this.keys;
+        return this.safeKeys;
     }
 
     public @Unmodifiable @NotNull Set<String> keySet() {
@@ -532,12 +528,29 @@ public class Parameters implements Iterable<String>, Parameterizable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Parameters other && other.originMap().equals(originMap());
+        if (obj == this) return true;
+        if (obj instanceof Parameters other) {
+            if (other.size() != size()) return false;
+            for (String key : keySetSafe()) {
+                if (!Objects.equals(getString(key, null), other.getString(key, null))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return params.hashCode();
+        if (this.hash == null) {
+            int hash = 1;
+            for (String key : keySetSafe()) {
+                hash = 31 * hash + key.hashCode() + getString(key).hashCode();
+            }
+            this.hash = hash;
+        }
+        return this.hash;
     }
 
     @Override

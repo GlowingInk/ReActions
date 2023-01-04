@@ -28,9 +28,9 @@ public class ParametersTest {
     }
 
     @Test(dataProvider = "fromStringData")
-    public void testFromString(String input, String expected, int size) {
+    public void fromStringTest(String input, String expected, int size) {
         Parameters result = fromString(input);
-        assertEquals(result.originFormatted(), expected);
+        assertEquals(result, fromString(expected)); // Testing Parameters#equals too
         assertEquals(fromString(result.originFormatted()).originFormatted(), expected); // We expect the result to be the same
         assertEquals(result.size(), size);
     }
@@ -44,7 +44,7 @@ public class ParametersTest {
     }
 
     @Test(dataProvider = "fromMapData")
-    public void testFromMapData(Map<String, String> map, String paramsStr) {
+    public void fromMapTest(Map<String, String> map, String paramsStr) {
         assertEquals(fromMap(map), fromString(paramsStr));
     }
 
@@ -71,7 +71,7 @@ public class ParametersTest {
     }
 
     @Test(dataProvider = "fromConfigurationData")
-    public void testFromConfiguration(String cfgStr, String expected) throws InvalidConfigurationException {
+    public void fromConfigurationTest(String cfgStr, String expected) throws InvalidConfigurationException {
         FileConfiguration cfg = new YamlConfiguration();
         cfg.loadFromString(cfgStr);
         assertEquals(
@@ -99,7 +99,7 @@ public class ParametersTest {
     }
 
     @Test(dataProvider = "escapeParametersData")
-    public void testEscapeParameters(String input, String expected) {
+    public void escapeParametersTest(String input, String expected) {
         String result = escapeParameters(input);
         assertEquals(result, expected);
         assertEquals(escapeParameters(result), expected); // Escaping the escaped should not work
@@ -115,7 +115,7 @@ public class ParametersTest {
     }
 
     @Test(dataProvider = "getKeyListData")
-    public void testGetKeyList(String input, List<String> expected) {
+    public void getKeyListTest(String input, List<String> expected) {
         assertEquals(fromString(input).getKeyList("key"), expected);
     }
 
@@ -130,7 +130,7 @@ public class ParametersTest {
     }
 
     @Test(dataProvider = "splitSafelyData")
-    public void testSplitSafely(String str, String... expected) {
+    public void splitSafelyTest(String str, String... expected) {
         assertEquals(splitSafely(str, ';'), List.of(expected));
     }
 }
