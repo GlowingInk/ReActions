@@ -22,7 +22,7 @@ public class Cuboid {
         this.yMax = Math.max(loc1.getBlockY(), loc2.getBlockY());
     }
 
-    public Cuboid(VirtualLocation loc1, VirtualLocation loc2) {
+    public Cuboid(ImplicitPosition loc1, ImplicitPosition loc2) {
         this.world = loc1.worldName();
         this.xMin = Math.min(loc1.blockX(0), loc2.blockX(0));
         this.xMax = Math.max(loc1.blockX(0), loc2.blockX(0));

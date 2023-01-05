@@ -207,10 +207,10 @@ public final class Utils {
     @Contract("!null, _ -> !null")
     @SafeVarargs
     public static <T> T searchNotNull(@Nullable T def, @Nullable T @NotNull ... obj) {
-        for (T searched : obj)
+        for (T searched : obj) {
             if (searched != null) return searched;
+        }
         return def;
-
     }
 
     /**
@@ -277,7 +277,8 @@ public final class Utils {
                 : "";
     }
 
-    public static @Nullable Color getColor(@NotNull String value) {
+    public static @Nullable Color getColor(@Nullable String value) {
+        if (Utils.isStringEmpty(value)) return null;
         if (value.startsWith("#")) {
             Matcher matcher = HEX_COLOR.matcher(value);
             if (matcher.matches()) {
@@ -291,8 +292,8 @@ public final class Utils {
                         Math.min(NumberUtils.asInteger(matcher.group(2), 0), 255),
                         Math.min(NumberUtils.asInteger(matcher.group(3), 0), 255)
                 );
-            } else if (!value.isEmpty()) {
-                TextColor color = NamedTextColor.NAMES.value(value.toUpperCase(Locale.ROOT));
+            } else {
+                TextColor color = NamedTextColor.NAMES.value(value.toLowerCase(Locale.ROOT));
                 if (color != null) {
                     return Color.fromRGB(color.value());
                 }
