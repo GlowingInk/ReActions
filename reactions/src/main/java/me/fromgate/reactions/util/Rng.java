@@ -1,5 +1,7 @@
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.util.NumberUtils.Is;
+
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -53,17 +55,17 @@ public final class Rng {
         if (index > -1) {
             int min = 0;
             String minStr = numsStr.substring(0, index);
-            if (NumberUtils.INT_POSITIVE.matcher(minStr).matches())
+            if (NumberUtils.isNumber(minStr, Is.INTEGER, Is.POSITIVE))
                 min = Integer.parseInt(minStr);
             int max = 0;
             String maxStr = numsStr.substring(index + 1);
-            if (NumberUtils.INT_POSITIVE.matcher(maxStr).matches())
+            if (NumberUtils.isNumber(maxStr, Is.INTEGER, Is.POSITIVE))
                 max = Integer.parseInt(maxStr);
             if (max > min)
                 return nextInt(min, max);
             return min;
         } else {
-            if (NumberUtils.INT_POSITIVE.matcher(numsStr).matches())
+            if (NumberUtils.isNumber(numsStr, Is.INTEGER, Is.POSITIVE))
                 return Integer.parseInt(numsStr);
             return 0;
         }

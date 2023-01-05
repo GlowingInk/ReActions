@@ -119,7 +119,7 @@ public class PotionAspect implements MetaAspect {
                 }
                 int level = Math.max(NumberUtils.asInteger(effectData[1], 0), 0);
                 long duration = TimeUtils.parseTime(effectData[2]) / 50L;
-                this.effects.add(new PotionEffect(type, NumberUtils.safeLongToInt(duration), level));
+                this.effects.add(new PotionEffect(type, NumberUtils.compactLong(duration), level));
             }
         }
 

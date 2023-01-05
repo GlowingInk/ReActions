@@ -23,6 +23,7 @@
 package me.fromgate.reactions.externals;
 
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.message.Msg;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -162,7 +163,7 @@ public final class RaVault {
 
     public static String creditAccount(String target, String source, String amountStr, String worldName) {
         if (target.isEmpty()) return "";
-        if (!NumberUtils.isPositive(amountStr)) return "";
+        if (!NumberUtils.isNumber(amountStr, Is.POSITIVE)) return "";
         double amount = Double.parseDouble(amountStr);
         if (isEconomyConnected()) {
             if (creditAccount(target, source, amount, worldName))
@@ -173,7 +174,7 @@ public final class RaVault {
 
     public static String debitAccount(String accountFrom, String accountTo, String amountStr, String worldName) {
         if (accountFrom.isEmpty()) return "";
-        if (!NumberUtils.isPositive(amountStr)) return "";
+        if (!NumberUtils.isNumber(amountStr, Is.POSITIVE)) return "";
         double amount = Double.parseDouble(amountStr);
         if (isEconomyConnected()) {
             if (debitAccount(accountFrom, accountTo, amount, worldName))

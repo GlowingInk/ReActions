@@ -22,6 +22,7 @@
 
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -79,8 +80,8 @@ public final class Utils {
                     if (prm.length > 2) strpitch = prm[2];
                 }
             } else sndstr = param;
-            if (NumberUtils.FLOAT_POSITIVE.matcher(strvolume).matches()) volume = Float.parseFloat(strvolume);
-            if (NumberUtils.FLOAT_POSITIVE.matcher(strpitch).matches()) pitch = Float.parseFloat(strpitch);
+            if (NumberUtils.isNumber(strvolume, Is.POSITIVE)) volume = Float.parseFloat(strvolume);
+            if (NumberUtils.isNumber(strvolume, Is.POSITIVE)) pitch = Float.parseFloat(strpitch);
         } else {
             String locationStr = params.getString("loc");
             soundLoc = locationStr.isEmpty() ? loc : LocationUtils.parseLocation(locationStr, null);

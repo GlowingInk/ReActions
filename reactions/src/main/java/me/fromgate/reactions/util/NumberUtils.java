@@ -3,21 +3,27 @@ package me.fromgate.reactions.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-// TODO: In the current state it's bloated mess. Refactor
 public final class NumberUtils {
+    private static final double TRIM_VALUE = 1_0000;
 
-    // Integer
     public static final Pattern INT = Pattern.compile("-?\\d+");
-    public static final Pattern INT_POSITIVE = Pattern.compile("\\d+");
-    public static final Pattern INT_NONZERO_POSITIVE = Pattern.compile("[1-9]\\d*");
-    public static Pattern INT_NONZERO = Pattern.compile("-?[1-9]\\d*");
-    // Float
     public static final Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
-    public static final Pattern FLOAT_POSITIVE = Pattern.compile("\\d+(\\.\\d+)?");
+
+    public interface Is extends Predicate<String> {
+        Is NON_ZERO = (s) -> !s.equals("0") && !s.equals("-0");
+        Is POSITIVE = (s) -> !s.startsWith("-");
+        Is INTEGER = (s) -> s.indexOf('.') == -1;
+
+        default Is negate() {
+            return (t) -> !test(t);
+        }
+    }
 
     private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
@@ -26,7 +32,7 @@ public final class NumberUtils {
         return Double.parseDouble(str);
     }
 
-    public static double asDouble(@Nullable String str, DoubleSupplier def) {
+    public static double asDouble(@Nullable String str, @NotNull DoubleSupplier def) {
         if (Utils.isStringEmpty(str) || !FLOAT.matcher(str).matches()) return def.getAsDouble();
         return Double.parseDouble(str);
     }
@@ -36,7 +42,7 @@ public final class NumberUtils {
         return Integer.parseInt(str);
     }
 
-    public static int asInteger(@Nullable String str, IntSupplier def) {
+    public static int asInteger(@Nullable String str, @NotNull IntSupplier def) {
         if (Utils.isStringEmpty(str) || !INT.matcher(str).matches()) return def.getAsInt();
         return Integer.parseInt(str);
     }
@@ -47,6 +53,35 @@ public final class NumberUtils {
                 : Double.toString(d);
     }
 
+    public static boolean isNumber(@NotNull String str) {
+        return FLOAT.matcher(str).matches();
+    }
+
+    public static boolean isNumber(@NotNull String str, @NotNull Is flag) {
+        return isNumber(str) && flag.test(str);
+    }
+
+    public static boolean isNumber(@NotNull String str, @NotNull Is flag1, @NotNull Is flag2) {
+        return isNumber(str) && flag1.test(str) && flag2.test(str);
+    }
+
+    public static boolean isNumber(@NotNull String str, @NotNull Is flag1, @NotNull Is flag2, @NotNull Is flag3) {
+        return isNumber(str) && flag1.test(str) && flag2.test(str) && flag3.test(str);
+    }
+
+    public static boolean isNumber(@NotNull String str, @NotNull Is @NotNull ... flags) {
+        return isNumber(str, Arrays.asList(flags));
+    }
+
+    public static boolean isNumber(@NotNull String str, @NotNull Iterable<@NotNull Is> flags) {
+        if (!isNumber(str)) return false;
+        for (Is flag : flags) {
+            if (!flag.test(str)) return false;
+        }
+        return true;
+    }
+
+    @Deprecated
     public static boolean isInteger(@NotNull String @NotNull ... str) {
         if (str.length == 0) return false;
         for (String s : str)
@@ -54,21 +89,7 @@ public final class NumberUtils {
         return true;
     }
 
-    public static boolean isPositiveInt(@NotNull String str) {
-        return (INT_POSITIVE.matcher(str).matches());
-    }
-
-    public static boolean isPositiveInt(@NotNull String @NotNull ... str) {
-        if (str.length == 0) return false;
-        for (String s : str)
-            if (!isPositiveInt(s)) return false;
-        return true;
-    }
-
-    public static boolean isPositiveNonzeroInt(@NotNull String str) {
-        return INT_NONZERO_POSITIVE.matcher(str).matches();
-    }
-
+    @Deprecated
     public static boolean isNumber(@NotNull String @NotNull ... str) {
         if (str.length == 0) return false;
         for (String s : str)
@@ -76,18 +97,23 @@ public final class NumberUtils {
         return true;
     }
 
-    public static boolean isNumber(@NotNull String str) {
-        return FLOAT.matcher(str).matches();
+    @Deprecated
+    public static boolean isPositiveInt(@NotNull String str) {
+        return isNumber(str, Is.POSITIVE, Is.INTEGER);
     }
 
-    /**
-     * Check if string contains positive float
-     *
-     * @param numStr String to check
-     * @return Is string contains positive float
-     */
-    public static boolean isPositive(@NotNull String numStr) {
-        return FLOAT_POSITIVE.matcher(numStr).matches();
+    @Deprecated
+    public static boolean isPositiveInt(@NotNull String @NotNull ... str) {
+        if (str.length == 0) return false;
+        for (String s : str) {
+            if (!isPositiveInt(s)) return false;
+        }
+        return true;
+    }
+
+    @Deprecated
+    public static boolean isPositiveNonzeroInt(@NotNull String str) {
+        return isNumber(str, Is.POSITIVE, Is.NON_ZERO, Is.INTEGER);
     }
 
     /**
@@ -96,7 +122,7 @@ public final class NumberUtils {
      * @param l Long to transit
      * @return Final int
      */
-    public static int safeLongToInt(long l) {
+    public static int compactLong(long l) {
         if (l < Integer.MIN_VALUE) return Integer.MIN_VALUE;
         if (l > Integer.MAX_VALUE) return Integer.MAX_VALUE;
         return (int) l;
@@ -109,6 +135,7 @@ public final class NumberUtils {
      * @return Trimmed double
      */
     public static double trimDouble(double d) {
-        return Math.round(d * 1000) / 1000d;
+        d *= TRIM_VALUE;
+        return (d > 0 ? Math.floor(d) : Math.ceil(d)) / TRIM_VALUE;
     }
 }

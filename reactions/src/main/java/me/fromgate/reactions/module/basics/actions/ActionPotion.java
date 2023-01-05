@@ -76,7 +76,7 @@ public class ActionPotion implements Action {
             } else peffstr = param;
         } else {
             peffstr = params.getString("type");
-            duration = NumberUtils.safeLongToInt(TimeUtils.timeToTicks(TimeUtils.parseTime(params.getString("time", "3s"))));
+            duration = NumberUtils.compactLong(TimeUtils.timeToTicks(TimeUtils.parseTime(params.getString("time", "3s"))));
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);
         }
