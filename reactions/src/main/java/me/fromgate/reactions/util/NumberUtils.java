@@ -15,16 +15,6 @@ public final class NumberUtils {
     public static final Pattern INT = Pattern.compile("-?\\d+");
     public static final Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
 
-    public interface Is extends Predicate<String> {
-        Is NON_ZERO = (s) -> !s.equals("0") && !s.equals("-0");
-        Is POSITIVE = (s) -> !s.startsWith("-");
-        Is INTEGER = (s) -> s.indexOf('.') == -1;
-
-        default Is negate() {
-            return (t) -> !test(t);
-        }
-    }
-
     private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static double asDouble(@Nullable String str, double def) {
@@ -57,28 +47,37 @@ public final class NumberUtils {
         return FLOAT.matcher(str).matches();
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Is flag) {
+    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> flag) {
         return isNumber(str) && flag.test(str);
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Is flag1, @NotNull Is flag2) {
+    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> flag1, @NotNull Predicate<String> flag2) {
         return isNumber(str) && flag1.test(str) && flag2.test(str);
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Is flag1, @NotNull Is flag2, @NotNull Is flag3) {
+    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> flag1, @NotNull Predicate<String> flag2, @NotNull Predicate<String> flag3) {
         return isNumber(str) && flag1.test(str) && flag2.test(str) && flag3.test(str);
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Is @NotNull ... flags) {
+    @SafeVarargs
+    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> @NotNull ... flags) {
         return isNumber(str, Arrays.asList(flags));
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Iterable<@NotNull Is> flags) {
+    public static boolean isNumber(@NotNull String str, @NotNull Iterable<? extends @NotNull Predicate<String>> flags) {
         if (!isNumber(str)) return false;
-        for (Is flag : flags) {
+        for (Predicate<String> flag : flags) {
             if (!flag.test(str)) return false;
         }
         return true;
+    }
+
+    public static final class Is {
+        private Is() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+
+        public static final Predicate<String> NON_ZERO = (s) -> !s.equals("0") && !s.equals("-0");
+        public static final Predicate<String> POSITIVE = (s) -> !s.startsWith("-");
+        public static final Predicate<String> INTEGER = (s) -> s.indexOf('.') == -1;
     }
 
     @Deprecated

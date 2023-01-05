@@ -5,6 +5,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.testng.Assert.assertEquals;
 
@@ -20,7 +21,7 @@ public class NumberUtilsTest {
     }
 
     @Test(dataProvider = "isNumberData")
-    public void isNumberTest(String input, List<Is> flags, boolean expected) {
+    public void isNumberTest(String input, List<Predicate<String>> flags, boolean expected) {
         assertEquals(
                 NumberUtils.isNumber(input, flags),
                 expected
