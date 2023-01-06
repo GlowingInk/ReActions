@@ -106,9 +106,8 @@ public class ModulesRegistry {
                         toRegister.add(clazz);
                     }
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                break;
+            } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
             }
         }
         for (Class<?> clazz : toRegister) {

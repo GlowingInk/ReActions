@@ -125,7 +125,7 @@ public final class VirtualItem implements Parameterizable {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 aspects.forEach(aspect -> aspect.apply(meta));
-                itemValue.setItemMeta(meta);
+                item.setItemMeta(meta);
             }
         }
         return item;
