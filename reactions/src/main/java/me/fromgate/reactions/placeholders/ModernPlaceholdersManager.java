@@ -1,7 +1,7 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.logic.RaContext;
-import me.fromgate.reactions.util.parameter.Parameters;
+import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +72,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                                     String options = optionsSearch(text, index + 2);
                                     if (options != null) {
                                         index += options.length() + 2;
-                                        if (options.contains("prms")) processed = Parameters.escapeParameters(processed);
+                                        if (options.contains("prms")) processed = ParametersUtils.escapeParameters(processed);
                                         if (options.contains("phs")) processed = escapeSpecial(processed);
                                     }
                                 }

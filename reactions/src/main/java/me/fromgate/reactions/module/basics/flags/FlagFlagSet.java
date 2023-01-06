@@ -26,7 +26,7 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.alias.Aliases;
-import me.fromgate.reactions.util.parameter.Parameters;
+import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class FlagFlagSet implements Flag {
 
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
-        List<String> split = Parameters.splitSafely(params, ' ');
+        List<String> split = ParametersUtils.splitSafely(params, ' ');
         boolean hasPlayer = context.getPlayer() != null;
         for (String flagFullStr : split) {
             String[] flagSplit = flagFullStr.split(":", 2);

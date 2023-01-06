@@ -3,6 +3,7 @@ package me.fromgate.reactions.util.item.aspects;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
+import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -77,7 +78,7 @@ public class FireworkAspect implements MetaAspect {
 
         public EffectsInst(@NotNull String effectsStr) {
             this.effectsStr = effectsStr;
-            List<String> split = Parameters.splitSafely(effectsStr, ';');
+            List<String> split = ParametersUtils.splitSafely(effectsStr, ';');
             this.effects = new ArrayList<>(split.size());
             for (String effectStr : split) {
                 Parameters params = Parameters.fromString(effectStr);

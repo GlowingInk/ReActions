@@ -19,13 +19,10 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
     public static final String ORIGIN = "origin:string";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
-
-    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
     private final String origin;
     private final Map<String, String> params;
@@ -43,55 +40,6 @@ public class Parameters implements Parameterizable {
     protected Parameters(@NotNull String origin, @NotNull String formatted, @NotNull Map<String, String> params) {
         this(origin, params);
         this.formatted = formatted;
-    }
-
-    public static @NotNull List<@NotNull String> splitSafely(@NotNull String str, char splitCh) {
-        if (str.indexOf(splitCh) == -1) return List.of(str);
-        List<String> splits = new ArrayList<>();
-        int lastSplit = 0;
-        int brCount = 0;
-        boolean inside = false;
-        for (int index = 0; index < str.length(); ++index) {
-            char ch = str.charAt(index);
-            switch (ch) {
-                case '\\' -> {
-                    int next = index + 1;
-                    if (str.length() != next) {
-                        char n = str.charAt(next);
-                        if (n == '{' || n == '}') {
-                            ++index;
-                        }
-                    }
-                }
-                case '{' -> ++brCount;
-                case '}' -> brCount = Math.max(0, brCount - 1);
-                case ':' -> {
-                    int next = index + 1;
-                    if (str.length() != next) {
-                        char n = str.charAt(next);
-                        if (n != '{') {
-                            inside = true;
-                        }
-                    }
-                }
-                case ' ' -> inside = false;
-                default -> {
-                    if (ch == splitCh) {
-                        int nextIndex = index + 1;
-                        if (brCount == 0 && !inside || (inside && (str.length() == nextIndex || str.charAt(nextIndex) == ' '))) {
-                            splits.add(str.substring(lastSplit, index));
-                            lastSplit = nextIndex;
-                        }
-                    }
-                }
-            }
-        }
-        if (lastSplit != 0) {
-            splits.add(str.substring(lastSplit));
-        } else if (splits.isEmpty()) {
-            splits.add(str);
-        }
-        return splits;
     }
 
     public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg) {
@@ -131,7 +79,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return Parameters.EMPTY;
         Map<String, String> params = Maps.caseInsensitive(map);
-        String str = formatMap(map);
+        String str = ParametersUtils.formatMap(map);
         return new Parameters(str, str, params);
     }
 
@@ -239,58 +187,17 @@ public class Parameters implements Parameterizable {
         SPACE, TEXT, COLON, PARAM, BR_PARAM
     }
 
-    public static @NotNull Parameters noParse(@NotNull String str) {
-        Map<String, String> params = Maps.caseInsensitive(1);
-        return new Parameters(str, params);
-    }
-
-    public static @NotNull Parameters noParse(@NotNull String str, @NotNull String defKey) {
+    public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
         Map<String, String> params = Maps.caseInsensitive(2);
-        params.put(defKey, str);
-        return new Parameters(str, params);
-    }
-
-    public static @NotNull String formatMap(@NotNull Map<String, String> map) {
-        StringBuilder bld = new StringBuilder();
-        map.forEach((key, value) -> {
-            if (key.equals(Parameters.ORIGIN)) return;
-            bld.append(key).append(':');
-            String escaped = escapeParameters(value);
-            if (value.length() >= 20 || escaped.length() != value.length() || value.isEmpty() ||
-                    value.indexOf(' ') != -1 || value.indexOf(':') != -1 || value.charAt(0) == '{') {
-                bld.append('{').append(escaped).append('}');
-            } else {
-                bld.append(value);
-            }
-            bld.append(' ');
-        });
-        return Utils.cutBuilder(bld, 1);
-    }
-
-    public static @NotNull String escapeParameters(@NotNull String str) {
-        if (str.isEmpty()) return str;
-        int brackets = 0;
-        boolean escaped = false;
-        for (int i = 0; i < str.length(); i++) {
-            if (escaped) {
-                escaped = false;
-                continue;
-            }
-            char ch = str.charAt(i);
-            if (ch == '\\') {
-                escaped = true;
-            } else if (ch == '{') {
-                ++brackets;
-            } else if (ch == '}' && --brackets < 0) {
-                break;
-            }
+        params.put(key, value);
+        String escaped = ParametersUtils.escapeParameters(value);
+        String origin;
+        if (ParametersUtils.requiresBrackets(escaped, value)) {
+            origin = key + ":{" + escaped + "}";
+        } else {
+            origin = key + ":" + escaped;
         }
-        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || str.charAt(str.length() - 2) != '\\')) {
-            str += '\\';
-        }
-        return brackets != 0
-                ? UNESCAPED.matcher(str).replaceAll("\\\\$0")
-                : str;
+        return new Parameters(origin, origin, params);
     }
 
     public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter) {
@@ -488,7 +395,7 @@ public class Parameters implements Parameterizable {
 
     public @NotNull String originFormatted() {
         return formatted == null
-                ? (formatted = formatMap(params))
+                ? (formatted = ParametersUtils.formatMap(params))
                 : formatted;
     }
 
@@ -544,7 +451,7 @@ public class Parameters implements Parameterizable {
     @Override
     public int hashCode() {
         if (this.hash == null) {
-            int hash = 1;
+            int hash = 1; // To skip (un)boxing on calculation
             for (String key : keySetSafe()) {
                 hash = 31 * hash + key.hashCode() + getString(key).hashCode();
             }

@@ -32,6 +32,7 @@ import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
+import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -284,7 +285,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
 
     private static ItemStack getRandomItem(String str) {
         if (str.isEmpty()) return new ItemStack(Material.AIR);
-        List<String> ln = Parameters.splitSafely(str, ',');
+        List<String> ln = ParametersUtils.splitSafely(str, ',');
         ItemStack item = VirtualItem.asItem(Rng.randomElement(ln));
         if (item == null) return new ItemStack(Material.AIR);
         item.setAmount(1);
