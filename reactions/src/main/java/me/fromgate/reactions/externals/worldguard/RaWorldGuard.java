@@ -44,7 +44,7 @@ public class RaWorldGuard {
     private static Set<String> regionActivators = null;
 
     public static void init() {
-        bridge = new WGBridge7x();
+        bridge = new WGBridge();
         updateRegionCache();
     }
 
@@ -73,7 +73,7 @@ public class RaWorldGuard {
         Set<String> regions = new HashSet<>();
         for (String rg : regionActivators) {
             if (bridge.isLocationInRegion(loc, rg))
-                regions.add(WGBridge7x.getFullRegionName(rg));
+                regions.add(WGBridge.getFullRegionName(rg));
         }
         return regions;
     }

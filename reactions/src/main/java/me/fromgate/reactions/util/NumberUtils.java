@@ -78,6 +78,7 @@ public final class NumberUtils {
         public static final Predicate<String> NON_ZERO = (s) -> !s.equals("0") && !s.equals("-0");
         public static final Predicate<String> POSITIVE = (s) -> !s.startsWith("-");
         public static final Predicate<String> INTEGER = (s) -> s.indexOf('.') == -1;
+        public static final Predicate<String> NATURAL = NON_ZERO.and(POSITIVE).and(INTEGER);
     }
 
     @Deprecated
@@ -112,7 +113,7 @@ public final class NumberUtils {
 
     @Deprecated
     public static boolean isPositiveNonzeroInt(@NotNull String str) {
-        return isNumber(str, Is.POSITIVE, Is.NON_ZERO, Is.INTEGER);
+        return isNumber(str, Is.NATURAL);
     }
 
     /**

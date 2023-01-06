@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.externals.worldguard.WGBridge7x;
+import me.fromgate.reactions.externals.worldguard.WGBridge;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import org.bukkit.entity.Player;
@@ -35,7 +35,7 @@ public class FlagRegionInRadius implements Flag {
         Player player = context.getPlayer();
         int radius = 0;
         if (!params.isEmpty()) radius = Integer.parseInt(params);
-        return WGBridge7x.checkRegionInRadius(player, radius);
+        return WGBridge.checkRegionInRadius(player, radius);
     }
 
     @Override

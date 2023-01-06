@@ -20,7 +20,6 @@
  *
  */
 
-
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.RaContext;
@@ -29,21 +28,22 @@ import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
 public class FlagCompare implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        String paramValue = params.getString("param", "");
-        if (paramValue.isEmpty()) return false;
-        if (!params.contains("value1")) return false;
-        for (String valueKey : params.keySet()) {
-            if (!((valueKey.toLowerCase(Locale.ROOT)).startsWith("value"))) continue;
-            String value = params.getString(valueKey);
-            if (NumberUtils.isInteger(value, paramValue) && (Integer.parseInt(value) == Integer.parseInt(paramValue)))
+        String paramValue = params.getString("param", null);
+        if (paramValue == null) return false;
+        Double paramNum = NumberUtils.isNumber(paramValue) ? Double.valueOf(paramValue) : null;
+        boolean caseSensitive = params.getBoolean("case-sensitive");
+        for (String key : params.getKeyList("value")) {
+            String value = params.getString(key);
+            if (
+                    (caseSensitive ? paramValue.equals(value) : paramValue.equalsIgnoreCase(value)) ||
+                    (paramNum != null && NumberUtils.isNumber(value) && Double.parseDouble(value) == paramNum)
+            ) {
                 return true;
-            else if (paramValue.equalsIgnoreCase(value)) return true;
+            }
         }
         return false;
     }
