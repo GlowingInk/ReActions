@@ -2,7 +2,7 @@ package me.fromgate.reactions.logic.activators;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.ActivatorLogic;
-import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.function.RaGenerator;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,9 +45,9 @@ public class ActivatorTypesRegistry {
         }
         typesAliases.put(name, type);
         types.put(type.getActivatorClass(), type);
-        String[] aliases = Utils.getAliases(type);
-        if (aliases.length == 0) {
-            aliases = Utils.getAliases(type.getActivatorClass());
+        Collection<String> aliases = Aliased.getAliases(type);
+        if (aliases.isEmpty()) {
+            aliases = Aliased.getAliases(type.getActivatorClass());
         }
         for (String alias : aliases) {
             typesAliases.putIfAbsent(alias.toUpperCase(Locale.ROOT), type);

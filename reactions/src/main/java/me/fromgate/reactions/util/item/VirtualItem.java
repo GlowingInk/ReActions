@@ -2,6 +2,7 @@ package me.fromgate.reactions.util.item;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.item.aspects.*;
 import me.fromgate.reactions.util.parameter.Parameterizable;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -59,7 +60,7 @@ public final class VirtualItem implements Parameterizable {
     private static void registerAspect(@NotNull MetaAspect aspect) {
         ASPECTS_BY_NAME.put(aspect.getName().toLowerCase(Locale.ROOT), aspect);
         ASPECTS.add(aspect);
-        for (String alias : Utils.getAliases(aspect)) {
+        for (String alias : Aliased.getAliases(aspect)) {
             ASPECTS_BY_NAME.putIfAbsent(alias.toLowerCase(Locale.ROOT), aspect);
         }
     }

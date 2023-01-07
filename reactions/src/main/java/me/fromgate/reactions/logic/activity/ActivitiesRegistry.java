@@ -2,7 +2,7 @@ package me.fromgate.reactions.logic.activity;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,7 @@ public class ActivitiesRegistry {
             throw new IllegalStateException("Action '" + action.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
         }
         actionByName.put(action.getName().toUpperCase(Locale.ROOT), action);
-        for (String alias : Utils.getAliases(action)) {
+        for (String alias : Aliased.getAliases(action)) {
             actionByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), action);
         }
     }
@@ -35,7 +35,7 @@ public class ActivitiesRegistry {
             throw new IllegalStateException("Flag '" + flag.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
         }
         flagByName.put(flag.getName().toUpperCase(Locale.ROOT), flag);
-        for (String alias : Utils.getAliases(flag)) {
+        for (String alias : Aliased.getAliases(flag)) {
             flagByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), flag);
         }
     }

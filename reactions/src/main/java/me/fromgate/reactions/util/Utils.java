@@ -23,8 +23,6 @@
 package me.fromgate.reactions.util;
 
 import me.fromgate.reactions.util.NumberUtils.Is;
-import me.fromgate.reactions.util.alias.Aliased;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -48,9 +46,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Utils {
+    public static final String[] EMPTY_ARRAY = new String[0];
     private static final Pattern HEX_COLOR = Pattern.compile("#([a-fA-F\\d]{6})");
     private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
-    private static final String[] EMPTY_ARRAY = new String[0];
 
     private Utils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
@@ -124,7 +122,7 @@ public final class Utils {
      * @param str  String with words
      * @return Is word contained
      */
-    public static boolean isWordInList(@NotNull String word, @NotNull String str) {
+    public static boolean containsWord(@NotNull String word, @NotNull String str) {
         String[] ln = str.split(",");
         for (String wordInList : ln) {
             if (wordInList.equalsIgnoreCase(word)) return true;
@@ -141,13 +139,15 @@ public final class Utils {
 
     /**
      * Escape java symbols (?)
+     * No one knows why it exists
      *
      * @param doco String to escape
      * @return Escaped string
      */
     public static @NotNull String escapeJava(@Nullable String doco) {
-        if (doco == null)
+        if (doco == null) {
             return "";
+        }
 
         StringBuilder b = new StringBuilder();
         for (char c : doco.toCharArray()) {
@@ -168,10 +168,10 @@ public final class Utils {
      * @param size Size of list
      * @return List with specified size
      */
-    public static @NotNull List<String> getEmptyList(int size) {
-        List<String> l = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) l.add("");
-        return l;
+    public static @NotNull List<@NotNull String> getFilledEmptyList(int size) {
+        List<String> list = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) list.add("");
+        return list;
     }
 
     /**
@@ -179,7 +179,7 @@ public final class Utils {
      *
      * @return List of names
      */
-    public static @NotNull List<String> getPlayersList() {
+    public static @NotNull List<@NotNull String> getPlayersList() {
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         List<String> playersNames = new ArrayList<>(players.size());
         players.forEach(p -> playersNames.add(p.getName()));
@@ -257,19 +257,6 @@ public final class Utils {
         } catch (IllegalArgumentException ignored) {
             return def;
         }
-    }
-
-    public static @NotNull String[] getAliases(@NotNull Class<?> clazz) {
-        if (clazz.isAnnotationPresent(Aliases.class)) {
-            return clazz.getAnnotation(Aliases.class).value();
-        }
-        return EMPTY_ARRAY;
-    }
-
-    public static @NotNull String @NotNull [] getAliases(@NotNull Object obj) {
-        return obj instanceof Aliased aliased
-                ? aliased.getAliases()
-                : getAliases(obj.getClass());
     }
 
     public static @NotNull String cutBuilder(@NotNull StringBuilder builder, int offset) {

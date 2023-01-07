@@ -1,6 +1,6 @@
 package me.fromgate.reactions.selectors;
 
-import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public class SelectorsManager {
         }
         selectors.add(selector);
         selectorByName.put(selector.getName().toLowerCase(Locale.ROOT), selector);
-        for (String alias : Utils.getAliases(selector)) {
+        for (String alias : Aliased.getAliases(selector)) {
             selectorByName.putIfAbsent(alias.toLowerCase(Locale.ROOT), selector);
         }
     }

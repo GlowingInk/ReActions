@@ -126,7 +126,7 @@ public final class UserCommand extends Command implements PluginIdentifiableComm
     }
 
     public List<String> list() {
-        List<String> list = Utils.getEmptyList(1);
+        List<String> list = Utils.getFilledEmptyList(1);
         chains.forEach(c -> list.add(c.toString()));
         return list;
     }

@@ -215,7 +215,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
 
     private static void setMobEquipment(LivingEntity e, String equip) {
         if (equip.isEmpty()) return;
-        if (!Utils.isWordInList(e.getType().name(), "zombie,skeleton")) return;
+        if (!Utils.containsWord(e.getType().name(), "zombie,skeleton")) return;
         String[] ln = equip.split(";");
         if (ln.length == 0) return;
         String[] eq = {"", "", "", "", "", ""};
