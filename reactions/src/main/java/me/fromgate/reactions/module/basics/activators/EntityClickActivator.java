@@ -9,6 +9,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -32,7 +33,7 @@ public class EntityClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         EntityClickStorage ece = (EntityClickStorage) event;
         if (ece.getEntity() == null) return false;
         return isActivatorEntity(ece.getEntity());
@@ -43,7 +44,7 @@ public class EntityClickActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("entity-type", entityType.name());
     }
 
@@ -53,10 +54,5 @@ public class EntityClickActivator extends Activator {
                 "type:" + (entityType == null ? "-" : entityType.name()) +
                 ")";
         return sb;
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
     }
 }

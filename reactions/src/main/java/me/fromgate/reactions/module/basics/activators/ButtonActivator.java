@@ -35,6 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class ButtonActivator extends Activator implements Locatable {
     private final String world;
@@ -65,7 +66,7 @@ public class ButtonActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         ButtonStorage be = (ButtonStorage) event;
         return isLocatedAt(be.getButtonLocation());
     }
@@ -79,7 +80,7 @@ public class ButtonActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return this.world.equals(world.getName()) &&
                 this.x == x &&
                 this.y == y &&
@@ -87,7 +88,7 @@ public class ButtonActivator extends Activator implements Locatable {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("world", this.world);
         cfg.set("x", x);
         cfg.set("y", y);

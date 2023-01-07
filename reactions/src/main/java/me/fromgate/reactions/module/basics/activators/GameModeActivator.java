@@ -8,6 +8,7 @@ import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-10-27.
@@ -31,7 +32,7 @@ public class GameModeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         GameModeStorage e = (GameModeStorage) event;
         return gameModeCheck(e.getGameMode());
     }
@@ -42,7 +43,7 @@ public class GameModeActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("gamemode", gameMode == null ? "ANY" : gameMode.name());
     }
 

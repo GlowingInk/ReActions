@@ -31,6 +31,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -65,7 +66,7 @@ public class MobKillActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         MobKillStorage me = (MobKillStorage) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
@@ -86,7 +87,7 @@ public class MobKillActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("mob-type", mobType);
         cfg.set("mob-name", mobName);
     }

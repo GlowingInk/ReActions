@@ -6,6 +6,7 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.SneakStorage;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-05-16.
@@ -29,19 +30,14 @@ public class SneakActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         SneakStorage se = (SneakStorage) event;
         return checkSneak(se.isSneaking());
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("sneak", sneak.name());
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
     }
 
     private boolean checkSneak(boolean isSneak) {

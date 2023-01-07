@@ -29,6 +29,7 @@ import me.fromgate.reactions.module.basics.storages.DeathStorage;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class DeathActivator extends Activator {
 
@@ -50,13 +51,13 @@ public class DeathActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         DeathStorage de = (DeathStorage) event;
         return this.deathCause == DeathCause.ANY || de.getCause() == this.deathCause;
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("death-cause", this.deathCause != null ? this.deathCause.name() : "PVP");
     }
 

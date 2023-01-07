@@ -15,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -49,7 +50,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         DamageByBlockStorage db = (DamageByBlockStorage) event;
         Block damagerBlock = db.getBlockDamager();
         if (damagerBlock == null) return false;
@@ -78,7 +79,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return isLocatedAt(new Location(world, x, y, z));
     }
 
@@ -88,7 +89,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("block", blockType.name());
         cfg.set("location", Utils.isStringEmpty(blockLocation) ? null : this.blockLocation);
         cfg.set("cause", this.damageCause);

@@ -6,6 +6,7 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"EXE", "EXECUTABLE"})
 public class ExecActivator extends Activator {
@@ -22,7 +23,7 @@ public class ExecActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage storage) {
+    public boolean checkStorage(@NotNull Storage storage) {
         return true;
     }
 

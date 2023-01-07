@@ -9,6 +9,7 @@ import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("TP")
 public class TeleportActivator extends Activator {
@@ -34,14 +35,14 @@ public class TeleportActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage storage) {
+    public boolean checkStorage(@NotNull Storage storage) {
         TeleportStorage tpStorage = (TeleportStorage) storage;
         if (cause != null && tpStorage.getCause() != cause) return false;
         return worldTo == null || tpStorage.getWorldTo().equalsIgnoreCase(worldTo);
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("cause", cause == null ? null : cause.name());
         cfg.set("world", worldTo);
     }

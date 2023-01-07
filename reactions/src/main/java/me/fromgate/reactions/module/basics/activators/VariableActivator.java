@@ -30,6 +30,7 @@ import me.fromgate.reactions.module.basics.storages.VariableStorage;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class VariableActivator extends Activator {
     private final String id;
@@ -54,14 +55,14 @@ public class VariableActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         VariableStorage ve = (VariableStorage) event;
         if (!this.id.equalsIgnoreCase(ve.getVariableId())) return false;
         return !personal || ve.getPlayer() == null;
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("variable-id", id);
         cfg.set("personal", personal);
     }

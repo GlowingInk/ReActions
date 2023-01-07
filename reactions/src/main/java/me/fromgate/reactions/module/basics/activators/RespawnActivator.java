@@ -29,6 +29,7 @@ import me.fromgate.reactions.module.basics.storages.RespawnStorage;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class RespawnActivator extends Activator {
 
@@ -50,13 +51,13 @@ public class RespawnActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         RespawnStorage pe = (RespawnStorage) event;
         return this.deathCause == DeathCause.ANY || pe.getDeathCause() == this.deathCause;
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("death-cause", deathCause.name());
     }
 

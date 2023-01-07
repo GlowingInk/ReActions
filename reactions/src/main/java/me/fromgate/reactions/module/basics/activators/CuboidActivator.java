@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -47,7 +48,7 @@ public class CuboidActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         Player player = event.getPlayer();
         UUID id = player.getUniqueId();
         boolean inCuboid = cuboid.isInside(player.getLocation(), true);
@@ -72,12 +73,12 @@ public class CuboidActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return isLocatedAt(new Location(world, x, y, z));
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("mode", mode.name());
         cfg.set("world", cuboid.getWorld());
         cfg.set("loc1.x", cuboid.getXMin());
@@ -90,10 +91,6 @@ public class CuboidActivator extends Activator implements Locatable {
 
     // TODO: toString method
 
-    @Override
-    public boolean isValid() {
-        return true;
-    }
 
     private enum CuboidMode {
         CHECK, ENTER, LEAVE;

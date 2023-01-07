@@ -9,6 +9,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class InventoryClickActivator extends Activator {
     // That's pretty freaky stuff
@@ -80,7 +81,7 @@ public class InventoryClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         InventoryClickStorage pice = (InventoryClickStorage) event;
         if (!inventoryName.isEmpty() && !pice.getInventoryName().equalsIgnoreCase(inventoryName)) return false;
         if (pice.getClickType() == null) return false;
@@ -95,7 +96,7 @@ public class InventoryClickActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("name", inventoryName);
         cfg.set("click-type", click.name());
         cfg.set("action-type", action.name());

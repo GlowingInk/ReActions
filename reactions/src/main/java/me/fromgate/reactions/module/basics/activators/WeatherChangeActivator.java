@@ -7,6 +7,7 @@ import me.fromgate.reactions.module.basics.storages.WeatherChangeStorage;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -22,7 +23,7 @@ public class WeatherChangeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage strg) {
+    public boolean checkStorage(@NotNull Storage strg) {
         WeatherChangeStorage storage = (WeatherChangeStorage) strg;
         if (world != null && !storage.getWorld().equalsIgnoreCase(world)) return false;
         if (state == WeatherState.ANY) return true;
@@ -30,7 +31,7 @@ public class WeatherChangeActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("world", world);
         cfg.set("weather", state.name());
     }

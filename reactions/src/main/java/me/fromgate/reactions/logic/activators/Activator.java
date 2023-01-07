@@ -16,7 +16,7 @@ public abstract class Activator {
      *
      * @param storage Storage with data for activator
      */
-    public final void executeActivator(Storage storage) {
+    public final void executeActivator(@NotNull Storage storage) {
         if (!checkStorage(storage)) return;
         logic.executeLogic(storage.generateContext(logic.getName()));
     }
@@ -26,7 +26,7 @@ public abstract class Activator {
      *
      * @return Related activator logic
      */
-    public final ActivatorLogic getLogic() {
+    public final @NotNull ActivatorLogic getLogic() {
         return logic;
     }
 
@@ -35,7 +35,7 @@ public abstract class Activator {
      *
      * @param cfg Section of activator
      */
-    public final void saveActivator(ConfigurationSection cfg) {
+    public final void saveActivator(@NotNull ConfigurationSection cfg) {
         saveOptions(cfg);
         logic.save(cfg);
     }
@@ -46,14 +46,14 @@ public abstract class Activator {
      * @param storage Storage with data for trigger
      * @return Are checks successfully past
      */
-    protected abstract boolean checkStorage(Storage storage);
+    protected abstract boolean checkStorage(@NotNull Storage storage);
 
     /**
      * Save activator options to the config
      *
      * @param cfg Section of activator
      */
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         // Sometimes we don't need that
     }
 

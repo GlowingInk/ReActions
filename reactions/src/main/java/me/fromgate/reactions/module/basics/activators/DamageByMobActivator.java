@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -82,7 +83,7 @@ public class DamageByMobActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         DamageByMobStorage pde = (DamageByMobStorage) event;
         if (damagerType.isEmpty()) return false;
         Entity damager = pde.getDamager();
@@ -96,11 +97,6 @@ public class DamageByMobActivator extends Activator {
         return damager.getType().name().equalsIgnoreCase(this.damagerType);
     }
 
-    private boolean isActivatorEntity(Entity entity) {
-        if (entityType.equalsIgnoreCase("ANY")) return true;
-        return entity.getType().name().equalsIgnoreCase(this.entityType);
-    }
-
     private String getMobName(Entity mob) {
         return mob.getCustomName() == null ? "" : mob.getCustomName();
     }
@@ -111,16 +107,11 @@ public class DamageByMobActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("damager-type", damagerType);
         cfg.set("damager-name", damagerName);
         cfg.set("entity-type", entityType);
         cfg.set("cause", damageCause);
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;//!Util.emptyString(damagerType);
     }
 
     @Override

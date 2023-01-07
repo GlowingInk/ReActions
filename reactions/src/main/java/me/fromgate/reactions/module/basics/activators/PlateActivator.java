@@ -35,6 +35,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class PlateActivator extends Activator implements Locatable {
     // TODO: VirtualLocation
@@ -73,7 +74,7 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         PlateStorage be = (PlateStorage) event;
         return isLocatedAt(be.getLocation());
     }
@@ -87,7 +88,7 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return this.world.equals(world.getName()) &&
                 this.x == x &&
                 this.y == y &&
@@ -95,7 +96,7 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("world", world);
         cfg.set("x", x);
         cfg.set("y", y);

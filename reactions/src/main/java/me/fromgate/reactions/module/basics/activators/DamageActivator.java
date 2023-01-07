@@ -8,6 +8,7 @@ import me.fromgate.reactions.util.enums.DamageType;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -36,7 +37,7 @@ public class DamageActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         DamageStorage de = (DamageStorage) event;
         if (!damageCauseCheck(de.getCause())) return false;
         return sourceCheck(de.getSource());
@@ -53,7 +54,7 @@ public class DamageActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("cause", this.damageCause);
         cfg.set("source", this.source.name());
     }

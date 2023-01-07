@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"CONSUME", "EAT"})
 public class ItemConsumeActivator extends Activator {
@@ -51,12 +52,12 @@ public class ItemConsumeActivator extends Activator {
         return new ItemConsumeActivator(base, item);
     }
 
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         ItemConsumeStorage ie = (ItemConsumeStorage) event;
         return item.isSimilar(ie.getItem());
     }
 
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("item", item.toString());
     }
 

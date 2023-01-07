@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -62,14 +63,14 @@ public class MessageActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("mask", mask);
         cfg.set("type", type.name());
         cfg.set("source", source.name());
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         MessageStorage e = (MessageStorage) event;
         return e.isForActivator(this);
     }

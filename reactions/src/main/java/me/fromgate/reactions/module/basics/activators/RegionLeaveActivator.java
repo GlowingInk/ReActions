@@ -35,6 +35,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"RGLEAVE", "RG_LREAVE"})
 public class RegionLeaveActivator extends Activator implements Locatable {
@@ -60,7 +61,7 @@ public class RegionLeaveActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         RegionLeaveStorage be = (RegionLeaveStorage) event;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }
@@ -71,12 +72,12 @@ public class RegionLeaveActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return isLocatedAt(new Location(world, x, y, z));
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("region", region);
     }
 

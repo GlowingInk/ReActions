@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -37,13 +38,13 @@ public class BlockBreakActivator extends Activator implements Locatable {
     }
 
     public static BlockBreakActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        Material block = ItemUtils.getMaterial(cfg.getString("block"));
+        Material block = ItemUtils.getMaterial(cfg.getString("block", ""));
         String loc = cfg.getString("loc");
         return new BlockBreakActivator(base, block, loc);
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         BlockBreakStorage bbe = (BlockBreakStorage) event;
         Block brokenBlock = bbe.getBlock();
         if (brokenBlock == null) return false;
@@ -67,12 +68,12 @@ public class BlockBreakActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return isLocatedAt(new Location(world, x, y, z));
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("block", blockType == null ? null : blockType.name());
         cfg.set("location", Utils.isStringEmpty(blockLocation) ? null : blockLocation);
     }

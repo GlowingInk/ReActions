@@ -361,17 +361,25 @@ public class Parameters implements Parameterizable {
     }
 
     public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return containsAny(Arrays.asList(keys));
+        return getContainedKey(keys) != null;
     }
 
-    public boolean containsAny(@NotNull Collection<@NotNull String> keys) {
-        if (isEmpty()) return false;
+    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
+        return getContainedKey(keys) != null;
+    }
+
+    public @Nullable String getContainedKey(@NotNull String @NotNull ... keys) {
+        return getContainedKey(Arrays.asList(keys));
+    }
+
+    public @Nullable String getContainedKey(@NotNull Iterable<@NotNull String> keys) {
+        if (isEmpty()) return null;
         for (String key : keys) {
             if (contains(key)) {
-                return true;
+                return key;
             }
         }
-        return false;
+        return null;
     }
 
     @Contract(pure = true)

@@ -31,6 +31,7 @@ import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemWearActivator extends Activator /*implements Manageable*/ {
     // TODO: Store VirtualItem
@@ -56,7 +57,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         if (item.isEmpty() || (VirtualItem.asItem(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
             return false;
@@ -66,7 +67,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("item", item);
         // cfg.set("wear-slot", this.slot.name());
     }

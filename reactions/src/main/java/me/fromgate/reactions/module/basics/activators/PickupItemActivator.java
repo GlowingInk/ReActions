@@ -7,6 +7,7 @@ import me.fromgate.reactions.module.basics.storages.PickupItemStorage;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 2017-09-04.
@@ -30,19 +31,14 @@ public class PickupItemActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         PickupItemStorage pie = (PickupItemStorage) event;
         return item.isSimilar(pie.getItem());
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("item", item.toString());
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
     }
 
     @Override

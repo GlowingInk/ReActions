@@ -36,6 +36,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -75,7 +76,7 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         MobClickStorage me = (MobClickStorage) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
@@ -107,12 +108,12 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean isLocatedAt(World world, int x, int y, int z) {
+    public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
         return isLocatedAt(new Location(world, x, y, z));
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("mob-type", mobType);
         cfg.set("mob-name", mobName.isEmpty() ? null : mobName);
         cfg.set("location", mobLocation.isEmpty() ? null : mobLocation);

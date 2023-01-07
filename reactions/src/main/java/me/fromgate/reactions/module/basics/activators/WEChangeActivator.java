@@ -13,6 +13,7 @@ import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -35,13 +36,13 @@ public class WEChangeActivator extends Activator {
     }
 
     public static WEChangeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        Material blockType = ItemUtils.getMaterial(cfg.getString("block-type"));
+        Material blockType = ItemUtils.getMaterial(cfg.getString("block-type", ""));
         String region = cfg.getString("region", "");
         return new WEChangeActivator(base, blockType, region);
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         WeChangeStorage e = (WeChangeStorage) event;
         if (!checkBlockType(e.getBlockType())) return false;
         return region.isEmpty() || RaWorldGuard.isLocationInRegion(e.getLocation(), region);
@@ -52,14 +53,9 @@ public class WEChangeActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("block-type", blockType == null ? null : blockType.name());
         cfg.set("region", region);
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
     }
 
     @Override

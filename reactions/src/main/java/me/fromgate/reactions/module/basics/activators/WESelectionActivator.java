@@ -8,6 +8,7 @@ import me.fromgate.reactions.module.basics.storages.WeSelectionRegionStorage;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"WE_SELECTION_REGION", "WESELECTION"})
 public class WESelectionActivator extends Activator {
@@ -37,7 +38,7 @@ public class WESelectionActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         WeSelectionRegionStorage e = (WeSelectionRegionStorage) event;
         WeSelection selection = e.getSelection();
         if (!selection.isValid()) return false;
@@ -55,15 +56,10 @@ public class WESelectionActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("min-blocks", minBlocks);
         cfg.set("max-blocks", maxBlocks);
         cfg.set("type", typeSelection);
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
     }
 
     @Override

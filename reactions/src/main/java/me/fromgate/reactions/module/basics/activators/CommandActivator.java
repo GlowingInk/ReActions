@@ -32,6 +32,7 @@ import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class CommandActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage storage) {
+    public boolean checkStorage(@NotNull Storage storage) {
         CommandStorage cs = (CommandStorage) storage;
         if (!consoleAllowed && cs.getSender() instanceof ConsoleCommandSender) return false;
         if (checkExact) {
@@ -118,7 +119,7 @@ public class CommandActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("regex", useRegex);
         cfg.set("command", command);
         cfg.set("console_allowed", consoleAllowed);

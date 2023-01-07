@@ -28,6 +28,7 @@ import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.JoinStorage;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class JoinActivator extends Activator {
 
@@ -49,7 +50,7 @@ public class JoinActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         JoinStorage ce = (JoinStorage) event;
         return isJoinActivate(ce.isFirstJoin());
     }
@@ -60,7 +61,7 @@ public class JoinActivator extends Activator {
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("join-state", (firstJoin ? "TRUE" : "ANY"));
     }
 

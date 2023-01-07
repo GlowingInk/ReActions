@@ -30,6 +30,7 @@ import me.fromgate.reactions.util.enums.HandType;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemClickActivator extends Activator {
     private final VirtualItem item;
@@ -54,13 +55,13 @@ public class ItemClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         ItemClickStorage ie = (ItemClickStorage) event;
         return hand.isAllowed(ie.getHand()) && item.isSimilar(ie.getItem());
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("item", item.toString());
         cfg.set("hand", hand.name());
     }

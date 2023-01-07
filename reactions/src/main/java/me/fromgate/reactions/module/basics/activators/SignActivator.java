@@ -34,6 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,14 +95,14 @@ public class SignActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(Storage event) {
+    public boolean checkStorage(@NotNull Storage event) {
         SignStorage signEvent = (SignStorage) event;
         if (click.checkRight(signEvent.isLeftClick())) return false;
         return checkMask(signEvent.getSignLines());
     }
 
     @Override
-    public void saveOptions(ConfigurationSection cfg) {
+    public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("sign-mask", maskLines);
         cfg.set("click-type", click.name());
     }
