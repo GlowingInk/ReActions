@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
+import static me.fromgate.reactions.util.Utils.*;
 import static org.testng.Assert.assertEquals;
 
 public class UtilsTest {
@@ -25,7 +26,7 @@ public class UtilsTest {
     @Test(dataProvider = "isStringEmptyData")
     public void isStringEmptyTest(String input, boolean expected) {
         assertEquals(
-                Utils.isStringEmpty(input),
+                isStringEmpty(input),
                 expected
         );
     }
@@ -42,7 +43,7 @@ public class UtilsTest {
     @Test(dataProvider = "containsWordData")
     public void containsWordTest(String word, String text, boolean expected) {
         assertEquals(
-                Utils.containsWord(word, text),
+                containsWord(word, text),
                 expected
         );
     }
@@ -52,7 +53,7 @@ public class UtilsTest {
         String[] arr = new String[20];
         Arrays.fill(arr, "");
         assertEquals(
-                Utils.getFilledEmptyList(20),
+                getFilledEmptyList(20),
                 List.of(arr)
         );
     }
@@ -70,7 +71,7 @@ public class UtilsTest {
     @Test(dataProvider = "searchNotNullData")
     public void searchNotNullTest(String expected, String def, String... values) {
         assertEquals(
-                Utils.searchNotNull(def, values),
+                searchNotNull(def, values),
                 expected
         );
     }
@@ -88,12 +89,12 @@ public class UtilsTest {
     @Test(dataProvider = "getEnumData")
     public void getEnumTest(String name, RoundingMode def, RoundingMode expected) {
         assertEquals(
-                Utils.getEnum(RoundingMode.class, name, def),
+                getEnum(RoundingMode.class, name, def),
                 expected
         );
         if (def != null) {
             assertEquals(
-                    Utils.getEnum(name, def),
+                    getEnum(name, def),
                     expected
             );
         }
@@ -112,7 +113,7 @@ public class UtilsTest {
     @Test(dataProvider = "cutBuilderData")
     public void cutBuilderTest(String input, int offset, String expected) {
         assertEquals(
-                Utils.cutBuilder(new StringBuilder(input), offset),
+                cutBuilder(new StringBuilder(input), offset),
                 expected
         );
     }
@@ -129,7 +130,7 @@ public class UtilsTest {
     @Test(dataProvider = "getColorData")
     public void getColorTest(String input, Color expected) {
         assertEquals(
-                Utils.getColor(input),
+                getColor(input),
                 expected
         );
     }
@@ -147,7 +148,7 @@ public class UtilsTest {
     @Test(dataProvider = "literalSplitData")
     public void literalSplitTest(String input, List<String> expected) {
         assertEquals(
-                Utils.literalSplit(input, ";"),
+                literalSplit(input, ";"),
                 expected
         );
     }

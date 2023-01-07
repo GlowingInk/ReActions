@@ -21,7 +21,7 @@
  */
 
 
-package me.fromgate.reactions.util.location;
+package me.fromgate.reactions.holders;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

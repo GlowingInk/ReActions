@@ -17,7 +17,7 @@ public class TimeUtilsTest {
     }
 
     @Test(dataProvider = "parseTimeSplittedData")
-    public void testParseTimeSplitted(String timeStr, long expectedTime) {
+    public void parseTimeSplittedTest(String timeStr, long expectedTime) {
         assertEquals(
                 parseTimeSplitted(timeStr),
                 expectedTime
@@ -33,7 +33,7 @@ public class TimeUtilsTest {
     }
 
     @Test(dataProvider = "parseTimePreciseData")
-    public void testParseTimePrecise(String timeStr, long expectedTime) {
+    public void parseTimePreciseTest(String timeStr, long expectedTime) {
         assertEquals(
                 parseTimePrecise(timeStr),
                 expectedTime
