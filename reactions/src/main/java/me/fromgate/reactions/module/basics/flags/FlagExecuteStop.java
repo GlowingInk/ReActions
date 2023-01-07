@@ -24,12 +24,12 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases("EXEC_STOP")
+@Aliased.Names("EXEC_STOP")
 public class FlagExecuteStop implements Flag {
 
     @Override

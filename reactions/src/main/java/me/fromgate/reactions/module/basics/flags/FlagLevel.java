@@ -25,11 +25,11 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases("LEVEL")
+@Aliased.Names("LEVEL")
 public class FlagLevel implements Flag {
 
     @Override

@@ -3,14 +3,14 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by MaxDikiy on 5/4/2017.
  */
-@Aliases("WALKSPEED")
+@Aliased.Names("WALKSPEED")
 public class FlagWalkSpeed implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {

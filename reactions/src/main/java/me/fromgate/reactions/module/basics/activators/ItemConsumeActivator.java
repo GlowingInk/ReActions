@@ -26,12 +26,12 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
-@Aliases({"CONSUME", "EAT"})
+@Aliased.Names({"CONSUME", "EAT"})
 public class ItemConsumeActivator extends Activator {
     private final VirtualItem item;
     // TODO: Hand option

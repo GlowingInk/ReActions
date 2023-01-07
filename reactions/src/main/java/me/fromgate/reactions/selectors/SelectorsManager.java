@@ -1,6 +1,6 @@
 package me.fromgate.reactions.selectors;
 
-import me.fromgate.reactions.util.alias.Aliased;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,7 @@ package me.fromgate.reactions.placeholders.resolvers;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.alias.Aliased;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

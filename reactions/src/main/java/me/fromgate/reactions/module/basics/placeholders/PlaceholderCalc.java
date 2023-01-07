@@ -4,12 +4,12 @@ import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.imdanix.math.ExpressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Aliases({"calculate", "expression", "eval"})
+@Aliased.Names({"calculate", "expression", "eval"})
 public class PlaceholderCalc implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {

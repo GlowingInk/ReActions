@@ -2,7 +2,7 @@ package me.fromgate.reactions.logic.activity;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.alias.Aliased;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

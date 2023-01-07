@@ -3,13 +3,13 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.module.basics.BasicModule;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-@Aliases("RESPOND")
+@Aliased.Names("RESPOND")
 public class ActionResponse implements Action {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {

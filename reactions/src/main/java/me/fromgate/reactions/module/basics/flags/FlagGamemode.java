@@ -25,11 +25,11 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases({"GM", "GAME_MODE"})
+@Aliased.Names({"GM", "GAME_MODE"})
 public class FlagGamemode implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {

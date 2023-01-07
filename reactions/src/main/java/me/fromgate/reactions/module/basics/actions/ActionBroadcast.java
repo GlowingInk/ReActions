@@ -24,12 +24,12 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases("MSGALL")
+@Aliased.Names("MSGALL")
 public class ActionBroadcast implements Action {
 
     @Override

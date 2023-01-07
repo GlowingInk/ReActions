@@ -27,13 +27,13 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: Vault module
-@Aliases({"VAULT_MONEY", "BALANCE"})
+@Aliased.Names({"VAULT_MONEY", "BALANCE"})
 public class FlagMoney implements Flag {
     @Override
     public @NotNull String getName() {

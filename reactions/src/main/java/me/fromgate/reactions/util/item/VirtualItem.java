@@ -2,8 +2,8 @@ package me.fromgate.reactions.util.item;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.item.aspects.*;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameterizable;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Material;

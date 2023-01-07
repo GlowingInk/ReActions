@@ -1,6 +1,6 @@
 package me.fromgate.reactions.util.item.aspects;
 
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-@Aliases("skull-owner")
+@Aliased.Names("skull-owner")
 public class HeadAspect implements MetaAspect { // TODO: Support UUIDs and raw values
     @Override
     public @NotNull String getName() {

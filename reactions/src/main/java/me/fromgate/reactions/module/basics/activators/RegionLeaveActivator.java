@@ -30,13 +30,13 @@ import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.RegionLeaveStorage;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
-@Aliases({"RGLEAVE", "RG_LREAVE"})
+@Aliased.Names({"RGLEAVE", "RG_LREAVE"})
 public class RegionLeaveActivator extends Activator implements Locatable {
 
     private final String region;

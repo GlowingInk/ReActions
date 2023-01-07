@@ -27,10 +27,10 @@ import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Rng;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases("PROBABILITY")
+@Aliased.Names("PROBABILITY")
 public class FlagChance implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {

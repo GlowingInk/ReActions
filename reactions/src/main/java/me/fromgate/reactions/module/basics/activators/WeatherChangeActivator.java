@@ -4,13 +4,13 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.WeatherChangeStorage;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Locale;
 
-@Aliases("WEATHER")
+@Aliased.Names("WEATHER")
 public class WeatherChangeActivator extends Activator {
     private final String world;
     private final WeatherState state;

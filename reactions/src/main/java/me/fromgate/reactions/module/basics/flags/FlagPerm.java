@@ -24,10 +24,10 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases({"PERM", "HAS_PERMISSION"})
+@Aliased.Names({"PERM", "HAS_PERMISSION"})
 public class FlagPerm implements Flag {
     @Override
     public @NotNull String getName() {

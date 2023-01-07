@@ -3,9 +3,9 @@ package me.fromgate.reactions.module.basics.placeholders;
 import me.fromgate.reactions.holders.PlayerRespawner;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 // TODO: Split into different classes?
-@Aliases({
+@Aliased.Names({
         "player_loc", "player_loc_eye",
         "player_loc_death", "deathpoint",
         "player_loc_view", "player_loc_view_solid",

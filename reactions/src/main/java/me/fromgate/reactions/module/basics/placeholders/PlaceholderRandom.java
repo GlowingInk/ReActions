@@ -5,12 +5,12 @@ import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Rng;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
-@Aliases({"rnd", "rng"})
+@Aliased.Names({"rnd", "rng"})
 public class PlaceholderRandom implements Placeholder.Keyed {
 
     private static final Pattern WORD_LIST = Pattern.compile("[\\S,]*\\S");

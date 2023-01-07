@@ -25,13 +25,13 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@Aliases("FLAGS_OR")
+@Aliased.Names("FLAGS_OR")
 public class FlagFlagSet implements Flag {
     private final ActivitiesRegistry registry;
 

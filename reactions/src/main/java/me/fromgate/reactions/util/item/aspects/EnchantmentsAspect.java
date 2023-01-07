@@ -1,8 +1,8 @@
 package me.fromgate.reactions.util.item.aspects;
 
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.item.ItemUtils;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,7 +15,7 @@ import java.util.function.ToIntFunction;
 
 import static me.fromgate.reactions.util.Utils.cutBuilder;
 
-@Aliases({"enchants", "stored-enchantments", "stored-enchants"})
+@Aliased.Names({"enchants", "stored-enchantments", "stored-enchants"})
 public class EnchantmentsAspect implements MetaAspect {
     @Override
     public @NotNull String getName() {

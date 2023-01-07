@@ -6,20 +6,19 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.selectors.Selector;
+import me.fromgate.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface Module {
+public interface Module extends Named {
 
     boolean isPluginDepended();
 
     default boolean init(@NotNull ReActions.Platform platform) {
         return true;
     }
-
-    @NotNull String getName();
 
     @NotNull Collection<String> getAuthors();
 

@@ -2,8 +2,8 @@ package me.fromgate.reactions.logic.activators;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.ActivatorLogic;
-import me.fromgate.reactions.util.alias.Aliased;
 import me.fromgate.reactions.util.function.RaGenerator;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

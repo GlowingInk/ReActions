@@ -26,8 +26,8 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-@Aliases("POTION_EFFECT")
+@Aliased.Names("POTION_EFFECT")
 public class ActionPotion implements Action {
 
     @Override

@@ -3,9 +3,9 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.mob.EntityUtils;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -20,7 +20,7 @@ import java.util.Locale;
 /**
  * Created by MaxDikiy on 20/10/2017.
  */
-@Aliases("CLEAR_RADIUS")
+@Aliased.Names("CLEAR_RADIUS")
 public class ActionClearRadius implements Action {
     // TODO: Too weird. Optimize, simplify
 

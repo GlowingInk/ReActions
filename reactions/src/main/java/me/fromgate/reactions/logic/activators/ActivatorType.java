@@ -1,6 +1,7 @@
 package me.fromgate.reactions.logic.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.util.naming.Named;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -8,11 +9,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface ActivatorType {
+public interface ActivatorType extends Named {
     /**
      * Basically an ID of activator type
      * @return name of activator type
      */
+    @Override
     @NotNull String getName();
 
     // TODO Module name?

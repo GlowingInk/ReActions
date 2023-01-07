@@ -26,8 +26,8 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -39,7 +39,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-@Aliases("MSG")
+@Aliased.Names("MSG")
 public class ActionMessage implements Action {
 
     @Override

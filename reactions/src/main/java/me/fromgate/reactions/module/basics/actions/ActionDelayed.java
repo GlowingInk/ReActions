@@ -6,12 +6,12 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.TimeUtils;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases("ACTDELAY")
+@Aliased.Names("ACTDELAY")
 public class ActionDelayed implements Action {
 
     @Override

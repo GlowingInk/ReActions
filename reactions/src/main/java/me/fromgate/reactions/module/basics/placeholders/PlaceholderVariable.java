@@ -3,11 +3,11 @@ package me.fromgate.reactions.module.basics.placeholders;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.placeholders.Placeholder;
-import me.fromgate.reactions.util.alias.Aliases;
+import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Aliases({"var", "varp", "varplayer"})
+@Aliased.Names({"var", "varp", "varplayer"})
 public class PlaceholderVariable implements Placeholder.Keyed {
     @Override
     public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String params) {

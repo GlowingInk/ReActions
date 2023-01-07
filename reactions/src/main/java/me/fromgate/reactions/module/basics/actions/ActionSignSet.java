@@ -28,8 +28,8 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.alias.Aliases;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -37,7 +37,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 
-@Aliases("SIGN_LINE")
+@Aliased.Names("SIGN_LINE")
 public class ActionSignSet implements Action {
 
     @Override

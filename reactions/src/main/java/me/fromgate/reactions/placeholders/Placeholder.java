@@ -1,12 +1,11 @@
 package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public sealed interface Placeholder permits Placeholder.Keyed, Placeholder.Dynamic, Placeholder.Preprocess {
-    @NotNull String getName();
-
+public sealed interface Placeholder extends Named permits Placeholder.Keyed, Placeholder.Dynamic, Placeholder.Preprocess {
     // TODO: boolean requiresPlayer?
 
     non-sealed interface Keyed extends Placeholder {
