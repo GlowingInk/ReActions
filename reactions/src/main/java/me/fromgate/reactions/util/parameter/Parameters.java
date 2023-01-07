@@ -3,6 +3,7 @@ package me.fromgate.reactions.util.parameter;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.Maps;
+import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.function.SafeSupplier;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.configuration.ConfigurationSection;
@@ -300,25 +301,15 @@ public class Parameters implements Parameterizable {
     }
 
     public boolean getBoolean(@NotNull String key, boolean def) {
-        String value = params.get(key);
-        if (value != null) {
-            return switch (value.toLowerCase(Locale.ROOT)) {
-                case "true" -> true;
-                case "false" -> false;
-                default -> def;
-            };
-        } else return def;
+        return getTriBoolean(key).asBoolean(def);
     }
 
     public boolean getBoolean(@NotNull String key, @NotNull BooleanSupplier def) {
-        String value = params.get(key);
-        if (value != null) {
-            return switch (value.toLowerCase(Locale.ROOT)) {
-                case "true" -> true;
-                case "false" -> false;
-                default -> def.getAsBoolean();
-            };
-        } else return def.getAsBoolean();
+        return getTriBoolean(key).asBoolean(def);
+    }
+
+    public @NotNull TriBoolean getTriBoolean(@NotNull String key) {
+        return TriBoolean.getByName(getString(key));
     }
 
     public @Unmodifiable @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
