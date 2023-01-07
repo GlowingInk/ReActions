@@ -11,19 +11,19 @@ import java.util.Collection;
 import java.util.List;
 
 public interface Aliased extends Named {
-    @NotNull Collection <@NotNull String> aliases();
+    @NotNull Collection<@NotNull String> getAliases();
 
-    static @NotNull Collection <@NotNull String> getAliases(@NotNull Class<?> clazz) {
+    static @NotNull Collection<@NotNull String> getAliasesOf(@NotNull Class<?> clazz) {
         if (clazz.isAnnotationPresent(Names.class)) {
             return Arrays.asList(clazz.getAnnotation(Names.class).value());
         }
         return List.of();
     }
 
-    static @NotNull Collection <@NotNull String> getAliases(@NotNull Object obj) {
+    static @NotNull Collection<@NotNull String> getAliasesOf(@NotNull Object obj) {
         return obj instanceof Aliased aliased
-                ? aliased.aliases()
-                : getAliases(obj.getClass());
+                ? aliased.getAliases()
+                : getAliasesOf(obj.getClass());
     }
 
     @Retention(RetentionPolicy.RUNTIME)

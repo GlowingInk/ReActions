@@ -58,7 +58,7 @@ public abstract class Activator {
     }
 
     /**
-     * TODO: Actually pretty useless right now
+     * TODO: Validation on creation instead
      * Check if trigger is valid
      *
      * @return Is trigger valid

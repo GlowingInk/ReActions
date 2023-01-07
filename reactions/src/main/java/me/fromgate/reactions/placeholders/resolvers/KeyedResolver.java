@@ -20,7 +20,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
         String key = ph.getName().toLowerCase(Locale.ROOT);
         if (placeholders.containsKey(key)) return false;
         placeholders.put(key, ph);
-        for (String alias : Aliased.getAliases(ph)) {
+        for (String alias : Aliased.getAliasesOf(ph)) {
             placeholders.putIfAbsent(alias.toLowerCase(Locale.ROOT), ph);
         }
         return true;

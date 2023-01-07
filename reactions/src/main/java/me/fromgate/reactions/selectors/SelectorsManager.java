@@ -28,7 +28,7 @@ public class SelectorsManager {
         }
         selectors.add(selector);
         selectorByName.put(selector.getName().toLowerCase(Locale.ROOT), selector);
-        for (String alias : Aliased.getAliases(selector)) {
+        for (String alias : Aliased.getAliasesOf(selector)) {
             selectorByName.putIfAbsent(alias.toLowerCase(Locale.ROOT), selector);
         }
     }

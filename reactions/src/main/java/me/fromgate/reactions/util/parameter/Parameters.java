@@ -338,12 +338,12 @@ public class Parameters implements Parameterizable {
         }
     }
 
-    public boolean contains(@NotNull String key, @NotNull Predicate<String> check) {
-        return check.test(getString(key));
-    }
-
     public boolean contains(@NotNull String key) {
         return params.containsKey(key);
+    }
+
+    public boolean contains(@NotNull String key, @NotNull Predicate<String> valueCheck) {
+        return valueCheck.test(getString(key, null));
     }
 
     public boolean containsEvery(@NotNull String @NotNull ... keys) {
@@ -354,6 +354,20 @@ public class Parameters implements Parameterizable {
         if (keys.size() > size()) return false;
         for (String key : keys) {
             if (!contains(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean containsEvery(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
+        return containsEvery(valueCheck, Arrays.asList(keys));
+    }
+
+    public boolean containsEvery(@NotNull Predicate<String> valueCheck, @NotNull Collection<@NotNull String> keys) {
+        if (keys.size() > size()) return false;
+        for (String key : keys) {
+            if (!contains(key, valueCheck)) {
                 return false;
             }
         }
@@ -376,6 +390,28 @@ public class Parameters implements Parameterizable {
         if (isEmpty()) return null;
         for (String key : keys) {
             if (contains(key)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
+        return getContainedKey(valueCheck, keys) != null;
+    }
+
+    public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
+        return getContainedKey(valueCheck, keys) != null;
+    }
+
+    public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
+        return getContainedKey(valueCheck, Arrays.asList(keys));
+    }
+
+    public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
+        if (isEmpty()) return null;
+        for (String key : keys) {
+            if (contains(key, valueCheck)) {
                 return key;
             }
         }

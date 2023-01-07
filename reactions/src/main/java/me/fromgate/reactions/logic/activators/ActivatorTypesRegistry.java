@@ -45,9 +45,9 @@ public class ActivatorTypesRegistry {
         }
         typesAliases.put(name, type);
         types.put(type.getActivatorClass(), type);
-        Collection<String> aliases = Aliased.getAliases(type);
+        Collection<String> aliases = Aliased.getAliasesOf(type);
         if (aliases.isEmpty()) {
-            aliases = Aliased.getAliases(type.getActivatorClass());
+            aliases = Aliased.getAliasesOf(type.getActivatorClass());
         }
         for (String alias : aliases) {
             typesAliases.putIfAbsent(alias.toUpperCase(Locale.ROOT), type);

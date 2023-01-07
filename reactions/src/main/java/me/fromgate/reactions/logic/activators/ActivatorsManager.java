@@ -55,9 +55,9 @@ public class ActivatorsManager {
 
         if (file.isDirectory()) {
             if (useGroup) {
-                group = group.isEmpty() ?
-                        file.getName() :
-                        group + File.separator + file.getName();
+                group = group.isEmpty()
+                        ? file.getName()
+                        : group + File.separator + file.getName();
             }
             for (File inner : Objects.requireNonNull(file.listFiles())) {
                 loadGroupsRecursively(inner, group, clear, true);
@@ -72,9 +72,9 @@ public class ActivatorsManager {
                 return;
             }
             String localGroup = file.getName().substring(0, file.getName().length() - 4);
-            group = group.isEmpty() ?
-                    localGroup :
-                    group + File.separator + localGroup;
+            group = group.isEmpty()
+                    ? localGroup
+                    : group + File.separator + localGroup;
             if (clear) {
                 Set<Activator> activators = activatorsGroups.remove(group);
                 if (activators != null) for (Activator activator : activators) {

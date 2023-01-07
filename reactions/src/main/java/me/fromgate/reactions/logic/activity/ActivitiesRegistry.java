@@ -25,7 +25,7 @@ public class ActivitiesRegistry {
             throw new IllegalStateException("Action '" + action.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
         }
         actionByName.put(action.getName().toUpperCase(Locale.ROOT), action);
-        for (String alias : Aliased.getAliases(action)) {
+        for (String alias : Aliased.getAliasesOf(action)) {
             actionByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), action);
         }
     }
@@ -35,7 +35,7 @@ public class ActivitiesRegistry {
             throw new IllegalStateException("Flag '" + flag.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
         }
         flagByName.put(flag.getName().toUpperCase(Locale.ROOT), flag);
-        for (String alias : Aliased.getAliases(flag)) {
+        for (String alias : Aliased.getAliasesOf(flag)) {
             flagByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), flag);
         }
     }

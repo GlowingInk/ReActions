@@ -60,7 +60,7 @@ public final class VirtualItem implements Parameterizable {
     private static void registerAspect(@NotNull MetaAspect aspect) {
         ASPECTS_BY_NAME.put(aspect.getName().toLowerCase(Locale.ROOT), aspect);
         ASPECTS.add(aspect);
-        for (String alias : Aliased.getAliases(aspect)) {
+        for (String alias : Aliased.getAliasesOf(aspect)) {
             ASPECTS_BY_NAME.putIfAbsent(alias.toLowerCase(Locale.ROOT), aspect);
         }
     }
