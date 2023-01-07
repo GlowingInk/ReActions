@@ -43,8 +43,8 @@ public enum TriBoolean {
     public static @NotNull TriBoolean getByName(@Nullable String str) {
         if (str == null) return ANY;
         return switch (str.toUpperCase(Locale.ROOT)) {
-            case "TRUE" -> TRUE;
-            case "FALSE" -> FALSE;
+            case "TRUE", "ON", "ENABLE", "ENABLED" -> TRUE;
+            case "FALSE", "OFF", "DISABLE", "DISABLED" -> FALSE;
             default -> ANY;
         };
     }

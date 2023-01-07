@@ -57,7 +57,7 @@ public class ItemClickActivator extends Activator {
     @Override
     public boolean checkStorage(@NotNull Storage event) {
         ItemClickStorage ie = (ItemClickStorage) event;
-        return hand.isAllowed(ie.getHand()) && item.isSimilar(ie.getItem());
+        return hand.isValidFor(ie.getHand()) && item.isSimilar(ie.getItem());
     }
 
     @Override

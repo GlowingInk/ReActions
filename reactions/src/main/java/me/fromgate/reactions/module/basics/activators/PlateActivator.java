@@ -38,7 +38,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public class PlateActivator extends Activator implements Locatable {
-    // TODO: VirtualLocation
+    // TODO: Use ImplicitPosition
     private final String world;
     private final int x;
     private final int y;

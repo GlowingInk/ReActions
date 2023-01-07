@@ -37,6 +37,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
+// TODO Use TriBoolean (when clicking on disabled button)
 public class ButtonActivator extends Activator implements Locatable {
     private final String world;
     private final int x;

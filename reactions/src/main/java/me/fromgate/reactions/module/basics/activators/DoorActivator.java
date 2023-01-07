@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+// TODO Use custom enum or TriBoolean
 public class DoorActivator extends Activator implements Locatable {
     private final String state; //open, close
     //координаты нижнего блока двери

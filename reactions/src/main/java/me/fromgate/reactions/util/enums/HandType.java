@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public enum HandType {
     MAIN,
-    OFF,
+    SECOND,
     ANY;
 
     public static HandType getByName(@NotNull String clickStr) {
@@ -17,15 +17,15 @@ public enum HandType {
          */
         return switch (clickStr.toUpperCase(Locale.ROOT)) {
             case "MAIN" -> HandType.MAIN;
-            case "OFF", "FALSE" -> HandType.OFF;
+            case "OFF", "FALSE", "SECOND" -> HandType.SECOND;
             default -> HandType.ANY;
         };
     }
 
-    public boolean isAllowed(@NotNull EquipmentSlot slot) {
+    public boolean isValidFor(@NotNull EquipmentSlot slot) {
         return switch (this) {
             case MAIN -> slot == EquipmentSlot.HAND;
-            case OFF -> slot == EquipmentSlot.OFF_HAND;
+            case SECOND -> slot == EquipmentSlot.OFF_HAND;
             case ANY -> true;
         };
     }

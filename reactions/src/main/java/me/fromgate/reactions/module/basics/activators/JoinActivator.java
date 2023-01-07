@@ -26,48 +26,41 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.JoinStorage;
+import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public class JoinActivator extends Activator {
+    private final TriBoolean firstJoin;
 
-    private final boolean firstJoin;
-
-    private JoinActivator(ActivatorLogic base, boolean firstJoin) {
+    private JoinActivator(ActivatorLogic base, TriBoolean firstJoin) {
         super(base);
         this.firstJoin = firstJoin;
     }
 
     public static JoinActivator create(ActivatorLogic base, Parameters param) {
-        boolean firstJoin = param.origin().contains("first");
-        return new JoinActivator(base, firstJoin);
+        return new JoinActivator(base, param.getTriBoolean("first-join"));
     }
 
     public static JoinActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        boolean firstJoin = cfg.getString("join-state", "ANY").equalsIgnoreCase("first");
-        return new JoinActivator(base, firstJoin);
+        return new JoinActivator(base, TriBoolean.getByName(cfg.getString("first-join")));
     }
 
     @Override
     public boolean checkStorage(@NotNull Storage event) {
         JoinStorage ce = (JoinStorage) event;
-        return isJoinActivate(ce.isFirstJoin());
-    }
-
-    private boolean isJoinActivate(boolean joinFirstTime) {
-        if (this.firstJoin) return joinFirstTime;
-        return true;
+        return firstJoin.isValidFor(ce.isFirstJoin());
     }
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("join-state", (firstJoin ? "TRUE" : "ANY"));
+        cfg.set("join-state", firstJoin.name());
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (first join:" + this.firstJoin + ")";
+        return super.toString() + " (first-join:" + this.firstJoin + ")";
     }
 
 }

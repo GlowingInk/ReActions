@@ -312,6 +312,11 @@ public class Parameters implements Parameterizable {
         return TriBoolean.getByName(getString(key));
     }
 
+    public @NotNull TriBoolean getTriBoolean(@NotNull String key, @NotNull SafeSupplier<TriBoolean> def) {
+        String str = getString(key, null);
+        return str == null ? def.get() : TriBoolean.getByName(str);
+    }
+
     public @Unmodifiable @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
         if (contains(baseKey + "1")) {
             List<String> keys = new ArrayList<>();

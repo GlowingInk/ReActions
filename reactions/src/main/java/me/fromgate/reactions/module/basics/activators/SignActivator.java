@@ -42,7 +42,7 @@ import java.util.List;
 public class SignActivator extends Activator {
 
     private final List<String> maskLines;
-    private final ClickType click;
+    private final ClickType click; // TODO HandType instead
 
     private SignActivator(ActivatorLogic base, ClickType click, List<String> maskLines) {
         super(base);

@@ -28,6 +28,7 @@ import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.module.basics.storages.LeverStorage;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.BlockParameters;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
@@ -37,17 +38,15 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
+// TODO Use ImplicitLocation
 public class LeverActivator extends Activator implements Locatable {
-    // TODO: Use enum
-    private final String state; //on, off
+    private final TriBoolean state;
     private final String world;
     private final int x;
     private final int y;
     private final int z;
 
-    private LeverActivator(ActivatorLogic base, String state, String world, int x, int y, int z) {
+    private LeverActivator(ActivatorLogic base, TriBoolean state, String world, int x, int y, int z) {
         super(base);
         this.state = state;
         this.world = world;
@@ -59,11 +58,8 @@ public class LeverActivator extends Activator implements Locatable {
     public static LeverActivator create(ActivatorLogic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
-        String line = param.origin();
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
-            String state = "ANY";
-            if (line.equalsIgnoreCase("on")) state = "ON";
-            if (line.equalsIgnoreCase("off")) state = "OFF";
+            TriBoolean state = param.getTriBoolean(Parameters.ORIGIN, () -> param.getTriBoolean("lever-state"));
             String world = targetBlock.getWorld().getName();
             int x = targetBlock.getX();
             int y = targetBlock.getY();
@@ -77,8 +73,7 @@ public class LeverActivator extends Activator implements Locatable {
         int x = cfg.getInt("x");
         int y = cfg.getInt("y");
         int z = cfg.getInt("z");
-        String state = cfg.getString("lever-state", "ANY");
-        if ((!state.equalsIgnoreCase("on")) && (!state.equalsIgnoreCase("off"))) state = "ANY";
+        TriBoolean state = TriBoolean.getByName(cfg.getString("lever-state", "ANY"));
         return new LeverActivator(base, state, world, x, y, z);
     }
 
@@ -87,8 +82,7 @@ public class LeverActivator extends Activator implements Locatable {
         LeverStorage le = (LeverStorage) event;
         if (le.getLever() == null) return false;
         if (!isLocatedAt(le.getLeverLocation())) return false;
-        if (this.state.equalsIgnoreCase("on") && le.isLeverPowered()) return false;
-        return !this.state.equalsIgnoreCase("off") || (le.isLeverPowered());
+        return state.isValidFor(le.getLever().isPowered());
     }
 
     public boolean isLocatedAt(Location l) {
@@ -123,8 +117,13 @@ public class LeverActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" + world + ", " + x + ", " + y + ", " + z +
-                " state:" + this.state.toUpperCase(Locale.ROOT) + ")";
+        String sb = super.toString() + " (" +
+                world + ", " +
+                x + ", " +
+                y + ", " +
+                z +
+                " state:" + state.name() +
+                ")";
         return sb;
     }
 }
