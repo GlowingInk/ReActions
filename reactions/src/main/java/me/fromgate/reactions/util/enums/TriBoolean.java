@@ -40,4 +40,22 @@ public enum TriBoolean {
             default -> ANY;
         };
     }
+
+    public static @NotNull TriBoolean of(@Nullable Boolean bool) {
+        if (bool == Boolean.TRUE) return TRUE;
+        if (bool == Boolean.FALSE) return FALSE;
+        return ANY;
+    }
+
+    public static @NotNull TriBoolean of(boolean bool) {
+        return bool ? TRUE : FALSE;
+    }
+
+    public static @NotNull TriBoolean of(@NotNull TriState triState) {
+        return switch (triState) {
+            case TRUE -> TRUE;
+            case FALSE -> FALSE;
+            default -> ANY;
+        };
+    }
 }
