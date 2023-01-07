@@ -18,7 +18,7 @@ public class PlaceholderRandom implements Placeholder.Keyed {
 
     @Override
     public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
-        if (NumberUtils.isNumber(param, Is.INTEGER, Is.POSITIVE))
+        if (NumberUtils.isNumber(param, Is.NATURAL))
             return Integer.toString(Rng.nextInt(Integer.parseInt(param)));
 
         if (INT_MIN_MAX.matcher(param).matches())

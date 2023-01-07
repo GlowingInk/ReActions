@@ -2,6 +2,7 @@ package me.fromgate.reactions.util.item.aspects;
 
 
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ public class ModelAspect implements MetaAspect {
 
     @Override
     public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
-        return NumberUtils.isPositiveInt(value)
+        return NumberUtils.isNumber(value, Is.NATURAL)
                 ? new ModelInst(Integer.valueOf(value))
                 : ModelInst.EMPTY;
     }

@@ -13,7 +13,7 @@ public class FlagHeldSlot implements Flag {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String params) {
         Player player = context.getPlayer();
-        return NumberUtils.isNumber(params, Is.INTEGER, Is.POSITIVE) && player.getInventory().getHeldItemSlot() == Integer.parseInt(params);
+        return NumberUtils.isNumber(params, Is.NATURAL) && player.getInventory().getHeldItemSlot() == Integer.parseInt(params);
     }
 
     @Override

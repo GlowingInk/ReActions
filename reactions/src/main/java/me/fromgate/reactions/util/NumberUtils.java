@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -51,14 +52,6 @@ public final class NumberUtils {
         return isNumber(str) && flag.test(str);
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> flag1, @NotNull Predicate<String> flag2) {
-        return isNumber(str) && flag1.test(str) && flag2.test(str);
-    }
-
-    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> flag1, @NotNull Predicate<String> flag2, @NotNull Predicate<String> flag3) {
-        return isNumber(str) && flag1.test(str) && flag2.test(str) && flag3.test(str);
-    }
-
     @SafeVarargs
     public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> @NotNull ... flags) {
         return isNumber(str, Arrays.asList(flags));
@@ -73,47 +66,15 @@ public final class NumberUtils {
     }
 
     public static final class Is {
+        private static final Set<String> ZEROS = Set.of("0", "0.0", "-0", "-0.0");
         private Is() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-        public static final Predicate<String> NON_ZERO = (s) -> !s.equals("0") && !s.equals("-0");
+        public static final Predicate<String> NON_ZERO = (s) -> !ZEROS.contains(s);
         public static final Predicate<String> POSITIVE = (s) -> !s.startsWith("-");
         public static final Predicate<String> INTEGER = (s) -> s.indexOf('.') == -1;
-        public static final Predicate<String> NATURAL = NON_ZERO.and(POSITIVE).and(INTEGER);
-    }
 
-    @Deprecated
-    public static boolean isInteger(@NotNull String @NotNull ... str) {
-        if (str.length == 0) return false;
-        for (String s : str)
-            if (!INT.matcher(s).matches()) return false;
-        return true;
-    }
-
-    @Deprecated
-    public static boolean isNumber(@NotNull String @NotNull ... str) {
-        if (str.length == 0) return false;
-        for (String s : str)
-            if (!isNumber(s)) return false;
-        return true;
-    }
-
-    @Deprecated
-    public static boolean isPositiveInt(@NotNull String str) {
-        return isNumber(str, Is.POSITIVE, Is.INTEGER);
-    }
-
-    @Deprecated
-    public static boolean isPositiveInt(@NotNull String @NotNull ... str) {
-        if (str.length == 0) return false;
-        for (String s : str) {
-            if (!isPositiveInt(s)) return false;
-        }
-        return true;
-    }
-
-    @Deprecated
-    public static boolean isPositiveNonzeroInt(@NotNull String str) {
-        return isNumber(str, Is.NATURAL);
+        public static final Predicate<String> NATURAL = POSITIVE.and(INTEGER);
+        public static final Predicate<String> POSITIVE_NATURAL = NATURAL.and(NON_ZERO);
     }
 
     /**

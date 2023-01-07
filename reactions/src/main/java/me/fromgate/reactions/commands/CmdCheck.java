@@ -3,6 +3,7 @@ package me.fromgate.reactions.commands;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -18,7 +19,7 @@ public class CmdCheck extends Cmd {
 
     @Override
     public boolean execute(Player player, String[] args) {
-        int radius = args.length > 1 && NumberUtils.isPositiveNonzeroInt(args[1]) ? Integer.parseInt(args[1]) : 8;
+        int radius = args.length > 1 && NumberUtils.isNumber(args[1], Is.POSITIVE_NATURAL) ? Integer.parseInt(args[1]) : 8;
         printActivatorsAround(player, radius);
         return true;
     }

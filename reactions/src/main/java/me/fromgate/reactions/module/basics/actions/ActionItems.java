@@ -27,6 +27,7 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.module.basics.ItemStoragesManager;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -95,7 +96,7 @@ public class ActionItems implements Action {
         if (itemStr.isEmpty()) return false;
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!NumberUtils.isPositiveInt(slotStr)) return wearItem(context, params);
+        if (!NumberUtils.isNumber(slotStr, Is.NATURAL)) return wearItem(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack oldItem = player.getInventory().getItem(slotNum);
@@ -123,7 +124,7 @@ public class ActionItems implements Action {
         Player player = context.getPlayer();
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!NumberUtils.isPositiveInt(slotStr)) return wearItemView(context, params);
+        if (!NumberUtils.isNumber(slotStr, Is.NATURAL)) return wearItemView(context, params);
         int slotNum = Integer.parseInt(slotStr);
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);

@@ -27,6 +27,7 @@ import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -64,7 +65,7 @@ public class ActionSignSet implements Action {
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {
-                if (!NumberUtils.isPositiveInt(cl)) continue;
+                if (!NumberUtils.isNumber(cl, Is.NATURAL)) continue;
                 int num = Integer.parseInt(cl) - 1;
                 if (num < 0) continue;
                 if (num >= 4) continue;

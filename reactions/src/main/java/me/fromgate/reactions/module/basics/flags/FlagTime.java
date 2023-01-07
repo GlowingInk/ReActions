@@ -58,7 +58,7 @@ public class FlagTime implements Flag {
             String[] tln = params.split(",");
             if (tln.length > 0) {
                 for (String timeStr : tln)
-                    if (NumberUtils.isNumber(timeStr, Is.INTEGER, Is.POSITIVE)) {
+                    if (NumberUtils.isNumber(timeStr, Is.NATURAL)) {
                         int ct = (int) ((currentTime / 1000 + 6) % 24);
                         if (ct == Integer.parseInt(timeStr)) return true;
                     }
@@ -73,7 +73,7 @@ public class FlagTime implements Flag {
             String[] ln = time.split(",");
             if (ln.length > 0)
                 for (int i = 0; i < ln.length; i++) {
-                    if (!NumberUtils.isPositiveInt(ln[i])) continue;
+                    if (!NumberUtils.isNumber(ln[i], Is.NATURAL)) continue;
                     String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
                     if (i == 0) result = new StringBuilder(tmp);
                     else result.append(", ").append(tmp);

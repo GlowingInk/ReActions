@@ -8,6 +8,7 @@ import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.Delayer;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,13 +32,13 @@ public class CmdList extends Cmd {
         String arg1 = args.length >= 2 ? args[1].toLowerCase(Locale.ROOT) : "";
         String arg2 = args.length >= 3 ? args[2] : "";
         String arg3 = args.length >= 4 ? args[3] : "";
-        if (NumberUtils.isPositiveNonzeroInt(arg1)) printAct(sender, 1, lpp);
+        if (NumberUtils.isNumber(arg1, Is.POSITIVE_NATURAL)) printAct(sender, 1, lpp);
         else {
             String mask = "";
-            if (NumberUtils.isPositiveNonzeroInt(arg2)) {
+            if (NumberUtils.isNumber(arg2, Is.POSITIVE_NATURAL)) {
                 page = Integer.parseInt(arg2);
                 mask = arg3;
-            } else if (NumberUtils.isPositiveNonzeroInt(arg3)) {
+            } else if (NumberUtils.isNumber(arg3, Is.POSITIVE_NATURAL)) {
                 page = Integer.parseInt(arg3);
                 mask = arg2;
             }

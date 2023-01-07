@@ -6,6 +6,7 @@ import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.TimersManager;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
@@ -46,7 +47,7 @@ public class CmdRemove extends Cmd {
             else Msg.printMSG(sender, "msg_removemenufail", 'c', '4', arg2);
         } else if (ReActions.getActivators().containsActivator(arg1)) {
             ActivatorLogic act = ReActions.getActivators().getActivator(arg1).getLogic();
-            if (NumberUtils.isPositiveNonzeroInt(arg3.toString())) {
+            if (NumberUtils.isNumber(arg3.toString(), Is.POSITIVE_NATURAL)) {
                 int num = Integer.parseInt(arg3.toString());
                 if (arg2.equalsIgnoreCase("f") || arg2.equalsIgnoreCase("flag")) {
                     if (act.removeFlag(num - 1))

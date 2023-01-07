@@ -23,6 +23,7 @@
 package me.fromgate.reactions;
 
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -82,7 +83,9 @@ public final class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
-        if (NumberUtils.isPositiveInt(result, value)) return (Integer.parseInt(result) == Integer.parseInt(value));
+        if (NumberUtils.isNumber(result, Is.NATURAL) && NumberUtils.isNumber(value, Is.NATURAL)) {
+            return Integer.parseInt(result) == Integer.parseInt(value);
+        }
         return result.equalsIgnoreCase(value);
     }
 

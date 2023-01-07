@@ -25,6 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -70,8 +71,8 @@ public class ActionPotion implements Action {
                 String[] prm = param.split("/");
                 if (prm.length > 1) {
                     peffstr = prm[0];
-                    if (NumberUtils.isPositiveNonzeroInt(prm[1])) duration = Integer.parseInt(prm[1]);
-                    if ((prm.length > 2) && NumberUtils.isPositiveNonzeroInt(prm[2])) amplifier = Integer.parseInt(prm[2]);
+                    if (NumberUtils.isNumber(prm[1], Is.POSITIVE_NATURAL)) duration = Integer.parseInt(prm[1]);
+                    if ((prm.length > 2) && NumberUtils.isNumber(prm[2], Is.POSITIVE_NATURAL)) amplifier = Integer.parseInt(prm[2]);
                 }
             } else peffstr = param;
         } else {

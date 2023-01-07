@@ -55,17 +55,17 @@ public final class Rng {
         if (index > -1) {
             int min = 0;
             String minStr = numsStr.substring(0, index);
-            if (NumberUtils.isNumber(minStr, Is.INTEGER, Is.POSITIVE))
+            if (NumberUtils.isNumber(minStr, Is.NATURAL))
                 min = Integer.parseInt(minStr);
             int max = 0;
             String maxStr = numsStr.substring(index + 1);
-            if (NumberUtils.isNumber(maxStr, Is.INTEGER, Is.POSITIVE))
+            if (NumberUtils.isNumber(maxStr, Is.NATURAL))
                 max = Integer.parseInt(maxStr);
             if (max > min)
                 return nextInt(min, max);
             return min;
         } else {
-            if (NumberUtils.isNumber(numsStr, Is.INTEGER, Is.POSITIVE))
+            if (NumberUtils.isNumber(numsStr, Is.NATURAL))
                 return Integer.parseInt(numsStr);
             return 0;
         }

@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
+import static me.fromgate.reactions.util.NumberUtils.Is.NATURAL;
+
 @Aliased.Names("invplayer")
 public class PlaceholderPlayerInv implements Placeholder.Keyed {
     @Override
@@ -21,7 +23,7 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
 
     private static String getPlayerInventory(Player player, String value) {
         VirtualItem vi = null;
-        if (NumberUtils.isPositiveInt(value)) {
+        if (NumberUtils.isNumber(value, NATURAL)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
             vi = VirtualItem.fromItem(player.getInventory().getItem(slotNum));

@@ -86,15 +86,16 @@ public class FlagVar implements Flag {
                 return true;
 
             case COMPARE: // VAR_COMPARE
-                if (NumberUtils.isNumber(variable, value))
+                if (NumberUtils.isNumber(variable) && NumberUtils.isNumber(value)) {
                     return Double.parseDouble(variable) == Double.parseDouble(value);
+                }
                 return variable.equalsIgnoreCase(value);
 
             case GREATER: // VAR_GREATER
-                return NumberUtils.isNumber(variable, value) && Double.parseDouble(variable) > Double.parseDouble(value);
+                return NumberUtils.asDouble(variable, 0) > NumberUtils.asDouble(value, 0);
 
             case LOWER: // VAR_LOWER
-                return NumberUtils.isNumber(variable, value) && Double.parseDouble(variable) < Double.parseDouble(value);
+                return NumberUtils.asDouble(variable, 0) < NumberUtils.asDouble(value, 0);
 
             case MATCH: // VAR_MATCH
                 return variable.matches(value);
