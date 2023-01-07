@@ -28,6 +28,14 @@ public enum TriBoolean {
         return triState.toBooleanOrElseGet(def);
     }
 
+    public boolean isValidFor(boolean bool) {
+        return switch (this) {
+            case TRUE -> bool;
+            case FALSE -> !bool;
+            default -> true;
+        };
+    }
+
     public @NotNull TriState adventure() {
         return triState;
     }
