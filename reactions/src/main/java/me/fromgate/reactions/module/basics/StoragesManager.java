@@ -156,7 +156,7 @@ public final class StoragesManager {
     // PVP Kill Event
     public static void triggerPvpKill(PlayerDeathEvent event) {
         Player deadplayer = event.getEntity();
-        Player killer = EntityUtils.getKiller(deadplayer.getLastDamageCause());
+        Player killer = EntityUtils.getKillerPlayer(deadplayer.getLastDamageCause());
         if (killer == null) return;
         PvpKillStorage pe = new PvpKillStorage(killer, deadplayer);
         ReActions.getActivators().activate(pe);
@@ -165,7 +165,7 @@ public final class StoragesManager {
     // PVP Death Event
     public static void triggerPvpDeath(PlayerDeathEvent event) {
         Player deadplayer = event.getEntity();
-        LivingEntity killer = EntityUtils.getAnyKiller(deadplayer.getLastDamageCause());
+        LivingEntity killer = EntityUtils.getKillerEntity(deadplayer.getLastDamageCause());
         DeathCause ds = (killer == null) ? DeathCause.OTHER : (killer instanceof Player) ? DeathCause.PVP : DeathCause.PVE;
         DeathStorage pe = new DeathStorage(killer, deadplayer, ds);
         ReActions.getActivators().activate(pe);

@@ -208,7 +208,7 @@ public class BukkitListener implements Listener {
             event.setDroppedExp(xp);
         }
 
-        Player killer = EntityUtils.getKiller(event.getEntity().getLastDamageCause());
+        Player killer = EntityUtils.getKillerPlayer(event.getEntity().getLastDamageCause());
         if (killer == null) return;
 
         triggerMobKill(killer, event.getEntity());

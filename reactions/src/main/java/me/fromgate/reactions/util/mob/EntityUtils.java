@@ -1,21 +1,25 @@
 package me.fromgate.reactions.util.mob;
 
 import org.bukkit.Location;
+import org.bukkit.Nameable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+
+import static me.fromgate.reactions.util.location.LocationUtils.CHUNK_BITS;
 
 /**
  * Some helpful methods related to entities to minify size of code
@@ -30,8 +34,8 @@ public final class EntityUtils {
      * @param entity Entity to check
      * @return Maximal health of entity
      */
-    public static double getMaxHealth(LivingEntity entity) {
-        return entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    public static double getMaxHealth(@NotNull LivingEntity entity) {
+        return Objects.requireNonNull(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
     }
 
     /**
@@ -40,10 +44,8 @@ public final class EntityUtils {
      * @param source Original source
      * @return LivingEntity or null if shooter was a block
      */
-    public static LivingEntity getEntityFromProjectile(ProjectileSource source) {
-        if (source instanceof BlockProjectileSource)
-            return null;
-        return (LivingEntity) source;
+    public static @Nullable LivingEntity getEntityFromProjectile(@Nullable ProjectileSource source) {
+        return source instanceof LivingEntity entity ? entity : null;
     }
 
     /**
@@ -53,27 +55,24 @@ public final class EntityUtils {
      * @param l2 Point of cuboid
      * @return List of entities
      */
-    public static Collection<Entity> getEntities(Location l1, Location l2) {
+    public static @NotNull Collection<@NotNull Entity> getEntities(@NotNull Location l1, @NotNull Location l2) {
         Set<Entity> entities = new HashSet<>();
         if (!l1.getWorld().equals(l2.getWorld())) return entities;
-        int x1 = Math.min(l1.getBlockX(), l2.getBlockX());
-        int x2 = Math.max(l1.getBlockX(), l2.getBlockX());
-        int y1 = Math.min(l1.getBlockY(), l2.getBlockY());
-        int y2 = Math.max(l1.getBlockY(), l2.getBlockY());
-        int z1 = Math.min(l1.getBlockZ(), l2.getBlockZ());
-        int z2 = Math.max(l1.getBlockZ(), l2.getBlockZ());
-        int chX1 = x1 >> 4;
-        int chX2 = x2 >> 4;
-        int chZ1 = z1 >> 4;
-        int chZ2 = z2 >> 4;
-        for (int x = chX1; x <= chX2; x++) {
-            for (int z = chZ1; z <= chZ2; z++) {
-                for (Entity e : l1.getWorld().getChunkAt(x, z).getEntities()) {
-                    double ex = e.getLocation().getX();
-                    double ey = e.getLocation().getY();
-                    double ez = e.getLocation().getZ();
-                    if ((x1 <= ex) && (ex <= x2) && (y1 <= ey) && (ey <= y2) && (z1 <= ez) && (ez <= z2)) {
-                        entities.add(e);
+        int xMin = Math.min(l1.getBlockX(), l2.getBlockX());
+        int xMax = Math.max(l1.getBlockX(), l2.getBlockX());
+        int yMin = Math.min(l1.getBlockY(), l2.getBlockY());
+        int yMax = Math.max(l1.getBlockY(), l2.getBlockY());
+        int zMin = Math.min(l1.getBlockZ(), l2.getBlockZ());
+        int zMax = Math.max(l1.getBlockZ(), l2.getBlockZ());
+        for (int xCh = xMin >> CHUNK_BITS, xChMax = xMax >> CHUNK_BITS; xCh <= xChMax; xCh++) {
+            for (int zCh = zMin >> CHUNK_BITS, zChMax = zMax >> CHUNK_BITS; zCh <= zChMax; zCh++) {
+                for (Entity entity : l1.getWorld().getChunkAt(xCh, zCh).getEntities()) {
+                    Location entityLoc = entity.getLocation();
+                    double x = entityLoc.getX();
+                    double y = entityLoc.getY();
+                    double z = entityLoc.getZ();
+                    if ((xMin <= x && x <= xMax) && (yMin <= y && y <= yMax) && (zMin <= z && z <= zMax)) {
+                        entities.add(entity);
                     }
                 }
             }
@@ -81,28 +80,27 @@ public final class EntityUtils {
         return entities;
     }
 
-    public static LivingEntity getDamagerEntity(EntityDamageByEntityEvent event) {
+    public static @Nullable LivingEntity getDamagerEntity(@NotNull EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Projectile prj = (Projectile) event.getDamager();
             return getEntityFromProjectile(prj.getShooter());
         } else if (event.getCause() == EntityDamageEvent.DamageCause.MAGIC) {
-            Entity entityDamager = event.getDamager();
-            LivingEntity shooterEntity = null;
-            if (entityDamager instanceof ThrownPotion)
-                shooterEntity = getEntityFromProjectile(((ThrownPotion) entityDamager).getShooter());
-            return shooterEntity;
-        } else if (event.getDamager() instanceof LivingEntity)
-            return (LivingEntity) event.getDamager();
+            if (event.getDamager() instanceof ThrownPotion potion) {
+                return getEntityFromProjectile(potion.getShooter());
+            }
+        } else if (event.getDamager() instanceof LivingEntity entity) {
+            return entity;
+        }
         return null;
     }
 
-    public static String getMobName(LivingEntity mob) {
+    public static @NotNull String getMobName(@NotNull Nameable mob) {
         return mob.getCustomName() == null ? "" : mob.getCustomName();
     }
 
-    public static LivingEntity getAnyKiller(EntityDamageEvent event) {
+    public static @Nullable LivingEntity getKillerEntity(@NotNull EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent evdmg) {
-            if (evdmg.getDamager() instanceof LivingEntity) return (LivingEntity) evdmg.getDamager();
+            if (evdmg.getDamager() instanceof LivingEntity entity) return entity;
             if (evdmg.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
                 Projectile prj = (Projectile) evdmg.getDamager();
                 return getEntityFromProjectile(prj.getShooter());
@@ -111,16 +109,7 @@ public final class EntityUtils {
         return null;
     }
 
-    public static Player getKiller(EntityDamageEvent event) {
-        if (event instanceof EntityDamageByEntityEvent evdmg) {
-            if (evdmg.getDamager().getType() == EntityType.PLAYER) return (Player) evdmg.getDamager();
-            if (evdmg.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-                Projectile prj = (Projectile) evdmg.getDamager();
-                LivingEntity shooterEntity = getEntityFromProjectile(prj.getShooter());
-                if (shooterEntity == null) return null;
-                if (shooterEntity instanceof Player) return (Player) shooterEntity;
-            }
-        }
-        return null;
+    public static @Nullable Player getKillerPlayer(@NotNull EntityDamageEvent event) {
+        return getKillerEntity(event) instanceof Player player ? player : null;
     }
 }

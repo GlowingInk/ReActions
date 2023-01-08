@@ -46,7 +46,7 @@ public final class PlayerRespawner {
     public static void addPlayerRespawn(PlayerDeathEvent event) {
         Player deadPlayer = event.getEntity();
         deathPoints.put(deadPlayer.getUniqueId(), deadPlayer.getLocation());
-        LivingEntity killer = EntityUtils.getAnyKiller(deadPlayer.getLastDamageCause());
+        LivingEntity killer = EntityUtils.getKillerEntity(deadPlayer.getLastDamageCause());
         players.put(deadPlayer.getUniqueId(), killer);
     }
 

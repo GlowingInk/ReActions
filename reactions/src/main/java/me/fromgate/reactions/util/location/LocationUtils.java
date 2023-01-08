@@ -44,6 +44,7 @@ import java.util.Map;
 
 public final class LocationUtils { // TODO: Requires refactoring
     public static final Location ZERO_LOCATION = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+    public static final int CHUNK_BITS = 4;
 
     private LocationUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
