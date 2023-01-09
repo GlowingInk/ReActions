@@ -4,6 +4,7 @@ import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.enums.TriBoolean;
+import me.fromgate.reactions.util.function.SafeFunction;
 import me.fromgate.reactions.util.function.SafeSupplier;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.configuration.ConfigurationSection;
@@ -224,6 +225,10 @@ public class Parameters implements Parameterizable {
         return value == null ? def.get() : value;
     }
 
+    public <R> @NotNull R getSafe(@NotNull String key, @NotNull SafeFunction<String, R> converter) {
+        return converter.apply(getString(key));
+    }
+
     public <R extends Enum<R>> @NotNull R getEnum(@NotNull String key, @NotNull R def) {
         String value = params.get(key);
         return value == null
@@ -248,11 +253,6 @@ public class Parameters implements Parameterizable {
         return getSafe(key, (value) -> Utils.getEnum(clazz, value), def);
     }
 
-    @Contract(pure = true)
-    public @NotNull Parameters getParams(@NotNull String key) {
-        return Parameters.fromString(getString(key));
-    }
-
     public @NotNull String getString(@NotNull String key) {
         return getString(key, "");
     }
@@ -270,6 +270,11 @@ public class Parameters implements Parameterizable {
     public @NotNull String getStringSafe(@NotNull String key, @NotNull SafeSupplier<String> def) {
         String value = params.get(key);
         return value == null ? def.get() : value;
+    }
+
+    @Contract(pure = true)
+    public @NotNull Parameters getParams(@NotNull String key) {
+        return Parameters.fromString(getString(key));
     }
 
     public double getDouble(@NotNull String key) {
@@ -309,7 +314,7 @@ public class Parameters implements Parameterizable {
     }
 
     public @NotNull TriBoolean getTriBoolean(@NotNull String key) {
-        return TriBoolean.getByName(getString(key));
+        return getSafe(key, TriBoolean::getByName);
     }
 
     public @NotNull TriBoolean getTriBoolean(@NotNull String key, @NotNull SafeSupplier<TriBoolean> def) {

@@ -107,7 +107,7 @@ public class LeverActivator extends Activator implements Locatable {
         cfg.set("x", x);
         cfg.set("y", y);
         cfg.set("z", z);
-        cfg.set("lever-state", state);
+        cfg.set("lever-state", state.name());
     }
 
     @Override
