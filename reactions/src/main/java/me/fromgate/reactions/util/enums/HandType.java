@@ -16,8 +16,8 @@ public enum HandType {
         http://yaml.org/type/bool.html
          */
         return switch (clickStr.toUpperCase(Locale.ROOT)) {
-            case "MAIN" -> HandType.MAIN;
-            case "OFF", "FALSE", "SECOND" -> HandType.SECOND;
+            case "MAIN", "LEFT" -> HandType.MAIN;
+            case "OFF", "FALSE", "SECOND", "RIGHT" -> HandType.SECOND;
             default -> HandType.ANY;
         };
     }
@@ -28,5 +28,9 @@ public enum HandType {
             case SECOND -> slot == EquipmentSlot.OFF_HAND;
             case ANY -> true;
         };
+    }
+
+    public boolean isValidFor(@NotNull HandType hand) {
+        return this == ANY || this == hand;
     }
 }

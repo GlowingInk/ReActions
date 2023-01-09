@@ -39,10 +39,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO Add Hand
 public class SignActivator extends Activator {
 
     private final List<String> maskLines;
-    private final ClickType click; // TODO HandType instead
+    private final ClickType click;
 
     private SignActivator(ActivatorLogic base, ClickType click, List<String> maskLines) {
         super(base);

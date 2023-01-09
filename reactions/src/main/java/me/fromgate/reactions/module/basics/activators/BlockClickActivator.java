@@ -39,6 +39,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
+// TODO Add Hand
 public class BlockClickActivator extends Activator implements Locatable {
     private final Material blockType;
     private final String blockLocation;
@@ -108,12 +109,11 @@ public class BlockClickActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (blockType == null ? "-" : blockType) +
                 "; click:" + this.click.name() +
                 "; loc:" + (blockLocation == null ? "-" : blockLocation) +
                 ")";
-        return sb;
     }
 
     /*
