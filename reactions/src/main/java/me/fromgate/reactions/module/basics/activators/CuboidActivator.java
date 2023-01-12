@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
 import me.fromgate.reactions.util.location.Cuboid;
 import me.fromgate.reactions.util.location.ImplicitPosition;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -48,7 +48,7 @@ public class CuboidActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
+    public boolean checkStorage(@NotNull Details event) {
         Player player = event.getPlayer();
         UUID id = player.getUniqueId();
         boolean inCuboid = cuboid.isInside(player.getLocation(), true);

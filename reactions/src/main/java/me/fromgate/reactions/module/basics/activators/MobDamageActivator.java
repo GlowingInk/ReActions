@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.MobDamageStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.MobDamageDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -72,8 +72,8 @@ public class MobDamageActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        MobDamageStorage me = (MobDamageStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        MobDamageDetails me = (MobDamageDetails) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         if (!isActivatorMob(me.getEntity())) return false;

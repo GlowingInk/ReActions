@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.DropStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.DropDetails;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,8 +32,8 @@ public class DropActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        DropStorage de = (DropStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        DropDetails de = (DropDetails) event;
         return item.isSimilar(de.getItem());
     }
 

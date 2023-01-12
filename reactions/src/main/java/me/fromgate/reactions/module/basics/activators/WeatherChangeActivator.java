@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.WeatherChangeStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.WeatherChangeDetails;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,8 +23,8 @@ public class WeatherChangeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage strg) {
-        WeatherChangeStorage storage = (WeatherChangeStorage) strg;
+    public boolean checkStorage(@NotNull Details strg) {
+        WeatherChangeDetails storage = (WeatherChangeDetails) strg;
         if (world != null && !storage.getWorld().equalsIgnoreCase(world)) return false;
         if (state == WeatherState.ANY) return true;
         return storage.isRaining() == (state == WeatherState.RAINING);

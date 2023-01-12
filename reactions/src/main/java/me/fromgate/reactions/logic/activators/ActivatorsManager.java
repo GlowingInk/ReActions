@@ -205,16 +205,16 @@ public class ActivatorsManager {
     }
 
     @Deprecated
-    public void activate(@NotNull Storage storage, @NotNull String id) {
-        storage.init();
-        activatorsNames.get(id).executeActivator(storage);
+    public void activate(@NotNull Details details, @NotNull String id) {
+        details.init();
+        activatorsNames.get(id).executeActivator(details);
     }
 
-    public boolean activate(@NotNull Storage storage) {
-        ActivatorType type = types.get(storage.getType());
+    public boolean activate(@NotNull Details details) {
+        ActivatorType type = types.get(details.getType());
         if (type != null && !type.isEmpty()) {
-            storage.init();
-            type.activate(storage);
+            details.init();
+            type.activate(details);
             return true;
         }
         return false;

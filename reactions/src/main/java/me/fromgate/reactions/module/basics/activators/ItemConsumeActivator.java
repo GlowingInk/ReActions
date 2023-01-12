@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ItemConsumeStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.ItemConsumeDetails;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -52,8 +52,8 @@ public class ItemConsumeActivator extends Activator {
         return new ItemConsumeActivator(base, item);
     }
 
-    public boolean checkStorage(@NotNull Storage event) {
-        ItemConsumeStorage ie = (ItemConsumeStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        ItemConsumeDetails ie = (ItemConsumeDetails) event;
         return item.isSimilar(ie.getItem());
     }
 

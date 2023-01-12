@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.DeathStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.DeathDetails;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -51,8 +51,8 @@ public class DeathActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        DeathStorage de = (DeathStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        DeathDetails de = (DeathDetails) event;
         return this.deathCause == DeathCause.ANY || de.getCause() == this.deathCause;
     }
 

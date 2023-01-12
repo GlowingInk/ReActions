@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.SignStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.SignDetails;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.enums.ClickType;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -96,8 +96,8 @@ public class SignActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        SignStorage signEvent = (SignStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        SignDetails signEvent = (SignDetails) event;
         if (click.checkRight(signEvent.isLeftClick())) return false;
         return checkMask(signEvent.getSignLines());
     }

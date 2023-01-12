@@ -2,9 +2,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.DamageByBlockStorage;
+import me.fromgate.reactions.module.basics.details.DamageByBlockDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -50,8 +50,8 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        DamageByBlockStorage db = (DamageByBlockStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        DamageByBlockDetails db = (DamageByBlockDetails) event;
         Block damagerBlock = db.getBlockDamager();
         if (damagerBlock == null) return false;
         if (!isActivatorBlock(damagerBlock)) return false;

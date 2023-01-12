@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ItemHoldStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.ItemHoldDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -62,12 +62,12 @@ public class ItemHoldActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
+    public boolean checkStorage(@NotNull Details event) {
         if (item.isEmpty() || (VirtualItem.asItem(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorholdempty", "Failed to parse itemStr of activator " + logic.getName());
             return false;
         }
-        ItemHoldStorage ie = (ItemHoldStorage) event;
+        ItemHoldDetails ie = (ItemHoldDetails) event;
         return hand.isValidFor(ie.getHand()) && VirtualItem.isSimilar(this.item, ie.getItem());
     }
 

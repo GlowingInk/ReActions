@@ -6,8 +6,8 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.WeChangeStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.WeChangeDetails;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -42,8 +42,8 @@ public class WEChangeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        WeChangeStorage e = (WeChangeStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        WeChangeDetails e = (WeChangeDetails) event;
         if (!checkBlockType(e.getBlockType())) return false;
         return region.isEmpty() || RaWorldGuard.isLocationInRegion(e.getLocation(), region);
     }

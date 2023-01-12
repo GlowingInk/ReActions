@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ItemWearStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.ItemWearDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
@@ -57,12 +57,12 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
+    public boolean checkStorage(@NotNull Details event) {
         if (item.isEmpty() || (VirtualItem.asItem(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
             return false;
         }
-        ItemWearStorage iw = (ItemWearStorage) event;
+        ItemWearDetails iw = (ItemWearDetails) event;
         return iw.isItemWeared(this.item);
     }
 

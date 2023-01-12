@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.PickupItemStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.PickupItemDetails;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -31,8 +31,8 @@ public class PickupItemActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        PickupItemStorage pie = (PickupItemStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        PickupItemDetails pie = (PickupItemDetails) event;
         return item.isSimilar(pie.getItem());
     }
 

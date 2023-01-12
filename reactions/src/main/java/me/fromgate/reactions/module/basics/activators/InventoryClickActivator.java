@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.InventoryClickStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.InventoryClickDetails;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -81,8 +81,8 @@ public class InventoryClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        InventoryClickStorage pice = (InventoryClickStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        InventoryClickDetails pice = (InventoryClickDetails) event;
         if (!inventoryName.isEmpty() && !pice.getInventoryName().equalsIgnoreCase(inventoryName)) return false;
         if (pice.getClickType() == null) return false;
         if (!clickCheck(pice.getClickType())) return false;

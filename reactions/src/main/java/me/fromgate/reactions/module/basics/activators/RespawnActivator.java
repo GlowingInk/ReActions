@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.RespawnStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.RespawnDetails;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -51,8 +51,8 @@ public class RespawnActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        RespawnStorage pe = (RespawnStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        RespawnDetails pe = (RespawnDetails) event;
         return this.deathCause == DeathCause.ANY || pe.getDeathCause() == this.deathCause;
     }
 

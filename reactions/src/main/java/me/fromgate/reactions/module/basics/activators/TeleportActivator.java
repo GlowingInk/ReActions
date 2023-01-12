@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.TeleportStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.TeleportDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -35,8 +35,8 @@ public class TeleportActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage storage) {
-        TeleportStorage tpStorage = (TeleportStorage) storage;
+    public boolean checkStorage(@NotNull Details details) {
+        TeleportDetails tpStorage = (TeleportDetails) details;
         if (cause != null && tpStorage.getCause() != cause) return false;
         return worldTo == null || tpStorage.getWorldTo().equalsIgnoreCase(worldTo);
     }

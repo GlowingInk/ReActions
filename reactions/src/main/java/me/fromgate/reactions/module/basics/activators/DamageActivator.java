@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.DamageStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.DamageDetails;
 import me.fromgate.reactions.util.enums.DamageType;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,8 +37,8 @@ public class DamageActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        DamageStorage de = (DamageStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        DamageDetails de = (DamageDetails) event;
         if (!damageCauseCheck(de.getCause())) return false;
         return sourceCheck(de.getSource());
     }

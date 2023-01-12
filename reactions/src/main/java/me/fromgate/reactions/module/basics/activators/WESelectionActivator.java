@@ -3,8 +3,8 @@ package me.fromgate.reactions.module.basics.activators;
 import me.fromgate.reactions.externals.worldedit.WeSelection;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.WeSelectionRegionStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.WeSelectionRegionDetails;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,8 +38,8 @@ public class WESelectionActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        WeSelectionRegionStorage e = (WeSelectionRegionStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        WeSelectionRegionDetails e = (WeSelectionRegionDetails) event;
         WeSelection selection = e.getSelection();
         if (!selection.isValid()) return false;
         int selectionBlocks = selection.area();

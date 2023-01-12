@@ -25,9 +25,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.DoorStorage;
+import me.fromgate.reactions.module.basics.details.DoorDetails;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -83,8 +83,8 @@ public class DoorActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        DoorStorage de = (DoorStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        DoorDetails de = (DoorDetails) event;
         if (de.getDoorBlock() == null) return false;
         if (!isLocatedAt(de.getDoorLocation())) return false;
         if (this.state.equalsIgnoreCase("open") && de.isDoorOpened()) return false;

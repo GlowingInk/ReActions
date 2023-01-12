@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.SneakStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.SneakDetails;
 import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,8 +29,8 @@ public class SneakActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        SneakStorage se = (SneakStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        SneakDetails se = (SneakDetails) event;
         return sneak.isValidFor(se.isSneaking());
     }
 

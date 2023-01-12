@@ -25,9 +25,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.ButtonStorage;
+import me.fromgate.reactions.module.basics.details.ButtonDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.BlockParameters;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -67,8 +67,8 @@ public class ButtonActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        ButtonStorage be = (ButtonStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        ButtonDetails be = (ButtonDetails) event;
         return isLocatedAt(be.getButtonLocation());
     }
 

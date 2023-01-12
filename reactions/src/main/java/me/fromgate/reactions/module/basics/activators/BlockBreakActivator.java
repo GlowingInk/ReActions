@@ -2,9 +2,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.BlockBreakStorage;
+import me.fromgate.reactions.module.basics.details.BlockBreakDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -44,8 +44,8 @@ public class BlockBreakActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        BlockBreakStorage bbe = (BlockBreakStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        BlockBreakDetails bbe = (BlockBreakDetails) event;
         Block brokenBlock = bbe.getBlock();
         if (brokenBlock == null) return false;
         return isActivatorBlock(brokenBlock);

@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.MobKillStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.MobKillDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
@@ -66,8 +66,8 @@ public class MobKillActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        MobKillStorage me = (MobKillStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        MobKillDetails me = (MobKillDetails) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         return isActivatorMob(me.getEntity());

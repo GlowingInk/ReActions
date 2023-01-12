@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public class PvpKillActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
+    public boolean checkStorage(@NotNull Details event) {
         return true;
     }
 

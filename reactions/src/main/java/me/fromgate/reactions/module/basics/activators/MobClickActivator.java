@@ -24,9 +24,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.MobClickStorage;
+import me.fromgate.reactions.module.basics.details.MobClickDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.mob.EntityUtils;
@@ -76,8 +76,8 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        MobClickStorage me = (MobClickStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        MobClickDetails me = (MobClickDetails) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         return isActivatorMob(me.getEntity());

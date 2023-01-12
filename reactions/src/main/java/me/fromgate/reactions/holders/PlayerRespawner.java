@@ -23,7 +23,7 @@
 package me.fromgate.reactions.holders;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.storages.RespawnStorage;
+import me.fromgate.reactions.module.basics.details.RespawnDetails;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.Location;
@@ -60,7 +60,7 @@ public final class PlayerRespawner {
         DeathCause d = killer == null ?
                 DeathCause.OTHER :
                 killer.getType() == EntityType.PLAYER ? DeathCause.PVP : DeathCause.PVE;
-        ReActions.getActivators().activate(new RespawnStorage(player, killer, d, respawnLoc));
+        ReActions.getActivators().activate(new RespawnDetails(player, killer, d, respawnLoc));
     }
 
 }

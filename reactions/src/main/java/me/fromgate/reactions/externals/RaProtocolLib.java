@@ -28,7 +28,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.logic.activators.Storage;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.module.basics.StoragesManager;
 import me.fromgate.reactions.module.basics.activators.MessageActivator.Source;
 import org.bukkit.Bukkit;
@@ -129,7 +129,7 @@ public final class RaProtocolLib {
                         }
                         if (message.isEmpty()) return;
                         Map<String, DataValue> changeables = StoragesManager.triggerMessage(event.getPlayer(), Source.CHAT_OUTPUT, message);
-                        if (changeables != null && changeables.get(Storage.CANCEL_EVENT).asBoolean())
+                        if (changeables != null && changeables.get(Details.CANCEL_EVENT).asBoolean())
                             event.setCancelled(true);
 
                     }

@@ -14,11 +14,11 @@ public abstract class Activator {
     /**
      * Execution of activator
      *
-     * @param storage Storage with data for activator
+     * @param details Storage with data for activator
      */
-    public final void executeActivator(@NotNull Storage storage) {
-        if (!checkStorage(storage)) return;
-        logic.executeLogic(storage.generateContext(logic.getName()));
+    public final void executeActivator(@NotNull Details details) {
+        if (!checkStorage(details)) return;
+        logic.executeLogic(details.generateContext(logic.getName()));
     }
 
     /**
@@ -43,10 +43,10 @@ public abstract class Activator {
     /**
      * Check trigger options
      *
-     * @param storage Storage with data for trigger
+     * @param details Storage with data for trigger
      * @return Are checks successfully past
      */
-    protected abstract boolean checkStorage(@NotNull Storage storage);
+    protected abstract boolean checkStorage(@NotNull Details details);
 
     /**
      * Save activator options to the config

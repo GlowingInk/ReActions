@@ -25,8 +25,8 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.CommandStorage;
+import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.module.basics.details.CommandDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -96,8 +96,8 @@ public class CommandActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage storage) {
-        CommandStorage cs = (CommandStorage) storage;
+    public boolean checkStorage(@NotNull Details details) {
+        CommandDetails cs = (CommandDetails) details;
         if (!consoleAllowed && cs.getSender() instanceof ConsoleCommandSender) return false;
         if (checkExact) {
             if (useRegex) {

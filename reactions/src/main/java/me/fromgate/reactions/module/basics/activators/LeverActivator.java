@@ -24,9 +24,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.LeverStorage;
+import me.fromgate.reactions.module.basics.details.LeverDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -78,8 +78,8 @@ public class LeverActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        LeverStorage le = (LeverStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        LeverDetails le = (LeverDetails) event;
         if (le.getLever() == null) return false;
         if (!isLocatedAt(le.getLeverLocation())) return false;
         return state.isValidFor(le.getLever().isPowered());

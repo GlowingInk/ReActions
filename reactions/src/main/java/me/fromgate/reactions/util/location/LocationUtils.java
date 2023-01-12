@@ -20,7 +20,6 @@
  *
  */
 
-
 package me.fromgate.reactions.util.location;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
@@ -35,6 +34,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -65,15 +67,17 @@ public final class LocationUtils { // TODO: Requires refactoring
      *                        land:true - forces to find location in point where player can stay (solid block with two blocks above it)
      *                        add-vector:<X,Y,Z> - allows to modify result of locations selections. For example,
      *                        loc:world,10,10,10 add-vector:0,5,0 will point to action world,10,15,10.
-     * @param defaultLocation default location, used when definitions of locations is wrong or missed
+     * @param def default location, used when definitions of locations is wrong or missed
      * @return Location
      */
-    public static Location parseLocation(String param, Location defaultLocation) {
+    @Contract("_, !null -> !null")
+    public static @Nullable Location parseLocation(@NotNull String param, @Nullable Location def) {
         Parameters params = Parameters.fromString(param, "loc");
-        return parseLocation(params, defaultLocation);
+        return parseLocation(params, def);
     }
 
-    public static Location parseLocation(Parameters params, Location defaultLocation) {
+    @Contract("_, !null -> !null")
+    public static @Nullable Location parseLocation(@NotNull Parameters params, @Nullable Location def) {
         Location location = null;
         if (params.contains("loc")) {
             String locStr = params.getString("loc", "");
@@ -84,7 +88,7 @@ public final class LocationUtils { // TODO: Requires refactoring
         boolean land = params.getBoolean("land", true);
         if (params.contains("region")) {
             location = getRegionLocation(params.getString("region", ""), land);
-            location = copyYawPitch(location, defaultLocation);
+            location = copyYawPitch(location, def);
         }
 
         if (params.containsEvery("loc1", "loc2")) {
@@ -92,18 +96,18 @@ public final class LocationUtils { // TODO: Requires refactoring
             Location loc2 = parseCoordinates(params.getString("loc2", ""));
             if (loc1 != null && loc2 != null) {
                 location = getCubeLocation(loc1, loc2, land);
-                location = copyYawPitch(location, defaultLocation);
+                location = copyYawPitch(location, def);
             }
         }
         if (params.contains("radius")) {
             int radius = params.getInteger("radius", -1);
             if (radius > 0) {
-                location = getRadiusLocation(location == null ? defaultLocation : location, radius, land);
-                location = copyYawPitch(location, defaultLocation);
+                location = getRadiusLocation(location == null ? def : location, radius, land);
+                location = copyYawPitch(location, def);
             }
         }
         Vector vector = LocationUtils.parseVector(params.getString("add-vector", ""));
-        Location result = location == null ? defaultLocation : location;
+        Location result = location == null ? def : location;
         if (result != null && vector != null) result.add(vector);
         return result;
     }

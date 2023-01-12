@@ -23,7 +23,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.RaContext;
-import me.fromgate.reactions.logic.activators.Storage;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -35,7 +35,7 @@ public class ActionCancelEvent implements Action {
     @Override
     public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return context.setChangeable(Storage.CANCEL_EVENT, params.getBoolean(Parameters.ORIGIN, false));
+        return context.setChangeable(Details.CANCEL_EVENT, params.getBoolean(Parameters.ORIGIN, false));
     }
 
     @Override

@@ -61,7 +61,7 @@ public interface ActivatorType extends Named {
 
     void clearActivators();
 
-    void activate(@NotNull Storage storage);
+    void activate(@NotNull Details details);
 
     // ^ TODO
 

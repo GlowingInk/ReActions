@@ -24,9 +24,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.PlateStorage;
+import me.fromgate.reactions.module.basics.details.PlateDetails;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -74,8 +74,8 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        PlateStorage be = (PlateStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        PlateDetails be = (PlateDetails) event;
         return isLocatedAt(be.getLocation());
     }
 

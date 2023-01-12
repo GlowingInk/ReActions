@@ -145,9 +145,9 @@ public class ActivatorTypesRegistry {
         }
 
         @Override
-        public void activate(@NotNull Storage storage) {
+        public void activate(@NotNull Details details) {
             for (Activator activator : getActivators()) {
-                activator.executeActivator(storage);
+                activator.executeActivator(details);
             }
         }
 

@@ -24,9 +24,9 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activators.Activator;
+import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.logic.activators.Storage;
-import me.fromgate.reactions.module.basics.storages.BlockClickStorage;
+import me.fromgate.reactions.module.basics.details.BlockClickDetails;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.ClickType;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -67,8 +67,8 @@ public class BlockClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Storage event) {
-        BlockClickStorage bce = (BlockClickStorage) event;
+    public boolean checkStorage(@NotNull Details event) {
+        BlockClickDetails bce = (BlockClickDetails) event;
         if (bce.getBlock() == null) return false;
         if (!isActivatorBlock(bce.getBlock())) return false;
         return click.checkRight(!bce.isLeftClick());
