@@ -70,7 +70,7 @@ public class MessageActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         MessageDetails e = (MessageDetails) event;
         return e.isForActivator(this);
     }

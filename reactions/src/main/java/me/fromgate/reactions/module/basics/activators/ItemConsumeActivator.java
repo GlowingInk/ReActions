@@ -52,7 +52,7 @@ public class ItemConsumeActivator extends Activator {
         return new ItemConsumeActivator(base, item);
     }
 
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         ItemConsumeDetails ie = (ItemConsumeDetails) event;
         return item.isSimilar(ie.getItem());
     }

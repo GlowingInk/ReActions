@@ -23,7 +23,7 @@
 package me.fromgate.reactions.time;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.collections.Maps;
@@ -191,7 +191,7 @@ public class TimersManager {
             for (String key : timers.keySet()) {
                 Timer timer = timers.get(key);
                 if (timer.isTimeToRun()) {
-                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> StoragesManager.triggerExec(null, timer.getParams()));
+                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> DetailsManager.triggerExec(null, timer.getParams()));
                 }
             }
         }, 1, 4);
@@ -202,7 +202,7 @@ public class TimersManager {
         serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), () -> {
             for (Timer timer : getServerTimers().values()) {
                 if (timer.isTimeToRun()) {
-                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> StoragesManager.triggerExec(null, timer.getParams()));
+                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> DetailsManager.triggerExec(null, timer.getParams()));
                 }
             }
         }, 1, 20);

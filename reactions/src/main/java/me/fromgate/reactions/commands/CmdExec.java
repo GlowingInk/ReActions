@@ -1,6 +1,6 @@
 package me.fromgate.reactions.commands;
 
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,7 @@ public class CmdExec extends Cmd {
         if (args.length == 0) return false;
         String commandLine = String.join(" ", args);
         Parameters param = Parameters.fromString(commandLine, "activator");
-        if (StoragesManager.triggerExec(sender, param)) {
+        if (DetailsManager.triggerExec(sender, param)) {
             Msg.printMSG(sender, "cmd_runplayer", commandLine);
         } else Msg.printMSG(sender, "cmd_runplayerfail", 'c', '6', commandLine);
         return true;

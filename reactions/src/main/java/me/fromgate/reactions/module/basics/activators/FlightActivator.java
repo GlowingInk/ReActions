@@ -29,7 +29,7 @@ public class FlightActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         FlightDetails fe = (FlightDetails) event;
         return flight.isValidFor(fe.isFlying());
     }

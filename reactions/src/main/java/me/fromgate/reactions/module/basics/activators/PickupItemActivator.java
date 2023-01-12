@@ -31,7 +31,7 @@ public class PickupItemActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         PickupItemDetails pie = (PickupItemDetails) event;
         return item.isSimilar(pie.getItem());
     }

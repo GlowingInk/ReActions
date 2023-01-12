@@ -42,7 +42,7 @@ public class WEChangeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         WeChangeDetails e = (WeChangeDetails) event;
         if (!checkBlockType(e.getBlockType())) return false;
         return region.isEmpty() || RaWorldGuard.isLocationInRegion(e.getLocation(), region);

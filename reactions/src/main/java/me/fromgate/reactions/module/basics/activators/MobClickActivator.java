@@ -76,7 +76,7 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         MobClickDetails me = (MobClickDetails) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;

@@ -66,7 +66,7 @@ public class MobKillActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         MobKillDetails me = (MobKillDetails) event;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;

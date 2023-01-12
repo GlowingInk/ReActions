@@ -50,7 +50,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         DamageByBlockDetails db = (DamageByBlockDetails) event;
         Block damagerBlock = db.getBlockDamager();
         if (damagerBlock == null) return false;

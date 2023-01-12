@@ -38,7 +38,7 @@ public class WESelectionActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         WeSelectionRegionDetails e = (WeSelectionRegionDetails) event;
         WeSelection selection = e.getSelection();
         if (!selection.isValid()) return false;

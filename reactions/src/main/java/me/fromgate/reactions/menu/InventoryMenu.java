@@ -1,7 +1,7 @@
 package me.fromgate.reactions.menu;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -222,7 +222,7 @@ public class InventoryMenu implements Listener {
         if (activators.size() > clickedSlot) {
             String activator = activators.get(clickedSlot);
             if (!activator.isEmpty()) {
-                StoragesManager.triggerExec(player, Parameters.fromString(activator, "activator"), tempvars);
+                DetailsManager.triggerExec(player, Parameters.fromString(activator, "activator"), tempvars);
             }
         }
         // TODO: Do not close menu option?

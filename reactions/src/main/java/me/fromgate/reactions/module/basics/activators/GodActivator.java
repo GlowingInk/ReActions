@@ -29,7 +29,7 @@ public class GodActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         GodDetails e = (GodDetails) event;
         return god.isValidFor(e.isGod());
     }

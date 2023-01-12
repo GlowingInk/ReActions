@@ -32,7 +32,7 @@ public class GameModeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         GameModeDetails e = (GameModeDetails) event;
         return gameModeCheck(e.getGameMode());
     }

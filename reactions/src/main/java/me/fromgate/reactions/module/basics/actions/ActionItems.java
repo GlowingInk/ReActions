@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.module.basics.ItemStoragesManager;
+import me.fromgate.reactions.module.basics.ItemDetailsManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Utils;
@@ -199,7 +199,7 @@ public class ActionItems implements Action {
         if (itemStr.isEmpty()) return false;
         if (!itemStr.equalsIgnoreCase("offhand")) return false;
         player.getInventory().setItemInOffHand(item);
-        ItemStoragesManager.triggerItemWear(player);
+        ItemDetailsManager.triggerItemWear(player);
         return true;
     }
 
@@ -218,7 +218,7 @@ public class ActionItems implements Action {
                 player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
             }
         }
-        ItemStoragesManager.triggerItemWear(player);
+        ItemDetailsManager.triggerItemWear(player);
         return true;
     }
 
@@ -304,7 +304,7 @@ public class ActionItems implements Action {
         Bukkit.getScheduler().scheduleSyncDelayedTask(ReActions.getPlugin(), () -> {
             for (ItemStack i : items)
                 ItemUtils.giveItemOrDrop(player, i);
-            ItemStoragesManager.triggerItemHold(player);
+            ItemDetailsManager.triggerItemHold(player);
         }, 1);
         return true;
     }

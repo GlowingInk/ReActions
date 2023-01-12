@@ -96,7 +96,7 @@ public class CommandActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details details) {
+    public boolean checkDetails(@NotNull Details details) {
         CommandDetails cs = (CommandDetails) details;
         if (!consoleAllowed && cs.getSender() instanceof ConsoleCommandSender) return false;
         if (checkExact) {

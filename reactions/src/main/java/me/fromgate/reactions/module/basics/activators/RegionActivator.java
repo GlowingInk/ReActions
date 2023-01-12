@@ -62,7 +62,7 @@ public class RegionActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         RegionDetails be = (RegionDetails) event;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }

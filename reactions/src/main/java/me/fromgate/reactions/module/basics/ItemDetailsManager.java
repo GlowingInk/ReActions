@@ -19,15 +19,15 @@ import java.util.UUID;
  * To manage some item-related activators
  */
 // TODO: Move to custom ActivatorTypes
-public final class ItemStoragesManager {
-    private ItemStoragesManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+public final class ItemDetailsManager {
+    private ItemDetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     private static void setFutureItemWearCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) return;
         if (!player.isOnline()) return;
         String rg = "iw-" + itemStr;
-        if (!StoragesManager.isTimeToRaiseEvent(player, rg, Cfg.itemWearRecheck, repeat)) return;
+        if (!DetailsManager.isTimeToRaiseEvent(player, rg, Cfg.itemWearRecheck, repeat)) return;
         ItemWearDetails iwe = new ItemWearDetails(player);
         if (!iwe.isItemWeared(itemStr)) return;
         ReActions.getActivators().activate(iwe);
@@ -63,7 +63,7 @@ public final class ItemStoragesManager {
 
         if (!mainHandItemExist && !offHandItemExist) return;
         String rg = "ih-" + itemStr;
-        if (!StoragesManager.isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return;
+        if (!DetailsManager.isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return;
 
         if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, EquipmentSlot.HAND);
         if (offHandItemExist) processItemHoldActivator(player, offHandItem, EquipmentSlot.OFF_HAND);

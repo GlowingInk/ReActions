@@ -59,9 +59,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.List;
 import java.util.Map;
 
-import static me.fromgate.reactions.module.basics.ItemStoragesManager.triggerItemHold;
-import static me.fromgate.reactions.module.basics.ItemStoragesManager.triggerItemWear;
-import static me.fromgate.reactions.module.basics.StoragesManager.*;
+import static me.fromgate.reactions.module.basics.DetailsManager.*;
+import static me.fromgate.reactions.module.basics.ItemDetailsManager.triggerItemHold;
+import static me.fromgate.reactions.module.basics.ItemDetailsManager.triggerItemWear;
 
 public class BukkitListener implements Listener {
     @EventHandler(ignoreCancelled = true)

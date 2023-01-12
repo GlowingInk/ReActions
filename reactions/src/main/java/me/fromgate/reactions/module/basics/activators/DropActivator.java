@@ -32,7 +32,7 @@ public class DropActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         DropDetails de = (DropDetails) event;
         return item.isSimilar(de.getItem());
     }

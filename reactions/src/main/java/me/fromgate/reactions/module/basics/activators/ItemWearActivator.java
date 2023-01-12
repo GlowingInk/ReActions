@@ -57,7 +57,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         if (item.isEmpty() || (VirtualItem.asItem(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
             return false;

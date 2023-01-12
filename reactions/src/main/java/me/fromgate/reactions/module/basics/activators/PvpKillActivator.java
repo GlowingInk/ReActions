@@ -43,7 +43,7 @@ public class PvpKillActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         return true;
     }
 

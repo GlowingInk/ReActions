@@ -45,7 +45,7 @@ public class ItemHeldActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         ItemHeldDetails ihe = (ItemHeldDetails) event;
         ItemStack itemNew = ihe.getNewItem();
         ItemStack itemPrev = ihe.getPreviousItem();

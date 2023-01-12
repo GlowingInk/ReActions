@@ -35,7 +35,7 @@ public class TeleportActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details details) {
+    public boolean checkDetails(@NotNull Details details) {
         TeleportDetails tpStorage = (TeleportDetails) details;
         if (cause != null && tpStorage.getCause() != cause) return false;
         return worldTo == null || tpStorage.getWorldTo().equalsIgnoreCase(worldTo);

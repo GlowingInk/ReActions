@@ -4,7 +4,7 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -62,7 +62,7 @@ public class ActionIfElse implements Action {
         param = param.with("player", p == null ? "~null" : p.getName());
         Map<String, String> tempVars = new HashMap<>();
         tempVars.put("condition", condition);
-        StoragesManager.triggerExec(p, param, tempVars);
+        DetailsManager.triggerExec(p, param, tempVars);
         return true;
     }
 

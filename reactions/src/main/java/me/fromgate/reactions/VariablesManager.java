@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions;
 
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.Maps;
@@ -58,7 +58,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
         String prevVal = vars.put(formatId(player, var), value);
         if (!Cfg.playerSelfVarFile) save();
         else save(player);
-        StoragesManager.triggerVariable(var, player, value, prevVal == null ? "" : prevVal);
+        DetailsManager.triggerVariable(var, player, value, prevVal == null ? "" : prevVal);
     }
 
     public boolean removeVariable(@Nullable String player, @NotNull String var) {
@@ -67,7 +67,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
         if (prevVal == null) return false;
         if (!Cfg.playerSelfVarFile) save();
         else save(player);
-        StoragesManager.triggerVariable(var, player, "", prevVal);
+        DetailsManager.triggerVariable(var, player, "", prevVal);
         return true;
     }
 

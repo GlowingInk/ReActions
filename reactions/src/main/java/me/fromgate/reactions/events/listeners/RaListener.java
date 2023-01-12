@@ -5,14 +5,14 @@ import me.fromgate.reactions.events.PlayerMoveByBlockEvent;
 import me.fromgate.reactions.events.PlayerPickupItemEvent;
 import me.fromgate.reactions.events.PlayerStayEvent;
 import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.ItemStoragesManager;
+import me.fromgate.reactions.module.basics.ItemDetailsManager;
 import me.fromgate.reactions.module.basics.details.PickupItemDetails;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.module.basics.StoragesManager.*;
+import static me.fromgate.reactions.module.basics.DetailsManager.*;
 
 public class RaListener implements Listener {
 
@@ -35,7 +35,7 @@ public class RaListener implements Listener {
         event.getItem().setItemStack(changeables.get(PickupItemDetails.ITEM).asItemStack());
         event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
         if (event.isCancelled()) return;
-        ItemStoragesManager.triggerItemHold(event.getPlayer());
-        ItemStoragesManager.triggerItemWear(event.getPlayer());
+        ItemDetailsManager.triggerItemHold(event.getPlayer());
+        ItemDetailsManager.triggerItemWear(event.getPlayer());
     }
 }

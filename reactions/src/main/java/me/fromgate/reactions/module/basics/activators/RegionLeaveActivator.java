@@ -61,7 +61,7 @@ public class RegionLeaveActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         RegionLeaveDetails be = (RegionLeaveDetails) event;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }

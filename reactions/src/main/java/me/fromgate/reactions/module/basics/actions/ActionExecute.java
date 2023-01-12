@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ public class ActionExecute implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         String id = params.getStringSafe("activator", params::origin);
         if (id.isEmpty()) return false;
-        return StoragesManager.triggerExec(context.getPlayer(), params, context.getVariables());
+        return DetailsManager.triggerExec(context.getPlayer(), params, context.getVariables());
     }
 
     @Override

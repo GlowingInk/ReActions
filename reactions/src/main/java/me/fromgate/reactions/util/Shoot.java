@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.module.basics.StoragesManager;
+import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.mob.EntityUtils;
@@ -102,7 +102,7 @@ public final class Shoot {
             tempVars.put("shooter", shooter.getName());
             tempVars.put("shooterloc", LocationUtils.locationToString(shooter.getLocation()));
         }
-        StoragesManager.triggerExec(shooter, param, tempVars);
+        DetailsManager.triggerExec(shooter, param, tempVars);
     }
 
     private static List<Block> getBeam(LivingEntity p, int distance) {

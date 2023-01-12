@@ -23,7 +23,7 @@ public class ExecActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details details) {
+    public boolean checkDetails(@NotNull Details details) {
         return true;
     }
 

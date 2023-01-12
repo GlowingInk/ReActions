@@ -23,7 +23,7 @@ public class WeatherChangeActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details strg) {
+    public boolean checkDetails(@NotNull Details strg) {
         WeatherChangeDetails storage = (WeatherChangeDetails) strg;
         if (world != null && !storage.getWorld().equalsIgnoreCase(world)) return false;
         if (state == WeatherState.ANY) return true;

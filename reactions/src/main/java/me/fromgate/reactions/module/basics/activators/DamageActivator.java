@@ -37,7 +37,7 @@ public class DamageActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         DamageDetails de = (DamageDetails) event;
         if (!damageCauseCheck(de.getCause())) return false;
         return sourceCheck(de.getSource());

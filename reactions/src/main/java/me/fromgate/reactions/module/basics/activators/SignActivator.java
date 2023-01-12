@@ -96,7 +96,7 @@ public class SignActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         SignDetails signEvent = (SignDetails) event;
         if (click.checkRight(signEvent.isLeftClick())) return false;
         return checkMask(signEvent.getSignLines());

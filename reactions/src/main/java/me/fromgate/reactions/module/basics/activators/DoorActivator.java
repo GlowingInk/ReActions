@@ -83,7 +83,7 @@ public class DoorActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         DoorDetails de = (DoorDetails) event;
         if (de.getDoorBlock() == null) return false;
         if (!isLocatedAt(de.getDoorLocation())) return false;

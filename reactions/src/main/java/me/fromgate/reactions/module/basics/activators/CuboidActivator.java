@@ -48,7 +48,7 @@ public class CuboidActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         Player player = event.getPlayer();
         UUID id = player.getUniqueId();
         boolean inCuboid = cuboid.isInside(player.getLocation(), true);

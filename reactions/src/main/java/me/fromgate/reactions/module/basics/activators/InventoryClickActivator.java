@@ -81,7 +81,7 @@ public class InventoryClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         InventoryClickDetails pice = (InventoryClickDetails) event;
         if (!inventoryName.isEmpty() && !pice.getInventoryName().equalsIgnoreCase(inventoryName)) return false;
         if (pice.getClickType() == null) return false;

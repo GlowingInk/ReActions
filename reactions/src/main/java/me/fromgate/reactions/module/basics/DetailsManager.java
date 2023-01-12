@@ -72,9 +72,9 @@ import java.util.Map;
 import java.util.Set;
 
 // TODO: Refactor to StorageFactory
-public final class StoragesManager {
+public final class DetailsManager {
 
-    private StoragesManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private DetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static @Nullable Map<String, DataValue> triggerTeleport(Player player, TeleportCause cause, Location to) {
         TeleportDetails storage = new TeleportDetails(player, cause, to);

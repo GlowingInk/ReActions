@@ -55,7 +55,7 @@ public class ItemClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkStorage(@NotNull Details event) {
+    public boolean checkDetails(@NotNull Details event) {
         ItemClickDetails ie = (ItemClickDetails) event;
         return hand.isValidFor(ie.getHand()) && item.isSimilar(ie.getItem());
     }
