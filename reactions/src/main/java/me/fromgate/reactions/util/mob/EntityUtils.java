@@ -98,7 +98,7 @@ public final class EntityUtils {
         return mob.getCustomName() == null ? "" : mob.getCustomName();
     }
 
-    public static @Nullable LivingEntity getKillerEntity(@NotNull EntityDamageEvent event) {
+    public static @Nullable LivingEntity getKillerEntity(@Nullable EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             if (evdmg.getDamager() instanceof LivingEntity entity) return entity;
             if (evdmg.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
@@ -109,7 +109,7 @@ public final class EntityUtils {
         return null;
     }
 
-    public static @Nullable Player getKillerPlayer(@NotNull EntityDamageEvent event) {
+    public static @Nullable Player getKillerPlayer(@Nullable EntityDamageEvent event) {
         return getKillerEntity(event) instanceof Player player ? player : null;
     }
 }
