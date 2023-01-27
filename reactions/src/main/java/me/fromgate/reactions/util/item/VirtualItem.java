@@ -281,6 +281,7 @@ public final class VirtualItem implements Parameterizable {
         boolean regex = params.getBoolean("regex", false);
         for (String key : params.keySet()) {
             key = key.toLowerCase(Locale.ROOT);
+            String value = params.getString(key);
             switch (key) {
                 case "item": {
                     Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
@@ -306,7 +307,7 @@ public final class VirtualItem implements Parameterizable {
                 default:
                     MetaAspect aspect = ASPECTS_BY_NAME.get(key);
                     if (aspect == null) continue;
-                    aspects.add(aspect.fromString(params.getString(key)));
+                    aspects.add(aspect.fromString(value));
                     break;
             }
         }
