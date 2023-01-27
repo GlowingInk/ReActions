@@ -30,6 +30,8 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.PatternSyntaxException;
+
 public class FlagVar implements Flag {
     private final Type flagType;
     private final boolean personal;
@@ -97,8 +99,13 @@ public class FlagVar implements Flag {
             case LOWER: // VAR_LOWER
                 return NumberUtils.asDouble(variable, 0) < NumberUtils.asDouble(value, 0);
 
-            case MATCH: // VAR_MATCH
-                return variable.matches(value);
+            case MATCH: /* VAR_MATCH */ {
+                try {
+                    return variable.matches(value);
+                } catch (PatternSyntaxException ex) {
+                    return false;
+                }
+            }
 
             default:
                 return false;
