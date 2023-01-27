@@ -33,6 +33,28 @@ public final class VirtualItem implements Parameterizable {
      * A VirtualItem that accepts any ItemStacks but null or air
      */
     public static final VirtualItem EMPTY = new VirtualItem(null, -1, List.of(), Parameters.EMPTY);
+    /**
+     * A VirtualItem that accepts noting
+     */
+    public static final VirtualItem INVALID = new VirtualItem(null, -1, List.of(new MetaAspect.Instance() {
+        @Override
+        public void apply(@NotNull ItemMeta meta) {}
+
+        @Override
+        public boolean isSimilar(@NotNull ItemMeta meta) {
+            return false;
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return "invalid";
+        }
+
+        @Override
+        public @NotNull String asString() {
+            return "true";
+        }
+    }), Parameters.fromMap(Map.of("invalid", "true")));
 
     private static final Map<String, MetaAspect> ASPECTS_BY_NAME = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaAspect> ASPECTS = new ArrayList<>();
@@ -264,6 +286,7 @@ public final class VirtualItem implements Parameterizable {
                     Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
                     if (!matcher.matches()) break;
                     type = ItemUtils.getMaterial(matcher.group(1));
+                    if (type == null) return VirtualItem.INVALID;
                     if (!Utils.isStringEmpty(matcher.group(2))) {
                         aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
                     }
@@ -272,7 +295,11 @@ public final class VirtualItem implements Parameterizable {
                     }
                     break;
                 }
-                case "type": type = params.get(key, ItemUtils::getMaterial); break;
+                case "type": {
+                    type = params.get(key, ItemUtils::getMaterial);
+                    if (type == null) return VirtualItem.INVALID;
+                    break;
+                }
                 case "amount": amount = params.getInteger(key); break;
                 case "name": case "lore":
                     if (regex) key += "-regex";
