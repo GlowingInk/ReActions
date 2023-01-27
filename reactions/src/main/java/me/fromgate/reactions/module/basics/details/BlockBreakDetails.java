@@ -1,18 +1,18 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.BlockBreakActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -35,22 +35,17 @@ public class BlockBreakDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("blocklocation", LocationUtils.locationToString(block.getLocation()));
-        tempVars.put("blocktype", block.getType().name());
-        tempVars.put("block", block.getType().name());
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                DO_DROP, property(dropItems),
+                "blocklocation", plain(LocationUtils.locationToString(block.getLocation())),
+                "blocktype", plain(block.getType()),
+                "block", plain(block.getType()) // FIXME Why there is a copy?
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>(CANCEL_EVENT, new BooleanValue(false))
-                .put(DO_DROP, new BooleanValue(dropItems))
-                .build();
+    public Block getBlock() {
+        return this.block;
     }
-
-    public Block getBlock() {return this.block;}
-
-    public boolean isDropItems() {return this.dropItems;}
 }

@@ -1,18 +1,19 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.externals.worldedit.WeSelection;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.WESelectionActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class WeSelectionRegionDetails extends Details {
     private final WeSelection selection;
@@ -28,21 +29,17 @@ public class WeSelectionRegionDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(CANCEL_EVENT, property(false));
         if (selection.isValid()) {
-            tempVars.put("seltype", selection.selType());
+            vars.put("seltype", plain(selection.selType()));
             World world = selection.world();
-            tempVars.put("world", (world != null) ? world.getName() : "");
-            tempVars.put("selblocks", Integer.toString(selection.area()));
-            tempVars.put("region", selection.region());
+            vars.put("world", plain((world != null) ? world.getName() : ""));
+            vars.put("selblocks", plain(selection.area()));
+            vars.put("region", plain(selection.region()));
         }
-        return tempVars;
-    }
-
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+        return vars;
     }
 
     public WeSelection getSelection() {return this.selection;}

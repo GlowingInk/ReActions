@@ -104,7 +104,7 @@ public final class ItemUtils {
         } else if (!(keys = params.getKeyList("item")).isEmpty()) {
             return parseItemsSet(params, keys);
         } else {
-            ItemStack vi = VirtualItem.asItem(items);
+            ItemStack vi = VirtualItem.asItemStack(items);
             if (vi != null) {
                 return List.of(vi);
             }
@@ -116,11 +116,11 @@ public final class ItemUtils {
     private static List<ItemStack> parseItemsSet(Parameters params, List<String> keys) {
         List<ItemStack> items = new ArrayList<>();
         for (String key : keys) {
-            ItemStack item = params.get(key, VirtualItem::asItem);
+            ItemStack item = params.get(key, VirtualItem::asItemStack);
             if (item != null) items.add(item);
         }
         if (items.isEmpty()) {
-            ItemStack item = VirtualItem.asItem(params);
+            ItemStack item = VirtualItem.asItemStack(params);
             if (item != null) items.add(item);
         }
         return items;

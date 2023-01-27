@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.holders.Teleporter;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -37,12 +37,12 @@ import org.jetbrains.annotations.NotNull;
 public class ActionTp implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         return teleportPlayer(context, params) != null;
     }
 
-    private Location teleportPlayer(RaContext context, Parameters params) {
+    private Location teleportPlayer(Environment context, Parameters params) {
         Player player = context.getPlayer();
         Location loc;
         int radius = 0;
@@ -63,10 +63,10 @@ public class ActionTp implements Action {
             }
             if (!loc.getChunk().isLoaded()) loc.getChunk().load();
 
-            context.setVariable("loc-from", LocationUtils.locationToString(player.getLocation()));
-            context.setVariable("loc-from-str", LocationUtils.locationToStringFormatted(player.getLocation()));
-            context.setVariable("loc-to", LocationUtils.locationToString(loc));
-            context.setVariable("loc-to-str", LocationUtils.locationToStringFormatted(loc));
+            context.getVariables().set("loc-from", LocationUtils.locationToString(player.getLocation()));
+            context.getVariables().set("loc-from-str", LocationUtils.locationToStringFormatted(player.getLocation()));
+            context.getVariables().set("loc-to", LocationUtils.locationToString(loc));
+            context.getVariables().set("loc-to-str", LocationUtils.locationToStringFormatted(loc));
             Teleporter.teleport(player, loc);
         }
         return loc;

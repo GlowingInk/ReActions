@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.SQLManager;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +41,7 @@ public class ActionSql implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String playerName = params.getString("player");
         String varName = params.getString("variable");
@@ -55,7 +55,7 @@ public class ActionSql implements Action {
                     return false;
                 }
                 if (varName.isEmpty()) return false;
-                ReActions.getVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, context.getVariable("SQL_SET")));
+                ReActions.getVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, context.getVariables().getString("SQL_SET")));
             }
             case INSERT -> { // INSERT
                 query = params.getString("query", params.origin()).trim();
@@ -91,7 +91,7 @@ public class ActionSql implements Action {
                     Msg.logOnce("needset" + query, "You need to use only \"SET\" query in SQL_SET action. Query: " + query);
                     return false;
                 }
-                context.setVariable("SQL_SET", query);
+                context.getVariables().set("SQL_SET", query);
             }
         }
         return true;

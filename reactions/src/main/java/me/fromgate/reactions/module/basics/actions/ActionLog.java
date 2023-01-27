@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
@@ -44,12 +44,12 @@ public class ActionLog implements Action {
     private static final Logger LOGGER = Logger.getLogger("Minecraft");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private void saveToFile(RaContext context, String fileName, String message) {
+    private void saveToFile(Environment context, String fileName, String message) {
         File path = new File("");
         String dir = path.getAbsolutePath();
 
         File file = new File(dir + "/" + fileName);
-        context.setVariable("fullpath", file.getAbsolutePath());
+        context.getVariables().set("fullpath", file.getAbsolutePath());
         if (fileName.isEmpty()) return;
 
         Date date = new Date();
@@ -72,12 +72,12 @@ public class ActionLog implements Action {
             }
 
         } catch (IOException e) {
-            context.setVariable("logdebug", e.getLocalizedMessage());
+            context.getVariables().set("logdebug", e.getLocalizedMessage());
         }
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (params.containsAny("prefix", "color", "file")) {
             String plg_name = ReActions.getPlugin().getDescription().getName();

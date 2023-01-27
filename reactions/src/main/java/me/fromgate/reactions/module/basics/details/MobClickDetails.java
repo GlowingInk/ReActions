@@ -22,20 +22,20 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.MobClickActivator;
-import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class MobClickDetails extends Details {
 
@@ -52,19 +52,16 @@ public class MobClickDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("moblocation", LocationUtils.locationToString(entity.getLocation()));
-        tempVars.put("mobtype", entity.getType().name());
-        String mobName = entity instanceof Player ? entity.getName() : entity.getCustomName();
-        tempVars.put("mobname", Utils.isStringEmpty(mobName) ? entity.getType().name() : mobName);
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                "moblocation", plain(LocationUtils.locationToString(entity.getLocation())),
+                "mobtype", plain(entity.getType()),
+                "mobname", plain(EntityUtils.getEntityDisplayName(entity))
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+    public LivingEntity getEntity() {
+        return this.entity;
     }
-
-    public LivingEntity getEntity() {return this.entity;}
 }

@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.mob.EntityUtils;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -44,7 +44,7 @@ public class ActionClearRegion implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String region = params.getString("region");
         String type = params.getString("type", "all");

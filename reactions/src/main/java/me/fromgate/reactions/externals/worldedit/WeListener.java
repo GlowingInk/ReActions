@@ -32,7 +32,6 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.module.basics.details.WeChangeDetails;
 import me.fromgate.reactions.module.basics.details.WeSelectionRegionDetails;
 import org.bukkit.Bukkit;
@@ -52,15 +51,13 @@ public class WeListener {
                 selection.getArea(), BukkitAdapter.adapt(selection.getWorld()), region.toString());
         WeSelectionRegionDetails e = new WeSelectionRegionDetails(player, weSelection);
         ReActions.getActivators().activate(e);
-        var changeables = e.getChangeables();
-        return changeables != null && changeables.get(Details.CANCEL_EVENT) != null && changeables.get(Details.CANCEL_EVENT).asBoolean();
+        return e.isCancelled();
     }
 
     public static boolean triggerWEChange(Player player, Location location, Material blockType) {
         WeChangeDetails e = new WeChangeDetails(player, location, blockType);
         ReActions.getActivators().activate(e);
-        var changeables = e.getChangeables();
-        return changeables != null && changeables.get(Details.CANCEL_EVENT) != null && changeables.get(Details.CANCEL_EVENT).asBoolean();
+        return e.isCancelled();
     }
 
     @Subscribe

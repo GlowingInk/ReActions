@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -43,12 +43,12 @@ public class FlagItem implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         Player player = context.getPlayer();
         switch (flagType) {
             case HAND:
                 ItemStack item = player.getInventory().getItemInMainHand();
-                context.setVariable("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
+                context.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
                 return VirtualItem.fromString(params).isSimilar(item);
             case INVENTORY:
                 return hasItemInInventory(context, params);
@@ -56,7 +56,7 @@ public class FlagItem implements Flag {
                 return isItemWeared(player, params);
             case OFFHAND:
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
-                context.setVariable("item_amount", String.valueOf(inOffhand.getAmount()));
+                context.getVariables().set("item_amount", String.valueOf(inOffhand.getAmount()));
                 return VirtualItem.fromString(params).isSimilar(inOffhand);
         }
         return false;
@@ -69,13 +69,13 @@ public class FlagItem implements Flag {
         return false;
     }
 
-    private boolean hasItemInInventory(RaContext context, String itemStr) {
+    private boolean hasItemInInventory(Environment context, String itemStr) {
         Player player = context.getPlayer();
         Parameters params = Parameters.fromString(itemStr);
 
         if (!params.containsEvery("slot", "item")) {
             int countAmount = countItemsInInventory(player.getInventory(), itemStr);
-            context.setVariable("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
+            context.getVariables().set("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
             int amount = params.getInteger("amount", 1);
             return countAmount >= amount;
         }

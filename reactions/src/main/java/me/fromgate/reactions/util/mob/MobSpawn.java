@@ -287,7 +287,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
     private static ItemStack getRandomItem(String str) {
         if (str.isEmpty()) return new ItemStack(Material.AIR);
         List<String> ln = ParametersUtils.splitSafely(str, ',');
-        ItemStack item = VirtualItem.asItem(Rng.randomElement(ln));
+        ItemStack item = VirtualItem.asItemStack(Rng.randomElement(ln));
         if (item == null) return new ItemStack(Material.AIR);
         item.setAmount(1);
         return item;

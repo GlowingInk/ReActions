@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -43,7 +43,7 @@ import java.util.Set;
 public class ActionMessage implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         sendMessage(context.getPlayer(), params);
         return true;

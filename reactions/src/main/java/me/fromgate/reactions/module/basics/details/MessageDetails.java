@@ -23,20 +23,26 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.StringValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.MessageActivator;
 import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.collections.Maps;
+import me.fromgate.reactions.util.NumberUtils.Is;
+import me.fromgate.reactions.util.function.FunctionalUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
+import static me.fromgate.reactions.logic.context.Variable.lazy;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class MessageDetails extends Details {
     public static final String MESSAGE = "message";
@@ -44,7 +50,6 @@ public class MessageDetails extends Details {
 
     private final String message;
     private final MessageActivator activator;
-
 
     public MessageDetails(Player player, MessageActivator activator, String message) {
         super(player);
@@ -62,41 +67,53 @@ public class MessageDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("message", message);
-        String[] args = message.split(" ");
-        int countInt = 0;
-        int countNum = 0;
-        if (args.length > 0) {
-            for (int i = 0; i < args.length; i++) {
-                tempVars.put("word" + (i + 1), args[i]);
-                tempVars.put("wnum" + (i + 1), NOT_D.matcher(args[i]).replaceAll(""));
-                if (NumberUtils.INT.matcher(args[i]).matches()) {
-                    countInt++;
-                    tempVars.put("int" + countInt, args[i]);
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(CANCEL_EVENT, property(false));
+        vars.put(MESSAGE, property(message));
+        String[] words = message.split(" ");
+        Supplier<MessageInfo> msgInfo = FunctionalUtils.asSafeCaching(() -> new MessageInfo(words));
+        for (int i = 0; i < words.length; i++) {
+            int index = i;
+            int j = i + 1;
+            vars.put("word" + j, lazy(() -> msgInfo.get().words.get(index)));
+            vars.put("wnum" + j, lazy(() -> NOT_D.matcher(msgInfo.get().words.get(index)).replaceAll("")));
+            vars.put("num" + j, lazy(() -> msgInfo.get().nums.size() > index ? msgInfo.get().nums.get(index) : ""));
+            vars.put("int" + j, lazy(() -> msgInfo.get().ints.size() > index ? msgInfo.get().ints.get(index) : ""));
+        }
+        vars.put("word-count", lazy(() -> String.valueOf(msgInfo.get().words.size())));
+        vars.put("num-count", lazy(() -> String.valueOf(msgInfo.get().nums.size())));
+        vars.put("int-count", lazy(() -> String.valueOf(msgInfo.get().ints.size())));
+        return vars;
+    }
+
+    private static class MessageInfo {
+        private final List<String> words;
+        private final List<String> nums;
+        private final List<String> ints;
+
+        public MessageInfo(String[] args) {
+            if (args.length > 0) {
+                this.words = Arrays.asList(args);
+                this.nums = new ArrayList<>(0);
+                this.ints = new ArrayList<>(0);
+                for (String arg : args) {
+                    if (NumberUtils.isNumber(arg)) {
+                        nums.add(arg);
+                        if (NumberUtils.isNumber(arg, Is.INTEGER)) {
+                            ints.add(arg);
+                        }
+                    }
                 }
-                if (NumberUtils.FLOAT.matcher(args[i]).matches()) {
-                    countNum++;
-                    tempVars.put("num" + countNum, args[i]);
-                }
+            } else {
+                this.words = List.of();
+                this.nums = List.of();
+                this.ints = List.of();
             }
         }
-        tempVars.put("word-count", Integer.toString(args.length));
-        tempVars.put("int-count", Integer.toString(countInt));
-        tempVars.put("num-count", Integer.toString(countNum));
-        return tempVars;
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(MESSAGE, new StringValue(message))
-                .build();
+    public String getMessage() {
+        return this.message;
     }
-
-    public String getMessage() {return this.message;}
-
-    public MessageActivator getActivator() {return this.activator;}
 }

@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -56,7 +56,7 @@ public class FlagVar implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         String variableId;

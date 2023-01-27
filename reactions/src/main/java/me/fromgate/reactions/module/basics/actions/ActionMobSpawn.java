@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.mob.MobSpawn;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionMobSpawn implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         MobSpawn.mobSpawn(context.getPlayer(), params);
         return true;

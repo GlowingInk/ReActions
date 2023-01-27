@@ -1,9 +1,11 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
+import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -60,14 +62,14 @@ public class ActionIfElse implements Action {
         param = param.getParams("run");
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return false;
         param = param.with("player", p == null ? "~null" : p.getName());
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("condition", condition);
-        DetailsManager.triggerExec(p, param, tempVars);
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put("condition", Variable.plain(condition));
+        DetailsManager.triggerExec(p, param, new Variables(vars));
         return true;
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         if (!engineCheck()) return false;
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
@@ -84,9 +86,9 @@ public class ActionIfElse implements Action {
                 boolean result = (boolean) engine.eval(condition, scriptContext);
                 if (!executeActivator(player, condition, (result) ? then_ : else_)
                         && !executeActions(context, (result) ? then_ : else_))
-                    context.setVariable("ifelseresult" + suffix, (result) ? then_ : else_);
+                    context.getVariables().set("ifelseresult" + suffix, (result) ? then_ : else_);
             } catch (ScriptException e) {
-                context.setVariable("ifelsedebug", e.getMessage());
+                context.getVariables().set("ifelsedebug", e.getMessage());
                 return false;
             }
             return true;
@@ -104,7 +106,7 @@ public class ActionIfElse implements Action {
         return false;
     }
 
-    private boolean executeActions(RaContext context, String paramStr) {
+    private boolean executeActions(Environment context, String paramStr) {
         List<StoredAction> actions = new ArrayList<>();
         Parameters params = Parameters.fromString(paramStr);
         if (!params.contains("run")) return false;

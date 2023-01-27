@@ -1,9 +1,9 @@
 package me.fromgate.reactions.time.waiter;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,7 +50,7 @@ public class WaitTask implements Runnable {
         Player p = playerName == null ? null : Bukkit.getPlayerExact(playerName);
         if (System.currentTimeMillis() > executionTime + WaitingManager.getTimeLimit()) this.executed = true;
         if (p == null && playerName != null) return;
-        Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> actions.forEach(action -> action.getAction().proceed(RaContext.EMPTY_CONTEXT, action.getParameters())));
+        Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> actions.forEach(action -> action.getAction().proceed(Environment.anonymous(), action.getParameters())));
         this.executed = true;
     }
 

@@ -25,10 +25,10 @@ package me.fromgate.reactions.module.basics;
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.commands.custom.FakeCommander;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.activators.ExecActivator;
 import me.fromgate.reactions.module.basics.activators.MessageActivator;
 import me.fromgate.reactions.module.basics.activators.SignActivator;
@@ -65,81 +65,80 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-// TODO: Refactor to StorageFactory
+// TODO: Refactor to DetailsFactory
 public final class DetailsManager {
 
     private DetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public static @Nullable Map<String, DataValue> triggerTeleport(Player player, TeleportCause cause, Location to) {
-        TeleportDetails storage = new TeleportDetails(player, cause, to);
-        ReActions.getActivators().activate(storage);
-        return storage.getChangeables();
+    public static @NotNull Variables triggerTeleport(Player player, TeleportCause cause, Location to) {
+        TeleportDetails details = new TeleportDetails(player, cause, to);
+        activate(details);
+        return details.getVariables();
     }
 
     public static boolean triggerPrecommand(Player player, CommandSender sender, String fullCommand) {
-        CommandDetails storage = new CommandDetails(player, sender, fullCommand);
-        boolean activated = ReActions.getActivators().activate(storage);
-        return storage.getChangeables() != null && (
-                storage.getChangeables().get(Details.CANCEL_EVENT).asBoolean() |
-                FakeCommander.triggerRaCommand(storage, activated)
+        CommandDetails details = new CommandDetails(player, sender, fullCommand);
+        boolean activated = activate(details);
+        return details.isInitialized() && (
+                details.isCancelled() |
+                FakeCommander.triggerRaCommand(details, activated)
         );
     }
 
     public static boolean triggerMobClick(Player player, LivingEntity mob) {
         if (mob == null) return false;
         MobClickDetails e = new MobClickDetails(player, mob);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     public static void triggerMobKill(Player player, LivingEntity mob) {
         if (mob == null) return;
         MobKillDetails e = new MobKillDetails(player, mob);
-        ReActions.getActivators().activate(e);
+        activate(e);
     }
 
     public static void triggerJoin(Player player, boolean joinfirst) {
         JoinDetails e = new JoinDetails(player, joinfirst);
-        ReActions.getActivators().activate(e);
+        activate(e);
     }
 
     public static boolean triggerDoor(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
         if (!BlockUtils.isOpenable(event.getClickedBlock()) || event.getHand() != EquipmentSlot.HAND) return false;
         DoorDetails e = new DoorDetails(event.getPlayer(), BlockUtils.getBottomDoor(event.getClickedBlock()));
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     public static boolean triggerItemConsume(PlayerItemConsumeEvent event) {
         ItemConsumeDetails ce = new ItemConsumeDetails(event.getPlayer(), event.getItem(), event.getPlayer().getInventory().getItemInMainHand().isSimilar(event.getItem()));
-        ReActions.getActivators().activate(ce);
-        return ce.getChangeables() != null && ce.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(ce);
+        return ce.isCancelled();
     }
 
     public static boolean triggerItemClick(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        ItemClickDetails storage = new ItemClickDetails(
+        ItemClickDetails details = new ItemClickDetails(
                 player,
                 event.getHand() == EquipmentSlot.HAND
                         ? player.getInventory().getItemInMainHand()
                         : player.getInventory().getItemInOffHand(),
                 event.getHand());
-        ReActions.getActivators().activate(storage);
-        return storage.getChangeables() != null && storage.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(details);
+        return details.isCancelled();
     }
 
     public static boolean triggerItemClick(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
-        ItemClickDetails storage = new ItemClickDetails(event.getPlayer(), event.getItem(), event.getHand());
-        ReActions.getActivators().activate(storage);
-        return storage.getChangeables() != null && storage.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        ItemClickDetails details = new ItemClickDetails(event.getPlayer(), event.getItem(), event.getHand());
+        activate(details);
+        return details.isCancelled();
     }
 
 
@@ -149,8 +148,8 @@ public final class DetailsManager {
         if (event.getHand() != EquipmentSlot.HAND) return false;
         if (event.getClickedBlock().getType() != Material.LEVER) return false;
         LeverDetails e = new LeverDetails(event.getPlayer(), event.getClickedBlock());
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     // PVP Kill Event
@@ -159,7 +158,7 @@ public final class DetailsManager {
         Player killer = EntityUtils.getKillerPlayer(deadplayer.getLastDamageCause());
         if (killer == null) return;
         PvpKillDetails pe = new PvpKillDetails(killer, deadplayer);
-        ReActions.getActivators().activate(pe);
+        activate(pe);
     }
 
     // PVP Death Event
@@ -168,7 +167,7 @@ public final class DetailsManager {
         LivingEntity killer = EntityUtils.getKillerEntity(deadplayer.getLastDamageCause());
         DeathCause ds = (killer == null) ? DeathCause.OTHER : (killer instanceof Player) ? DeathCause.PVP : DeathCause.PVE;
         DeathDetails pe = new DeathDetails(killer, deadplayer, ds);
-        ReActions.getActivators().activate(pe);
+        activate(pe);
     }
 
     // Button Event
@@ -180,8 +179,8 @@ public final class DetailsManager {
         Switch button = (Switch) event.getClickedBlock().getBlockData();
         if (button.isPowered()) return false;
         ButtonDetails be = new ButtonDetails(event.getPlayer(), event.getClickedBlock().getLocation());
-        ReActions.getActivators().activate(be);
-        return be.getChangeables() != null && be.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(be);
+        return be.isCancelled();
     }
 
     public static boolean triggerSign(Player player, String[] lines, Location loc, boolean leftClick) {
@@ -189,8 +188,8 @@ public final class DetailsManager {
             SignActivator sign = (SignActivator) act;
             if (sign.checkMask(lines)) {
                 SignDetails se = new SignDetails(player, lines, loc, leftClick);
-                ReActions.getActivators().activate(se);
-                return se.getChangeables() != null && se.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+                activate(se);
+                return se.isCancelled();
             }
         }
         return false;
@@ -204,10 +203,10 @@ public final class DetailsManager {
     }
 
     public static boolean triggerExec(CommandSender sender, Parameters param) {
-        return triggerExec(sender, param, null);
+        return triggerExec(sender, param, Variables.UNMODIFIABLE);
     }
 
-    public static boolean triggerExec(CommandSender sender, Parameters param, Map<String, String> tempVars) {
+    public static boolean triggerExec(CommandSender sender, Parameters param, Variables vars) {
         if (param.isEmpty()) return false;
         final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
         final String id = param.getString("activator", param.getString("exec"));
@@ -239,7 +238,7 @@ public final class DetailsManager {
             Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
                 for (Player player : target) {
                     // if (ReActions.getActivators().isStopped(player, id, true)) continue;
-                    ExecDetails ce = new ExecDetails(player, tempVars);
+                    ExecDetails ce = new ExecDetails(player, vars);
                     // TODO Custom ActivatorType for Exec
                     ReActions.getActivators().activate(ce, id);
                 }
@@ -248,7 +247,7 @@ public final class DetailsManager {
         return true;
     }
 
-    public static boolean triggerExec(CommandSender sender, String id, Map<String, String> tempVars) {
+    public static boolean triggerExec(CommandSender sender, String id, Variables vars) {
         final Player player = (sender instanceof Player) ? (Player) sender : null;
         Activator act = ReActions.getActivators().getActivator(id);
         if (act == null) {
@@ -261,7 +260,7 @@ public final class DetailsManager {
         }
         // TODO Custom ActivatorType to handle exec stopping
         // if (ReActions.getActivators().isStopped(player, id, true)) return true;
-        ExecDetails ce = new ExecDetails(player, tempVars);
+        ExecDetails ce = new ExecDetails(player, vars);
         ReActions.getActivators().activate(ce, id);
         return true;
     }
@@ -271,8 +270,8 @@ public final class DetailsManager {
         // TODO EnumSet Plates?
         if (!(event.getClickedBlock().getType().name().endsWith("_PRESSURE_PLATE"))) return false;
         PlateDetails pe = new PlateDetails(event.getPlayer(), event.getClickedBlock().getLocation());
-        ReActions.getActivators().activate(pe);
-        return pe.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(pe);
+        return pe.isCancelled();
     }
 
     public static void triggerCuboid(final Player player) {
@@ -299,7 +298,7 @@ public final class DetailsManager {
         for (String rg : regionTo)
             if (!regionFrom.contains(rg)) {
                 RegionEnterDetails wge = new RegionEnterDetails(player, rg);
-                ReActions.getActivators().activate(wge);
+                activate(wge);
             }
     }
 
@@ -308,7 +307,7 @@ public final class DetailsManager {
         for (String rg : regionFrom)
             if (!regionTo.contains(rg)) {
                 RegionLeaveDetails wge = new RegionLeaveDetails(player, rg);
-                ReActions.getActivators().activate(wge);
+                activate(wge);
             }
     }
 
@@ -329,7 +328,7 @@ public final class DetailsManager {
         if (!isTimeToRaiseEvent(player, rg, Cfg.worldguardRecheck, repeat)) return;
 
         RegionDetails wge = new RegionDetails(player, region);
-        ReActions.getActivators().activate(wge);
+        activate(wge);
 
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureRegionCheck(playerName, region, true), 20L * Cfg.worldguardRecheck);
     }
@@ -342,18 +341,18 @@ public final class DetailsManager {
         return needUpdate;
     }
 
-    // TODO: Redesign
-    public static @Nullable Map<String, DataValue> triggerMessage(CommandSender sender, MessageActivator.Source source, String message) {
+    // FIXME: Refactor, should not be this way
+    public static @NotNull Variables triggerMessage(CommandSender sender, MessageActivator.Source source, String message) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
         for (Activator act : ReActions.getActivatorTypes().get(MessageActivator.class).getActivators()) {
             MessageActivator a = (MessageActivator) act;
             if (a.filterMessage(source, message)) {
                 MessageDetails me = new MessageDetails(player, a, message);
-                ReActions.getActivators().activate(me);
-                return me.getChangeables();
+                activate(me);
+                return me.getVariables();
             }
         }
-        return null;
+        return Variables.UNMODIFIABLE;
     }
 
     public static void triggerVariable(String var, String playerName, String newValue, String prevValue) {
@@ -361,21 +360,19 @@ public final class DetailsManager {
         Player player = Bukkit.getPlayerExact(playerName);
         if (!playerName.isEmpty() && player == null) return;
         VariableDetails ve = new VariableDetails(player, var, newValue, prevValue);
-        ReActions.getActivators().activate(ve);
+        activate(ve);
     }
 
-    public static @Nullable Map<String, DataValue> triggerMobDamage(Player damager, LivingEntity entity, double damage, EntityDamageEvent.DamageCause cause) {
-        MobDamageDetails mde = new MobDamageDetails(entity, damager, damage, cause);
-        ReActions.getActivators().activate(mde);
-        return mde.getChangeables();
+    public static @NotNull Variables triggerMobDamage(Player damager, LivingEntity entity, double damage, double finalDamage, EntityDamageEvent.DamageCause cause) {
+        MobDamageDetails mde = new MobDamageDetails(entity, damager, cause, damage, finalDamage);
+        activate(mde);
+        return mde.getVariables();
     }
 
-    public static String triggerQuit(PlayerQuitEvent event) {
+    public static @NotNull Variables triggerQuit(PlayerQuitEvent event) {
         QuitDetails qu = new QuitDetails(event.getPlayer(), event.getQuitMessage());
-        ReActions.getActivators().activate(qu);
-        return qu.getChangeables() == null
-                ? qu.getQuitMessage()
-                : qu.getChangeables().get(QuitDetails.QUIT_MESSAGE).asString();
+        activate(qu);
+        return qu.getVariables();
     }
 
     public static boolean triggerBlockClick(PlayerInteractEvent event) {
@@ -394,95 +391,104 @@ public final class DetailsManager {
                 return false;
         }
         BlockClickDetails e = new BlockClickDetails(event.getPlayer(), event.getClickedBlock(), leftClick);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
-    public static @Nullable Map<String, DataValue> triggerInventoryClick(InventoryClickEvent event) {
+    public static @NotNull Variables triggerInventoryClick(InventoryClickEvent event) {
         InventoryClickDetails e = new InventoryClickDetails((Player) event.getWhoClicked(), event.getAction(),
                 event.getClick(), event.getInventory(), event.getSlotType(),
                 event.getCurrentItem(), event.getHotbarButton(),
                 event.getView(), event.getSlot());
-        ReActions.getActivators().activate(e);
-        return e.getChangeables();
+        activate(e);
+        return e.getVariables();
     }
 
-    public static @Nullable Map<String, DataValue> triggerDrop(Player player, Item item, int pickupDelay) {
+    public static @NotNull Variables triggerDrop(Player player, Item item, int pickupDelay) {
         DropDetails e = new DropDetails(player, item, pickupDelay);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables();
+        activate(e);
+        return e.getVariables();
     }
 
     public static boolean triggerFlight(Player player, boolean flying) {
         FlightDetails e = new FlightDetails(player, flying);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     public static boolean triggerEntityClick(Player player, Entity rightClicked) {
         EntityClickDetails e = new EntityClickDetails(player, rightClicked);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
-    public static @Nullable Map<String, DataValue> triggerBlockBreak(Player player, Block block, boolean dropItems) {
+    public static @NotNull Variables triggerBlockBreak(Player player, Block block, boolean dropItems) {
         BlockBreakDetails e = new BlockBreakDetails(player, block, dropItems);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables();
+        activate(e);
+        return e.getVariables();
     }
 
     public static void triggerSneak(PlayerToggleSneakEvent event) {
         SneakDetails e = new SneakDetails(event.getPlayer(), event.isSneaking());
-        ReActions.getActivators().activate(e);
+        activate(e);
     }
 
-    public static @Nullable Map<String, DataValue> triggerDamageByMob(EntityDamageByEntityEvent event) {
-        DamageByMobDetails dm = new DamageByMobDetails((Player) event.getEntity(), event.getDamager(), event.getDamage(), event.getCause());
-        ReActions.getActivators().activate(dm);
-        return dm.getChangeables();
+    public static @NotNull Variables triggerDamageByMob(EntityDamageByEntityEvent event) {
+        DamageByMobDetails dm = new DamageByMobDetails((Player) event.getEntity(), event.getDamager(), event.getCause(), event.getDamage(), event.getDamage());
+        activate(dm);
+        return dm.getVariables();
     }
 
-    public static @Nullable Map<String, DataValue> triggerDamageByBlock(EntityDamageByBlockEvent event, Block blockDamager) {
+    public static @NotNull Variables triggerDamageByBlock(EntityDamageByBlockEvent event, Block blockDamager) {
         double damage = event.getDamage();
-        DamageByBlockDetails db = new DamageByBlockDetails((Player) event.getEntity(), blockDamager, damage, event.getCause());
-        ReActions.getActivators().activate(db);
-        return db.getChangeables();
+        DamageByBlockDetails db = new DamageByBlockDetails((Player) event.getEntity(), blockDamager, event.getCause(), damage, event.getFinalDamage());
+        activate(db);
+        return db.getVariables();
     }
 
-    public static @Nullable Map<String, DataValue> triggerDamage(EntityDamageEvent event, String source) {
-        double damage = event.getDamage();
-        DamageDetails de = new DamageDetails((Player) event.getEntity(), damage, event.getCause(), source);
-        ReActions.getActivators().activate(de);
-        return de.getChangeables();
+    public static @NotNull Variables triggerDamage(EntityDamageEvent event, String source) {
+        DamageDetails de = new DamageDetails(
+                (Player) event.getEntity(), 
+                event.getCause(), 
+                source, 
+                event.getDamage(), 
+                event.getFinalDamage()
+        );
+        activate(de);
+        return de.getVariables();
     }
 
-    public static @Nullable Map<String, DataValue> triggerPickupItem(Player player, Item item, int pickupDelay) {
+    public static @NotNull Variables triggerPickupItem(Player player, Item item, int pickupDelay) {
         PickupItemDetails e = new PickupItemDetails(player, item, pickupDelay);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables();
+        activate(e);
+        return e.getVariables();
     }
 
     public static boolean triggerGamemode(Player player, GameMode gameMode) {
         GameModeDetails e = new GameModeDetails(player, gameMode);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     public static boolean triggerGod(Player player, boolean god) {
         GodDetails e = new GodDetails(player, god);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     public static boolean triggerItemHeld(Player player, int newSlot, int previousSlot) {
         ItemHeldDetails e = new ItemHeldDetails(player, newSlot, previousSlot);
-        ReActions.getActivators().activate(e);
-        return e.getChangeables() != null && e.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        activate(e);
+        return e.isCancelled();
     }
 
     public static boolean triggerWeatherChange(String world, boolean raining) {
-        WeatherChangeDetails storage = new WeatherChangeDetails(world, raining);
-        ReActions.getActivators().activate(storage);
-        return storage.getChangeables() != null && storage.getChangeables().get(Details.CANCEL_EVENT).asBoolean();
+        WeatherChangeDetails details = new WeatherChangeDetails(world, raining);
+        activate(details);
+        return details.isCancelled();
+    }
+    
+    private static boolean activate(Details details) {
+        return ReActions.getActivators().activate(details);
     }
 }

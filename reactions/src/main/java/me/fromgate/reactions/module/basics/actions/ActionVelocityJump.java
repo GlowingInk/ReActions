@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("JUMP")
 public class ActionVelocityJump implements Action {
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         Msg.logOnce("velocity-jump-warning", "&cWarning! VELOCITY_JUMP action is under construction. In next version of plugin it could be changed, renamed or removed!");

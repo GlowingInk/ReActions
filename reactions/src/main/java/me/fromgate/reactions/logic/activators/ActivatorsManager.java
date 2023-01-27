@@ -206,14 +206,14 @@ public class ActivatorsManager {
 
     @Deprecated
     public void activate(@NotNull Details details, @NotNull String id) {
-        details.init();
+        details.initialize();
         activatorsNames.get(id).executeActivator(details);
     }
 
     public boolean activate(@NotNull Details details) {
         ActivatorType type = types.get(details.getType());
         if (type != null && !type.isEmpty()) {
-            details.init();
+            details.initialize();
             type.activate(details);
             return true;
         }

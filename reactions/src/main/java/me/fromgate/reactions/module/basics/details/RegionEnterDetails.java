@@ -23,24 +23,17 @@
 package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.module.basics.activators.RegionEnterActivator;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class RegionEnterDetails extends Details {
-
-    private final String region;
-
+public class RegionEnterDetails extends RegionDetails {
     public RegionEnterDetails(Player player, String region) {
-        super(player);
-        this.region = region;
+        super(player, region);
     }
 
     @Override
     public @NotNull Class<? extends Activator> getType() {
         return RegionEnterActivator.class;
     }
-
-    public String getRegion() {return this.region;}
 }

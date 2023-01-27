@@ -42,5 +42,7 @@ public class RegionDetails extends Details {
         return RegionActivator.class;
     }
 
-    public String getRegion() {return this.region;}
+    public String getRegion() {
+        return this.region;
+    }
 }

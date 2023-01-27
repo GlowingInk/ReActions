@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.Rng;
@@ -33,8 +33,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("PROBABILITY")
 public class FlagChance implements Flag {
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
-        context.setVariable("chance", params + "%");
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
+        context.getVariables().set("chance", params + "%");
         double d = 50;
         if (NumberUtils.isNumber(params, Is.POSITIVE)) d = Double.parseDouble(params);
         d = Math.max(Math.min(d, 100), 0);

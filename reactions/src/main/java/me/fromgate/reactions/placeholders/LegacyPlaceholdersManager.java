@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +12,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
     private static final Pattern PLACEHOLDER_NONGREEDY = Pattern.compile("(?<!&\\\\)%(\\S+?)%");
     private static final Pattern PLACEHOLDER_RAW = Pattern.compile("&\\\\(%\\S+%)");
 
-    public String parsePlaceholders(@NotNull RaContext context, @Nullable String text) {
+    public String parsePlaceholders(@NotNull Environment context, @Nullable String text) {
         if (text == null || text.length() < 3) return text;
 
         String oldText;
@@ -27,7 +27,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");
     }
 
-    private String parseRecursive(String text, Pattern phPattern, RaContext context) {
+    private String parseRecursive(String text, Pattern phPattern, Environment context) {
         Matcher phMatcher = phPattern.matcher(text);
         // If found at least one
         if (phMatcher.find()) {
@@ -41,7 +41,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         return text;
     }
 
-    private void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, RaContext context) {
+    private void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, Environment context) {
         matcher.appendReplacement(builder, "");
         builder.append(
                 resolvePlaceholder(

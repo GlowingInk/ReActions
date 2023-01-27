@@ -22,13 +22,10 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.ItemStackValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.InventoryClickActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -41,6 +38,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.*;
 
 public class InventoryClickDetails extends Details {
     public static final String ITEM = "item";
@@ -69,53 +68,60 @@ public class InventoryClickDetails extends Details {
         this.inventoryView = inventoryView;
     }
 
-    public Inventory getBottomInventory() {
-        return this.inventoryView.getBottomInventory();
-    }
-
     @Override
     public @NotNull Class<? extends Activator> getType() {
         return InventoryClickActivator.class;
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        return new Maps.Builder<String, String>()
-                .put("name", inventoryName)
-                .put("click", clickType.name())
-                .put("action", action.name())
-                .put("slotType", slotType.name())
-                .put("inventory", inventoryType.name())
-                .put("item", VirtualItem.asString(item))
-                .put("key", Integer.toString(numberKey + 1))
-                .put("itemkey", (numberKey > -1) ? VirtualItem.asString(getBottomInventory().getItem(numberKey)) : "")
-                .put("slot", Integer.toString(slot))
-                .build();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                ITEM, lazy(() -> VirtualItem.asString(item)),
+                "name", plain(inventoryName),
+                "click", plain(clickType),
+                "action", plain(action),
+                "slottype", plain(slotType),
+                "inventory", plain(inventoryType),
+                "key", plain(numberKey + 1),
+                "itemkey", numberKey > -1 ? lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : plain(""),
+                "slot", plain(slot)
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(ITEM, new ItemStackValue(item))
-                .build();
+    public Inventory getBottomInventory() {
+        return this.inventoryView.getBottomInventory();
     }
 
-    public ItemStack getItem() {return this.item;}
+    public ItemStack getItem() {
+        return this.item;
+    }
 
-    public InventoryAction getAction() {return this.action;}
+    public InventoryAction getAction() {
+        return this.action;
+    }
 
-    public ClickType getClickType() {return this.clickType;}
+    public ClickType getClickType() {
+        return this.clickType;
+    }
 
-    public SlotType getSlotType() {return this.slotType;}
+    public SlotType getSlotType() {
+        return this.slotType;
+    }
 
-    public InventoryType getInventoryType() {return this.inventoryType;}
+    public InventoryType getInventoryType() {
+        return this.inventoryType;
+    }
 
-    public int getNumberKey() {return this.numberKey;}
+    public int getNumberKey() {
+        return this.numberKey;
+    }
 
-    public int getSlot() {return this.slot;}
+    public int getSlot() {
+        return this.slot;
+    }
 
-    public String getInventoryName() {return this.inventoryName;}
-
-    public InventoryView getInventoryView() {return this.inventoryView;}
+    public String getInventoryName() {
+        return this.inventoryName;
+    }
 }

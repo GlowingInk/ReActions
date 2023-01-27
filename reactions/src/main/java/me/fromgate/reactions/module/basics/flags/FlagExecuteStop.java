@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class FlagExecuteStop implements Flag {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         // TODO Custom ActivatorType to handle exec stopping
         Player player = context.getPlayer();
         Msg.logOnce("flagexecstopnotworking", "Sorry, but flag EXECUTE_STOP doesn't work yet.");

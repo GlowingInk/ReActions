@@ -24,6 +24,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -34,6 +35,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.lazy;
+import static me.fromgate.reactions.logic.context.Variable.plain;
 
 public class ItemHoldDetails extends Details {
 
@@ -52,15 +56,14 @@ public class ItemHoldDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put("hand", plain(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
         if (item != null) {
-            VirtualItem vItem = VirtualItem.fromItem(item);
-            tempVars.put("item", vItem.toString());
-            tempVars.put("item-str", ItemUtils.toDisplayString(vItem.asParameters()));
+            vars.put("item", lazy(() -> VirtualItem.asString(item)));
+            vars.put("item-str", lazy(() -> ItemUtils.toDisplayString(item)));
         }
-        tempVars.put("hand", hand == EquipmentSlot.HAND ? "MAIN" : "OFF");
-        return tempVars;
+        return vars;
     }
 
     public EquipmentSlot getHand() {

@@ -1,8 +1,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class ActionRegex implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String prefix = params.getString("prefix");
         String regex = params.getString("regex");
@@ -33,9 +33,9 @@ public class ActionRegex implements Action {
             for (int i = 0; i <= m.groupCount(); i++) {
                 if (m.group(i) != null) group = m.group(i);
                 else group = "";
-                context.setVariable(prefix + "group" + count + "" + i, group);
-                context.setVariable(prefix + "group_" + count + "_" + i, group);
-                context.setVariable(prefix + "group:" + count + ":" + i, group);
+                context.getVariables().set(prefix + "group" + count + "" + i, group);
+                context.getVariables().set(prefix + "group_" + count + "_" + i, group);
+                context.getVariables().set(prefix + "group:" + count + ":" + i, group);
             }
         }
         return true;

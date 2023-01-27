@@ -24,6 +24,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.SignActivator;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
@@ -33,13 +34,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.fromgate.reactions.logic.context.Variable.plain;
+
 public class SignDetails extends Details {
 
     private final boolean leftClick;
     private final Location location;
     private final String[] signLines;
 
-    public SignDetails(Player player, String[] signLines, Location loc, boolean leftClick) {
+    public SignDetails(Player player, String[] signLines, Location loc, boolean leftClick) { // TODO Hand?
         super(player);
         this.signLines = signLines;
         this.location = loc;
@@ -52,18 +55,21 @@ public class SignDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        for (int i = 0; i < signLines.length; i++)
-            tempVars.put("sign_line" + (i + 1), signLines[i]);
-        tempVars.put("sign_loc", LocationUtils.locationToString(location));
-        tempVars.put("click", leftClick ? "left" : "right");
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        for (int i = 0; i < signLines.length; i++) {
+            vars.put("sign_line" + (i + 1), plain(signLines[i]));
+        }
+        vars.put("sign_loc", plain(LocationUtils.locationToString(location)));
+        vars.put("click", plain(leftClick ? "left" : "right"));
+        return vars;
     }
 
-    public boolean isLeftClick() {return this.leftClick;}
+    public boolean isLeftClick() {
+        return this.leftClick;
+    }
 
-    public Location getLocation() {return this.location;}
-
-    public String[] getSignLines() {return this.signLines;}
+    public String[] getSignLines() {
+        return this.signLines;
+    }
 }

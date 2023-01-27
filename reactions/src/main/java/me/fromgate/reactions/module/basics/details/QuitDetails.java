@@ -22,20 +22,17 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.StringValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.QuitActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class QuitDetails extends Details {
-    public static final String QUIT_MESSAGE = "quit-message";
+    public static final String QUIT_MESSAGE = "quit_message";
 
     private final String quitMessage;
 
@@ -50,12 +47,7 @@ public class QuitDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(QUIT_MESSAGE, new StringValue(quitMessage))
-                .build();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(QUIT_MESSAGE, Variable.property(quitMessage));
     }
-
-    public String getQuitMessage() {return this.quitMessage;}
 }

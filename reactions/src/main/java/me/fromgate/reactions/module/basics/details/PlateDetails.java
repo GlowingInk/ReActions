@@ -22,12 +22,10 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.PlateActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -49,9 +47,11 @@ public class PlateDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(Details.CANCEL_EVENT, new BooleanValue(false));
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(CANCEL_EVENT, Variable.property(false));
     }
 
-    public Location getLocation() {return this.location;}
+    public Location getLocation() {
+        return this.location;
+    }
 }

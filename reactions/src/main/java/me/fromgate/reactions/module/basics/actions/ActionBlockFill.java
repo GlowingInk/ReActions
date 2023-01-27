@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -41,7 +41,7 @@ import java.util.List;
 @Aliased.Names("FILL_BLOCK")
 public class ActionBlockFill implements Action {
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!params.contains("region") && !params.containsEvery("loc1", "loc2")) return false;
         boolean phys = params.getBoolean("physics", false);

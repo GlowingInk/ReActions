@@ -24,21 +24,20 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.activators.ExecActivator;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ExecDetails extends Details {
+    private final Variables vars;
 
-    private final Map<String, String> tempVars;
-
-    public ExecDetails(Player player) {
+    public ExecDetails(Player player, Variables vars) {
         super(player);
-        this.tempVars = null;
+        this.vars = vars;
     }
 
     @Override
@@ -46,23 +45,8 @@ public class ExecDetails extends Details {
         return ExecActivator.class;
     }
 
-    public ExecDetails(Player player, Parameters tempVars) {
-        super(player);
-        this.tempVars = tempVars.originMap();
-    }
-
-    public ExecDetails(Player player, Map<String, String> tempVars) {
-        super(player);
-        this.tempVars = tempVars;
-    }
-
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        if (this.tempVars != null && !this.tempVars.isEmpty())
-            tempVars.putAll(this.tempVars);
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return vars.forkMap();
     }
-
-    public Map<String, String> getTempVars() {return this.tempVars;}
 }

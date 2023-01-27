@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ public class FlagRegion implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         Player player = context.getPlayer();
         if (!RaWorldGuard.isConnected()) return false;
         return switch (flagType) {

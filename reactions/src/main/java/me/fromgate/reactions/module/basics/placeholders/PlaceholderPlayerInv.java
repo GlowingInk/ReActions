@@ -1,6 +1,6 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -17,7 +17,7 @@ import static me.fromgate.reactions.util.NumberUtils.Is.NATURAL;
 @Aliased.Names("invplayer")
 public class PlaceholderPlayerInv implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String text) {
+    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String text) {
         return getPlayerInventory(context.getPlayer(), text);
     }
 
@@ -26,7 +26,7 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
         if (NumberUtils.isNumber(value, NATURAL)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
-            vi = VirtualItem.fromItem(player.getInventory().getItem(slotNum));
+            vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
         } else switch (value.toLowerCase(Locale.ROOT)) {
             case "mainhand":
             case "hand":
@@ -36,19 +36,19 @@ public class PlaceholderPlayerInv implements Placeholder.Keyed {
             case "head":
             case "helm":
             case "helmet":
-                vi = VirtualItem.fromItem(player.getInventory().getHelmet());
+                vi = VirtualItem.fromItemStack(player.getInventory().getHelmet());
                 break;
             case "chestplate":
             case "chest":
-                vi = VirtualItem.fromItem(player.getInventory().getChestplate());
+                vi = VirtualItem.fromItemStack(player.getInventory().getChestplate());
                 break;
             case "leggings":
             case "legs":
-                vi = VirtualItem.fromItem(player.getInventory().getLeggings());
+                vi = VirtualItem.fromItemStack(player.getInventory().getLeggings());
                 break;
             case "boots":
             case "boot":
-                vi = VirtualItem.fromItem(player.getInventory().getBoots());
+                vi = VirtualItem.fromItemStack(player.getInventory().getBoots());
                 break;
         }
         return vi == null ? "" : vi.toString();

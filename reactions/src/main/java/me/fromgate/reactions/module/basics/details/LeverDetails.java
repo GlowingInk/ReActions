@@ -22,12 +22,10 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.LeverActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Switch;
@@ -48,12 +46,6 @@ public class LeverDetails extends Details {
         return (Switch) leverBlock.getBlockData();
     }
 
-    public boolean isLeverPowered() {
-        Switch lever = getLever();
-        if (lever == null) return false;
-        return lever.isPowered();
-    }
-
     public Location getLeverLocation() {
         return leverBlock.getLocation();
     }
@@ -64,8 +56,7 @@ public class LeverDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(CANCEL_EVENT, Variable.property(false));
     }
-
 }

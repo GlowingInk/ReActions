@@ -30,6 +30,7 @@ import me.fromgate.reactions.logic.activity.actions.Stopper;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.activity.flags.StoredFlag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -124,7 +125,7 @@ public final class ActivatorLogic {
         this.group = group;
     }
 
-    public void executeLogic(@NotNull RaContext context) {
+    public void executeLogic(@NotNull Environment context) {
         boolean noPlayer = context.getPlayer() == null;
         for (StoredFlag flag : flags) {
             if (flag.getFlag().requiresPlayer() && noPlayer) {
@@ -142,7 +143,7 @@ public final class ActivatorLogic {
         executeActions(context, actions, !noPlayer);
     }
 
-    private static void executeActions(RaContext context, List<StoredAction> actions, boolean hasPlayer) {
+    private static void executeActions(Environment context, List<StoredAction> actions, boolean hasPlayer) {
         for (int i = 0; i < actions.size(); i++) {
             StoredAction action = actions.get(i);
             // TODO: Microoptimization - check if hasPlayer and separate iteration

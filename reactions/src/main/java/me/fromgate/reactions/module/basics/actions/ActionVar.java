@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class ActionVar implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
         Parameters params = Parameters.fromString(paramsStr);
         Player p = context.getPlayer();
 
@@ -66,7 +66,6 @@ public class ActionVar implements Action {
 
         switch (this.actType) {
             case SET -> ReActions.getVariables().setVariable(player, var, value);   //VAR_SET, VAR_PLAYER_SET
-            case TEMPORARY_SET -> context.setVariable(var, value);                  //VAR_TEMP_SET
             case CLEAR -> ReActions.getVariables().removeVariable(player, var);     //VAR_CLEAR, VAR_PLAYER_CLEAR
             case INCREASE, DECREASE -> {                                            //VAR_INC, VAR_PLAYER_INC, VAR_DEC, VAR_PLAYER_DEC
                 String variable = ReActions.getVariables().getVariable(player, var);
@@ -87,7 +86,6 @@ public class ActionVar implements Action {
             case CLEAR -> personalVar ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR";
             case INCREASE -> personalVar ? "VAR_PLAYER_INC" : "VAR_INC";
             case DECREASE -> personalVar ? "VAR_PLAYER_DEC" : "VAR_DEC";
-            case TEMPORARY_SET -> "VAR_TEMP_SET";
         };
     }
 
@@ -97,6 +95,6 @@ public class ActionVar implements Action {
     }
 
     public enum Type {
-        SET, CLEAR, INCREASE, DECREASE, TEMPORARY_SET
+        SET, CLEAR, INCREASE, DECREASE
     }
 }

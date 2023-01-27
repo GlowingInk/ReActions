@@ -1,6 +1,7 @@
 package me.fromgate.reactions.menu;
 
 import me.fromgate.reactions.ReActions;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -32,7 +33,7 @@ public class InventoryMenu implements Listener {
     // TODO: Some things are weird, needs refactoring
 
     private static final Map<String, VirtualInventory> menu = new HashMap<>();
-    private static Map<String, String> tempvars;
+    private static Variables vars;
 
     public static void init(ReActions.Platform platform) {
         load();
@@ -130,7 +131,7 @@ public class InventoryMenu implements Listener {
             for (int i = 1; i <= size; i++) {
                 String slotStr = "slot" + i;
                 if (!param.contains(slotStr)) continue;
-                ItemStack slotItem = VirtualItem.asItem(param.getString(slotStr));
+                ItemStack slotItem = VirtualItem.asItemStack(param.getString(slotStr));
                 if (slotItem == null) continue;
                 inv.setItem(i - 1, slotItem);
             }
@@ -139,8 +140,8 @@ public class InventoryMenu implements Listener {
         return inv;
     }
 
-    public static boolean createAndOpenInventory(Player player, Parameters params, Map<String, String> tempVars) {
-        tempvars = tempVars;
+    public static boolean createAndOpenInventory(Player player, Parameters params, Variables vars) {
+        InventoryMenu.vars = vars;
         Inventory inv = getInventory(params);
         if (inv == null) return false;
         openInventory(player, inv);
@@ -204,7 +205,7 @@ public class InventoryMenu implements Listener {
 
     private static String itemToString(String itemStr) {
         if (itemStr.isEmpty()) return "AIR";
-        ItemStack item = VirtualItem.asItem(itemStr);
+        ItemStack item = VirtualItem.asItemStack(itemStr);
         if (item == null || item.getType() == Material.AIR) return "AIR";
         String returnStr = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
         String itemTypeData = item.getType().name() + (ItemUtils.getDurability(item) == 0 ? "" : ":" + ItemUtils.getDurability(item)) + (item.getAmount() == 1 ? "" : "*" + item.getAmount());
@@ -222,7 +223,7 @@ public class InventoryMenu implements Listener {
         if (activators.size() > clickedSlot) {
             String activator = activators.get(clickedSlot);
             if (!activator.isEmpty()) {
-                DetailsManager.triggerExec(player, Parameters.fromString(activator, "activator"), tempvars);
+                DetailsManager.triggerExec(player, Parameters.fromString(activator, "activator"), vars);
             }
         }
         // TODO: Do not close menu option?

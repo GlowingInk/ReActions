@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +41,7 @@ public class FlagBiome implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         return context.getPlayer().getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, params);
     }
 }

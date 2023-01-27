@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
@@ -74,13 +75,13 @@ public final class UserCommand extends Command implements PluginIdentifiableComm
      * @param args   Used arguments
      * @return Name of result EXEC activator
      */
-    public String executeCommand(CommandSender sender, String[] args) {
+    public String executeCommand(CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
             if (!consoleAllowed) {
                 return getErroredExec(ExecType.CONSOLE_DISALLOWED);
             }
         } else if (Utils.isRestricted(sender, permission)) return getErroredExec(ExecType.NO_PERMISSIONS);
-        if (args.length == 0) {
+        if (args.size() == 0) {
             return execs.get(ExecType.DEFAULT);
         }
         ExecResult prioritizedResult = null;
@@ -116,7 +117,7 @@ public final class UserCommand extends Command implements PluginIdentifiableComm
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
-        executeCommand(sender, args);
+        executeCommand(sender, Arrays.asList(args));
         return true;
     }
 

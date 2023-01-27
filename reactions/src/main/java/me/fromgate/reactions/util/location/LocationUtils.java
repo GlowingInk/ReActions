@@ -76,6 +76,10 @@ public final class LocationUtils { // TODO: Requires refactoring
         return parseLocation(params, def);
     }
 
+    public static @Nullable Location parseLocation(@NotNull String param) {
+        return parseLocation(param, null);
+    }
+
     @Contract("_, !null -> !null")
     public static @Nullable Location parseLocation(@NotNull Parameters params, @Nullable Location def) {
         Location location = null;

@@ -22,35 +22,37 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.DoubleValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.MobDamageActivator;
-import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class MobDamageDetails extends Details {
     public static final String DAMAGE = "damage";
 
     private final LivingEntity entity;
     private final DamageCause cause;
-    private final double damage;
 
-    public MobDamageDetails(LivingEntity entity, Player damager, double damage, DamageCause cause) {
+    private final double damage;
+    private final double finalDamage;
+
+    public MobDamageDetails(LivingEntity entity, Player damager, DamageCause cause, double damage, double finalDamage) {
         super(damager);
         this.entity = entity;
-        this.damage = damage;
         this.cause = cause;
+        this.damage = damage;
+        this.finalDamage = finalDamage;
     }
 
     @Override
@@ -59,32 +61,20 @@ public class MobDamageDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("moblocation", LocationUtils.locationToString(entity.getLocation()));
-        tempVars.put("mobdamager", player == null ? "" : player.getName());
-        tempVars.put("mobtype", entity.getType().name());
-        String mobName = entity instanceof Player ? entity.getName() : entity.getCustomName();
-        tempVars.put("mobname", Utils.isStringEmpty(mobName) ? entity.getType().name() : mobName);
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                DAMAGE, property(damage),
+                "final_damage", plain(finalDamage),
+                "moblocation", plain(LocationUtils.locationToString(entity.getLocation())),
+                "mobdamager", plain(player == null ? "" : player.getName()),
+                "mobtype", plain(entity.getType()),
+                "mobname", plain(EntityUtils.getEntityDisplayName(entity)),
+                "cause", plain(cause)
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(DAMAGE, new DoubleValue(damage))
-                .build();
+    public LivingEntity getEntity() {
+        return this.entity;
     }
-
-    @Override
-    public @NotNull Player getPlayer() {
-        return player;
-    }
-
-    public LivingEntity getEntity() {return this.entity;}
-
-    public DamageCause getCause() {return this.cause;}
-
-    public double getDamage() {return this.damage;}
 }

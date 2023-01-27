@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.mob.EntityUtils;
@@ -25,14 +25,14 @@ public class ActionClearRadius implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         int radius = params.getInteger("radius");
         String type = params.getString("type", "all");
         if (radius == 0) return false;
         List<Location> locs = LocationUtils.getMinMaxRadiusLocations(context.getPlayer(), radius);
-        context.setVariable("loc1", LocationUtils.locationToString(locs.get(0)));
-        context.setVariable("loc2", LocationUtils.locationToString(locs.get(1)));
+        context.getVariables().set("loc1", LocationUtils.locationToString(locs.get(0)));
+        context.getVariables().set("loc2", LocationUtils.locationToString(locs.get(1)));
         if (locs.size() != 2) return false;
         Collection<Entity> en = EntityUtils.getEntities(locs.get(0), locs.get(1));
         int count = 0;

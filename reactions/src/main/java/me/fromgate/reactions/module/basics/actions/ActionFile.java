@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public class ActionFile implements Action {
     private static final String dir = new File("").getAbsolutePath();
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String action = params.getString("action");
         String fileName = params.getString("fileName");
@@ -25,7 +25,7 @@ public class ActionFile implements Action {
         if (action.isEmpty() || fileName.isEmpty()) return false;
 
         File file = new File(dir + File.separator + fileName);
-        context.setVariable("fullpath", file.getAbsolutePath());
+        context.getVariables().set("fullpath", file.getAbsolutePath());
 
         if (action.equalsIgnoreCase("remove")) {
             int c = 0;
@@ -37,7 +37,7 @@ public class ActionFile implements Action {
             } else {
                 if (file.delete()) c = 1;
             }
-            context.setVariable("removecount", Integer.toString(c));
+            context.getVariables().set("removecount", Integer.toString(c));
             return true;
 
         } else {
@@ -55,7 +55,7 @@ public class ActionFile implements Action {
                     return true;
                 }
             } catch (IOException e) {
-                context.setVariable("filedebug", e.getLocalizedMessage());
+                context.getVariables().set("filedebug", e.getLocalizedMessage());
             }
 
         }

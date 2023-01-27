@@ -63,7 +63,7 @@ public class ItemHoldActivator extends Activator {
 
     @Override
     public boolean checkDetails(@NotNull Details event) {
-        if (item.isEmpty() || (VirtualItem.asItem(item) == null)) {
+        if (item.isEmpty() || (VirtualItem.asItemStack(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorholdempty", "Failed to parse itemStr of activator " + logic.getName());
             return false;
         }

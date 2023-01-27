@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.item.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagWalkBlock implements Flag {
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Location loc = context.getPlayer().getLocation();
         Block walk;
         if (loc.getY() == Math.floor(loc.getY())) {

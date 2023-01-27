@@ -1,7 +1,6 @@
 package me.fromgate.reactions.events.listeners;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.events.PlayerAttacksEntityEvent;
 import me.fromgate.reactions.events.PlayerPickupItemEvent;
 import me.fromgate.reactions.externals.RaVault;
@@ -9,6 +8,7 @@ import me.fromgate.reactions.holders.PlayerRespawner;
 import me.fromgate.reactions.holders.Teleporter;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.activators.MessageActivator;
 import me.fromgate.reactions.module.basics.activators.SignActivator;
 import me.fromgate.reactions.module.basics.details.BlockBreakDetails;
@@ -17,12 +17,16 @@ import me.fromgate.reactions.module.basics.details.DropDetails;
 import me.fromgate.reactions.module.basics.details.InventoryClickDetails;
 import me.fromgate.reactions.module.basics.details.MessageDetails;
 import me.fromgate.reactions.module.basics.details.MobDamageDetails;
+import me.fromgate.reactions.module.basics.details.QuitDetails;
 import me.fromgate.reactions.module.basics.details.TeleportDetails;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.BlockUtils;
+import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.TemporaryOp;
 import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.item.VirtualItem;
+import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.message.RaDebug;
 import me.fromgate.reactions.util.mob.EntityUtils;
@@ -57,7 +61,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.List;
-import java.util.Map;
 
 import static me.fromgate.reactions.module.basics.DetailsManager.*;
 import static me.fromgate.reactions.module.basics.ItemDetailsManager.triggerItemHold;
@@ -80,6 +83,7 @@ public class BukkitListener implements Listener {
         PlayerAttacksEntityEvent plEvent = new PlayerAttacksEntityEvent((Player) damager,
                 (LivingEntity) event.getEntity(),
                 event.getDamage(),
+                event.getFinalDamage(),
                 event.getCause());
         Bukkit.getPluginManager().callEvent(plEvent);
         event.setDamage(plEvent.getDamage());
@@ -88,13 +92,13 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        Map<String, DataValue> changeables = triggerTeleport(
+        Variables vars = triggerTeleport(
                 event.getPlayer(),
                 event.getCause(),
                 event.getTo());
-        if (changeables == null) return;
-        event.setTo(changeables.get(TeleportDetails.LOCATION_TO).asLocation());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        if (!vars.isInitialized()) return;
+        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        vars.getChanged(TeleportDetails.LOCATION_TO, LocationUtils::parseLocation).ifPresent(event::setTo);
     }
 
     @EventHandler
@@ -109,12 +113,13 @@ public class BukkitListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         // TODO: That's not really good solution
         try {
-            Map<String, DataValue> changeables = triggerMessage(event.getPlayer(),
+            Variables vars = triggerMessage(event.getPlayer(),
                     MessageActivator.Source.CHAT_INPUT,
                     event.getMessage());
-            if (changeables == null) return;
-            event.setMessage(changeables.get(MessageDetails.MESSAGE).asString());
-            event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+            if (!vars.isInitialized()) return;
+            vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+            vars.getChanged(MessageDetails.MESSAGE).ifPresent(event::setMessage);
+            // TODO: setFormat
         } catch (IllegalStateException ignore) {
             Msg.logOnce("asyncchaterror", "Chat is in async thread. Because of that you should use " +
                     "additional EXEC activator in some cases, like teleportation, setting blocks etc.");
@@ -219,7 +224,7 @@ public class BukkitListener implements Listener {
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
             String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
-            triggerExec(killer, exec, null);
+            triggerExec(killer, exec, Variables.UNMODIFIABLE);
         }
 
     }
@@ -240,10 +245,10 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMobDamageByPlayer(PlayerAttacksEntityEvent event) {
-        Map<String, DataValue> changeables = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getCause());
-        if (changeables == null) return;
-        event.setDamage(changeables.get(MobDamageDetails.DAMAGE).asDouble());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        Variables vars = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getFinalDamage(), event.getCause());
+        if (!vars.isInitialized()) return;
+        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        vars.getChanged(MobDamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -257,34 +262,35 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerDamage(EntityDamageEvent event) {
-        String source;
         if (event.getEntity().getType() != EntityType.PLAYER) return;
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) return;
+        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM && Math.round(event.getDamage()) == 0) return; // FIXME Why?
+        String source;
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             source = "ENTITY";
-            Map<String, DataValue> changeables = triggerDamageByMob(evdmg);
-            if (changeables != null) {
-                event.setDamage(changeables.get(DamageDetails.DAMAGE).asDouble());
-                event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+            Variables vars = triggerDamageByMob(evdmg);;
+            if (vars.isInitialized()) {
+                vars.getChanged(DamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+                vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
             }
         } else if (event instanceof EntityDamageByBlockEvent evdmg) {
             source = "BLOCK";
             Block blockDamager = evdmg.getDamager();
             if (blockDamager != null) {
-                Map<String, DataValue> changeables = triggerDamageByBlock(evdmg, blockDamager);
-                if (changeables != null) {
-                    event.setDamage(changeables.get(DamageDetails.DAMAGE).asDouble());
-                    event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+                Variables vars = triggerDamageByBlock(evdmg, blockDamager);
+                if (vars.isInitialized()) {
+                    vars.getChanged(DamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+                    vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
                 }
             }
         } else {
             source = "OTHER";
         }
 
-        Map<String, DataValue> changeables = triggerDamage(event, source);
-        if (changeables == null) return;
-        event.setDamage(changeables.get(DamageDetails.DAMAGE).asDouble());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        Variables vars = triggerDamage(event, source);
+        if (vars.isInitialized()) {
+            vars.getChanged(DamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+            vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -344,11 +350,15 @@ public class BukkitListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         triggerItemClick(event);
         triggerItemWear(event.getPlayer());
-        if (triggerBlockClick(event)) event.setCancelled(true);
-        if (triggerButton(event)) event.setCancelled(true);
-        if (triggerPlate(event)) event.setCancelled(true);
-        if (triggerLever(event)) event.setCancelled(true);
-        if (triggerDoor(event)) event.setCancelled(true);
+        if (
+                triggerBlockClick(event) ||
+                triggerButton(event) ||
+                triggerPlate(event) ||
+                triggerLever(event) ||
+                triggerDoor(event)
+        ) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -361,19 +371,19 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        Map<String, DataValue> changeables = triggerInventoryClick(event);
-        if (changeables == null) return;
-        event.setCurrentItem(changeables.get(InventoryClickDetails.ITEM).asItemStack());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        Variables vars = triggerInventoryClick(event);
+        if (!vars.isInitialized()) return;
+        vars.getChanged(InventoryClickDetails.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
+        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
-        Map<String, DataValue> changeables = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
-        if (changeables == null) return;
-        event.getItemDrop().setPickupDelay((int) changeables.get(DropDetails.PICKUP_DELAY).asDouble());
-        event.getItemDrop().setItemStack(changeables.get(DropDetails.ITEM).asItemStack());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        Variables vars = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
+        if (!vars.isInitialized()) return;
+        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        vars.getChanged(DropDetails.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
+        vars.getChanged(DropDetails.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -390,10 +400,10 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        Map<String, DataValue> changeables = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
-        if (changeables == null) return;
-        event.setDropItems(changeables.get(BlockBreakDetails.DO_DROP).asBoolean());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        Variables vars = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
+        if (!vars.isInitialized()) return;
+        vars.getChanged(BlockBreakDetails.DO_DROP, Boolean::parseBoolean).ifPresent(event::setDropItems);
+        vars.getChanged(Details.CANCEL_EVENT, Boolean::parseBoolean).ifPresent(event::setCancelled);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -404,7 +414,7 @@ public class BukkitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         TemporaryOp.removeOp(event.getPlayer());
-        event.setQuitMessage(triggerQuit(event));
+        triggerQuit(event).getChanged(QuitDetails.QUIT_MESSAGE).ifPresent(event::setQuitMessage);
         MoveListener.removeLocation(event.getPlayer());
     }
 

@@ -1,7 +1,7 @@
 package me.fromgate.reactions.logic.activity.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.Activity;
+import me.fromgate.reactions.logic.context.Environment;
 import org.jetbrains.annotations.NotNull;
 
 public interface Flag extends Activity {
@@ -12,5 +12,5 @@ public interface Flag extends Activity {
      * @return is flag satisfied
      */
     @Override
-    boolean proceed(@NotNull RaContext context, @NotNull String paramsStr);
+    boolean proceed(@NotNull Environment context, @NotNull String paramsStr);
 }

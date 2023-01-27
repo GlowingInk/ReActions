@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
     private static final Pattern PRE_ESCAPE = Pattern.compile("(\\\\+)(?!%\\[|[\\\\\\]])"); // "(\\+)(?!%\[|[\\\]])"
 
     @Override
-    public String parsePlaceholders(@NotNull RaContext context, @Nullable String text) {
+    public String parsePlaceholders(@NotNull Environment context, @Nullable String text) {
         if (text == null || text.length() < 4) return text;
         text = preEscape(text);
         String oldText;
@@ -25,7 +25,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return unescapeSpecial(text);
     }
 
-    private String parse(@NotNull RaContext context, @NotNull String text) {
+    private String parse(@NotNull Environment context, @NotNull String text) {
         StringBuilder builder = new StringBuilder(text.length());
         IterationStage stage = IterationStage.TEXT;
         int stepIndex = 0;

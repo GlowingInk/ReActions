@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.externals.RaVault;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Rng;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -38,7 +38,7 @@ import java.util.Map;
 public class ActionMoneyGive implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;

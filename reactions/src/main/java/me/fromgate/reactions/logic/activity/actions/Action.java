@@ -1,7 +1,7 @@
 package me.fromgate.reactions.logic.activity.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.Activity;
+import me.fromgate.reactions.logic.context.Environment;
 import org.jetbrains.annotations.NotNull;
 
 public interface Action extends Activity {
@@ -12,5 +12,5 @@ public interface Action extends Activity {
      * @return is action executed successfully
      */
     @Override
-    boolean proceed(@NotNull RaContext context, @NotNull String paramsStr);
+    boolean proceed(@NotNull Environment context, @NotNull String paramsStr);
 }

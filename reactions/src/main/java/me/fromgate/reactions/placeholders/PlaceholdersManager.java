@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.resolvers.DynamicResolver;
 import me.fromgate.reactions.placeholders.resolvers.KeyedResolver;
 import me.fromgate.reactions.placeholders.resolvers.PreprocessResolver;
@@ -38,16 +38,16 @@ public abstract class PlaceholdersManager {
         }
     }
 
-    public final @Nullable String resolvePlaceholder(@NotNull RaContext context, @NotNull String phText) {
+    public final @Nullable String resolvePlaceholder(@NotNull Environment context, @NotNull String phText) {
         String result = keyed.parse(context, phText);
         return result == null
                 ? dynamic.parse(context, phText)
                 : result;
     }
 
-    public final @NotNull String resolvePreprocess(@NotNull RaContext context, @NotNull String fullText) {
+    public final @NotNull String resolvePreprocess(@NotNull Environment context, @NotNull String fullText) {
         return preprocess.parse(context, fullText);
     }
 
-    public abstract String parsePlaceholders(@NotNull RaContext context, @Nullable String text);
+    public abstract String parsePlaceholders(@NotNull Environment context, @Nullable String text);
 }

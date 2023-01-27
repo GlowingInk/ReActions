@@ -22,9 +22,9 @@
 
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.ParametersUtils;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public class FlagFlagSet implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         List<String> split = ParametersUtils.splitSafely(params, ' ');
         boolean hasPlayer = context.getPlayer() != null;
         for (String flagFullStr : split) {

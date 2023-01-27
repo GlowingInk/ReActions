@@ -1,13 +1,10 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.DoubleValue;
-import me.fromgate.reactions.data.ItemStackValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.PickupItemActivator;
-import me.fromgate.reactions.util.collections.Maps;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
@@ -16,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.*;
 
 /**
  * Created by MaxDikiy on 2017-09-04.
@@ -41,22 +40,16 @@ public class PickupItemDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        return Maps.Builder.single("droplocation", LocationUtils.locationToString(dropLoc));
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                PICKUP_DELAY, property(pickupDelay),
+                ITEM, lazy(() -> VirtualItem.asString(item)),
+                "droplocation", plain(LocationUtils.locationToString(dropLoc))
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(PICKUP_DELAY, new DoubleValue(pickupDelay))
-                .put(ITEM, new ItemStackValue(item))
-                .build();
+    public ItemStack getItem() {
+        return this.item;
     }
-
-    public Location getDropLoc() {return this.dropLoc;}
-
-    public ItemStack getItem() {return this.item;}
-
-    public int getPickupDelay() {return this.pickupDelay;}
 }

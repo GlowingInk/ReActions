@@ -23,7 +23,7 @@
 package me.fromgate.reactions.time;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
@@ -143,17 +143,17 @@ public final class Delayer {
         return times;
     }
 
-    public static void setTempPlaceholders(RaContext context, String playerName, String id) {
+    public static void setTempPlaceholders(Environment context, String playerName, String id) {
         String[] times = Delayer.getStringTime(playerName, id);
         if (times != null) {
-            context.setVariable("delay-fulltime", times[0]);
-            context.setVariable("delay-time", times[1]);
-            context.setVariable("delay-left", times[7]);
-            context.setVariable("delay-left-full", times[3]);
-            context.setVariable("delay-left-hms", times[2]);
-            context.setVariable("delay-left-hh", times[4]);
-            context.setVariable("delay-left-mm", times[5]);
-            context.setVariable("delay-left-ss", times[6]);
+            context.getVariables().set("delay-fulltime", times[0]);
+            context.getVariables().set("delay-time", times[1]);
+            context.getVariables().set("delay-left", times[7]);
+            context.getVariables().set("delay-left-full", times[3]);
+            context.getVariables().set("delay-left-hms", times[2]);
+            context.getVariables().set("delay-left-hh", times[4]);
+            context.getVariables().set("delay-left-mm", times[5]);
+            context.getVariables().set("delay-left-ss", times[6]);
         }
     }
 

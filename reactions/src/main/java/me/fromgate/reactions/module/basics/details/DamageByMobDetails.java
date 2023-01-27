@@ -1,35 +1,29 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.DoubleValue;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.DamageByMobActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
 
 /**
  * Created by MaxDikiy on 2017-06-25.
  */
-public class DamageByMobDetails extends Details {
+public class DamageByMobDetails extends DamageDetails {
 
     private final Entity damager;
-    private final DamageCause cause;
-    private final double damage;
 
-    public DamageByMobDetails(Player player, Entity damager, double damage, DamageCause cause) {
-        super(player);
+    public DamageByMobDetails(Player player, Entity damager, DamageCause cause, double damage, double finalDamage) {
+        super(player, cause, "ENTITY", damage, finalDamage);
         this.damager = damager;
-        this.damage = damage;
-        this.cause = cause;
     }
 
     @Override
@@ -38,29 +32,16 @@ public class DamageByMobDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("damagerlocation", LocationUtils.locationToString(damager.getLocation()));
-        tempVars.put("damagertype", damager.getType().name());
-        tempVars.put("entitytype", damager.getType().name());
-        Player player = damager instanceof Player ? (Player) damager : null;
-        String damagerName = (player == null) ? damager.getCustomName() : player.getName();
-        tempVars.put("damagername", damagerName != null && !damagerName.isEmpty() ? damagerName : damager.getType().name());
-        tempVars.put("cause", cause.name());
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars =  super.prepareVariables();
+        vars.put("damagerlocation", plain(LocationUtils.locationToString(damager.getLocation())));
+        vars.put("damagertype", plain(damager.getType()));
+        vars.put("entitytype", plain(damager.getType())); // FIXME Why there is a copy?
+        vars.put("damagername", plain(EntityUtils.getEntityDisplayName(damager)));
+        return vars;
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(DamageDetails.DAMAGE, new DoubleValue(damage))
-                .build();
+    public @NotNull Entity getDamager() {
+        return this.damager;
     }
-
-    public Entity getDamager() {return this.damager;}
-
-    public DamageCause getCause() {return this.cause;}
-
-    public double getDamage() {return this.damage;}
 }

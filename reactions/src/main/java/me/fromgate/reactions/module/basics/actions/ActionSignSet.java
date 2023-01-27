@@ -23,8 +23,8 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
@@ -42,10 +42,10 @@ import org.jetbrains.annotations.NotNull;
 public class ActionSignSet implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         // loc:world,x,y,z line1:text line2:text line3:text line4:text clear:1,2,3,4
-        String locStr = params.getString("loc", context.getVariable("sign_loc"));
+        String locStr = params.getString("loc", context.getVariables().getString("sign_loc")); // TODO What, why?
         if (Utils.isStringEmpty(locStr)) return false;
         Location loc = LocationUtils.parseCoordinates(locStr);
         if (loc == null) return false;

@@ -56,7 +56,7 @@ public final class FakeCommander {
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
         if (exec != null) {
-            if (!activated) storage.init();
+            if (!activated) storage.initialize();
             DetailsManager.triggerExec(storage.getSender(), exec, storage.getVariables());
         }
         // It's not activator - context will not be generated

@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.time.waiter.WaitingManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionDelayed implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         long delay = TimeUtils.parseTime(params.getString("time", "0"));
         if (delay == 0) return false;

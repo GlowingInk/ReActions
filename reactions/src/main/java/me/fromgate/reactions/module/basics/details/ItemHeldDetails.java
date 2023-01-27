@@ -1,11 +1,9 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.ItemHeldActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
@@ -14,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.*;
 
 /**
  * Created by MaxDikiy on 2017-11-11.
@@ -39,26 +39,20 @@ public class ItemHeldDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(CANCEL_EVENT, property(false));
+        vars.put("slotnew", plain(newSlot + 1));
+        vars.put("slotprev", plain(previousSlot + 1));
         if (newItem != null) {
-            VirtualItem vItem = VirtualItem.fromItem(newItem);
-            tempVars.put("itemnew", vItem.toString());
-            tempVars.put("itemnew-str", ItemUtils.toDisplayString(vItem.asParameters()));
+            vars.put("itemnew", lazy(() -> VirtualItem.asString(newItem)));
+            vars.put("itemnew-str", lazy(() -> ItemUtils.toDisplayString(newItem)));
         }
         if (previousItem != null) {
-            VirtualItem vItem = VirtualItem.fromItem(previousItem);
-            tempVars.put("itemprev", vItem.toString());
-            tempVars.put("itemprev-str", ItemUtils.toDisplayString(vItem.asParameters()));
+            vars.put("itemprev", lazy(() -> VirtualItem.asString(previousItem)));
+            vars.put("itemprev-str", lazy(() -> ItemUtils.toDisplayString(previousItem)));
         }
-        tempVars.put("slotNew", Integer.toString(newSlot + 1));
-        tempVars.put("slotPrev", Integer.toString(previousSlot + 1));
-        return tempVars;
-    }
-
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+        return vars;
     }
 
     public int getNewSlot() {return this.newSlot;}

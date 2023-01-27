@@ -1,16 +1,16 @@
 package me.fromgate.reactions.events.listeners;
 
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.events.PlayerMoveByBlockEvent;
 import me.fromgate.reactions.events.PlayerPickupItemEvent;
 import me.fromgate.reactions.events.PlayerStayEvent;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.ItemDetailsManager;
-import me.fromgate.reactions.module.basics.details.PickupItemDetails;
+import me.fromgate.reactions.module.basics.details.DropDetails;
+import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.Map;
 
 import static me.fromgate.reactions.module.basics.DetailsManager.*;
 
@@ -29,11 +29,11 @@ public class RaListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPickup(PlayerPickupItemEvent event) {
-        Map<String, DataValue> changeables = triggerPickupItem(event.getPlayer(), event.getItem(), event.getItem().getPickupDelay());
-        if (changeables == null) return;
-        event.getItem().setPickupDelay((int) changeables.get(PickupItemDetails.PICKUP_DELAY).asDouble());
-        event.getItem().setItemStack(changeables.get(PickupItemDetails.ITEM).asItemStack());
-        event.setCancelled(changeables.get(Details.CANCEL_EVENT).asBoolean());
+        Variables vars = triggerPickupItem(event.getPlayer(), event.getItem(), event.getItem().getPickupDelay());
+        if (!vars.isInitialized()) return;
+        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        vars.getChanged(DropDetails.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItem().setPickupDelay(d));
+        vars.getChanged(DropDetails.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItem().setItemStack(i));
         if (event.isCancelled()) return;
         ItemDetailsManager.triggerItemHold(event.getPlayer());
         ItemDetailsManager.triggerItemWear(event.getPlayer());

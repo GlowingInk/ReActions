@@ -138,8 +138,7 @@ public class BasicModule implements Module {
                 new ActionVar(ActionVar.Type.CLEAR, true),
                 new ActionVar(ActionVar.Type.INCREASE, true),
                 new ActionVar(ActionVar.Type.DECREASE, true),
-                new ActionVar(ActionVar.Type.TEMPORARY_SET, false),
-                new ActionChange(),
+                new ActionLocalVariable(),
                 new ActionTimer(true),
                 new ActionTimer(false),
                 new ActionCancelEvent(),
@@ -253,7 +252,7 @@ public class BasicModule implements Module {
                 new PlaceholderCalc(),
                 new PlaceholderActivator(),
                 new PlaceholderVariable(),
-                new PlaceholderTempVariable(),
+                new PlaceholderLocalVariable(),
                 // Vault
                 new PlaceholderMoney(),
                 // PAPI

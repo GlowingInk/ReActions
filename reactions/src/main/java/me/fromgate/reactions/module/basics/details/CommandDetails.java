@@ -22,24 +22,25 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.CommandActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.*;
 
 public class CommandDetails extends Details {
 
     private final String label, command;
-    private final String[] args;
+    private final List<String> args;
     private final CommandSender sender;
 
     public CommandDetails(Player p, CommandSender sender, String command) {
@@ -48,7 +49,7 @@ public class CommandDetails extends Details {
         this.command = command;
         String[] split = command.split("\\s");
         this.label = split[0];
-        this.args = Arrays.copyOfRange(split, 1, split.length);
+        this.args = Arrays.asList(Arrays.copyOfRange(split, 1, split.length));
     }
 
     @Override
@@ -57,47 +58,36 @@ public class CommandDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() { // TODO: Generating tempvars for it is expensive af
-        Map<String, String> tempVars = new HashMap<>();
-        String[] start = label.split(":");
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(CANCEL_EVENT, property(false));
+        String[] start = label.split(":", 2);
         if (start.length == 1) {
-            tempVars.put("prefix", start[0]);
-            tempVars.put("label", start[0]);
+            vars.put("prefix", plain(start[0]));
+            vars.put("label", plain(start[0]));
         } else {
-            tempVars.put("prefix", start[0]);
-            tempVars.put("label", start[1]);
+            vars.put("prefix", plain(start[0]));
+            vars.put("label", plain(start[1]));
         }
-        // All the arguments
-        tempVars.put("args", String.join(" ", args));
-        // Full command
-        tempVars.put("command", command);
-        // Count of arguments
-        tempVars.put("argscount", Integer.toString(args.length));
-        // Just command
-        tempVars.put("arg0", label);
-        for (int i = 0; i < args.length; i++) {
-            // [i] argument
-            tempVars.put("arg" + (i + 1), args[i]);
+        vars.put("args", lazy(() -> String.join(" ", args)));
+        vars.put("args0", lazy(() -> String.join(" ", args)));
+        vars.put("command", plain(command));
+        vars.put("argscount", plain(args.size()));
+        vars.put("arg0", plain(label));
+        for (int i = 0; i < args.size(); i++) {
+            int j = i + 1;
+            vars.put("arg" + j, plain(args.get(i)));
+            int index = i;
+            vars.put("args" + j, lazy(() -> String.join(" ", args.subList(index, args.size()))));
         }
-        StringBuilder builder = new StringBuilder();
-        for (int j = args.length - 1; j >= 0; j--) {
-            builder.append(" ").append(args[j]);
-            // Arguments after [j] argument
-            tempVars.put("args" + j, builder.substring(1));
-        }
-        return tempVars;
-    }
-
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+        return vars;
     }
 
     public String getLabel() {return this.label;}
 
     public String getCommand() {return this.command;}
 
-    public String[] getArgs() {return this.args;}
+    public List<String> getArgs() {return this.args;}
 
     public CommandSender getSender() {return this.sender;}
 }

@@ -22,22 +22,23 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.LocationValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.RespawnActivator;
-import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.enums.DeathCause;
+import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class RespawnDetails extends Details {
     public static final String RESPAWN_LOCATION = "respawn_loc";
@@ -59,30 +60,18 @@ public class RespawnDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("cause", deathCause.name());
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(RESPAWN_LOCATION, property(LocationUtils.locationToString(respawnLoc)));
+        vars.put("cause", plain(deathCause));
         if (killer != null) {
-            tempVars.put("killer-type", killer.getType().name());
-            if (killer.getType() == EntityType.PLAYER) {
-                tempVars.put("targetplayer", killer.getName());
-                tempVars.put("killer-name", killer.getName());
-            } else {
-                String mobName = killer.getCustomName();
-                tempVars.put("killer-name", Utils.isStringEmpty(mobName) ? killer.getType().name() : mobName);
-            }
+            vars.put("killer-type", plain(killer.getType()));
+            vars.put("killer-name", plain(EntityUtils.getEntityDisplayName(killer)));
         }
-        return tempVars;
+        return vars;
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(RESPAWN_LOCATION, new LocationValue(respawnLoc));
+    public DeathCause getDeathCause() {
+        return this.deathCause;
     }
-
-    public DeathCause getDeathCause() {return this.deathCause;}
-
-    public LivingEntity getKiller() {return this.killer;}
-
-    public Location getRespawnLoc() {return this.respawnLoc;}
 }

@@ -22,12 +22,10 @@
 
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.ItemClickActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
@@ -37,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.*;
 
 public class ItemClickDetails extends Details {
 
@@ -55,20 +55,15 @@ public class ItemClickDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(CANCEL_EVENT, property(false));
+        vars.put("hand", plain(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
         if (item != null) {
-            VirtualItem vItem = VirtualItem.fromItem(item);
-            tempVars.put("item", vItem.toString());
-            tempVars.put("item-str", ItemUtils.toDisplayString(vItem.asParameters()));
+            vars.put("item", lazy(() -> VirtualItem.asString(item)));
+            vars.put("item-str", lazy(() -> ItemUtils.toDisplayString(item)));
         }
-        tempVars.put("hand", hand == EquipmentSlot.HAND ? "MAIN" : "OFF");
-        return tempVars;
-    }
-
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+        return vars;
     }
 
     public EquipmentSlot getHand() {

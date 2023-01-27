@@ -27,8 +27,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.module.basics.activators.MessageActivator.Source;
 import org.bukkit.Bukkit;
@@ -37,11 +37,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
 @Deprecated
-public final class RaProtocolLib {
+public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
     private static final Pattern TEXT = Pattern.compile("^\\{\"text\":\".*\"}");
     private static final Pattern TEXT_START = Pattern.compile("^\\{\"text\":\"");
     private static final Pattern TEXT_END = Pattern.compile("\"}$");
@@ -128,10 +127,10 @@ public final class RaProtocolLib {
                             if (jsonMessage != null) message = textToString(jsonMessage);
                         }
                         if (message.isEmpty()) return;
-                        Map<String, DataValue> changeables = DetailsManager.triggerMessage(event.getPlayer(), Source.CHAT_OUTPUT, message);
-                        if (changeables != null && changeables.get(Details.CANCEL_EVENT).asBoolean())
-                            event.setCancelled(true);
-
+                        Variables vars = DetailsManager.triggerMessage(event.getPlayer(), Source.CHAT_OUTPUT, message);
+                        if (vars.isInitialized()){
+                            vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+                        }
                     }
                 });
     }

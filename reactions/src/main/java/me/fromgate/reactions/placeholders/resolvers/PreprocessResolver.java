@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders.resolvers;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ public final class PreprocessResolver implements Resolver<Placeholder.Preprocess
     }
 
     @Override
-    public @NotNull String parse(@NotNull RaContext context, @NotNull String fullText) {
+    public @NotNull String parse(@NotNull Environment context, @NotNull String fullText) {
         for (Placeholder.Preprocess placeholder : placeholders) {
             fullText = placeholder.processPlaceholder(context, fullText);
         }

@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders.resolvers;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ public final class DynamicResolver implements Resolver<Placeholder.Dynamic> {
     }
 
     @Override
-    public @Nullable String parse(@NotNull RaContext context, @NotNull String phText) {
+    public @Nullable String parse(@NotNull Environment context, @NotNull String phText) {
         for (Placeholder.Dynamic ph : placeholders) {
             String result = ph.processPlaceholder(context, phText);
             if (result != null) return result;

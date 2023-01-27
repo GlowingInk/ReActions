@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("RMVPOT")
 public class ActionPotionRemove implements Action {
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         String str = removePotionEffect(context.getPlayer(), params);
         return !str.isEmpty();
     }

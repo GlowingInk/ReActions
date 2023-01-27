@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.TemporaryOp;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -55,7 +55,7 @@ public class ActionCommand implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         Player player = context.getPlayer();
         if (commandAs != Type.CONSOLE && player == null) return false;
         String commandLine = params;

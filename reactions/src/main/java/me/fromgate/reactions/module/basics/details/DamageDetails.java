@@ -1,18 +1,18 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.DoubleValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.DamageActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -21,14 +21,16 @@ public class DamageDetails extends Details {
     public static final String DAMAGE = "damage";
 
     private final DamageCause cause;
-    private final String source;
+    private final String source; // TODO enum
     private final double damage;
+    private final double finalDamage;
 
-    public DamageDetails(Player player, double damage, DamageCause cause, String source) {
+    public DamageDetails(@NotNull Player player, @NotNull DamageCause cause, @NotNull String source, double damage, double finalDamage) {
         super(player);
-        this.damage = damage;
         this.cause = cause;
         this.source = source;
+        this.damage = damage;
+        this.finalDamage = finalDamage;
     }
 
     @Override
@@ -37,25 +39,21 @@ public class DamageDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("damage", Double.toString(damage));
-        tempVars.put("cause", cause.name());
-        tempVars.put("source", source);
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put(CANCEL_EVENT, property(false));
+        vars.put(DAMAGE, property(damage));
+        vars.put("final_damage", plain(finalDamage));
+        vars.put("cause", plain(cause));
+        vars.put("source", plain(source));
+        return vars;
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(DAMAGE, new DoubleValue(damage))
-                .build();
+    public @NotNull DamageCause getCause() {
+        return this.cause;
     }
 
-    public DamageCause getCause() {return this.cause;}
-
-    public String getSource() {return this.source;}
-
-    public double getDamage() {return this.damage;}
+    public @NotNull String getSource() {
+        return this.source;
+    }
 }

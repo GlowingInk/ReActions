@@ -107,12 +107,12 @@ public class CommandActivator extends Activator {
                         cs.getCommand().toLowerCase(Locale.ROOT).startsWith(command) :
                         command.equalsIgnoreCase(cs.getCommand());
         } else {
-            if (args.size() != cs.getArgs().length + 1) return false;
+            if (args.size() != cs.getArgs().size() + 1) return false;
             if (!args.get(0).equalsIgnoreCase(cs.getLabel())) return false;
-            for (int i = 1; i <= cs.getArgs().length; i++) {
+            for (int i = 1; i <= cs.getArgs().size(); i++) {
                 String arg = args.get(i);
                 if (arg.equals("*")) continue;
-                if (!arg.equalsIgnoreCase(cs.getArgs()[i - 1])) return false;
+                if (!arg.equalsIgnoreCase(cs.getArgs().get(i - 1))) return false;
             }
             return true;
         }

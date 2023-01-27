@@ -1,17 +1,18 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.EntityClickActivator;
-import me.fromgate.reactions.util.collections.Maps;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -31,16 +32,15 @@ public class EntityClickDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("entitytype", entity.getType().name());
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                "entitytype", plain(entity.getType()),
+                "entity_name", plain(EntityUtils.getEntityDisplayName(entity))
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(CANCEL_EVENT, new BooleanValue(false));
+    public Entity getEntity() {
+        return this.entity;
     }
-
-    public Entity getEntity() {return this.entity;}
 }

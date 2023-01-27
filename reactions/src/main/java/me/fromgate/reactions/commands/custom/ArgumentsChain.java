@@ -95,8 +95,8 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
      * @param args   Array of arguments
      * @return Result of command
      */
-    public ExecResult executeChain(CommandSender sender, String[] args) {
-        if (args.length < arguments.size() || (!ignoreAfter && args.length > arguments.size())) {
+    public ExecResult executeChain(CommandSender sender, List<String> args) {
+        if (args.size() < arguments.size() || (!ignoreAfter && args.size() > arguments.size())) {
             return ExecResult.BLANK_BACKUP;
         }
 
@@ -109,7 +109,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
         }
 
         for (int i = 0; i < arguments.size(); i++) {
-            ExecType resultType = arguments.get(i).check(args[i].toLowerCase(Locale.ROOT));
+            ExecType resultType = arguments.get(i).check(args.get(i).toLowerCase(Locale.ROOT));
             if (resultType != ExecType.DEFAULT) {
                 return new ExecResult(resultType, getErroredExec(resultType));
             }

@@ -2,8 +2,8 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.SneakActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,9 +27,11 @@ public class SneakDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        return Maps.Builder.single("sneak", Boolean.toString(sneaking));
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of("sneak", Variable.plain(sneaking));
     }
 
-    public boolean isSneaking() {return this.sneaking;}
+    public boolean isSneaking() {
+        return this.sneaking;
+    }
 }

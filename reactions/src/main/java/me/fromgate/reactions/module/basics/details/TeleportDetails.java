@@ -1,18 +1,18 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.LocationValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.TeleportActivator;
-import me.fromgate.reactions.util.collections.Maps;
+import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class TeleportDetails extends Details {
     public static final String LOCATION_TO = "loc_to";
@@ -34,16 +34,18 @@ public class TeleportDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(LOCATION_TO, new LocationValue(to))
-                .build();
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                LOCATION_TO, property(LocationUtils.locationToString(to))
+        );
     }
 
-    public TeleportCause getCause() {return this.cause;}
+    public TeleportCause getCause() {
+        return this.cause;
+    }
 
-    public String getWorldTo() {return this.worldTo;}
-
-    public Location getTo() {return this.to;}
+    public String getWorldTo() {
+        return this.worldTo;
+    }
 }

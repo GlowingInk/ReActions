@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.events.listeners.GodModeListener;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class FlagState implements Flag {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         Player player = context.getPlayer();
         Posture pt = Posture.getByName(params);
         if (pt == null) return false;

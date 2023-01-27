@@ -1,6 +1,6 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
@@ -17,7 +17,7 @@ public class PlaceholderRandom implements Placeholder.Keyed {
     private static final Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
 
     @Override
-    public @NotNull String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
+    public @NotNull String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String param) {
         if (NumberUtils.isNumber(param, Is.NATURAL))
             return Integer.toString(Rng.nextInt(Integer.parseInt(param)));
 

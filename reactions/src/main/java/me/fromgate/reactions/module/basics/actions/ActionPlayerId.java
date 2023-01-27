@@ -1,8 +1,8 @@
 package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class ActionPlayerId implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         String uuid;
         String pName;
 
@@ -40,8 +40,8 @@ public class ActionPlayerId implements Action {
                 ReActions.getVariables().setVariable(playerParam, varName, pName);
         }
 
-        context.setVariable("playerid", uuid);
-        context.setVariable("playername", pName);
+        context.getVariables().set("playerid", uuid);
+        context.getVariables().set("playername", pName);
         return true;
     }
 

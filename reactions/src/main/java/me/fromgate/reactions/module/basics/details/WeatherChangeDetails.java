@@ -1,14 +1,15 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.WeatherChangeActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class WeatherChangeDetails extends Details {
     private final String world;
@@ -21,8 +22,12 @@ public class WeatherChangeDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return Maps.Builder.single(Details.CANCEL_EVENT, new BooleanValue(false));
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                "world", plain(world),
+                "weather", plain(raining ? "RAINING" : "CLEAR")
+        );
     }
 
     @Override
@@ -30,15 +35,11 @@ public class WeatherChangeDetails extends Details {
         return WeatherChangeActivator.class;
     }
 
-    @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        return new Maps.Builder<String, String>()
-                .put("world", world)
-                .put("weather", raining ? "RAINING" : "CLEAR")
-                .build();
+    public String getWorld() {
+        return this.world;
     }
 
-    public String getWorld() {return this.world;}
-
-    public boolean isRaining() {return this.raining;}
+    public boolean isRaining() {
+        return this.raining;
+    }
 }

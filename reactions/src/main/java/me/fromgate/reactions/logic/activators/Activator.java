@@ -18,7 +18,7 @@ public abstract class Activator {
      */
     public final void executeActivator(@NotNull Details details) {
         if (!checkDetails(details)) return;
-        logic.executeLogic(details.generateContext(logic.getName()));
+        logic.executeLogic(details.generateEnvironment(logic.getName()));
     }
 
     /**

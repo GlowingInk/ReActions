@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 @Aliased.Names({"var", "varp", "varplayer"})
 public class PlaceholderVariable implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String params) {
+    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String params) {
         switch (key) {
             case "var": case "variable":
                 int index = params.indexOf('.');
@@ -21,7 +21,7 @@ public class PlaceholderVariable implements Placeholder.Keyed {
                 }
 
             case "varp": case "varplayer":
-                return ReActions.getVariables().getVariable(context.getPlayer().getName(), params);
+                return context.getPlayer() == null ? ReActions.getVariables().getVariable(context.getPlayer().getName(), params) : null;
 
             default:
                 return null;

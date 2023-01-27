@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.holders.PlayerRespawner;
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -41,7 +41,7 @@ public class PlaceholderPlayer implements Placeholder.Keyed {
     }
 
     @Override
-    public @Nullable String processPlaceholder(@NotNull RaContext context, @NotNull String key, @NotNull String param) {
+    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String param) {
         Player player = context.getPlayer();
         if (player == null) return null;
         return switch (key) {

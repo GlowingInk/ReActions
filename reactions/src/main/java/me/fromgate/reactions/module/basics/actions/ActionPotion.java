@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.TimeUtils;
@@ -42,7 +42,7 @@ import java.util.Locale;
 public class ActionPotion implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String str = potionEffect(context.getPlayer(), params);
         return !str.isEmpty();

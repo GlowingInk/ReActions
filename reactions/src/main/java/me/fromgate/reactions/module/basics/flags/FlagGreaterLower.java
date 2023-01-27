@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.flags;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,15 +16,15 @@ public class FlagGreaterLower implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         double paramValue = params.getDouble("param");
         double value = params.getDouble("value");
         if (greater) {
-            context.setVariable("gparam", Double.toString(paramValue));
+            context.getVariables().set("gparam", Double.toString(paramValue));
             return paramValue > value;
         } else {
-            context.setVariable("lparam", Double.toString(paramValue));
+            context.getVariables().set("lparam", Double.toString(paramValue));
             return paramValue < value;
         }
     }

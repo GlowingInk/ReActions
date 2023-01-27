@@ -22,20 +22,19 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.naming.Aliased;
-import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("CANCEL")
 public class ActionCancelEvent implements Action {
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
-        return context.setChangeable(Details.CANCEL_EVENT, params.getBoolean(Parameters.ORIGIN, false));
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+        context.getVariables().set(Details.CANCEL_EVENT, paramsStr);
+        return true;
     }
 
     @Override

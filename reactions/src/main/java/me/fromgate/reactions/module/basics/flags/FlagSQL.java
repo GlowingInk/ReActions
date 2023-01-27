@@ -23,8 +23,8 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.SQLManager;
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +37,7 @@ public class FlagSQL implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!SQLManager.isEnabled()) return false;
         if (!params.containsEvery("value", "select", "from") &&
@@ -53,7 +53,7 @@ public class FlagSQL implements Flag {
             query = "SELECT " + select + " FROM " + from + (where.isEmpty() ? "" : " WHERE " + where);
         }
         int column = params.getInteger("column", 1);
-        if (check) return SQLManager.compareSelect(value, query, column, params, context.getVariable("SQL_SET"));
+        if (check) return SQLManager.compareSelect(value, query, column, params, context.getVariables().getString("SQL_SET"));
         else return SQLManager.isSelectResultEmpty(query);
     }
 

@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.RaContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("CHAT")
 public class ActionChatMessage implements Action {
     @Override
-    public boolean proceed(@NotNull RaContext context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment context, @NotNull String params) {
         if (context.getPlayer() != null) {
             String msg = params;
             msg = msg.replaceFirst("^[\\s/]+", "");

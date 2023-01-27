@@ -24,15 +24,18 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.MobKillActivator;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.location.LocationUtils;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.property;
 
 public class MobKillDetails extends Details {
 
@@ -49,15 +52,17 @@ public class MobKillDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("moblocation", LocationUtils.locationToString(entity.getLocation()));
-        tempVars.put("mobkiller", player == null ? "" : player.getName());
-        tempVars.put("mobtype", entity.getType().name());
-        String mobName = entity instanceof Player ? entity.getName() : entity.getCustomName();
-        tempVars.put("mobname", Utils.isStringEmpty(mobName) ? entity.getType().name() : mobName);
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                "moblocation", plain(LocationUtils.locationToString(entity.getLocation())),
+                "mobkiller", plain(player == null ? "" : player.getName()),
+                "mobtype", plain(entity.getType()),
+                "mobname", plain(EntityUtils.getEntityDisplayName(entity))
+        );
     }
 
-    public LivingEntity getEntity() {return this.entity;}
+    public LivingEntity getEntity() {
+        return this.entity;
+    }
 }

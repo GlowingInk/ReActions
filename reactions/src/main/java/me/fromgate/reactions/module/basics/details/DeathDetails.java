@@ -24,15 +24,18 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.DeathActivator;
 import me.fromgate.reactions.util.enums.DeathCause;
-import org.bukkit.entity.EntityType;
+import me.fromgate.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
 
 public class DeathDetails extends Details {
 
@@ -51,23 +54,17 @@ public class DeathDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("cause", cause.name());
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put("cause", plain(cause.name()));
         if (killer != null) {
-            tempVars.put("killer-type", killer.getType().name());
-            if (killer.getType() == EntityType.PLAYER) {
-                tempVars.put("killer-name", killer.getName());
-                tempVars.put("targetplayer", killer.getName());
-            } else {
-                String mobName = killer.getCustomName();
-                tempVars.put("killer-name", mobName == null || mobName.isEmpty() ? killer.getType().name() : mobName);
-            }
+            vars.put("killer-type", plain(killer.getType()));
+            vars.put("killer-name", plain(EntityUtils.getEntityDisplayName(killer)));
         }
-        return tempVars;
+        return vars;
     }
 
-    public LivingEntity getKiller() {return this.killer;}
-
-    public DeathCause getCause() {return this.cause;}
+    public DeathCause getCause() {
+        return this.cause;
+    }
 }

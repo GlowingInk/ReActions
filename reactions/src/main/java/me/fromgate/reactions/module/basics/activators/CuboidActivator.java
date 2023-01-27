@@ -63,7 +63,11 @@ public class CuboidActivator extends Activator implements Locatable {
                 }
                 return false;
             case LEAVE:
-                return !inCuboid && within.remove(id);
+                if (!inCuboid && within.contains(id)) {
+                    within.remove(id);
+                    return true;
+                }
+                return false;
         }
         return false;
     }

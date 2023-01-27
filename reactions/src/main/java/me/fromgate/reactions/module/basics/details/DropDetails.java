@@ -1,21 +1,19 @@
 package me.fromgate.reactions.module.basics.details;
 
-import me.fromgate.reactions.data.BooleanValue;
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.data.DoubleValue;
-import me.fromgate.reactions.data.ItemStackValue;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.DropActivator;
-import me.fromgate.reactions.util.collections.Maps;
+import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static me.fromgate.reactions.logic.context.Variable.*;
 
 /**
  * Created by MaxDikiy on 2017-05-01.
@@ -39,22 +37,16 @@ public class DropDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("droplocation", LocationUtils.locationToString(player.getLocation()));
-        return tempVars;
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of(
+                CANCEL_EVENT, property(false),
+                PICKUP_DELAY, property(pickupDelay),
+                ITEM, lazy(() -> VirtualItem.asString(item)),
+                "droplocation", plain(LocationUtils.locationToString(player.getLocation()))
+        );
     }
 
-    @Override
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
-        return new Maps.Builder<String, DataValue>()
-                .put(CANCEL_EVENT, new BooleanValue(false))
-                .put(PICKUP_DELAY, new DoubleValue(pickupDelay))
-                .put(ITEM, new ItemStackValue(item))
-                .build();
+    public ItemStack getItem() {
+        return this.item;
     }
-
-    public ItemStack getItem() {return this.item;}
-
-    public int getPickupDelay() {return this.pickupDelay;}
 }

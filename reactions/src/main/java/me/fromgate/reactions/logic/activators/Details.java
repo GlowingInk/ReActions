@@ -22,12 +22,14 @@
 
 package me.fromgate.reactions.logic.activators;
 
-import me.fromgate.reactions.data.DataValue;
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.context.Variables;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Map;
 
@@ -39,10 +41,7 @@ public abstract class Details {
 
     protected final Player player;
     private final boolean async; // TODO
-
-    // Default temporary placeholders
-    private Map<String, String> variables = Map.of();
-    private Map<String, DataValue> changeables; // TODO Separate into own class
+    private Variables variables;
 
     public Details() {
         this(null);
@@ -57,40 +56,47 @@ public abstract class Details {
         this.async = async;
     }
 
-    public final void init() {
-        variables = prepareVariables();
-        changeables = prepareChangeables();
-    }
-
     public abstract @NotNull Class<? extends Activator> getType();
 
-    // TODO: dynamicVariables Supplier<String> for expensive calculations? E.g. CommandStorage
-    protected @NotNull Map<String, String> prepareVariables() {
-        return Map.of();
-    }
-
-    protected @NotNull Map<String, DataValue> prepareChangeables() {
+    protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of();
     }
 
     @Contract(pure = true)
-    public final @NotNull RaContext generateContext(@NotNull String activator) {
-        return new RaContext(activator, variables, changeables, player);
+    public final @NotNull Environment generateEnvironment(@NotNull String activator) {
+        initialize();
+        return new Environment(activator, variables, player);
     }
 
-    public @Nullable Player getPlayer() {
+    public final void initialize() {
+        if (!isInitialized()) variables = new Variables(prepareVariables());
+    }
+
+    public final boolean isInitialized() {
+        return variables != null;
+    }
+
+    public final @Unmodifiable @NotNull Variables getVariables() {
+        return isInitialized() ? variables : Variables.UNMODIFIABLE;
+    }
+
+    public final @Nullable Variables getVariablesUnsafe() {
+        return variables;
+    }
+
+    public final @Nullable Player getPlayer() {
         return this.player;
     }
 
-    public boolean isAsync() {
+    public final boolean isAsync() {
         return this.async;
     }
 
-    public @NotNull Map<String, String> getVariables() {
-        return this.variables;
+    public boolean isCancelled() {
+        return isCancelled(false);
     }
 
-    public @Nullable Map<String, DataValue> getChangeables() {
-        return this.changeables;
+    public boolean isCancelled(boolean def) {
+        return getVariables().getChanged(Details.CANCEL_EVENT, Boolean::valueOf).orElse(def);
     }
 }

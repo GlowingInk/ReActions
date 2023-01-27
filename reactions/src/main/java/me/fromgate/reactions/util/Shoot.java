@@ -22,6 +22,8 @@
 
 package me.fromgate.reactions.util;
 
+import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -47,6 +49,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static me.fromgate.reactions.logic.context.Variable.plain;
 
 // TODO Make from scratch
 public final class Shoot {
@@ -94,15 +98,15 @@ public final class Shoot {
         Player player = target instanceof Player ? (Player) target : null;
         if (player == null && param.getBoolean("playeronly", true)) return;
         param = param.with("player", player == null ? "~null" : player.getName());
-        Map<String, String> tempVars = new HashMap<>();
-        tempVars.put("targettype", target.getType().name());
-        tempVars.put("targetname", (player == null) ? EntityUtils.getMobName(target) : player.getName());
-        tempVars.put("targetloc", LocationUtils.locationToString(target.getLocation()));
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put("targettype", plain(target.getType()));
+        vars.put("targetname", plain(EntityUtils.getEntityDisplayName(target)));
+        vars.put("targetloc", plain(LocationUtils.locationToString(target.getLocation())));
         if (shooter != null) {
-            tempVars.put("shooter", shooter.getName());
-            tempVars.put("shooterloc", LocationUtils.locationToString(shooter.getLocation()));
+            vars.put("shooter", plain(shooter.getName()));
+            vars.put("shooterloc", plain(LocationUtils.locationToString(shooter.getLocation())));
         }
-        DetailsManager.triggerExec(shooter, param, tempVars);
+        DetailsManager.triggerExec(shooter, param, new Variables(vars));
     }
 
     private static List<Block> getBeam(LivingEntity p, int distance) {

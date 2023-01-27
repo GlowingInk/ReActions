@@ -24,8 +24,8 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.context.Variable;
 import me.fromgate.reactions.module.basics.activators.PvpKillActivator;
-import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,9 +46,7 @@ public class PvpKillDetails extends Details {
     }
 
     @Override
-    protected @NotNull Map<String, String> prepareVariables() {
-        return Maps.Builder.single("targetplayer", killedPlayer.getName());
+    protected @NotNull Map<String, Variable> prepareVariables() {
+        return Map.of("targetplayer", Variable.plain(killedPlayer.getName()));
     }
-
-    public Player getKilledPlayer() {return this.killedPlayer;}
 }

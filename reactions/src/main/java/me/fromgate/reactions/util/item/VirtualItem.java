@@ -144,11 +144,11 @@ public final class VirtualItem implements Parameterizable {
         );
     }
 
-    public @Nullable ItemStack asItem() {
-        return asItem(true);
+    public @Nullable ItemStack asItemStack() {
+        return asItemStack(true);
     }
 
-    private @Nullable ItemStack asItem(boolean initClone) {
+    private @Nullable ItemStack asItemStack(boolean initClone) {
         if (itemGenerated) {
             return itemValue == null
                     ? null
@@ -219,7 +219,7 @@ public final class VirtualItem implements Parameterizable {
      * @param item item to generate from
      * @return generated VirtualItem
      */
-    public static @NotNull VirtualItem fromItem(@Nullable ItemStack item) {
+    public static @NotNull VirtualItem fromItemStack(@Nullable ItemStack item) {
         if (item == null || item.getType().isEmpty()) {
             return VirtualItem.AIR;
         }
@@ -291,20 +291,20 @@ public final class VirtualItem implements Parameterizable {
         );
     }
 
-    public static @Nullable ItemStack asItem(@NotNull String itemStr) {
-        return fromString(itemStr).asItem(false);
+    public static @Nullable ItemStack asItemStack(@NotNull String itemStr) {
+        return fromString(itemStr).asItemStack(false);
     }
 
-    public static @Nullable ItemStack asItem(@NotNull Parameters itemParams) {
-        return fromParameters(itemParams).asItem(false);
+    public static @Nullable ItemStack asItemStack(@NotNull Parameters itemParams) {
+        return fromParameters(itemParams).asItemStack(false);
     }
 
     public static @NotNull String asString(@Nullable ItemStack item) {
-        return fromItem(item).asString();
+        return fromItemStack(item).asString();
     }
 
     public static @NotNull Parameters asParameters(@Nullable ItemStack item) {
-        return fromItem(item).asParameters();
+        return fromItemStack(item).asParameters();
     }
 
     public static boolean isSimilar(@NotNull String itemStr, @Nullable ItemStack compared) {

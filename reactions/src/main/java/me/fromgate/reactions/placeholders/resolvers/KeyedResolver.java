@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders.resolvers;
 
-import me.fromgate.reactions.logic.RaContext;
+import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
     }
 
     @Override
-    public @Nullable String parse(@NotNull RaContext context, @NotNull String phText) {
+    public @Nullable String parse(@NotNull Environment context, @NotNull String phText) {
         int index = phText.indexOf(':');
         String key;
         String params;

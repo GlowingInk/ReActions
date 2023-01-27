@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static me.fromgate.reactions.util.location.LocationUtils.CHUNK_BITS;
@@ -92,6 +93,14 @@ public final class EntityUtils {
             return entity;
         }
         return null;
+    }
+
+    public static @NotNull String getEntityDisplayName(@NotNull Entity entity) {
+        if (entity instanceof Player player) {
+            return player.getName();
+        } else {
+            return Optional.ofNullable(entity.getCustomName()).orElse(entity.getType().name());
+        }
     }
 
     public static @NotNull String getMobName(@NotNull Nameable mob) {

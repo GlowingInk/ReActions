@@ -18,6 +18,10 @@ public final class NumberUtils {
 
     private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
+    public static double asDouble(@Nullable String str) {
+        return asDouble(str, 0);
+    }
+
     public static double asDouble(@Nullable String str, double def) {
         if (Utils.isStringEmpty(str) || !FLOAT.matcher(str).matches()) return def;
         return Double.parseDouble(str);
@@ -26,6 +30,10 @@ public final class NumberUtils {
     public static double asDouble(@Nullable String str, @NotNull DoubleSupplier def) {
         if (Utils.isStringEmpty(str) || !FLOAT.matcher(str).matches()) return def.getAsDouble();
         return Double.parseDouble(str);
+    }
+
+    public static int asInteger(@Nullable String str) {
+        return asInteger(str, 0);
     }
 
     public static int asInteger(@Nullable String str, int def) {
