@@ -1,9 +1,10 @@
 package me.fromgate.reactions.logic.activity.flags;
 
+import me.fromgate.reactions.util.parameter.Parameterizable;
+import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public class StoredFlag {
-
+public class StoredFlag implements Parameterizable {
     private final Flag flag;
     private final String params;
     private final boolean inverted;
@@ -35,5 +36,10 @@ public class StoredFlag {
     @Override
     public @NotNull String toString() {
         return (inverted ? "!" : "") + flag.getName() + "=" + params;
+    }
+
+    @Override
+    public @NotNull Parameters asParameters() {
+        return Parameters.singleton(flag.getName(), params);
     }
 }

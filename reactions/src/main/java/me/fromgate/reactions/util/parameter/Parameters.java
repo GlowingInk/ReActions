@@ -30,7 +30,7 @@ public class Parameters implements Parameterizable {
     private final Map<String, String> params;
 
     private String formatted;
-    private Set<String> safeKeys;
+    private Set<String> strictKeys;
     private Integer hash;
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
@@ -48,7 +48,6 @@ public class Parameters implements Parameterizable {
         return fromConfiguration(cfg, Set.of());
     }
 
-    @SuppressWarnings("ConstantConditions")
     public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg, @NotNull Collection<String> ignoredKeys) {
         Map<String, String> params = new LinkedHashMap<>();
         for (String key : cfg.getKeys(false)) {
@@ -68,10 +67,12 @@ public class Parameters implements Parameterizable {
                     ++i;
                 }
             } else if (cfg.isConfigurationSection(key)) {
+                //noinspection ConstantConditions
                 params.put(key, fromConfiguration(cfg.getConfigurationSection(key), ignoredKeys).toString());
             } else if (cfg.isItemStack(key)) {
                 params.put(key, VirtualItem.asString(cfg.getItemStack(key)));
             } else {
+                //noinspection ConstantConditions
                 params.put(key, cfg.get(key).toString());
             }
         }
@@ -375,14 +376,6 @@ public class Parameters implements Parameterizable {
         return true;
     }
 
-    public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return getContainedKey(keys) != null;
-    }
-
-    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
-        return getContainedKey(keys) != null;
-    }
-
     public @Nullable String getContainedKey(@NotNull String @NotNull ... keys) {
         return getContainedKey(Arrays.asList(keys));
     }
@@ -397,6 +390,24 @@ public class Parameters implements Parameterizable {
         return null;
     }
 
+    public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
+        if (isEmpty()) return null;
+        for (String key : keys) {
+            if (contains(key, valueCheck)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    public boolean containsAny(@NotNull String @NotNull ... keys) {
+        return getContainedKey(keys) != null;
+    }
+
+    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
+        return getContainedKey(keys) != null;
+    }
+
     public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
         return getContainedKey(valueCheck, keys) != null;
     }
@@ -407,16 +418,6 @@ public class Parameters implements Parameterizable {
 
     public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
         return getContainedKey(valueCheck, Arrays.asList(keys));
-    }
-
-    public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
-        if (isEmpty()) return null;
-        for (String key : keys) {
-            if (contains(key, valueCheck)) {
-                return key;
-            }
-        }
-        return null;
     }
 
     @Contract(pure = true)
@@ -448,13 +449,13 @@ public class Parameters implements Parameterizable {
         return origin;
     }
 
-    public @Unmodifiable @NotNull Set<String> keySetSafe() {
-        if (this.safeKeys == null) {
+    public @Unmodifiable @NotNull Set<String> keySetStrict() {
+        if (this.strictKeys == null) {
             Set<String> keys = new HashSet<>(params.keySet());
             keys.remove(Parameters.ORIGIN);
-            this.safeKeys = Collections.unmodifiableSet(keys);
+            this.strictKeys = Collections.unmodifiableSet(keys);
         }
-        return this.safeKeys;
+        return this.strictKeys;
     }
 
     public @Unmodifiable @NotNull Set<String> keySet() {
@@ -483,7 +484,7 @@ public class Parameters implements Parameterizable {
         if (obj == this) return true;
         if (obj instanceof Parameters other) {
             if (other.size() != size()) return false;
-            for (String key : keySetSafe()) {
+            for (String key : keySetStrict()) {
                 if (!Objects.equals(getString(key, null), other.getString(key, null))) {
                     return false;
                 }
@@ -497,7 +498,7 @@ public class Parameters implements Parameterizable {
     public int hashCode() {
         if (this.hash == null) {
             int hash = 1; // To skip (un)boxing on calculation
-            for (String key : keySetSafe()) {
+            for (String key : keySetStrict()) {
                 hash = 31 * hash + key.hashCode() + getString(key).hashCode();
             }
             this.hash = hash;

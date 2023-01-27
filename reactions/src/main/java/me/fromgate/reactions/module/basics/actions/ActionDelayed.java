@@ -17,17 +17,19 @@ public class ActionDelayed implements Action {
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        long delay = TimeUtils.parseTime(params.getString("time", "0"));
+        long delay = TimeUtils.parseTime(params.getString("time", "1"));
         if (delay == 0) return false;
 
         String actionSource = params.getString("action");
         if (actionSource.isEmpty()) return false;
         String actionStr;
         String paramStr = "";
-        if (!actionSource.contains(" ")) actionStr = actionSource;
-        else {
-            actionStr = actionSource.substring(0, actionSource.indexOf(" "));
-            paramStr = actionSource.substring(actionSource.indexOf(" ") + 1);
+        int splitIndex = actionSource.indexOf(' ');
+        if (splitIndex == -1) {
+            actionStr = actionSource;
+        } else {
+            actionStr = actionSource.substring(0, splitIndex);
+            paramStr = actionSource.substring(splitIndex + 1);
         }
 
         Action action = ReActions.getActivities().getAction(actionStr);
@@ -50,5 +52,4 @@ public class ActionDelayed implements Action {
     public boolean requiresPlayer() {
         return false;
     }
-
 }

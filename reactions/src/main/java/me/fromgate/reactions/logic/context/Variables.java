@@ -20,7 +20,7 @@ public class Variables {
 
     private final Map<String, Variable> variables;
 
-    public Variables(Map<String, Variable> variables) {
+    public Variables(@NotNull Map<String, Variable> variables) {
         this.variables = new HashMap<>(variables);
     }
 
