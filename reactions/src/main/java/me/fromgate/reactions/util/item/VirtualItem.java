@@ -59,23 +59,23 @@ public final class VirtualItem implements Parameterizable {
     private static final Map<String, MetaAspect> ASPECTS_BY_NAME = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaAspect> ASPECTS = new ArrayList<>();
     static {
+        registerAspect(new NameAspect(true));
+        registerAspect(new NameAspect(false));
+        registerAspect(new LoreAspect(true));
+        registerAspect(new LoreAspect(false));
+        registerAspect(new DurabilityAspect());
+        registerAspect(new EnchantmentsAspect());
+        registerAspect(new ModelAspect());
+        registerAspect(new ColorAspect());
         registerAspect(new BannerAspect());
         registerAspect(new BookAspect(BookAspect.Type.PAGES));
         registerAspect(new BookAspect(BookAspect.Type.TITLE));
         registerAspect(new BookAspect(BookAspect.Type.AUTHOR));
-        registerAspect(new ColorAspect());
-        registerAspect(new DurabilityAspect());
-        registerAspect(new EnchantmentsAspect());
         registerAspect(new FireworkAspect(true));
         registerAspect(new FireworkAspect(false));
         registerAspect(new HeadAspect());
-        registerAspect(new LoreAspect(true));
-        registerAspect(new LoreAspect(false));
         registerAspect(new MapAspect(true));
         registerAspect(new MapAspect(false));
-        registerAspect(new ModelAspect());
-        registerAspect(new NameAspect(true));
-        registerAspect(new NameAspect(false));
         registerAspect(new PotionAspect(true));
         registerAspect(new PotionAspect(false));
     }

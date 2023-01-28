@@ -3,7 +3,6 @@ package me.fromgate.reactions.util.item;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.fromgate.reactions.util.Rng;
-import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,17 +44,7 @@ public final class ItemUtils {
         }
     }
 
-    // TODO: Too many "toDisplayString" utils?
-
-    public static String toDisplayString(@NotNull List<ItemStack> items) {
-        StringBuilder builder = new StringBuilder();
-        for (ItemStack item : items) {
-            builder.append(toDisplayString(item)).append(", ");
-        }
-        return Utils.cutBuilder(builder, 2);
-    }
-
-    public static String toDisplayString(@NotNull ItemStack item) {
+    public static @NotNull String toDisplayString(@NotNull ItemStack item) {
         if (!item.hasItemMeta()) return item.getType().name();
         ItemMeta meta = item.getItemMeta();
         return meta.hasDisplayName()
@@ -63,11 +52,11 @@ public final class ItemUtils {
                 : item.getType().name();
     }
 
-    public static String toDisplayString(@NotNull String itemStr) {
+    public static @NotNull String toDisplayString(@NotNull String itemStr) {
         return toDisplayString(Parameters.fromString(itemStr));
     }
 
-    public static String toDisplayString(@NotNull Parameters itemParams) {
+    public static @NotNull String toDisplayString(@NotNull Parameters itemParams) {
         return itemParams.getStringSafe("name", () -> itemParams.getString("type", "AIR"));
     }
 
@@ -138,7 +127,7 @@ public final class ItemUtils {
 
     @Contract("_, !null -> !null")
     public static @Nullable Material getMaterial(@NotNull String name, @Nullable Material def) {
-        Material type = Material.getMaterial(name.toUpperCase(Locale.ROOT));
+        Material type = getMaterial(name);
         return type == null ? def : type;
     }
 

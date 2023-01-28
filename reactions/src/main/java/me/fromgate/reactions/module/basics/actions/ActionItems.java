@@ -43,6 +43,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 
 // TODO: Remake from scratch
 public class ActionItems implements Action {
@@ -139,7 +140,7 @@ public class ActionItems implements Action {
     private boolean wearItemView(Environment context, Parameters params) {
         Player player = context.getPlayer();
         int slot; //4 - auto, 3 - helmet, 2 - chestplate, 1 - leggins, 0 - boots
-        slot = this.getSlotNum(params.getString("slot", "auto"));
+        slot = getSlotNum(params.getString("slot", "auto"));
         if (slot == -1) return getItemInOffhand(context, params);
         ItemStack[] armour = player.getInventory().getArmorContents();
         ItemStack item = armour[slot];
@@ -173,7 +174,7 @@ public class ActionItems implements Action {
         if (itemStr.isEmpty()) {
             itemStr = params.origin();
         } else {
-            slot = this.getSlotNum(params.getString("slot", "auto"));
+            slot = getSlotNum(params.getString("slot", "auto"));
             existDrop = params.getEnum("exist", ItemPolicy.UNDRESS);
         }
         ItemStack item = null;
@@ -299,7 +300,7 @@ public class ActionItems implements Action {
         Player player = context.getPlayer();
         List<ItemStack> items = ItemUtils.parseRandomItemsStr(param);
         if (items.isEmpty()) return false;
-        String actionItems = ItemUtils.toDisplayString(items);
+        String actionItems = toDisplayString(items);
         context.getVariables().set("item_str", actionItems);
         Bukkit.getScheduler().scheduleSyncDelayedTask(ReActions.getPlugin(), () -> {
             for (ItemStack i : items)
@@ -312,7 +313,7 @@ public class ActionItems implements Action {
     private boolean openInventory(Environment context, String itemStr) {
         List<ItemStack> items = ItemUtils.parseRandomItemsStr(itemStr);
         if (items.isEmpty()) return false;
-        String actionItems = ItemUtils.toDisplayString(items);
+        String actionItems = toDisplayString(items);
         context.getVariables().set("item_str", actionItems);
         int size = Math.min(items.size(), 36);
         Inventory inv = Bukkit.createInventory(null, size);
@@ -337,7 +338,7 @@ public class ActionItems implements Action {
             loc.getWorld().dropItemNaturally(l, i);
             if (scatter) l = LocationUtils.getRadiusLocation(loc, radius, land);
         }
-        String actionItems = ItemUtils.toDisplayString(items);
+        String actionItems = toDisplayString(items);
         context.getVariables().set("item_str", actionItems);
         return true;
     }
@@ -380,12 +381,22 @@ public class ActionItems implements Action {
         return true;
     }
 
-    private int getSlotNum(String slotStr) {
-        if (slotStr.equalsIgnoreCase("helmet") || slotStr.equalsIgnoreCase("helm")) return 3;
-        if (slotStr.equalsIgnoreCase("chestplate") || slotStr.equalsIgnoreCase("chest")) return 2;
-        if (slotStr.equalsIgnoreCase("leggings") || slotStr.equalsIgnoreCase("leg")) return 1;
-        if (slotStr.equalsIgnoreCase("boots") || slotStr.equalsIgnoreCase("boot")) return 0;
-        return -1;
+    private static int getSlotNum(String slotStr) { // TODO Use enum
+        return switch (slotStr.toLowerCase(Locale.ROOT)) {
+            case "helmet", "helm", "head" -> 3;
+            case "chestplate", "chest", "body" -> 2;
+            case "leggings", "legs", "leg" -> 1;
+            case "boots", "boot", "feet" -> 0;
+            default -> -1;
+        };
+    }
+
+    private static String toDisplayString(@NotNull List<ItemStack> items) {
+        StringBuilder builder = new StringBuilder();
+        for (ItemStack item : items) {
+            builder.append(ItemUtils.toDisplayString(item)).append(", ");
+        }
+        return Utils.cutBuilder(builder, 2);
     }
 
     public enum Type {
