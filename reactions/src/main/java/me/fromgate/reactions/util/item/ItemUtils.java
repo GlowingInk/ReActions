@@ -102,7 +102,7 @@ public final class ItemUtils {
         return List.of();
     }
 
-    private static List<ItemStack> parseItemsSet(Parameters params, List<String> keys) {
+    private static @NotNull List<ItemStack> parseItemsSet(@NotNull Parameters params, @NotNull List<String> keys) {
         List<ItemStack> items = new ArrayList<>();
         for (String key : keys) {
             ItemStack item = params.get(key, VirtualItem::asItemStack);
@@ -145,7 +145,7 @@ public final class ItemUtils {
     /**
      * Get item in hand
      *
-     * @param player  Player to use
+     * @param player Player to use
      * @param offhand Check offhand or not
      * @return Item string
      */

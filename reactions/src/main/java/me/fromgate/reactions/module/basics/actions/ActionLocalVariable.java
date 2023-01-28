@@ -6,7 +6,7 @@ import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-@Aliased.Names({"var_temp", "var_temp_set", "temp_var", "temp_variable", "var_local"})
+@Aliased.Names({"var_temp", "var_temp_set", "temp_var", "temp_variable", "var_local", "change"})
 public class ActionLocalVariable implements Action {
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
