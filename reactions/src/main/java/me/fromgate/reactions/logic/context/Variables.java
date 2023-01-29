@@ -82,8 +82,4 @@ public class Variables {
             variables.put(key, variables.getOrDefault(key.toLowerCase(Locale.ROOT), Variable.EMPTY).set(str));
         }
     }
-
-    public boolean isInitialized() {
-        return !variables.isEmpty();
-    }
 }

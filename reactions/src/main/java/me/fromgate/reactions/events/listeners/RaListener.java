@@ -12,6 +12,8 @@ import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Optional;
+
 import static me.fromgate.reactions.module.basics.DetailsManager.*;
 
 public class RaListener implements Listener {
@@ -29,8 +31,9 @@ public class RaListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPickup(PlayerPickupItemEvent event) {
-        Variables vars = triggerPickupItem(event.getPlayer(), event.getItem(), event.getItem().getPickupDelay());
-        if (!vars.isInitialized()) return;
+        Optional<Variables> optVars = triggerPickupItem(event.getPlayer(), event.getItem(), event.getItem().getPickupDelay());
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
         vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
         vars.getChanged(DropDetails.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItem().setPickupDelay(d));
         vars.getChanged(DropDetails.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItem().setItemStack(i));

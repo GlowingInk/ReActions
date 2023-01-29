@@ -1,5 +1,6 @@
 package me.fromgate.reactions.commands.custom;
 
+import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.module.basics.details.CommandDetails;
 import me.fromgate.reactions.util.FileUtils;
@@ -57,7 +58,7 @@ public final class FakeCommander {
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
         if (exec != null) {
             if (!activated) storage.initialize();
-            DetailsManager.triggerExec(storage.getSender(), exec, storage.getVariables());
+            DetailsManager.triggerExec(storage.getSender(), exec, storage.getVariables().orElse(new Variables()));
         }
         // It's not activator - context will not be generated
         return raCmd.isOverride();

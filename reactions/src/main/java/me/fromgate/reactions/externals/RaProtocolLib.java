@@ -37,6 +37,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Deprecated
@@ -127,10 +128,10 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
                             if (jsonMessage != null) message = textToString(jsonMessage);
                         }
                         if (message.isEmpty()) return;
-                        Variables vars = DetailsManager.triggerMessage(event.getPlayer(), Source.CHAT_OUTPUT, message);
-                        if (vars.isInitialized()){
-                            vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-                        }
+                        Optional<Variables> optVars = DetailsManager.triggerMessage(event.getPlayer(), Source.CHAT_OUTPUT, message);
+                        if (optVars.isEmpty()) return;
+                        Variables vars = optVars.get();
+                        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
                     }
                 });
     }
