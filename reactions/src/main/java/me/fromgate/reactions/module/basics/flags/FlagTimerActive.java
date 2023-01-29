@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.time.TimersManager;
+import me.fromgate.reactions.time.timers.TimersManager;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagTimerActive implements Flag {

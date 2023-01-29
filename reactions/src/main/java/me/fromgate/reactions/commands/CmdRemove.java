@@ -4,7 +4,7 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.holders.LocationHolder;
 import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.menu.InventoryMenu;
-import me.fromgate.reactions.time.TimersManager;
+import me.fromgate.reactions.time.timers.TimersManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.message.Msg;

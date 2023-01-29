@@ -2,7 +2,7 @@ package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.menu.InventoryMenu;
-import me.fromgate.reactions.time.Delayer;
+import me.fromgate.reactions.time.LazyDelayManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -33,8 +33,8 @@ public class CmdSet extends Cmd {
             String player = params.getString("player", "");
             if (player.equalsIgnoreCase("%player%") && (p != null)) player = p.getName();
             long time = /*System.currentTimeMillis()+*/TimeUtils.parseTime(params.getString("delay", "3s")); //дефолтная задержка три секунды
-            if (player.isEmpty()) Delayer.setDelay(id, time, add);
-            else Delayer.setPersonalDelay(player, id, time, add);
+            if (player.isEmpty()) LazyDelayManager.setDelay(id, time, add);
+            else LazyDelayManager.setPersonalDelay(player, id, time, add);
             Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(System.currentTimeMillis() + time));
         } else if (var.equalsIgnoreCase("var") || var.equalsIgnoreCase("variable") || var.equalsIgnoreCase("v")) {
             String value = params.getString("value", "");

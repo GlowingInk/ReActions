@@ -20,7 +20,7 @@
  *
  */
 
-package me.fromgate.reactions.time;
+package me.fromgate.reactions.time.timers;
 
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;

@@ -68,6 +68,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 // TODO: Refactor to DetailsFactory
@@ -75,7 +76,7 @@ public final class DetailsManager {
 
     private DetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
-    public static @NotNull Variables triggerTeleport(Player player, TeleportCause cause, Location to) {
+    public static @NotNull Optional<Variables> triggerTeleport(Player player, TeleportCause cause, Location to) {
         TeleportDetails details = new TeleportDetails(player, cause, to);
         activate(details);
         return details.getVariables();
@@ -203,7 +204,7 @@ public final class DetailsManager {
     }
 
     public static boolean triggerExec(CommandSender sender, Parameters param) {
-        return triggerExec(sender, param, Variables.UNMODIFIABLE);
+        return triggerExec(sender, param, new Variables());
     }
 
     public static boolean triggerExec(CommandSender sender, Parameters param, Variables vars) {
@@ -342,7 +343,7 @@ public final class DetailsManager {
     }
 
     // FIXME: Refactor, should not be this way
-    public static @NotNull Variables triggerMessage(CommandSender sender, MessageActivator.Source source, String message) {
+    public static @NotNull Optional<Variables> triggerMessage(CommandSender sender, MessageActivator.Source source, String message) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
         for (Activator act : ReActions.getActivatorTypes().get(MessageActivator.class).getActivators()) {
             MessageActivator a = (MessageActivator) act;
@@ -352,7 +353,7 @@ public final class DetailsManager {
                 return me.getVariables();
             }
         }
-        return Variables.UNMODIFIABLE;
+        return Optional.empty();
     }
 
     public static void triggerVariable(String var, String playerName, String newValue, String prevValue) {
@@ -363,13 +364,13 @@ public final class DetailsManager {
         activate(ve);
     }
 
-    public static @NotNull Variables triggerMobDamage(Player damager, LivingEntity entity, double damage, double finalDamage, EntityDamageEvent.DamageCause cause) {
+    public static @NotNull Optional<Variables> triggerMobDamage(Player damager, LivingEntity entity, double damage, double finalDamage, EntityDamageEvent.DamageCause cause) {
         MobDamageDetails mde = new MobDamageDetails(entity, damager, cause, damage, finalDamage);
         activate(mde);
         return mde.getVariables();
     }
 
-    public static @NotNull Variables triggerQuit(PlayerQuitEvent event) {
+    public static @NotNull Optional<Variables> triggerQuit(PlayerQuitEvent event) {
         QuitDetails qu = new QuitDetails(event.getPlayer(), event.getQuitMessage());
         activate(qu);
         return qu.getVariables();
@@ -395,7 +396,7 @@ public final class DetailsManager {
         return e.isCancelled();
     }
 
-    public static @NotNull Variables triggerInventoryClick(InventoryClickEvent event) {
+    public static @NotNull Optional<Variables> triggerInventoryClick(InventoryClickEvent event) {
         InventoryClickDetails e = new InventoryClickDetails((Player) event.getWhoClicked(), event.getAction(),
                 event.getClick(), event.getInventory(), event.getSlotType(),
                 event.getCurrentItem(), event.getHotbarButton(),
@@ -404,7 +405,7 @@ public final class DetailsManager {
         return e.getVariables();
     }
 
-    public static @NotNull Variables triggerDrop(Player player, Item item, int pickupDelay) {
+    public static @NotNull Optional<Variables> triggerDrop(Player player, Item item, int pickupDelay) {
         DropDetails e = new DropDetails(player, item, pickupDelay);
         activate(e);
         return e.getVariables();
@@ -422,7 +423,7 @@ public final class DetailsManager {
         return e.isCancelled();
     }
 
-    public static @NotNull Variables triggerBlockBreak(Player player, Block block, boolean dropItems) {
+    public static @NotNull Optional<Variables> triggerBlockBreak(Player player, Block block, boolean dropItems) {
         BlockBreakDetails e = new BlockBreakDetails(player, block, dropItems);
         activate(e);
         return e.getVariables();
@@ -433,20 +434,20 @@ public final class DetailsManager {
         activate(e);
     }
 
-    public static @NotNull Variables triggerDamageByMob(EntityDamageByEntityEvent event) {
+    public static @NotNull Optional<Variables> triggerDamageByMob(EntityDamageByEntityEvent event) {
         DamageByMobDetails dm = new DamageByMobDetails((Player) event.getEntity(), event.getDamager(), event.getCause(), event.getDamage(), event.getDamage());
         activate(dm);
         return dm.getVariables();
     }
 
-    public static @NotNull Variables triggerDamageByBlock(EntityDamageByBlockEvent event, Block blockDamager) {
+    public static @NotNull Optional<Variables> triggerDamageByBlock(EntityDamageByBlockEvent event, Block blockDamager) {
         double damage = event.getDamage();
         DamageByBlockDetails db = new DamageByBlockDetails((Player) event.getEntity(), blockDamager, event.getCause(), damage, event.getFinalDamage());
         activate(db);
         return db.getVariables();
     }
 
-    public static @NotNull Variables triggerDamage(EntityDamageEvent event, String source) {
+    public static @NotNull Optional<Variables> triggerDamage(EntityDamageEvent event, String source) {
         DamageDetails de = new DamageDetails(
                 (Player) event.getEntity(), 
                 event.getCause(), 
@@ -458,7 +459,7 @@ public final class DetailsManager {
         return de.getVariables();
     }
 
-    public static @NotNull Variables triggerPickupItem(Player player, Item item, int pickupDelay) {
+    public static @NotNull Optional<Variables> triggerPickupItem(Player player, Item item, int pickupDelay) {
         PickupItemDetails e = new PickupItemDetails(player, item, pickupDelay);
         activate(e);
         return e.getVariables();

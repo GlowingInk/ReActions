@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.time.Delayer;
+import me.fromgate.reactions.time.LazyDelayManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -50,8 +50,8 @@ public class FlagDelay implements Flag {
             updateTime = TimeUtils.parseTime(params.getString("set-delay", params.getString("set-time", "0")));
             playerName = params.getString("player", playerName);
         }
-        boolean result = playerName.isEmpty() ? Delayer.checkDelay(id, updateTime) : Delayer.checkPersonalDelay(playerName, id, updateTime);
-        Delayer.setTempPlaceholders(context, playerName, id);
+        boolean result = playerName.isEmpty() ? LazyDelayManager.checkDelay(id, updateTime) : LazyDelayManager.checkPersonalDelay(playerName, id, updateTime);
+        LazyDelayManager.setTempPlaceholders(context, playerName, id);
         return result;
     }
 

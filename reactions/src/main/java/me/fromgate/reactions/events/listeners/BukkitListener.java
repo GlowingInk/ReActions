@@ -19,7 +19,7 @@ import me.fromgate.reactions.module.basics.details.MessageDetails;
 import me.fromgate.reactions.module.basics.details.MobDamageDetails;
 import me.fromgate.reactions.module.basics.details.QuitDetails;
 import me.fromgate.reactions.module.basics.details.TeleportDetails;
-import me.fromgate.reactions.time.waiter.WaitingManager;
+import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Rng;
@@ -61,6 +61,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.List;
+import java.util.Optional;
 
 import static me.fromgate.reactions.module.basics.DetailsManager.*;
 import static me.fromgate.reactions.module.basics.ItemDetailsManager.triggerItemHold;
@@ -92,11 +93,12 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        Variables vars = triggerTeleport(
+        Optional<Variables> optVars = triggerTeleport(
                 event.getPlayer(),
                 event.getCause(),
                 event.getTo());
-        if (!vars.isInitialized()) return;
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
         vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
         vars.getChanged(TeleportDetails.LOCATION_TO, LocationUtils::parseLocation).ifPresent(event::setTo);
     }
@@ -113,10 +115,11 @@ public class BukkitListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         // TODO: That's not really good solution
         try {
-            Variables vars = triggerMessage(event.getPlayer(),
+            Optional<Variables> optVars = triggerMessage(event.getPlayer(),
                     MessageActivator.Source.CHAT_INPUT,
                     event.getMessage());
-            if (!vars.isInitialized()) return;
+            if (optVars.isEmpty()) return;
+            Variables vars = optVars.get();
             vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
             vars.getChanged(MessageDetails.MESSAGE).ifPresent(event::setMessage);
             // TODO: setFormat
@@ -224,7 +227,7 @@ public class BukkitListener implements Listener {
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
             String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
-            triggerExec(killer, exec, Variables.UNMODIFIABLE);
+            triggerExec(killer, exec, new Variables());
         }
 
     }
@@ -245,8 +248,9 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMobDamageByPlayer(PlayerAttacksEntityEvent event) {
-        Variables vars = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getFinalDamage(), event.getCause());
-        if (!vars.isInitialized()) return;
+        Optional<Variables> optVars = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getFinalDamage(), event.getCause());
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
         vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
         vars.getChanged(MobDamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
     }
@@ -267,8 +271,9 @@ public class BukkitListener implements Listener {
         String source;
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             source = "ENTITY";
-            Variables vars = triggerDamageByMob(evdmg);;
-            if (vars.isInitialized()) {
+            Optional<Variables> optVars = triggerDamageByMob(evdmg);;
+            if (optVars.isPresent()) {
+                Variables vars = optVars.get();
                 vars.getChanged(DamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
                 vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
             }
@@ -276,8 +281,9 @@ public class BukkitListener implements Listener {
             source = "BLOCK";
             Block blockDamager = evdmg.getDamager();
             if (blockDamager != null) {
-                Variables vars = triggerDamageByBlock(evdmg, blockDamager);
-                if (vars.isInitialized()) {
+                Optional<Variables> optVars = triggerDamageByBlock(evdmg, blockDamager);
+                if (optVars.isPresent()) {
+                    Variables vars = optVars.get();
                     vars.getChanged(DamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
                     vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
                 }
@@ -286,8 +292,9 @@ public class BukkitListener implements Listener {
             source = "OTHER";
         }
 
-        Variables vars = triggerDamage(event, source);
-        if (vars.isInitialized()) {
+        Optional<Variables> optVars = triggerDamage(event, source);
+        if (optVars.isPresent()) {
+            Variables vars = optVars.get();
             vars.getChanged(DamageDetails.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
             vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
         }
@@ -324,7 +331,7 @@ public class BukkitListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        WaitingManager.refreshPlayer(player);
+        LegacyWaitingManager.refreshPlayer(player);
         TemporaryOp.removeOp(player);
         RaDebug.offPlayerDebug(player);
         MoveListener.initLocation(player);
@@ -371,16 +378,18 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        Variables vars = triggerInventoryClick(event);
-        if (!vars.isInitialized()) return;
+        Optional<Variables> optVars = triggerInventoryClick(event);
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
         vars.getChanged(InventoryClickDetails.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
         vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
-        Variables vars = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
-        if (!vars.isInitialized()) return;
+        Optional<Variables> optVars = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
         vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
         vars.getChanged(DropDetails.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
         vars.getChanged(DropDetails.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
@@ -400,8 +409,9 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        Variables vars = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
-        if (!vars.isInitialized()) return;
+        Optional<Variables> optVars = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
         vars.getChanged(BlockBreakDetails.DO_DROP, Boolean::parseBoolean).ifPresent(event::setDropItems);
         vars.getChanged(Details.CANCEL_EVENT, Boolean::parseBoolean).ifPresent(event::setCancelled);
     }
@@ -414,7 +424,10 @@ public class BukkitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         TemporaryOp.removeOp(event.getPlayer());
-        triggerQuit(event).getChanged(QuitDetails.QUIT_MESSAGE).ifPresent(event::setQuitMessage);
+        Optional<Variables> optVars = triggerQuit(event);
+        if (optVars.isPresent()){
+            optVars.get().getChanged(QuitDetails.QUIT_MESSAGE).ifPresent(event::setQuitMessage);
+        }
         MoveListener.removeLocation(event.getPlayer());
     }
 

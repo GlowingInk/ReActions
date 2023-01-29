@@ -22,6 +22,8 @@
 
 package me.fromgate.reactions.time;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.FileUtils;
@@ -33,24 +35,22 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class Delayer {
+public final class LazyDelayManager {
     // TODO: I don't like anything here...
     private static final DateFormat HH_MM_SS = new SimpleDateFormat("HH:mm:ss");
 
-    private static final Map<String, Long> delays = new HashMap<>();
+    private static final Object2LongMap<String> delays = new Object2LongOpenHashMap<>();
 
-    private Delayer() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private LazyDelayManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
     public static void save() {
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
         for (String key : delays.keySet()) {
-            long delayTime = delays.get(key);
+            long delayTime = delays.getLong(key);
             if (delayTime > System.currentTimeMillis())
                 cfg.set(key, delayTime);
         }
@@ -74,9 +74,9 @@ public final class Delayer {
 
     public static boolean checkDelay(String id, long updateTime) {
         if (id.indexOf('.') == -1) id = "global." + id;
-        Long delay = delays.get(id);
-        boolean result = delay == null || delay < System.currentTimeMillis();
-        if (result && updateTime > 0) Delayer.setDelay(id, updateTime, false);
+        long delay = delays.getOrDefault(id, -1);
+        boolean result = delay < System.currentTimeMillis();
+        if (result && updateTime > 0) setDelay(id, updateTime, false);
         return result;
     }
 
@@ -90,7 +90,7 @@ public final class Delayer {
 
     public static void setDelaySave(String id, long delayTime, boolean save, boolean add) {
         if (id.indexOf('.') == -1) id = "global." + id;
-        long currentDelay = add && delays.containsKey(id) ? delays.get(id) : System.currentTimeMillis();
+        long currentDelay = add && delays.containsKey(id) ? delays.getLong(id) : System.currentTimeMillis();
         delays.put(id, delayTime + currentDelay);
         if (save) save();
     }
@@ -102,11 +102,11 @@ public final class Delayer {
     public static void printDelayList(CommandSender sender, int pageNum, int linePerPage) {
         Set<String> lst = new TreeSet<>();
         for (String key : delays.keySet()) {
-            long delayTime = delays.get(key);
+            long delayTime = delays.getLong(key);
             if (delayTime < System.currentTimeMillis()) continue;
             String[] ln = key.split("\\.", 2);
             if (ln.length != 2) continue;
-            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.formatTime(delays.get(key)));
+            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.formatTime(delays.getLong(key)));
         }
         Msg.printPage(sender, lst, Msg.MSG_LISTDELAY, pageNum, linePerPage, true);
     }
@@ -115,7 +115,7 @@ public final class Delayer {
         String fullId = (id.contains(".") ? id : (playerName == null || playerName.isEmpty() ? "global." + id : playerName + "." + id));
         if (checkDelay(fullId, 0)) return null;
         if (!delays.containsKey(fullId)) return null;
-        long time = delays.get(fullId);
+        long time = delays.getLong(fullId);
         String[] times = new String[8];
         times[0] = TimeUtils.formatTime(time);
         times[1] = TimeUtils.formatTime(time, HH_MM_SS);
@@ -144,7 +144,7 @@ public final class Delayer {
     }
 
     public static void setTempPlaceholders(Environment context, String playerName, String id) {
-        String[] times = Delayer.getStringTime(playerName, id);
+        String[] times = LazyDelayManager.getStringTime(playerName, id);
         if (times != null) {
             context.getVariables().set("delay-fulltime", times[0]);
             context.getVariables().set("delay-time", times[1]);

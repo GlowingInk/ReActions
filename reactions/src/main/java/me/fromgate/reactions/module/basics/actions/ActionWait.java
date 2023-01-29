@@ -4,7 +4,7 @@ import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.Stopper;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.time.waiter.WaitingManager;
+import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +31,6 @@ public class ActionWait implements Action, Stopper {
 
     @Override
     public void stop(@NotNull Environment context, @NotNull String params, @NotNull List<StoredAction> actions) {
-        WaitingManager.schedule(context.getPlayer(), actions, TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1")));
+        LegacyWaitingManager.schedule(context.getPlayer(), actions, TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1")));
     }
 }

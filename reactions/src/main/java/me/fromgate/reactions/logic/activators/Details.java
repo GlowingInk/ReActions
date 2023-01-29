@@ -29,9 +29,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Details of activation
@@ -69,15 +69,22 @@ public abstract class Details {
     }
 
     public final void initialize() {
-        if (!isInitialized()) variables = new Variables(prepareVariables());
+        if (!isInitialized()) {
+            var varsMap = prepareVariables();
+            if (varsMap.isEmpty()) {
+                variables = new Variables();
+            } else {
+                variables = new Variables(prepareVariables());
+            }
+        }
     }
 
     public final boolean isInitialized() {
         return variables != null;
     }
 
-    public final @Unmodifiable @NotNull Variables getVariables() {
-        return isInitialized() ? variables : Variables.UNMODIFIABLE;
+    public final @NotNull Optional<Variables> getVariables() {
+        return Optional.ofNullable(variables);
     }
 
     public final @Nullable Variables getVariablesUnsafe() {
@@ -97,6 +104,6 @@ public abstract class Details {
     }
 
     public boolean isCancelled(boolean def) {
-        return getVariables().getChanged(Details.CANCEL_EVENT, Boolean::valueOf).orElse(def);
+        return getVariables().map(vars -> vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).orElse(def)).orElse(def);
     }
 }

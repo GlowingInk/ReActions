@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class WaitTask implements Runnable {
+@Deprecated
+public class LegacyWaitTask implements Runnable {
     private final String taskId;
     private String playerName;
     private boolean executed;
@@ -22,7 +23,7 @@ public class WaitTask implements Runnable {
     private long executionTime;
     private BukkitTask task;
 
-    public WaitTask(String playerName, List<StoredAction> actions, long time) {
+    public LegacyWaitTask(String playerName, List<StoredAction> actions, long time) {
         this.taskId = UUID.randomUUID().toString();
         this.playerName = playerName;
         this.actions = actions;
@@ -31,7 +32,7 @@ public class WaitTask implements Runnable {
         task = Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), this, TimeUtils.timeToTicks(time));
     }
 
-    public WaitTask(YamlConfiguration cfg, String taskId) {
+    public LegacyWaitTask(YamlConfiguration cfg, String taskId) {
         this.taskId = taskId;
         this.load(cfg, taskId);
         long time = this.executionTime - System.currentTimeMillis();
@@ -48,7 +49,7 @@ public class WaitTask implements Runnable {
     public void execute() {
         if (this.isExecuted()) return;
         Player p = playerName == null ? null : Bukkit.getPlayerExact(playerName);
-        if (System.currentTimeMillis() > executionTime + WaitingManager.getTimeLimit()) this.executed = true;
+        if (System.currentTimeMillis() > executionTime + LegacyWaitingManager.getTimeLimit()) this.executed = true;
         if (p == null && playerName != null) return;
         Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> actions.forEach(action -> action.getAction().proceed(Environment.anonymous(), action.getParameters())));
         this.executed = true;

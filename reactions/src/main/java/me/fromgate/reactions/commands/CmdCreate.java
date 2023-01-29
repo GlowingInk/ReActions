@@ -7,7 +7,7 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.menu.InventoryMenu;
-import me.fromgate.reactions.time.TimersManager;
+import me.fromgate.reactions.time.timers.TimersManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.location.LocationUtils;

@@ -11,21 +11,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Variables {
-    public static final Variables UNMODIFIABLE = new Variables(Map.of()) {
-        @Override
-        public boolean isInitialized() {
-            return false;
-        }
-    };
-
     private final Map<String, Variable> variables;
 
     public Variables(@NotNull Map<String, Variable> variables) {
-        this.variables = new HashMap<>(variables);
+        this(variables, true);
+    }
+
+    private Variables(@NotNull Map<String, Variable> variables, boolean copy) {
+        this.variables = copy ? new HashMap<>(variables) : variables;
     }
 
     public Variables() {
-        this.variables = new HashMap<>();
+        this.variables = new HashMap<>(0);
     }
 
     public @NotNull Map<String, Variable> forkMap() {
@@ -37,7 +34,7 @@ public class Variables {
     }
 
     public @NotNull Variables fork() {
-        return new Variables(forkMap());
+        return new Variables(forkMap(), false);
     }
 
     public @NotNull Variable get(@NotNull String key) {
@@ -87,6 +84,6 @@ public class Variables {
     }
 
     public boolean isInitialized() {
-        return true;
+        return !variables.isEmpty();
     }
 }

@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.time.Delayer;
+import me.fromgate.reactions.time.LazyDelayManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class ActionDelay implements Action {
         if (timeStr.isEmpty()) return false;
         if (variableId.isEmpty()) return false;
         setDelay(playerName, variableId, TimeUtils.parseTime(timeStr), add);
-        Delayer.setTempPlaceholders(context, playerName, variableId);
+        LazyDelayManager.setTempPlaceholders(context, playerName, variableId);
         return true;
     }
 
@@ -80,8 +80,8 @@ public class ActionDelay implements Action {
     }
 
     private void setDelay(String playerName, String variableId, long delayTime, boolean add) {
-        if (playerName.isEmpty()) Delayer.setDelay(variableId, delayTime, add);
-        else Delayer.setPersonalDelay(playerName, variableId, delayTime, add);
+        if (playerName.isEmpty()) LazyDelayManager.setDelay(variableId, delayTime, add);
+        else LazyDelayManager.setPersonalDelay(playerName, variableId, delayTime, add);
     }
 
 }

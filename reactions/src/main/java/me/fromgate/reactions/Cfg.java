@@ -1,7 +1,7 @@
 package me.fromgate.reactions;
 
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
-import me.fromgate.reactions.time.waiter.WaitingManager;
+import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
 import me.fromgate.reactions.util.Shoot;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -37,7 +37,7 @@ public class Cfg {
         config.set("general.player-move-event.use-task", playerMoveTaskUse);
         config.set("general.player-move-event.task-tick", playerMoveTaskTick);
         config.set("general.placeholder-limit", 32);
-        config.set("general.waiter-hours-limit", WaitingManager.getTimeLimit() / 3600000L);
+        config.set("general.waiter-hours-limit", LegacyWaitingManager.getTimeLimit() / 3600000L);
         config.set("general.use-modern-placeholders", modernPlaceholders);
         config.set("general.parse-book-pages", parseBookPages);
 
@@ -65,7 +65,7 @@ public class Cfg {
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
         playerMoveTaskTick = config.getInt("general.player-move-event.task-tick", 5);
         PlaceholdersManager.setCountLimit(config.getInt("general.placeholder-limit", 127));
-        WaitingManager.setTimeLimit(config.getLong("general.waiter-hours-limit", 4380) * 3600000L);
+        LegacyWaitingManager.setTimeLimit(config.getLong("general.waiter-hours-limit", 4380) * 3600000L);
         modernPlaceholders = config.getBoolean("general.use-modern-placeholders", false);
         parseBookPages = config.getBoolean("general.parse-book-pages", false);
 
