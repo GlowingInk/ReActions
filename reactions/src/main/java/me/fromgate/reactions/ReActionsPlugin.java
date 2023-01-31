@@ -41,15 +41,17 @@ import me.fromgate.reactions.module.basics.BasicModule;
 import me.fromgate.reactions.placeholders.LegacyPlaceholdersManager;
 import me.fromgate.reactions.placeholders.ModernPlaceholdersManager;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
+import me.fromgate.reactions.save.SavingManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
 import me.fromgate.reactions.time.LazyDelayManager;
 import me.fromgate.reactions.time.timers.TimersManager;
-import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
+import me.fromgate.reactions.time.wait.WaitingManager;
 import me.fromgate.reactions.util.message.Messenger;
 import me.fromgate.reactions.util.message.Msg;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
@@ -60,6 +62,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private PlaceholdersManager placeholdersManager;
     private VariablesManager variablesManager;
     private SelectorsManager selectorsManager;
+    private WaitingManager waitingManager;
+    private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
 
     @Override
@@ -81,9 +85,13 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
         this.selectorsManager = new SelectorsManager();
         this.modulesRegistry = new ModulesRegistry(this);
+        this.waitingManager = new WaitingManager(this);
+        this.savingManager = new SavingManager(this);
         ReActions.setPlatform(this);
         modulesRegistry.registerModule(new BasicModule());
         modulesRegistry.loadFolderModules();
+
+        savingManager.register(waitingManager);
     }
 
     @Override
@@ -97,7 +105,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         FakeCommander.init(this);
         Externals.init();
         RaVault.init();
-        LegacyWaitingManager.init();
         LazyDelayManager.load();
         if (!Cfg.playerSelfVarFile) variablesManager.load();
         else variablesManager.loadVars();
@@ -105,6 +112,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         SQLManager.init();
         InventoryMenu.init(this);
         getServer().getLogger().addHandler(new LogHandler());
+        getServer().getPluginManager().registerEvents(savingManager, this);
         getServer().getPluginManager().registerEvents(new BukkitListener(), this);
         getServer().getPluginManager().registerEvents(new RaListener(), this);
         MoveListener.init();
@@ -117,47 +125,52 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     }
 
     @Override
-    public Logger logger() {
+    public @NotNull Logger logger() {
         return getSLF4JLogger();
     }
 
     @Override
-    public ActivatorTypesRegistry getActivatorTypes() {
+    public @NotNull ActivatorTypesRegistry getActivatorTypes() {
         return typesRegistry;
     }
 
     @Override
-    public ActivatorsManager getActivators() {
+    public @NotNull ActivatorsManager getActivators() {
         return activatorsManager;
     }
 
     @Override
-    public ActivitiesRegistry getActivities() {
+    public @NotNull ActivitiesRegistry getActivities() {
         return activitiesRegistry;
     }
 
     @Override
-    public PlaceholdersManager getPlaceholders() {
+    public @NotNull PlaceholdersManager getPlaceholders() {
         return placeholdersManager;
     }
 
     @Override
-    public VariablesManager getVariables() {
+    public @NotNull VariablesManager getVariables() {
         return variablesManager;
     }
 
     @Override
-    public SelectorsManager getSelectors() {
+    public @NotNull SelectorsManager getSelectors() {
         return selectorsManager;
     }
 
     @Override
-    public Plugin getPlugin() {
+    public @NotNull WaitingManager getWaiter() {
+        return waitingManager;
+    }
+
+    @Override
+    public @NotNull Plugin getPlugin() {
         return this;
     }
 
     @Override
-    public ModulesRegistry getModules() {
+    public @NotNull ModulesRegistry getModules() {
         return modulesRegistry;
     }
 }

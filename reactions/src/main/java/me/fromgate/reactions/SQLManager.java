@@ -48,7 +48,7 @@ public final class SQLManager {
     private static String password;
     private static String codepage;
 
-    private SQLManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private SQLManager() {}
 
     public static void init() {
         loadCfg();

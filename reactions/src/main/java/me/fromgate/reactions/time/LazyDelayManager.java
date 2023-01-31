@@ -44,7 +44,7 @@ public final class LazyDelayManager {
 
     private static final Object2LongMap<String> delays = new Object2LongOpenHashMap<>();
 
-    private LazyDelayManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private LazyDelayManager() {}
 
     public static void save() {
         YamlConfiguration cfg = new YamlConfiguration();

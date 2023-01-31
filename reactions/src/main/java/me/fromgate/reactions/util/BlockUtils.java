@@ -9,7 +9,7 @@ import org.bukkit.block.data.Openable;
  * Some helpful methods related to blocks to minify size of code
  */
 public final class BlockUtils {
-    private BlockUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private BlockUtils() {}
 
     public static boolean isPlate(Block block) {
         return Tag.PRESSURE_PLATES.isTagged(block.getType());

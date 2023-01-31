@@ -74,7 +74,7 @@ public final class Shoot {
         }
     }
 
-    private Shoot() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private Shoot() {}
 
     public static void shoot(LivingEntity shooter, Parameters params) {
         boolean onehit = params.getBoolean("singlehit", true);

@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 public final class ItemUtils {
-    private ItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private ItemUtils() {}
 
     public static <T> @Nullable T searchByKey(@NotNull String key, @NotNull Function<NamespacedKey, T> search) {
         try {

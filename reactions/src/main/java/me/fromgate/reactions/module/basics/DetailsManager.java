@@ -74,7 +74,7 @@ import java.util.Set;
 // TODO: Refactor to DetailsFactory
 public final class DetailsManager {
 
-    private DetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private DetailsManager() {}
 
     public static @NotNull Optional<Variables> triggerTeleport(Player player, TeleportCause cause, Location to) {
         TeleportDetails details = new TeleportDetails(player, cause, to);
@@ -224,7 +224,7 @@ public final class DetailsManager {
 
         int repeat = Math.min(param.getInteger("repeat", 1), 1);
 
-        long delay = TimeUtils.timeToTicks(TimeUtils.parseTime(param.getString("delay", "1t")));
+        long delay = TimeUtils.safeTimeToTicks(TimeUtils.parseTime(param.getString("delay", "1t")));
 
         final Set<Player> target = new HashSet<>();
 

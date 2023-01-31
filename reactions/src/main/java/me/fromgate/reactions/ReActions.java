@@ -6,30 +6,24 @@ import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.module.ModulesRegistry;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
+import me.fromgate.reactions.time.wait.WaitingManager;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.util.Objects;
 
-// TODO: This is a temporary solution, will be removed after 0.14.0
+// TODO: This is a temporary solution, has to be removed
 public final class ReActions {
     private static Platform platform;
 
-    private ReActions() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private ReActions() {}
 
-    public static void setPlatform(Platform platform) {
+    public static void setPlatform(@NotNull Platform platform) {
         if (ReActions.platform != null) {
             throw new IllegalStateException("Platform is already assigned.");
         }
-        Objects.requireNonNull(platform, "Platform cannot be null.");
-        Objects.requireNonNull(platform.getActivators(), "ActivatorsManager cannot be null.");
-        Objects.requireNonNull(platform.getPlaceholders(), "PlaceholdersManager cannot be null.");
-        Objects.requireNonNull(platform.getVariables(), "VariablesManager cannot be null.");
-        Objects.requireNonNull(platform.getSelectors(), "SelectorsManager cannot be null.");
-        Objects.requireNonNull(platform.getModules(), "ModulesManager cannot be null.");
-        Objects.requireNonNull(platform.getPlugin(), "Plugin cannot be null.");
         ReActions.platform = platform;
     }
 
@@ -57,8 +51,8 @@ public final class ReActions {
         return platform.getSelectors();
     }
 
-    public static ModulesRegistry getModules() {
-        return platform.getModules();
+    public static WaitingManager getWaiter() {
+        return platform.getWaiter();
     }
 
     public static Logger getLogger() {
@@ -70,16 +64,17 @@ public final class ReActions {
     }
 
     public interface Platform {
-        ActivatorTypesRegistry getActivatorTypes();
-        ActivatorsManager getActivators();
-        ActivitiesRegistry getActivities();
-        PlaceholdersManager getPlaceholders();
-        VariablesManager getVariables();
-        SelectorsManager getSelectors();
-        ModulesRegistry getModules();
-        Logger logger();
-        Plugin getPlugin();
-        File getDataFolder();
-        Server getServer();
+        @NotNull ActivatorTypesRegistry getActivatorTypes();
+        @NotNull ActivatorsManager getActivators();
+        @NotNull ActivitiesRegistry getActivities();
+        @NotNull PlaceholdersManager getPlaceholders();
+        @NotNull VariablesManager getVariables();
+        @NotNull SelectorsManager getSelectors();
+        @NotNull WaitingManager getWaiter();
+        @NotNull ModulesRegistry getModules();
+        @NotNull Logger logger();
+        @NotNull Plugin getPlugin();
+        @NotNull File getDataFolder();
+        @NotNull Server getServer();
     }
 }

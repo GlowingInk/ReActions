@@ -35,7 +35,7 @@ public final class PushBack {
     private static final Map<String, Location> prevLocs1 = new HashMap<>();
     private static final Map<String, Location> prevLocs2 = new HashMap<>();
 
-    private PushBack() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private PushBack() {}
 
     public static boolean teleportToPrev(Player player, int prev) {
         Location loc;

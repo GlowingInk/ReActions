@@ -57,7 +57,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
 
     private static final Map<LivingEntity, List<ItemStack>> drops = new HashMap<>();
 
-    private MobSpawn() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private MobSpawn() {}
 
     public static void mobSpawn(Player p, Parameters params) {
         String mob = params.getString("type", "").toUpperCase(Locale.ROOT);

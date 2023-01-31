@@ -13,7 +13,7 @@ public final class TemporaryOp {
 
     private static final Set<UUID> tempOps = new HashSet<>();
 
-    private TemporaryOp() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private TemporaryOp() {}
 
     public static void setOp(CommandSender sender) {
         if (sender instanceof Player player && !player.isOp()) {

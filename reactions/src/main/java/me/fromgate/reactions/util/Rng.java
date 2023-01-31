@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Rng {
-    private Rng() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private Rng() {}
 
     public static <T> T randomElement(List<T> list) {
         return list.get(Rng.nextInt(list.size()));

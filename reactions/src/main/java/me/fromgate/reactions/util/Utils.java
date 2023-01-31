@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +51,7 @@ public final class Utils {
     private static final Pattern HEX_COLOR = Pattern.compile("#([a-fA-F\\d]{6})");
     private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
 
-    private Utils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private Utils() {}
 
     /**
      * Play sound on location
@@ -79,7 +80,7 @@ public final class Utils {
                 }
             } else sndstr = param;
             if (NumberUtils.isNumber(strvolume, Is.POSITIVE)) volume = Float.parseFloat(strvolume);
-            if (NumberUtils.isNumber(strvolume, Is.POSITIVE)) pitch = Float.parseFloat(strpitch);
+            if (NumberUtils.isNumber(strpitch, Is.POSITIVE)) pitch = Float.parseFloat(strpitch);
         } else {
             String locationStr = params.getString("loc");
             soundLoc = locationStr.isEmpty() ? loc : LocationUtils.parseLocation(locationStr, null);
@@ -130,10 +131,10 @@ public final class Utils {
         return false;
     }
 
-    public static @NotNull UUID getUUID(@NotNull String playerName) {
+    public static @NotNull UUID getPlayerId(@NotNull String playerName) {
         Player player = Bukkit.getPlayerExact(playerName);
         return player == null ?
-                Bukkit.getOfflinePlayer(playerName).getUniqueId() :
+                Optional.ofNullable(Bukkit.getOfflinePlayerIfCached(playerName)).orElse(Bukkit.getOfflinePlayer(playerName)).getUniqueId() :
                 player.getUniqueId();
     }
 

@@ -143,7 +143,7 @@ public final class ActivatorLogic {
         executeActions(context, actions, !noPlayer);
     }
 
-    private static void executeActions(Environment context, List<StoredAction> actions, boolean hasPlayer) {
+    public static void executeActions(Environment context, List<StoredAction> actions, boolean hasPlayer) {
         for (int i = 0; i < actions.size(); i++) {
             StoredAction action = actions.get(i);
             // TODO: Microoptimization - check if hasPlayer and separate iteration

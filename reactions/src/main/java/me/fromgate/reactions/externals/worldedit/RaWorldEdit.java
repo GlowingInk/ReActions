@@ -27,7 +27,7 @@ public final class RaWorldEdit {
     private static boolean connected = false;
     private static WorldEditPlugin worldedit = null;
 
-    private RaWorldEdit() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private RaWorldEdit() {}
 
     public static boolean isConnected() {
         return connected;
