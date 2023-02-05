@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.WorldSaveEvent;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -35,7 +36,9 @@ public class SavingManager implements Listener {
 
     @EventHandler
     public void onDisable(PluginDisableEvent event) {
-        if (event.getPlugin().getName().equals("ReActions")) {
+        Plugin plugin = event.getPlugin();
+        if (plugin.getName().equals("ReActions")) {
+            plugin.getSLF4JLogger().info("Saving data...");
             saveables.forEach(Saveable::saveSync);
         }
     }

@@ -177,7 +177,7 @@ public class WaitingManager implements Saveable {
             } else {
                 playerId = null;
             }
-            long executionTime = cfg.getLong("execution-time");
+            long executionTime = taskCfg.getLong("execution-time");
             tasks.add(new WaitTask(
                     new Variables(),
                     playerId,
