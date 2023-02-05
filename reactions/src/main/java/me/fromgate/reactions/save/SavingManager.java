@@ -4,6 +4,7 @@ import me.fromgate.reactions.ReActions;
 import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,13 @@ public class SavingManager implements Listener {
     public void onSave(WorldSaveEvent event) {
         if (event.getWorld() == server.getWorlds().get(0)) {
             saveables.forEach(Saveable::save);
+        }
+    }
+
+    @EventHandler
+    public void onDisable(PluginDisableEvent event) {
+        if (event.getPlugin().getName().equals("ReActions")) {
+            saveables.forEach(Saveable::saveSync);
         }
     }
 }

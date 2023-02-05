@@ -56,6 +56,100 @@ public class WaitingManager implements Saveable {
         WaitingManager.timeLimit = hours * TimeUtils.MS_PER_HOUR;
     }
 
+    private void updateTasks() {
+        if (requiresUpdate) {
+            requiresUpdate = false;
+            for (var iterator = toSchedule.iterator(); iterator.hasNext();) {
+                tasks.add(iterator.next());
+                iterator.remove();
+            }
+        }
+
+        if (tasks.isEmpty()) return;
+        WaitTask first = tasks.first();
+        if (next != first) { // Nearest task is updated, rescheduling
+            next = first;
+            if (executor != null && !executor.isCancelled()) {
+                executor.cancel();
+                executor = null;
+            }
+            long offset = TimeUtils.offsetFrom(next.executionTime());
+            if (offset < 1) {
+                runTasks();
+            } else {
+                executor = rea.getServer().getScheduler().runTaskLater(
+                        rea.getPlugin(),
+                        this::runTasks,
+                        TimeUtils.timeToTicks(offset) + 1
+                );
+            }
+        }
+    }
+
+    private void runTasks() {
+        var iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            WaitTask task = iterator.next();
+            if (!task.isTime()) break;
+            if (task.playerId() != null && rea.getServer().getPlayer(task.playerId()) == null) switch (behaviour) {
+                case SKIP -> {
+                    if (timeLimit > TimeUtils.offsetTo(task.executionTime())) {
+                        iterator.remove();
+                    }
+                    continue;
+                }
+                case DISCARD -> {
+                    iterator.remove();
+                    continue;
+                }
+            }
+            task.execute();
+            iterator.remove();
+        }
+        this.next = tasks.isEmpty() ? null : tasks.first();
+    }
+
+    public void schedule(@NotNull StoredAction action, long delayMs) {
+        schedule(null, List.of(action), delayMs);
+    }
+
+    public void schedule(@Nullable UUID playerId, @NotNull StoredAction action, long delayMs) {
+        schedule(playerId, List.of(action), delayMs);
+    }
+
+    public void schedule(@NotNull List<StoredAction> actions, long delayMs) {
+        schedule(null, actions, delayMs);
+    }
+
+    public void schedule(@Nullable UUID playerId, @NotNull List<StoredAction> actions, long delayMs) {
+        schedule(new WaitTask(
+                new Variables(),
+                playerId,
+                actions,
+                TimeUtils.offsetNow(delayMs)
+        ));
+    }
+
+    public void schedule(@NotNull WaitTask task) {
+        if (task.actions().isEmpty()) return;
+        toSchedule.add(task);
+        requiresUpdate = true;
+    }
+
+    public enum AttachedBehaviour {
+        SKIP, EXECUTE, DISCARD;
+
+        public static @Nullable AttachedBehaviour getByName(@Nullable String name) {
+            if (name == null) return null;
+            return switch (name.toUpperCase(Locale.ROOT)) {
+                case "SKIP" -> SKIP;
+                case "EXECUTE" -> EXECUTE;
+                case "DISCARD" -> DISCARD;
+                default -> null;
+            };
+        }
+    }
+
     public void load() {
         YamlConfiguration cfg = new YamlConfiguration();
         if (!FileUtils.loadCfg(cfg, new File(rea.getDataFolder(), "delayed-actions.yml"), "Failed to load delayed actions")) return;
@@ -77,9 +171,11 @@ public class WaitingManager implements Saveable {
                 } catch (Exception ignored) {
                     playerId = null;
                 }
-            } else { // Legacy
+            } else if (taskCfg.isString("player")) { // Legacy
                 OfflinePlayer offPlayer = rea.getServer().getOfflinePlayerIfCached(taskCfg.getString("player", ""));
                 playerId = offPlayer == null ? null : offPlayer.getUniqueId();
+            } else {
+                playerId = null;
             }
             long executionTime = cfg.getLong("execution-time");
             tasks.add(new WaitTask(
@@ -115,98 +211,19 @@ public class WaitingManager implements Saveable {
         });
     }
 
-    private void updateTasks() {
-        if (requiresUpdate) {
-            requiresUpdate = false;
-            for (var iterator = tasks.iterator(); iterator.hasNext();) {
-                tasks.add(iterator.next());
-                iterator.remove();
-            }
+    @Override
+    public void saveSync() {
+        File file = new File(rea.getDataFolder(), "delayed-actions.yml");
+        if (file.exists()) file.delete();
+        YamlConfiguration cfg = new YamlConfiguration();
+        if (!FileUtils.loadCfg(cfg, file, "Failed to load delayed actions")) return;
+        for (WaitTask task : tasks) {
+            UUID id = UUID.randomUUID();
+            ConfigurationSection taskCfg = cfg.createSection(id.toString());
+            taskCfg.set("player-id", task.playerId());
+            taskCfg.set("execution-time", task.executionTime());
+            taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
         }
-
-        if (tasks.isEmpty()) return;
-        WaitTask first = tasks.first();
-        if (next != first) {
-            next = first;
-            if (executor != null && !executor.isCancelled()) {
-                executor.cancel();
-                executor = null;
-            }
-            long offset = TimeUtils.offsetFrom(next.executionTime());
-            if (offset < 1) {
-                runTasks();
-            } else {
-                executor = rea.getServer().getScheduler().runTaskLater(
-                        rea.getPlugin(),
-                        this::runTasks,
-                        TimeUtils.timeToTicks(offset)
-                );
-            }
-        }
-    }
-
-    private void runTasks() {
-        var iterator = tasks.iterator();
-        while (iterator.hasNext()) {
-            WaitTask task = iterator.next();
-            if (!task.isTime()) break;
-            if (task.playerId() != null && rea.getServer().getPlayer(task.playerId()) == null) switch (behaviour) {
-                case SKIP -> {
-                    if (timeLimit > TimeUtils.offsetTo(task.executionTime())) {
-                        iterator.remove();
-                    }
-                    continue;
-                }
-                case DISCARD -> {
-                    iterator.remove();
-                    continue;
-                }
-            }
-            task.execute();
-            iterator.remove();
-        }
-        this.next = tasks.first();
-    }
-
-    public void schedule(@NotNull StoredAction action, long delayMs) {
-        schedule(null, List.of(action), delayMs);
-    }
-
-    public void schedule(@Nullable UUID playerId, @NotNull StoredAction action, long delayMs) {
-        schedule(playerId, List.of(action), delayMs);
-    }
-
-    public void schedule(@NotNull List<StoredAction> actions, long delayMs) {
-        schedule(null, actions, delayMs);
-    }
-
-    public void schedule(@Nullable UUID playerId, @NotNull List<StoredAction> actions, long delayMs) {
-        if (actions.isEmpty()) return;
-        schedule(new WaitTask(
-                new Variables(),
-                playerId,
-                actions,
-                System.currentTimeMillis() + delayMs
-        ));
-    }
-
-    public void schedule(@NotNull WaitTask task) {
-        if (task.actions().isEmpty()) return;
-        toSchedule.add(task);
-        requiresUpdate = true;
-    }
-
-    public enum AttachedBehaviour {
-        SKIP, EXECUTE, DISCARD;
-
-        public static @Nullable AttachedBehaviour getByName(@Nullable String name) {
-            if (name == null) return null;
-            return switch (name.toUpperCase(Locale.ROOT)) {
-                case "SKIP" -> SKIP;
-                case "EXECUTE" -> EXECUTE;
-                case "DISCARD" -> DISCARD;
-                default -> null;
-            };
-        }
+        FileUtils.saveCfg(cfg, file, "Failed to save delayed actions");
     }
 }

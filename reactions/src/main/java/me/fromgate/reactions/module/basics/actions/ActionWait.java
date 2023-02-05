@@ -7,16 +7,14 @@ import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ActionWait implements Action, Stopper {
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+        Parameters params = Parameters.fromString(paramsStr, "time");
         long time = TimeUtils.parseTime(params.getString("time", "0"));
         return time > 0;
     }
@@ -32,9 +30,9 @@ public class ActionWait implements Action, Stopper {
     }
 
     @Override
-    public void stop(@NotNull Environment context, @NotNull String params, @NotNull List<StoredAction> actions) {
+    public void stop(@NotNull Environment context, @NotNull String params, @NotNull List<StoredAction> actions) { // TODO Append variables
         ReActions.getWaiter().schedule(
-                Optional.ofNullable(context.getPlayer()).map(Player::getUniqueId).orElse(null),
+                context.getPlayer() != null ? context.getPlayer().getUniqueId() : null,
                 actions,
                 TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1"))
         );

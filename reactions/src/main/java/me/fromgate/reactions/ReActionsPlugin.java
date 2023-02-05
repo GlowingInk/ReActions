@@ -85,16 +85,18 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
         this.selectorsManager = new SelectorsManager();
         this.modulesRegistry = new ModulesRegistry(this);
-        this.savingManager = new SavingManager(this);
         ReActions.setPlatform(this);
         modulesRegistry.registerModule(new BasicModule());
         modulesRegistry.loadFolderModules();
-
-        savingManager.register(waitingManager);
     }
 
     @Override
     public void onEnable() {
+        this.waitingManager = new WaitingManager(this);
+        this.savingManager = new SavingManager(this);
+        savingManager.register(waitingManager);
+        waitingManager.load();
+
         // TODO god why
         Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
         getDataFolder().mkdirs();
@@ -116,7 +118,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         getServer().getPluginManager().registerEvents(new RaListener(), this);
         MoveListener.init();
         GodModeListener.init();
-        this.waitingManager = new WaitingManager(this);
         new Metrics(this, 1894);
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
