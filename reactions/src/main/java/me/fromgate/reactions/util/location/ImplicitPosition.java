@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,6 +125,22 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     public @Nullable Integer virtualZ() {
         return this.z;
+    }
+
+    public @NotNull Optional<String> optionalWorldName() {
+        return Optional.ofNullable(worldName);
+    }
+
+    public @NotNull OptionalInt optionalX() {
+        return x == null ? OptionalInt.empty() : OptionalInt.of(x);
+    }
+
+    public @NotNull OptionalInt optionalY() {
+        return y == null ? OptionalInt.empty() : OptionalInt.of(y);
+    }
+
+    public @NotNull OptionalInt optionalZ() {
+        return z == null ? OptionalInt.empty() : OptionalInt.of(z);
     }
 
     public int blockX(int def) {

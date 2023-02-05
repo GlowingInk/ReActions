@@ -9,6 +9,7 @@ import me.fromgate.reactions.util.function.SafeSupplier;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +91,7 @@ public class Parameters implements Parameterizable {
         return fromString(str, null);
     }
 
-    public static @NotNull Parameters fromString(@NotNull String str, @Nullable String defKey) {
+    public static @NotNull Parameters fromString(@NotNull String str, @Pattern("[^ :]+") @Nullable String defKey) {
         if (str.isEmpty()) return Parameters.EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = Maps.caseInsensitive();
@@ -166,7 +167,9 @@ public class Parameters implements Parameterizable {
                             String value = bld.toString();
                             params.put(param, value);
                             continue;
-                        } else --brCount;
+                        } else {
+                            --brCount;
+                        }
                     } else if (c == '{') {
                         ++brCount;
                     }
@@ -315,20 +318,20 @@ public class Parameters implements Parameterizable {
     }
 
     public @NotNull TriBoolean getTriBoolean(@NotNull String key) {
-        return getSafe(key, TriBoolean::getByName);
+        return getSafe(key, TriBoolean::of);
     }
 
     public @NotNull TriBoolean getTriBoolean(@NotNull String key, @NotNull SafeSupplier<TriBoolean> def) {
         String str = getString(key, null);
-        return str == null ? def.get() : TriBoolean.getByName(str);
+        return str == null ? def.get() : TriBoolean.of(str);
     }
 
-    public @Unmodifiable @NotNull List<@NotNull String> getKeyList(@NotNull String baseKey) {
-        if (contains(baseKey + "1")) {
+    public @Unmodifiable @NotNull List<@NotNull String> keyedList(@NotNull String baseKey) {
+        String key = baseKey + "1";
+        if (contains(key)) {
             List<String> keys = new ArrayList<>();
-            keys.add(baseKey + "1");
+            keys.add(key);
             int i = 1;
-            String key;
             while (contains(key = baseKey + (++i))) {
                 keys.add(key);
             }
@@ -376,11 +379,11 @@ public class Parameters implements Parameterizable {
         return true;
     }
 
-    public @Nullable String getContainedKey(@NotNull String @NotNull ... keys) {
-        return getContainedKey(Arrays.asList(keys));
+    public @Nullable String containedKey(@NotNull String @NotNull ... keys) {
+        return containedKey(Arrays.asList(keys));
     }
 
-    public @Nullable String getContainedKey(@NotNull Iterable<@NotNull String> keys) {
+    public @Nullable String containedKey(@NotNull Iterable<@NotNull String> keys) {
         if (isEmpty()) return null;
         for (String key : keys) {
             if (contains(key)) {
@@ -390,7 +393,11 @@ public class Parameters implements Parameterizable {
         return null;
     }
 
-    public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
+    public @Nullable String containedKey(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
+        return containedKey(valueCheck, Arrays.asList(keys));
+    }
+
+    public @Nullable String containedKey(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
         if (isEmpty()) return null;
         for (String key : keys) {
             if (contains(key, valueCheck)) {
@@ -401,23 +408,19 @@ public class Parameters implements Parameterizable {
     }
 
     public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return getContainedKey(keys) != null;
+        return containedKey(keys) != null;
     }
 
     public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
-        return getContainedKey(keys) != null;
+        return containedKey(keys) != null;
     }
 
     public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
-        return getContainedKey(valueCheck, keys) != null;
+        return containedKey(valueCheck, keys) != null;
     }
 
     public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
-        return getContainedKey(valueCheck, keys) != null;
-    }
-
-    public @Nullable String getContainedKey(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
-        return getContainedKey(valueCheck, Arrays.asList(keys));
+        return containedKey(valueCheck, keys) != null;
     }
 
     @Contract(pure = true)
@@ -472,7 +475,7 @@ public class Parameters implements Parameterizable {
     }
 
     public boolean isEmpty() {
-        return params.size() == 1;
+        return params.size() == 0;
     }
 
     public int size() {

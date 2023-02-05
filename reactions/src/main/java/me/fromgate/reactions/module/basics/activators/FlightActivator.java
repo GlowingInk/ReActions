@@ -25,7 +25,7 @@ public class FlightActivator extends Activator {
     }
 
     public static FlightActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        return new FlightActivator(base, TriBoolean.getByName(cfg.getString("flight")));
+        return new FlightActivator(base, TriBoolean.of(cfg.getString("flight")));
     }
 
     @Override

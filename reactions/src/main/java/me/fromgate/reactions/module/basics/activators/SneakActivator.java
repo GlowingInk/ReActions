@@ -25,7 +25,7 @@ public class SneakActivator extends Activator {
     }
 
     public static SneakActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        return new SneakActivator(base, TriBoolean.getByName(cfg.getString("sneak")));
+        return new SneakActivator(base, TriBoolean.of(cfg.getString("sneak")));
     }
 
     @Override
