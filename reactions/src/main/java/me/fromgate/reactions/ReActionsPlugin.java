@@ -85,7 +85,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
         this.selectorsManager = new SelectorsManager();
         this.modulesRegistry = new ModulesRegistry(this);
-        this.waitingManager = new WaitingManager(this);
         this.savingManager = new SavingManager(this);
         ReActions.setPlatform(this);
         modulesRegistry.registerModule(new BasicModule());
@@ -117,6 +116,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         getServer().getPluginManager().registerEvents(new RaListener(), this);
         MoveListener.init();
         GodModeListener.init();
+        this.waitingManager = new WaitingManager(this);
         new Metrics(this, 1894);
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
