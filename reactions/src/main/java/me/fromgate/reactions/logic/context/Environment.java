@@ -25,10 +25,6 @@ public class Environment {
         this.async = async;
     }
 
-    public static @NotNull Environment anonymous() {
-        return new Environment("", new Variables(), null);
-    }
-
     public @NotNull String getActivatorName() {
         return this.activatorName;
     }

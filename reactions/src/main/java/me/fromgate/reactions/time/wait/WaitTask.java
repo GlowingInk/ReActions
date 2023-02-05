@@ -1,6 +1,5 @@
 package me.fromgate.reactions.time.wait;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.logic.context.Variables;
@@ -11,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
+
+import static me.fromgate.reactions.logic.ActivatorLogic.executeActions;
 
 public record WaitTask(
         @NotNull Variables variables,
@@ -33,7 +34,7 @@ public record WaitTask(
 
     public void execute() {
         Player player = playerId == null ? null : Bukkit.getPlayer(playerId);
-        ActivatorLogic.executeActions(new Environment("", variables, player), actions, player != null);
+        executeActions(new Environment("", variables, player), actions, player != null);
     }
 
     @Override

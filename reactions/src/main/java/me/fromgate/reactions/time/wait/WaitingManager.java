@@ -128,7 +128,7 @@ public class WaitingManager implements Saveable {
         WaitTask first = tasks.first();
         if (next != first) {
             next = first;
-            if (executor != null) {
+            if (executor != null && !executor.isCancelled()) {
                 executor.cancel();
                 executor = null;
             }
@@ -181,11 +181,12 @@ public class WaitingManager implements Saveable {
     }
 
     public void schedule(@Nullable UUID playerId, @NotNull List<StoredAction> actions, long delayMs) {
+        if (actions.isEmpty()) return;
         schedule(new WaitTask(
                 new Variables(),
                 playerId,
                 actions,
-                delayMs
+                System.currentTimeMillis() + delayMs
         ));
     }
 
@@ -197,6 +198,7 @@ public class WaitingManager implements Saveable {
 
     public enum AttachedBehaviour {
         SKIP, EXECUTE, DISCARD;
+
         public static @Nullable AttachedBehaviour getByName(@Nullable String name) {
             if (name == null) return null;
             return switch (name.toUpperCase(Locale.ROOT)) {
