@@ -26,13 +26,16 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
-public class FlagVar implements Flag {
+public class FlagVar implements Flag, Aliased {
     private final Type flagType;
     private final boolean personal;
 
@@ -44,12 +47,23 @@ public class FlagVar implements Flag {
     @Override
     public @NotNull String getName() {
         return switch (flagType) {
+            case EXIST -> personal ? "PLAYER_VAR_EXIST" : "GLOBAL_VAR_EXIST";
+            case COMPARE -> personal ? "PLAYER_VAR_COMPARE" : "GLOBAL_VAR_COMPARE";
+            case GREATER -> personal ? "PLAYER_VAR_GREATER" : "GLOBAL_VAR_GREATER";
+            case LOWER -> personal ? "PLAYER_VAR_LOWER" : "GLOBAL_VAR_LOWER";
+            case MATCH -> personal ? "PLAYER_VAR_MATCH" : "GLOBAL_VAR_MATCH";
+        };
+    }
+
+    @Override
+    public @NotNull Collection<String> getAliases() {
+        return List.of(switch (flagType) {
             case EXIST -> personal ? "VAR_PLAYER_EXIST" : "VAR_EXIST";
             case COMPARE -> personal ? "VAR_PLAYER_COMPARE" : "VAR_COMPARE";
             case GREATER -> personal ? "VAR_PLAYER_GREATER" : "VAR_GREATER";
             case LOWER -> personal ? "VAR_PLAYER_LOWER" : "VAR_LOWER";
             case MATCH -> personal ? "VAR_PLAYER_MATCH" : "VAR_MATCH";
-        };
+        });
     }
 
     @Override

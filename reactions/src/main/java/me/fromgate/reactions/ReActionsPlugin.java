@@ -75,9 +75,15 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         if (Cfg.modernPlaceholders) {
             this.placeholdersManager = new ModernPlaceholdersManager();
         } else {
-            logger().warn("You're using legacy placeholders parser! " +
+            logger().warn(
+                    "You're using legacy placeholders parser! " +
                     "While it does protect compatibility, it's highly recommended to use modern one. " +
-                    "Turn it on by enabling 'use-modern-placeholders' in the config (restart required).");
+                    "Turn it on by enabling 'use-modern-placeholders' in the config (restart required)."
+            );
+            logger().warn(
+                    "Do note that changing the parser also changes the syntax. " +
+                    "Instead of '%variable%' you will need to use '%[variable]'."
+            );
             this.placeholdersManager = new LegacyPlaceholdersManager();
         }
         this.activitiesRegistry = new ActivitiesRegistry();

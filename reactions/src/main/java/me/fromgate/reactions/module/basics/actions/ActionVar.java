@@ -26,18 +26,22 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionVar implements Action {
+import java.util.Collection;
+import java.util.List;
+
+public class ActionVar implements Action, Aliased {
 
     private final Type actType;
-    private final boolean personalVar;
+    private final boolean personal;
 
     public ActionVar(Type actType, boolean personalVar) {
         this.actType = actType;
-        this.personalVar = personalVar;
+        this.personal = personalVar;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class ActionVar implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         Player p = context.getPlayer();
 
-        String player = (p != null && this.personalVar) ? p.getName() : "";
+        String player = (p != null && this.personal) ? p.getName() : "";
 
         String var;
         String value;
@@ -62,12 +66,12 @@ public class ActionVar implements Action {
             value = (ln.length > 1) ? ln[1] : "";
         }
 
-        if (this.personalVar && player.isEmpty()) return false;
+        if (this.personal && player.isEmpty()) return false;
 
         switch (this.actType) {
-            case SET -> ReActions.getVariables().setVariable(player, var, value);   //VAR_SET, VAR_PLAYER_SET
-            case CLEAR -> ReActions.getVariables().removeVariable(player, var);     //VAR_CLEAR, VAR_PLAYER_CLEAR
-            case INCREASE, DECREASE -> {                                            //VAR_INC, VAR_PLAYER_INC, VAR_DEC, VAR_PLAYER_DEC
+            case SET -> ReActions.getVariables().setVariable(player, var, value);
+            case CLEAR -> ReActions.getVariables().removeVariable(player, var);
+            case INCREASE, DECREASE -> {
                 String variable = ReActions.getVariables().getVariable(player, var);
                 if (variable == null || !NumberUtils.isNumber(variable)) return false;
                 double variableValue = Double.parseDouble(variable);
@@ -82,16 +86,26 @@ public class ActionVar implements Action {
     @Override
     public @NotNull String getName() {
         return switch (actType) {
-            case SET -> personalVar ? "VAR_PLAYER_SET" : "VAR_SET";
-            case CLEAR -> personalVar ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR";
-            case INCREASE -> personalVar ? "VAR_PLAYER_INC" : "VAR_INC";
-            case DECREASE -> personalVar ? "VAR_PLAYER_DEC" : "VAR_DEC";
+            case SET -> personal ? "PLAYER_VAR" : "GLOBAL_VAR";
+            case CLEAR -> personal ? "PLAYER_VAR_CLEAR" : "GLOBAL_VAR_CLEAR";
+            case INCREASE -> personal ? "PLAYER_VAR_INC" : "GLOBAL_VAR_INC";
+            case DECREASE -> personal ? "PLAYER_VAR_DEC" : "GLOBAL_VAR_DEC";
         };
     }
 
     @Override
     public boolean requiresPlayer() {
-        return personalVar;
+        return false;
+    }
+
+    @Override
+    public @NotNull Collection<@NotNull String> getAliases() {
+        return switch (actType) {
+            case SET -> personal ? List.of("VAR_PLAYER_SET", "PLAYER_VAR_SET") : List.of("VAR_SET", "GLOBAL_VAR_SET");
+            case CLEAR -> List.of(personal ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR");
+            case INCREASE -> List.of(personal ? "VAR_PLAYER_INC" : "VAR_INC");
+            case DECREASE -> List.of(personal ? "VAR_PLAYER_DEC" : "VAR_DEC");
+        };
     }
 
     public enum Type {
