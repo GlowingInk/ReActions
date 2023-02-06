@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 public final class FileUtils {
-    private FileUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private FileUtils() {}
 
     public static boolean loadCfg(YamlConfiguration cfg, File f, String error) {
         if (cfg == null) return false;

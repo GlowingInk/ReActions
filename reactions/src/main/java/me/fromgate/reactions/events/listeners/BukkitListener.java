@@ -19,7 +19,6 @@ import me.fromgate.reactions.module.basics.details.MessageDetails;
 import me.fromgate.reactions.module.basics.details.MobDamageDetails;
 import me.fromgate.reactions.module.basics.details.QuitDetails;
 import me.fromgate.reactions.module.basics.details.TeleportDetails;
-import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.Rng;
@@ -331,7 +330,6 @@ public class BukkitListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        LegacyWaitingManager.refreshPlayer(player);
         TemporaryOp.removeOp(player);
         RaDebug.offPlayerDebug(player);
         MoveListener.initLocation(player);
@@ -358,9 +356,9 @@ public class BukkitListener implements Listener {
         triggerItemClick(event);
         triggerItemWear(event.getPlayer());
         if (
-                triggerBlockClick(event) ||
-                triggerButton(event) ||
                 triggerPlate(event) ||
+                (triggerBlockClick(event) |
+                triggerButton(event)) ||
                 triggerLever(event) ||
                 triggerDoor(event)
         ) {

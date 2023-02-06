@@ -37,8 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class RespawnDetails extends Details {
     public static final String RESPAWN_LOCATION = "respawn_loc";
@@ -63,10 +63,10 @@ public class RespawnDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = new HashMap<>();
         vars.put(RESPAWN_LOCATION, property(LocationUtils.locationToString(respawnLoc)));
-        vars.put("cause", plain(deathCause));
+        vars.put("cause", simple(deathCause));
         if (killer != null) {
-            vars.put("killer-type", plain(killer.getType()));
-            vars.put("killer-name", plain(EntityUtils.getEntityDisplayName(killer)));
+            vars.put("killer-type", simple(killer.getType()));
+            vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
         }
         return vars;
     }

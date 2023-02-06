@@ -26,7 +26,7 @@ public final class FakeCommander {
     private static final Map<String, UserCommand> commands = new HashMap<>();
     private static File file;
 
-    private FakeCommander() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private FakeCommander() {}
 
     public static void init(Plugin plugin) {
         file = new File(plugin.getDataFolder(), "commands.yml");

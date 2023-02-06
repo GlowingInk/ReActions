@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static me.fromgate.reactions.logic.context.Variable.lazy;
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class ItemHoldDetails extends Details {
 
@@ -58,7 +58,7 @@ public class ItemHoldDetails extends Details {
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = new HashMap<>();
-        vars.put("hand", plain(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
+        vars.put("hand", simple(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
         if (item != null) {
             vars.put("item", lazy(() -> VirtualItem.asString(item)));
             vars.put("item-str", lazy(() -> ItemUtils.toDisplayString(item)));

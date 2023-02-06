@@ -1,7 +1,9 @@
 package me.fromgate.reactions.logic.activity;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.activity.flags.Flag;
+import me.fromgate.reactions.logic.activity.flags.StoredFlag;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,5 +48,22 @@ public class ActivitiesRegistry {
 
     public @Nullable Flag getFlag(@NotNull String name) {
         return flagByName.get(name.toUpperCase(Locale.ROOT));
+    }
+
+    public @Nullable StoredAction storedActionOf(@NotNull String str) {
+        String[] split = str.split("=", 2);
+        if (split.length != 2) return null;
+        Action action = getAction(split[0]);
+        if (action == null) return null;
+        return new StoredAction(action, split[1]);
+    }
+
+    public @Nullable StoredFlag storedFlagOf(@NotNull String str) {
+        String[] split = str.split("=", 2);
+        if (split.length != 2) return null;
+        boolean inverted = split[0].startsWith("!");
+        Flag flag = getFlag(inverted ? split[0].substring(1) : split[0]);
+        if (flag == null) return null;
+        return new StoredFlag(flag, split[1], inverted);
     }
 }

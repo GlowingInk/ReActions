@@ -91,7 +91,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
         if (!dir.exists() && !dir.mkdirs()) return;
         saveGeneral();
         if (player == null || player.isEmpty()) return;
-        UUID id = Utils.getUUID(player);
+        UUID id = Utils.getPlayerId(player);
         File f = new File(varDir + File.separator + id + ".yml");
         for (String key : vars.keySet()) {
             if (key.contains(player)) cfg.set(key, vars.get(key));

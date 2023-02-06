@@ -69,13 +69,12 @@ public abstract class Details {
     }
 
     public final void initialize() {
-        if (!isInitialized()) {
-            var varsMap = prepareVariables();
-            if (varsMap.isEmpty()) {
-                variables = new Variables();
-            } else {
-                variables = new Variables(prepareVariables());
-            }
+        if (isInitialized()) return;
+        var varsMap = prepareVariables();
+        if (varsMap.isEmpty()) {
+            variables = new Variables();
+        } else {
+            variables = new Variables(prepareVariables());
         }
     }
 
@@ -87,10 +86,6 @@ public abstract class Details {
         return Optional.ofNullable(variables);
     }
 
-    public final @Nullable Variables getVariablesUnsafe() {
-        return variables;
-    }
-
     public final @Nullable Player getPlayer() {
         return this.player;
     }
@@ -100,10 +95,8 @@ public abstract class Details {
     }
 
     public boolean isCancelled() {
-        return isCancelled(false);
-    }
-
-    public boolean isCancelled(boolean def) {
-        return getVariables().map(vars -> vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).orElse(def)).orElse(def);
+        return getVariables()
+                .map(vars -> vars.getChanged(CANCEL_EVENT, Boolean::valueOf).orElse(false))
+                .orElse(false);
     }
 }

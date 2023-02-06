@@ -42,8 +42,8 @@ public class ItemHeldDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = new HashMap<>();
         vars.put(CANCEL_EVENT, property(false));
-        vars.put("slotnew", plain(newSlot + 1));
-        vars.put("slotprev", plain(previousSlot + 1));
+        vars.put("slotnew", simple(newSlot + 1));
+        vars.put("slotprev", simple(previousSlot + 1));
         if (newItem != null) {
             vars.put("itemnew", lazy(() -> VirtualItem.asString(newItem)));
             vars.put("itemnew-str", lazy(() -> ItemUtils.toDisplayString(newItem)));

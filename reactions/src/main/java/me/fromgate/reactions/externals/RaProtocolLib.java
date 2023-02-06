@@ -48,7 +48,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
 
     private static boolean connected = false;
 
-    private RaProtocolLib() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private RaProtocolLib() {}
 
     public static boolean isConnected() {
         return connected;

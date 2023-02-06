@@ -42,7 +42,7 @@ public final class LocationHolder {
     private static final Map<String, Location> locs = new HashMap<>();
     private static final Map<String, TpLocation> tports = new HashMap<>();
 
-    private LocationHolder() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private LocationHolder() {}
 
     public static void hold(Player p, Location loc) {
         if (p == null) return;

@@ -73,7 +73,7 @@ public class LeverActivator extends Activator implements Locatable {
         int x = cfg.getInt("x");
         int y = cfg.getInt("y");
         int z = cfg.getInt("z");
-        TriBoolean state = TriBoolean.getByName(cfg.getString("lever-state", "ANY"));
+        TriBoolean state = TriBoolean.of(cfg.getString("lever-state", "ANY"));
         return new LeverActivator(base, state, world, x, y, z);
     }
 

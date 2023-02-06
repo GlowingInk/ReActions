@@ -3,11 +3,14 @@ package me.fromgate.reactions.util;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static me.fromgate.reactions.util.TimeUtils.*;
 import static org.testng.Assert.assertEquals;
 
 public class TimeUtilsTest {
-
     @DataProvider
     public Object[][] parseTimeSplittedData() {
         return new Object[][] {
@@ -36,6 +39,22 @@ public class TimeUtilsTest {
     public void parseTimePreciseTest(String timeStr, long expectedTime) {
         assertEquals(
                 parseTimePrecise(timeStr),
+                expectedTime
+        );
+    }
+
+    @DataProvider
+    public Object[][] parseTimeData() {
+        List<Object[]> data = new ArrayList<>();
+        data.addAll(Arrays.asList(parseTimeSplittedData()));
+        data.addAll(Arrays.asList(parseTimePreciseData()));
+        return data.toArray(new Object[][]{});
+    }
+
+    @Test(dataProvider = "parseTimeData")
+    public void parseTimeTest(String timeStr, long expectedTime) {
+        assertEquals(
+                parseTime(timeStr),
                 expectedTime
         );
     }

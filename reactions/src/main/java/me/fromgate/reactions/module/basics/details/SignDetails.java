@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class SignDetails extends Details {
 
@@ -58,10 +58,10 @@ public class SignDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = new HashMap<>();
         for (int i = 0; i < signLines.length; i++) {
-            vars.put("sign_line" + (i + 1), plain(signLines[i]));
+            vars.put("sign_line" + (i + 1), simple(signLines[i]));
         }
-        vars.put("sign_loc", plain(LocationUtils.locationToString(location)));
-        vars.put("click", plain(leftClick ? "left" : "right"));
+        vars.put("sign_loc", simple(LocationUtils.locationToString(location)));
+        vars.put("click", simple(leftClick ? "left" : "right"));
         return vars;
     }
 

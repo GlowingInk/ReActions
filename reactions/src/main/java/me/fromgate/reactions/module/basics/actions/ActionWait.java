@@ -1,10 +1,10 @@
 package me.fromgate.reactions.module.basics.actions;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.Stopper;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ActionWait implements Action, Stopper {
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+        Parameters params = Parameters.fromString(paramsStr, "time");
         long time = TimeUtils.parseTime(params.getString("time", "0"));
         return time > 0;
     }
@@ -30,7 +30,11 @@ public class ActionWait implements Action, Stopper {
     }
 
     @Override
-    public void stop(@NotNull Environment context, @NotNull String params, @NotNull List<StoredAction> actions) {
-        LegacyWaitingManager.schedule(context.getPlayer(), actions, TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1")));
+    public void stop(@NotNull Environment context, @NotNull String params, @NotNull List<StoredAction> actions) { // TODO Append variables
+        ReActions.getWaiter().schedule(
+                context.getPlayer() != null ? context.getPlayer().getUniqueId() : null,
+                actions,
+                TimeUtils.parseTime(Parameters.fromString(params, "time").getString("time", "1"))
+        );
     }
 }

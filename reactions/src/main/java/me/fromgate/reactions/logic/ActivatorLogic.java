@@ -128,14 +128,14 @@ public final class ActivatorLogic {
     public void executeLogic(@NotNull Environment context) {
         boolean noPlayer = context.getPlayer() == null;
         for (StoredFlag flag : flags) {
-            if (flag.getFlag().requiresPlayer() && noPlayer) {
+            if (flag.getActivity().requiresPlayer() && noPlayer) {
                 executeActions(context, reactions, false);
                 return;
             }
             String params = flag.hasPlaceholders() ?
                             ReActions.getPlaceholders().parsePlaceholders(context, flag.getParameters()) : // TODO Placeholders DI
                             flag.getParameters();
-            if (!flag.getFlag().proceed(context, params)) {
+            if (!flag.getActivity().proceed(context, params)) {
                 executeActions(context, reactions, !noPlayer);
                 return;
             }
@@ -143,16 +143,16 @@ public final class ActivatorLogic {
         executeActions(context, actions, !noPlayer);
     }
 
-    private static void executeActions(Environment context, List<StoredAction> actions, boolean hasPlayer) {
+    public static void executeActions(Environment context, List<StoredAction> actions, boolean hasPlayer) {
         for (int i = 0; i < actions.size(); i++) {
             StoredAction action = actions.get(i);
             // TODO: Microoptimization - check if hasPlayer and separate iteration
-            if (hasPlayer || !action.getAction().requiresPlayer()) {
+            if (hasPlayer || !action.getActivity().requiresPlayer()) {
                 String params = action.hasPlaceholders() ?
                                 ReActions.getPlaceholders().parsePlaceholders(context, action.getParameters()) : // TODO Placeholders DI
                                 action.getParameters();
-                if (action.getAction().proceed(context, params) && action.getAction() instanceof Stopper stopAction) {
-                    stopAction.stop(context, action.getParameters(), new ArrayList<>(actions.subList(i, actions.size())));
+                if (action.getActivity().proceed(context, params) && action.getActivity() instanceof Stopper stopAction) {
+                    stopAction.stop(context, action.getParameters(), new ArrayList<>(actions.subList(i + 1, actions.size())));
                     break;
                 }
             }

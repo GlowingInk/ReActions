@@ -42,7 +42,19 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
     public static final long MS_PER_DAY = MS_PER_HOUR * 24L;
     public static final long MS_PER_TICK = MS_PER_SECOND / 20;
 
-    private TimeUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private TimeUtils() {}
+
+    public static long offsetNow(long offset) {
+        return System.currentTimeMillis() + offset;
+    }
+
+    public static long offsetFrom(long otherMs) {
+        return otherMs - System.currentTimeMillis();
+    }
+
+    public static long offsetTo(long otherMs) {
+        return System.currentTimeMillis() - otherMs;
+    }
 
     public static String formatIngameTime() {
         return formatIngameTime(Bukkit.getWorlds().get(0));
@@ -70,8 +82,12 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
         return format.format(new Date(msTime));
     }
 
+    public static long safeTimeToTicks(long msTime) {
+        return Math.max(1, timeToTicks(msTime));
+    }
+
     public static long timeToTicks(long msTime) {
-        return Math.max(1, (msTime / MS_PER_TICK));
+        return msTime / MS_PER_TICK;
     }
 
     public static long parseTime(String timeStr) {

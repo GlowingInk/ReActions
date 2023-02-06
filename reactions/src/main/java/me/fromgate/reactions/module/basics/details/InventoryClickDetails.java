@@ -78,14 +78,14 @@ public class InventoryClickDetails extends Details {
         return Map.of(
                 CANCEL_EVENT, property(false),
                 ITEM, lazy(() -> VirtualItem.asString(item)),
-                "name", plain(inventoryName),
-                "click", plain(clickType),
-                "action", plain(action),
-                "slottype", plain(slotType),
-                "inventory", plain(inventoryType),
-                "key", plain(numberKey + 1),
-                "itemkey", numberKey > -1 ? lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : plain(""),
-                "slot", plain(slot)
+                "name", simple(inventoryName),
+                "click", simple(clickType),
+                "action", simple(action),
+                "slottype", simple(slotType),
+                "inventory", simple(inventoryType),
+                "key", simple(numberKey + 1),
+                "itemkey", numberKey > -1 ? lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : simple(""),
+                "slot", simple(slot)
         );
     }
 

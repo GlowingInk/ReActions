@@ -16,7 +16,7 @@ public final class NumberUtils {
     public static final Pattern INT = Pattern.compile("-?\\d+");
     public static final Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
 
-    private NumberUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private NumberUtils() {}
 
     public static double asDouble(@Nullable String str) {
         return asDouble(str, 0);
@@ -75,7 +75,7 @@ public final class NumberUtils {
 
     public static final class Is {
         private static final Set<String> ZEROS = Set.of("0", "0.0", "-0", "-0.0");
-        private Is() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+        private Is() {}
 
         public static final Predicate<String> NON_ZERO = (s) -> !ZEROS.contains(s);
         public static final Predicate<String> POSITIVE = (s) -> !s.startsWith("-");

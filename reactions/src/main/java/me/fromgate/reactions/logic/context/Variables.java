@@ -37,11 +37,11 @@ public class Variables {
         return new Variables(forkMap(), false);
     }
 
-    public @NotNull Variable get(@NotNull String key) {
+    private @NotNull Variable get(@NotNull String key) {
         return variables.getOrDefault(key.toLowerCase(Locale.ROOT), Variable.EMPTY);
     }
 
-    public @Nullable Variable getUnsafe(@NotNull String key) {
+    private @Nullable Variable getUnsafe(@NotNull String key) {
         return variables.get(key.toLowerCase(Locale.ROOT));
     }
 

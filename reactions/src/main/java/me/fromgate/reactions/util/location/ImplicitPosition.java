@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,9 +106,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     public void intoConfiguration(@NotNull ConfigurationSection cfg) {
         cfg.set("world", format(worldName));
-        cfg.set("x", format(x));
-        cfg.set("y", format(y));
-        cfg.set("z", format(z));
+        cfg.set("x", formatNum(x));
+        cfg.set("y", formatNum(y));
+        cfg.set("z", formatNum(z));
     }
 
     public @Nullable String worldName() {
@@ -123,6 +125,22 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     public @Nullable Integer virtualZ() {
         return this.z;
+    }
+
+    public @NotNull Optional<String> optionalWorldName() {
+        return Optional.ofNullable(worldName);
+    }
+
+    public @NotNull OptionalInt optionalX() {
+        return x == null ? OptionalInt.empty() : OptionalInt.of(x);
+    }
+
+    public @NotNull OptionalInt optionalY() {
+        return y == null ? OptionalInt.empty() : OptionalInt.of(y);
+    }
+
+    public @NotNull OptionalInt optionalZ() {
+        return z == null ? OptionalInt.empty() : OptionalInt.of(z);
     }
 
     public int blockX(int def) {
@@ -250,5 +268,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     private static @NotNull String format(@Nullable Object obj) {
         return obj == null ? "*" : obj.toString();
+    }
+
+    private static @NotNull Object formatNum(@Nullable Integer num) {
+        return num == null ? "*" : num;
     }
 }

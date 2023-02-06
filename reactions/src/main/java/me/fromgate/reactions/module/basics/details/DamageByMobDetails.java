@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-06-25.
@@ -34,10 +34,10 @@ public class DamageByMobDetails extends DamageDetails {
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars =  super.prepareVariables();
-        vars.put("damagerlocation", plain(LocationUtils.locationToString(damager.getLocation())));
-        vars.put("damagertype", plain(damager.getType()));
-        vars.put("entitytype", plain(damager.getType())); // FIXME Why there is a copy?
-        vars.put("damagername", plain(EntityUtils.getEntityDisplayName(damager)));
+        vars.put("damagerlocation", simple(LocationUtils.locationToString(damager.getLocation())));
+        vars.put("damagertype", simple(damager.getType()));
+        vars.put("entitytype", simple(damager.getType())); // FIXME Why there is a copy?
+        vars.put("damagername", simple(EntityUtils.getEntityDisplayName(damager)));
         return vars;
     }
 

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -33,9 +33,9 @@ public class DamageByBlockDetails extends DamageDetails {
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = super.prepareVariables();
-        vars.put("blocklocation", plain(LocationUtils.locationToString(blockDamager.getLocation())));
-        vars.put("blocktype", plain(blockDamager.getType()));
-        vars.put("block", plain(blockDamager.getType())); // FIXME Why there is a copy?
+        vars.put("blocklocation", simple(LocationUtils.locationToString(blockDamager.getLocation())));
+        vars.put("blocktype", simple(blockDamager.getType()));
+        vars.put("block", simple(blockDamager.getType())); // FIXME Why there is a copy?
         return vars;
     }
 

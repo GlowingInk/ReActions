@@ -10,7 +10,7 @@ public final class RaPlaceholderAPI {
 
     private static boolean enabled = false;
 
-    private RaPlaceholderAPI() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private RaPlaceholderAPI() {}
 
     public static void init() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {

@@ -36,7 +36,7 @@ public class FlagCompare implements Flag {
         if (paramValue == null) return false;
         Double paramNum = NumberUtils.isNumber(paramValue) ? Double.valueOf(paramValue) : null;
         boolean caseSensitive = params.getBoolean("case-sensitive");
-        for (String key : params.getKeyList("value")) {
+        for (String key : params.keyedList("value")) {
             String value = params.getString(key);
             if (
                     (caseSensitive ? paramValue.equals(value) : paramValue.equalsIgnoreCase(value)) ||

@@ -41,7 +41,7 @@ public final class PlayerRespawner {
     private static final Map<UUID, LivingEntity> players = new HashMap<>();
     private static final Map<UUID, Location> deathPoints = new HashMap<>();
 
-    private PlayerRespawner() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private PlayerRespawner() {}
 
     public static void addPlayerRespawn(PlayerDeathEvent event) {
         Player deadPlayer = event.getEntity();

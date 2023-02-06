@@ -47,6 +47,6 @@ public class PvpKillDetails extends Details {
 
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
-        return Map.of("targetplayer", Variable.plain(killedPlayer.getName()));
+        return Map.of("targetplayer", Variable.simple(killedPlayer.getName()));
     }
 }

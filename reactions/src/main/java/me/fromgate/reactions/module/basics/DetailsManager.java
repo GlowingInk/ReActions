@@ -74,7 +74,7 @@ import java.util.Set;
 // TODO: Refactor to DetailsFactory
 public final class DetailsManager {
 
-    private DetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private DetailsManager() {}
 
     public static @NotNull Optional<Variables> triggerTeleport(Player player, TeleportCause cause, Location to) {
         TeleportDetails details = new TeleportDetails(player, cause, to);
@@ -173,11 +173,10 @@ public final class DetailsManager {
 
     // Button Event
     public static boolean triggerButton(PlayerInteractEvent event) {
-        if (!((event.getAction() == Action.RIGHT_CLICK_BLOCK) || (event.getAction() == Action.LEFT_CLICK_BLOCK)))
-            return false;
-        if (!Tag.BUTTONS.isTagged(event.getClickedBlock().getType())) return false;
-        if (event.getHand() != EquipmentSlot.HAND) return false;
-        Switch button = (Switch) event.getClickedBlock().getBlockData();
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getHand() != EquipmentSlot.HAND) return false;
+        Block block = event.getClickedBlock();
+        if (block == null || !Tag.BUTTONS.isTagged(block.getType())) return false;
+        Switch button = (Switch) block.getBlockData();
         if (button.isPowered()) return false;
         ButtonDetails be = new ButtonDetails(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(be);
@@ -224,7 +223,7 @@ public final class DetailsManager {
 
         int repeat = Math.min(param.getInteger("repeat", 1), 1);
 
-        long delay = TimeUtils.timeToTicks(TimeUtils.parseTime(param.getString("delay", "1t")));
+        long delay = TimeUtils.safeTimeToTicks(TimeUtils.parseTime(param.getString("delay", "1t")));
 
         final Set<Player> target = new HashSet<>();
 
@@ -377,9 +376,9 @@ public final class DetailsManager {
     }
 
     public static boolean triggerBlockClick(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND ||
-                event.getClickedBlock() == null ||
-                event.getClickedBlock().getType().isAir()) return false;
+        if (event.getHand() != EquipmentSlot.HAND) return false;
+        Block block = event.getClickedBlock();
+        if (block == null || block.isEmpty()) return false;
         boolean leftClick;
         switch (event.getAction()) {
             case RIGHT_CLICK_BLOCK:
@@ -391,7 +390,7 @@ public final class DetailsManager {
             default:
                 return false;
         }
-        BlockClickDetails e = new BlockClickDetails(event.getPlayer(), event.getClickedBlock(), leftClick);
+        BlockClickDetails e = new BlockClickDetails(event.getPlayer(), block, leftClick);
         activate(e);
         return e.isCancelled();
     }

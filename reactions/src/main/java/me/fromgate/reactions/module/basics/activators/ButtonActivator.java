@@ -28,85 +28,49 @@ import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.module.basics.details.ButtonDetails;
-import me.fromgate.reactions.util.Utils;
+import me.fromgate.reactions.util.location.ImplicitPosition;
 import me.fromgate.reactions.util.parameter.BlockParameters;
 import me.fromgate.reactions.util.parameter.Parameters;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 // TODO Use TriBoolean (when clicking on disabled button)
 public class ButtonActivator extends Activator implements Locatable {
-    private final String world;
-    private final int x;
-    private final int y;
-    private final int z;
+    private final ImplicitPosition pos;
 
-    private ButtonActivator(ActivatorLogic base, String world, int x, int y, int z) {
+    private ButtonActivator(ActivatorLogic base, ImplicitPosition pos) {
         super(base);
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
     }
 
     public static ButtonActivator create(ActivatorLogic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
-        Location loc = param.getBlock().getLocation();
-        return new ButtonActivator(base, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        return new ButtonActivator(base, ImplicitPosition.of(param.getBlock().getLocation()));
     }
 
     public static ButtonActivator load(ActivatorLogic base, ConfigurationSection cfg) {
-        int x = cfg.getInt("x", 0);
-        int y = cfg.getInt("y", 0);
-        int z = cfg.getInt("z", 0);
-        String world = cfg.getString("world", Bukkit.getWorlds().get(0).getName());
-        return new ButtonActivator(base, world, x, y, z);
+        return new ButtonActivator(base, ImplicitPosition.fromConfiguration(cfg));
     }
 
     @Override
     public boolean checkDetails(@NotNull Details event) {
         ButtonDetails be = (ButtonDetails) event;
-        return isLocatedAt(be.getButtonLocation());
-    }
-
-    public boolean isLocatedAt(Location l) {
-        if (l == null) return false;
-        if (!world.equalsIgnoreCase(l.getWorld().getName())) return false;
-        if (x != l.getBlockX()) return false;
-        if (y != l.getBlockY()) return false;
-        return (z == l.getBlockZ());
+        return pos.isValidAt(be.getButtonLocation());
     }
 
     @Override
     public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
-        return this.world.equals(world.getName()) &&
-                this.x == x &&
-                this.y == y &&
-                this.z == z;
+        return pos.isValidAt(world.getName(), x, y, z);
     }
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("world", this.world);
-        cfg.set("x", x);
-        cfg.set("y", y);
-        cfg.set("z", z);
-    }
-
-    @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(world);
+        pos.intoConfiguration(cfg);
     }
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
-                world + ", " + x + ", " + y + ", " + z +
-                ")";
-        return sb;
+        return super.toString() + " (" + pos + ")";
     }
-
 }

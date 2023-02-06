@@ -4,7 +4,6 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.time.waiter.LegacyWaitingManager;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -39,7 +38,7 @@ public class ActionDelayed implements Action {
         }
 
         StoredAction av = new StoredAction(action, paramStr);
-        LegacyWaitingManager.schedule(context.getPlayer(), av, delay);
+        ReActions.getWaiter().schedule(av, delay);
         return true;
     }
 

@@ -39,7 +39,7 @@ public final class RaVault {
     private static Permission permission = null;
     private static Economy economy = null;
 
-    private RaVault() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private RaVault() {}
 
     public static void init() {
         if (checkVault()) {

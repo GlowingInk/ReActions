@@ -32,7 +32,7 @@ import java.util.UUID;
 public final class RaDebug {
     private static final Object2BooleanMap<UUID> debug = new Object2BooleanOpenHashMap<>();
 
-    private RaDebug() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private RaDebug() {}
 
     public static void setPlayerDebug(Player p, boolean debugMode) {
         debug.put(p.getUniqueId(), debugMode);

@@ -63,20 +63,20 @@ public class CommandDetails extends Details {
         vars.put(CANCEL_EVENT, property(false));
         String[] start = label.split(":", 2);
         if (start.length == 1) {
-            vars.put("prefix", plain(start[0]));
-            vars.put("label", plain(start[0]));
+            vars.put("prefix", simple(start[0]));
+            vars.put("label", simple(start[0]));
         } else {
-            vars.put("prefix", plain(start[0]));
-            vars.put("label", plain(start[1]));
+            vars.put("prefix", simple(start[0]));
+            vars.put("label", simple(start[1]));
         }
         vars.put("args", lazy(() -> String.join(" ", args)));
         vars.put("args0", lazy(() -> String.join(" ", args)));
-        vars.put("command", plain(command));
-        vars.put("argscount", plain(args.size()));
-        vars.put("arg0", plain(label));
+        vars.put("command", simple(command));
+        vars.put("argscount", simple(args.size()));
+        vars.put("arg0", simple(label));
         for (int i = 0; i < args.size(); i++) {
             int j = i + 1;
-            vars.put("arg" + j, plain(args.get(i)));
+            vars.put("arg" + j, simple(args.get(i)));
             int index = i;
             vars.put("args" + j, lazy(() -> String.join(" ", args.subList(index, args.size()))));
         }

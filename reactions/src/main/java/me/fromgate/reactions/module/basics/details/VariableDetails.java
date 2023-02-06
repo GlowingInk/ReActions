@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class VariableDetails extends Details {
 
@@ -54,9 +54,9 @@ public class VariableDetails extends Details {
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
-                "var-id", plain(variableId),
-                "var-old", plain(oldValue),
-                "var-new", plain(newValue)
+                "var-id", simple(variableId),
+                "var-old", simple(oldValue),
+                "var-new", simple(newValue)
         );
     }
 

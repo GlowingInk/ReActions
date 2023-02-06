@@ -33,7 +33,7 @@ import java.util.Map;
 public final class Teleporter {
     private static final Map<Player, PlayerTeleportEvent> events = new HashMap<>();
 
-    private Teleporter() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private Teleporter() {}
 
     public static void startTeleport(PlayerTeleportEvent event) {
         events.put(event.getPlayer(), event);

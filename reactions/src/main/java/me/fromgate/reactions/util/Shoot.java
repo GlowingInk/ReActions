@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 // TODO Make from scratch
 public final class Shoot {
@@ -74,7 +74,7 @@ public final class Shoot {
         }
     }
 
-    private Shoot() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private Shoot() {}
 
     public static void shoot(LivingEntity shooter, Parameters params) {
         boolean onehit = params.getBoolean("singlehit", true);
@@ -99,12 +99,12 @@ public final class Shoot {
         if (player == null && param.getBoolean("playeronly", true)) return;
         param = param.with("player", player == null ? "~null" : player.getName());
         Map<String, Variable> vars = new HashMap<>();
-        vars.put("targettype", plain(target.getType()));
-        vars.put("targetname", plain(EntityUtils.getEntityDisplayName(target)));
-        vars.put("targetloc", plain(LocationUtils.locationToString(target.getLocation())));
+        vars.put("targettype", simple(target.getType()));
+        vars.put("targetname", simple(EntityUtils.getEntityDisplayName(target)));
+        vars.put("targetloc", simple(LocationUtils.locationToString(target.getLocation())));
         if (shooter != null) {
-            vars.put("shooter", plain(shooter.getName()));
-            vars.put("shooterloc", plain(LocationUtils.locationToString(shooter.getLocation())));
+            vars.put("shooter", simple(shooter.getName()));
+            vars.put("shooterloc", simple(LocationUtils.locationToString(shooter.getLocation())));
         }
         DetailsManager.triggerExec(shooter, param, new Variables(vars));
     }

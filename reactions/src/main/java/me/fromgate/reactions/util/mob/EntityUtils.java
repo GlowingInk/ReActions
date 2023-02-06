@@ -27,7 +27,7 @@ import static me.fromgate.reactions.util.location.LocationUtils.CHUNK_BITS;
  */
 public final class EntityUtils {
 
-    private EntityUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private EntityUtils() {}
 
     /**
      * Get maximal health of entity

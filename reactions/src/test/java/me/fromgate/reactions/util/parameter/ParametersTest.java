@@ -65,7 +65,16 @@ public class ParametersTest {
                         - of
                         - values
                         """,
-                        "test:value key:{child:{another value} num:4 level-further:{wow:{{it works}}}} another:{a bit longer value} list1:{a list} list2:of list3:values"
+                        "test:value " +
+                        "key:{" +
+                            "child:{another value} " +
+                            "num:4 " +
+                            "level-further:{" +
+                                "wow:{{it works}}" +
+                            "}" +
+                        "} " +
+                        "another:{a bit longer value} " +
+                        "list1:{a list} list2:of list3:values"
                 }
         };
     }
@@ -81,7 +90,7 @@ public class ParametersTest {
     }
 
     @DataProvider
-    public static Object[][] getKeyListData() {
+    public static Object[][] keyedListData() {
         return new Object[][] {
                 {"key1:value key2:value key3:value", List.of("key1", "key2", "key3")},
                 {"key:value key1:value key2:value key3:value", List.of("key1", "key2", "key3")},
@@ -89,8 +98,8 @@ public class ParametersTest {
         };
     }
 
-    @Test(dataProvider = "getKeyListData")
-    public void getKeyListTest(String input, List<String> expected) {
-        assertEquals(fromString(input).getKeyList("key"), expected);
+    @Test(dataProvider = "keyedListData")
+    public void keyedListTest(String input, List<String> expected) {
+        assertEquals(fromString(input).keyedList("key"), expected);
     }
 }

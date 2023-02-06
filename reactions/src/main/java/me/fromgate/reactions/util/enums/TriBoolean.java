@@ -36,11 +36,19 @@ public enum TriBoolean {
         };
     }
 
+    public boolean isValidFor(@Nullable Boolean bool) {
+        return switch (this) {
+            case TRUE -> bool != null && bool;
+            case FALSE -> bool != null && !bool;
+            default -> true;
+        };
+    }
+
     public @NotNull TriState adventure() {
         return triState;
     }
 
-    public static @NotNull TriBoolean getByName(@Nullable String str) {
+    public static @NotNull TriBoolean of(@Nullable String str) {
         if (str == null) return ANY;
         return switch (str.toUpperCase(Locale.ROOT)) {
             case "TRUE", "ON", "ENABLE", "ENABLED" -> TRUE;

@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 // TODO: Move to custom ActivatorTypes
 public final class ItemDetailsManager {
-    private ItemDetailsManager() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private ItemDetailsManager() {}
 
     private static void setFutureItemWearCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);

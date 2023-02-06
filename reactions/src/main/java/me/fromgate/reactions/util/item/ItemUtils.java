@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 public final class ItemUtils {
-    private ItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
+    private ItemUtils() {}
 
     public static <T> @Nullable T searchByKey(@NotNull String key, @NotNull Function<NamespacedKey, T> search) {
         try {
@@ -69,13 +69,13 @@ public final class ItemUtils {
     public static @NotNull List<ItemStack> parseRandomItemsStr(@NotNull String items) { // TODO: Should be refactored
         Parameters params = Parameters.fromString(items);
         List<String> keys;
-        if (!(keys = params.getKeyList("set")).isEmpty()) {
+        if (!(keys = params.keyedList("set")).isEmpty()) {
             Object2IntMap<List<ItemStack>> sets = new Object2IntOpenHashMap<>();
             int maxChance = 0;
             int nochcount = 0;
             for (String key : keys) {
                 Parameters itemParams = Parameters.fromString(params.getString(key));
-                List<ItemStack> itemList = parseItemsSet(itemParams, itemParams.getKeyList("item"));
+                List<ItemStack> itemList = parseItemsSet(itemParams, itemParams.keyedList("item"));
                 if (itemList.isEmpty()) continue;
                 int chance = itemParams.getInteger("chance", -1);
                 if (chance > 0) maxChance += chance;
@@ -90,7 +90,7 @@ public final class ItemUtils {
                 curchance = curchance + (sets.getInt(stack) < 0 ? eqperc : sets.getInt(stack));
                 if (rnd <= curchance) return stack;
             }
-        } else if (!(keys = params.getKeyList("item")).isEmpty()) {
+        } else if (!(keys = params.keyedList("item")).isEmpty()) {
             return parseItemsSet(params, keys);
         } else {
             ItemStack vi = VirtualItem.asItemStack(items);

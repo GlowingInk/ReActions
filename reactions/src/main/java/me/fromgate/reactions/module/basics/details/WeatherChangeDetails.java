@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class WeatherChangeDetails extends Details {
     private final String world;
@@ -25,8 +25,8 @@ public class WeatherChangeDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
                 CANCEL_EVENT, property(false),
-                "world", plain(world),
-                "weather", plain(raining ? "RAINING" : "CLEAR")
+                "world", simple(world),
+                "weather", simple(raining ? "RAINING" : "CLEAR")
         );
     }
 

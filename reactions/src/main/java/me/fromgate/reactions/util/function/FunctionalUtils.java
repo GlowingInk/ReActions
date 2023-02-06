@@ -1,6 +1,7 @@
 package me.fromgate.reactions.util.function;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -11,7 +12,7 @@ public final class FunctionalUtils {
         return getter instanceof CachingSupplier<T> caching ? caching : new CachingSupplier<>(getter);
     }
 
-    public static <T> @NotNull Supplier<T> asSafeCaching(@NotNull SafeSupplier<T> getter) {
+    public static <T> @NotNull SafeSupplier<T> asSafeCaching(@NotNull SafeSupplier<T> getter) {
         return getter instanceof SafeCachingSupplier<T> caching ? caching : new SafeCachingSupplier<>(getter);
     }
 
@@ -25,7 +26,7 @@ public final class FunctionalUtils {
         }
 
         @Override
-        public T get() {
+        public @Nullable T get() {
             if (!cached) {
                 value = origin.get();
                 cached = true;
@@ -41,7 +42,6 @@ public final class FunctionalUtils {
         public SafeCachingSupplier(@NotNull SafeSupplier<T> getter) {
             this.origin = getter;
         }
-
 
         @Override
         public @NotNull T get() {

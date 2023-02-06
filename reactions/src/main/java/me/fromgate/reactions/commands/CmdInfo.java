@@ -53,14 +53,14 @@ public class CmdInfo extends Cmd {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getFlags().size(); i++) {
                 StoredFlag flag = base.getFlags().get(i);
-                flg.add((flag.isInverted() ? "&4! &e" : "  &e") + flag.getFlag().getName() + " &3= &a" + flag.getParameters());
+                flg.add((flag.isInverted() ? "&4! &e" : "  &e") + flag.getActivity().getName() + " &3= &a" + flag.getParameters());
             }
             Msg.printPage(sender, flg, Msg.LST_FLAGS, 1, 100, true);
         }
         if (a && (!base.getActions().isEmpty())) {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getActions().size(); i++) {
-                String action = base.getActions().get(i).getAction().getName();
+                String action = base.getActions().get(i).getActivity().getName();
                 String param = base.getActions().get(i).getParameters();
                 if (action.equalsIgnoreCase("tp")) {
                     Location loc = LocationUtils.parseCoordinates(param);//Util.parseLocation(param);
@@ -73,7 +73,7 @@ public class CmdInfo extends Cmd {
         if (r && (!base.getReactions().isEmpty())) {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getReactions().size(); i++) {
-                String action = base.getReactions().get(i).getAction().getName();
+                String action = base.getReactions().get(i).getActivity().getName();
                 String param = base.getReactions().get(i).getParameters();
                 if (action.equalsIgnoreCase("tp")) {
                     Location loc = LocationUtils.parseCoordinates(param);
