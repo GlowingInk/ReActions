@@ -91,7 +91,7 @@ public class Parameters implements Parameterizable {
         return fromString(str, null);
     }
 
-    public static @NotNull Parameters fromString(@NotNull String str, @Pattern("[^ :]+") @Nullable String defKey) {
+    public static @NotNull Parameters fromString(final @NotNull String str, @Pattern("[^ :]+") @Nullable String defKey) {
         if (str.isEmpty()) return Parameters.EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = Maps.caseInsensitive();
@@ -185,7 +185,7 @@ public class Parameters implements Parameterizable {
         }
 
         return params.isEmpty()
-                ? Parameters.EMPTY
+                ? new Parameters(str, Maps.caseInsensitive(1))
                 : new Parameters(str, params);
     }
 

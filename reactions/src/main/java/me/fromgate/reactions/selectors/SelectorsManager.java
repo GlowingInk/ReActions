@@ -37,6 +37,7 @@ public class SelectorsManager {
         Set<Player> players = new HashSet<>();
         for (Selector selector : selectors) {
             String selectorParam = param.getString(selector.getName());
+            if (selectorParam.isEmpty()) continue;
             if (selector.getName().equalsIgnoreCase("loc") && param.contains("radius")) {
                 selectorParam = "loc:" + selectorParam + " " + "radius:" + param.getString("radius", "1");
             }

@@ -24,6 +24,7 @@ package me.fromgate.reactions.externals;
 
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
+import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.message.Msg;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -31,6 +32,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 @Deprecated
 public final class RaVault {
@@ -120,11 +123,14 @@ public final class RaVault {
     /*
      * New method
      */
-    public static boolean hasMoney(String account, String worldName, double amount) {
-        if (!RaVault.isEconomyConnected()) return false;
-        if (worldName.isEmpty()) return economy.has(account, amount);
-        if (Bukkit.getWorld(worldName) == null) return false;
-        return economy.has(account, worldName, amount);
+    @Contract("null, _, _ -> false")
+    public static boolean hasMoney(@Nullable String account, @Nullable String worldName, double amount) {
+        if (!RaVault.isEconomyConnected() || Utils.isStringEmpty(account)) return false;
+        if (Utils.isStringEmpty(worldName)) {
+            return economy.has(account, amount);
+        } else {
+            return economy.has(account, worldName, amount);
+        }
     }
 
 

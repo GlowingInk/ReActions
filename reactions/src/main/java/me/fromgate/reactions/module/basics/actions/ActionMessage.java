@@ -49,23 +49,6 @@ public class ActionMessage implements Action {
         return true;
     }
 
-    @Override
-    public @NotNull String getName() {
-        return "MESSAGE";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    // TODO: Remove it somehow
-    private static String removeParams(String message) {
-        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
-        return message.replaceAll(sb, "");
-
-    }
-
     private static void sendMessage(Player player, Parameters params) {
         Set<Player> players = new HashSet<>();
         if (params.containsAny(ReActions.getSelectors().getAllKeys())) {
@@ -79,7 +62,7 @@ public class ActionMessage implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = params.getStringSafe("text", () -> removeParams(params.origin()));
+        String message = params.getStringSafe("text", () -> hideSelectors(params.origin()));
         if (message.isEmpty()) return;
         String annoymentTime = params.getString("hide");
         for (Player p : players) {
@@ -98,7 +81,7 @@ public class ActionMessage implements Action {
                             params.getInteger("fadeout", 20)
                     );
                     case "actionbar" -> p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Msg.colorize(message)));
-                    default -> Msg.printMessage(p, message);
+                    default -> p.sendMessage(Msg.colorize(message));
                 }
             }
         }
@@ -115,5 +98,21 @@ public class ActionMessage implements Action {
         }
         player.setMetadata(key, new FixedMetadataValue(ReActions.getPlugin(), System.currentTimeMillis() + time));
         return true;
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "MESSAGE";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+
+    // TODO: Remove it somehow
+    private static String hideSelectors(String message) {
+        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
+        return message.replaceAll(sb, "");
     }
 }

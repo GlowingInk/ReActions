@@ -25,8 +25,6 @@ package me.fromgate.reactions.module.basics.flags;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.util.NumberUtils;
-import me.fromgate.reactions.util.NumberUtils.Is;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -47,15 +45,13 @@ public class FlagMoney implements Flag {
 
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+        if (!RaVault.isEconomyConnected()) return false;
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
-        if (!RaVault.isEconomyConnected()) return false;
-        String amountStr = params.getString("amount", "a");
-        if (!NumberUtils.isNumber(amountStr, Is.POSITIVE)) return false;
-        double amount = Double.parseDouble(amountStr);
-        String account = params.getString("account", params.getString("player", player == null ? "" : player.getName()));
-        if (account.isEmpty()) return false;
-        String world = params.getString("world", "");
+        double amount = params.getDouble("amount", () -> params.getDouble(Parameters.ORIGIN, -1));
+        if (amount < 0) return false;
+        String account = params.getString("player", player == null ? "" : player.getName());
+        String world = params.getString("world");
         return RaVault.hasMoney(account, world, amount);
     }
 }
