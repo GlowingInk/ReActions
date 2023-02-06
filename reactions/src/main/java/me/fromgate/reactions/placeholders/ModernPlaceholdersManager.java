@@ -12,8 +12,8 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
     private static final Pattern PRE_ESCAPE = Pattern.compile("(\\\\+)(?!%\\[|[\\\\\\]])"); // "(\\+)(?!%\[|[\\\]])"
 
     @Override
-    public String parsePlaceholders(@NotNull Environment context, @Nullable String text) {
-        if (text == null || text.length() < 4) return text;
+    public @NotNull String parsePlaceholders(@NotNull Environment context, @NotNull String text) {
+        if (text.length() < 4) return text;
         text = preEscape(text);
         String oldText;
         int limit = countLimit;

@@ -40,7 +40,16 @@ public class ParametersUtils {
                         }
                     }
                 }
-                case ' ' -> inside = false;
+                case ' ' -> {
+                    inside = false;
+                    if (' ' == splitCh) {
+                        int nextIndex = index + 1;
+                        if (brCount == 0) {
+                            splits.add(str.substring(lastSplit, index));
+                            lastSplit = nextIndex;
+                        }
+                    }
+                }
                 default -> {
                     if (ch == splitCh) {
                         int nextIndex = index + 1;

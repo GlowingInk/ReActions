@@ -2,7 +2,6 @@ package me.fromgate.reactions.placeholders;
 
 import me.fromgate.reactions.logic.context.Environment;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,8 +11,9 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
     private static final Pattern PLACEHOLDER_NONGREEDY = Pattern.compile("(?<!&\\\\)%(\\S+?)%");
     private static final Pattern PLACEHOLDER_RAW = Pattern.compile("&\\\\(%\\S+%)");
 
-    public String parsePlaceholders(@NotNull Environment context, @Nullable String text) {
-        if (text == null || text.length() < 3) return text;
+    @Override
+    public @NotNull String parsePlaceholders(@NotNull Environment context, @NotNull String text) {
+        if (text.length() < 3) return text;
 
         String oldText;
         int limit = countLimit;
@@ -27,7 +27,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         return PLACEHOLDER_RAW.matcher(text).replaceAll("$1");
     }
 
-    private String parseRecursive(String text, Pattern phPattern, Environment context) {
+    private @NotNull String parseRecursive(@NotNull String text, @NotNull Pattern phPattern, @NotNull Environment context) {
         Matcher phMatcher = phPattern.matcher(text);
         // If found at least one
         if (phMatcher.find()) {
@@ -41,7 +41,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         return text;
     }
 
-    private void processIteration(StringBuilder builder, Matcher matcher, Pattern pattern, Environment context) {
+    private void processIteration(@NotNull StringBuilder builder, @NotNull Matcher matcher, @NotNull Pattern pattern, @NotNull Environment context) {
         matcher.appendReplacement(builder, "");
         builder.append(
                 resolvePlaceholder(

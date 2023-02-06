@@ -49,5 +49,5 @@ public abstract class PlaceholdersManager {
         return preprocess.parse(context, fullText);
     }
 
-    public abstract String parsePlaceholders(@NotNull Environment context, @Nullable String text);
+    public abstract @NotNull String parsePlaceholders(@NotNull Environment context, @NotNull String text);
 }
