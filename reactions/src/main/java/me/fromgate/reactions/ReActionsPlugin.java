@@ -31,6 +31,7 @@ import me.fromgate.reactions.events.listeners.MoveListener;
 import me.fromgate.reactions.events.listeners.RaListener;
 import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RaVault;
+import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.holders.LocationHolder;
 import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
@@ -110,8 +111,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         Commander.init(this);
         TimersManager.init();
         FakeCommander.init(this);
-        Externals.init();
-        RaVault.init();
         LazyDelayManager.load();
         if (!Cfg.playerSelfVarFile) variablesManager.load();
         else variablesManager.loadVars();
@@ -125,9 +124,12 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
         new Metrics(this, 1894);
+        Externals.init();
+        RaVault.init();
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);
+            RaWorldGuard.updateRegionCache();
         });
     }
 

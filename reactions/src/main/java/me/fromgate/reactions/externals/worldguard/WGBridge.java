@@ -20,7 +20,6 @@ import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -110,44 +109,6 @@ public class WGBridge {
         return this.connected;
     }
 
-    public static int canBuildSelection(Player p) {
-        boolean canBuild = false;
-        World world = p.getWorld();
-        LocalPlayer player = RaWorldGuard.getWrapPlayer(p);
-        String id = "__canbuild__";
-        ProtectedRegion region = RaWorldEdit.checkRegionFromSelection(p, id);
-        if (region == null) return 3;
-        ApplicableRegionSet set = RaWorldGuard.getRegionManager(world).getApplicableRegions(region);
-        if (RaWorldGuard.getRegionManager(world).overlapsUnownedRegion(region, player)) {
-            for (ProtectedRegion each : set) {
-                if (each != null) {
-                    if (!each.getOwners().contains(player) && !each.getMembers().contains(player)) {
-                        return 1;
-                    }
-                    if (each.getOwners().contains(player) || each.getMembers().contains(player)) {
-                        canBuild = true;
-                    }
-                }
-            }
-            if (!canBuild) return 1;
-        } else {
-            for (ProtectedRegion each : set) {
-                if (each != null) {
-                    if (each.getOwners().contains(player) || each.getMembers().contains(player)) {
-                        BlockVector3 rgBlockMin = region.getMinimumPoint();
-                        BlockVector3 rgBlockMax = region.getMaximumPoint();
-                        if (each.contains(rgBlockMin.getBlockX(), rgBlockMin.getBlockY(), rgBlockMin.getBlockZ())
-                                && each.contains(rgBlockMax.getBlockX(), rgBlockMax.getBlockY(), rgBlockMax.getBlockZ())) {
-                            canBuild = true;
-                        }
-                    }
-                }
-            }
-            if (!canBuild) return 2;
-        }
-        return 0;
-    }
-
     public void init() {
         if (!isConnected()) return;
         setVersion("WGBridge 0.0.2/WG7x");
@@ -216,41 +177,6 @@ public class WGBridge {
         locs.add(new Location(world, prg.getMaximumPoint().getX(), prg.getMaximumPoint().getY(), prg.getMaximumPoint().getZ()));
         return locs;
     }
-
-    public List<Location> getRegionLocations(String rg, boolean land) {
-        List<Location> locs = new ArrayList<>();
-        if (!connected) return locs;
-        World world = getRegionWorld(rg);
-        String regionName = getRegionName(rg);
-        ProtectedRegion prg = container.get(BukkitAdapter.adapt(world)).getRegion(regionName);
-
-        if (prg != null) {
-            for (int x = prg.getMinimumPoint().getBlockX(); x <= prg.getMaximumPoint().getBlockX(); x++)
-                for (int y = prg.getMinimumPoint().getBlockY(); y <= prg.getMaximumPoint().getBlockY(); y++)
-                    for (int z = prg.getMinimumPoint().getBlockZ(); z <= prg.getMaximumPoint().getBlockZ(); z++) {
-                        Location t = new Location(world, x, y, z);
-                        if (t.getBlock().isEmpty() && t.getBlock().getRelative(BlockFace.UP).isEmpty()) {
-                            if (land && t.getBlock().getRelative(BlockFace.DOWN).isEmpty()) continue;
-                            t.add(0.5, 0, 0.5);
-                            locs.add(t);
-                        }
-                    }
-        }
-        return locs;
-    }
-
-    public boolean isMemberOrOwner(Player p, String region) {
-        if (!connected) return false;
-        LocalPlayer localPlayer = p != null ? worldguard.wrapPlayer(p) : null;
-        if (localPlayer == null) return false;
-        if (region.isEmpty()) return false;
-        World world = getRegionWorld(region);
-        String regionName = getRegionName(region);
-        ProtectedRegion rg = container.get(BukkitAdapter.adapt(world)).getRegion(regionName);
-        if (rg == null) return false;
-        return localPlayer.getAssociation(List.of(rg)) != Association.NON_MEMBER;
-    }
-
 
     public boolean isOwner(Player p, String region) {
         if (!connected) return false;

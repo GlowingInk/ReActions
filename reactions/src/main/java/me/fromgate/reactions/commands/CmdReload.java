@@ -3,6 +3,7 @@ package me.fromgate.reactions.commands;
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.commands.custom.FakeCommander;
+import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.holders.LocationHolder;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.LazyDelayManager;
@@ -23,9 +24,11 @@ public class CmdReload extends Cmd {
             String check = params[1].toLowerCase(Locale.ROOT);
             if (check.contains("g") && params.length > 2) {
                 ReActions.getActivators().loadGroup(params[2].replaceAll("[/\\\\]", File.separator), true);
+                RaWorldGuard.updateRegionCache();
             } else if (check.contains("a")) {
                 ReActions.getActivators().clearActivators();
                 ReActions.getActivators().loadGroup("", false);
+                RaWorldGuard.updateRegionCache();
             }
             if (check.contains("l"))
                 LocationHolder.loadLocs();
@@ -48,6 +51,7 @@ public class CmdReload extends Cmd {
         } else {
             ReActions.getActivators().clearActivators();
             ReActions.getActivators().loadGroup("", false);
+            RaWorldGuard.updateRegionCache();
             LocationHolder.loadLocs();
             ReActions.getPlugin().reloadConfig();
             Cfg.load(ReActions.getPlugin().getConfig());

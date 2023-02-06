@@ -51,7 +51,6 @@ public class RegionLeaveActivator extends Activator implements Locatable {
 
     public static RegionLeaveActivator create(ActivatorLogic base, Parameters param) {
         String region = param.getString("region", param.origin());
-        RaWorldGuard.updateRegionCache();
         return new RegionLeaveActivator(base, region);
     }
 

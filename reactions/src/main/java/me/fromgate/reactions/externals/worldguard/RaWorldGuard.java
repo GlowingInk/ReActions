@@ -65,10 +65,6 @@ public class RaWorldGuard {
         }
     }
 
-    public static boolean containsRegion(Location loc, String region) {
-        return bridge.isLocationInRegion(loc, region);
-    }
-
     public static Set<String> getRegions(Location loc) {
         Set<String> regions = new HashSet<>();
         for (String rg : regionActivators) {
@@ -76,10 +72,6 @@ public class RaWorldGuard {
                 regions.add(WGBridge.getFullRegionName(rg));
         }
         return regions;
-    }
-
-    public static Set<String> getRegions(Player p) {
-        return getRegions(p.getLocation());
     }
 
     public static int countPlayersInRegion(String rg) {
@@ -100,14 +92,6 @@ public class RaWorldGuard {
 
     public static List<Location> getRegionMinMaxLocations(String rg) {
         return bridge.getRegionMinMaxLocations(rg);
-    }
-
-    public static List<Location> getRegionLocations(String rg, boolean land) {
-        return bridge.getRegionLocations(rg, land);
-    }
-
-    public static boolean isMemberOrOwner(Player p, String region) {
-        return bridge.isMemberOrOwner(p, region);
     }
 
     public static boolean isOwner(Player p, String region) {
