@@ -48,6 +48,9 @@ public class FlagFlagSet implements Flag {
             if (flagSplit.length == 1) {
                 continue;
             }
+            if (flagSplit[1].startsWith("{") && flagSplit[1].endsWith("}")) {
+                flagSplit[1] = flagSplit[1].substring(1, flagSplit.length - 1);
+            }
             boolean invert = flagSplit[0].startsWith("!");
             Flag flag = registry.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
             if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.proceed(context, flagSplit[1])) {
