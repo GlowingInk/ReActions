@@ -206,7 +206,7 @@ public class BasicModule implements Module {
                 new FlagLightLevel(),
                 new FlagWalkBlock(),
                 new FlagDirection(),
-                new FlagFlagSet(ReActions.getActivities()),
+                new FlagEither(ReActions.getActivities()),
                 new FlagExecuteStop(),
                 new FlagVar(FlagVar.Type.EXIST, false),
                 new FlagVar(FlagVar.Type.COMPARE, false),

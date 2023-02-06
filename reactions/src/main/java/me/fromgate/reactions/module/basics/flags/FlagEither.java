@@ -31,11 +31,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@Aliased.Names("FLAGS_OR")
-public class FlagFlagSet implements Flag {
+@Aliased.Names({"FLAGS_OR", "FLAG_SET"})
+public class FlagEither implements Flag {
     private final ActivitiesRegistry registry;
 
-    public FlagFlagSet(ActivitiesRegistry registry) {
+    public FlagEither(ActivitiesRegistry registry) {
         this.registry = registry;
     }
 
@@ -62,7 +62,7 @@ public class FlagFlagSet implements Flag {
 
     @Override
     public @NotNull String getName() {
-        return "FLAG_SET";
+        return "EITHER";
     }
 
     @Override
