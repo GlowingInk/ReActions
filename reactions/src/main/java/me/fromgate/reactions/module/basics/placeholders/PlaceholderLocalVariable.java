@@ -13,6 +13,6 @@ public class PlaceholderLocalVariable implements Placeholder.Dynamic {
 
     @Override
     public @NotNull String getName() {
-        return "temp_variable";
+        return "local_variable";
     }
 }

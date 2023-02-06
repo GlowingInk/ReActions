@@ -42,6 +42,15 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
     }
 
     private void processIteration(@NotNull StringBuilder builder, @NotNull Matcher matcher, @NotNull Pattern pattern, @NotNull Environment context) {
+        String result = resolvePlaceholder(
+                context,
+                parseRecursive(
+                        matcher.group(1),
+                        pattern,
+                        context
+                )
+        );
+        if (result == null) return;
         matcher.appendReplacement(builder, "");
         builder.append(
                 resolvePlaceholder(

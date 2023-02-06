@@ -38,16 +38,16 @@ public abstract class PlaceholdersManager {
         }
     }
 
-    public final @Nullable String resolvePlaceholder(@NotNull Environment context, @NotNull String phText) {
+    public abstract @NotNull String parsePlaceholders(@NotNull Environment context, @NotNull String text);
+
+    protected final @Nullable String resolvePlaceholder(@NotNull Environment context, @NotNull String phText) {
         String result = keyed.parse(context, phText);
         return result == null
                 ? dynamic.parse(context, phText)
                 : result;
     }
 
-    public final @NotNull String resolvePreprocess(@NotNull Environment context, @NotNull String fullText) {
+    protected final @NotNull String resolvePreprocess(@NotNull Environment context, @NotNull String fullText) {
         return preprocess.parse(context, fullText);
     }
-
-    public abstract @NotNull String parsePlaceholders(@NotNull Environment context, @NotNull String text);
 }
