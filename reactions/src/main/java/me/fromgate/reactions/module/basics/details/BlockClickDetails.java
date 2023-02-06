@@ -33,8 +33,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class BlockClickDetails extends Details {
 
@@ -56,9 +56,9 @@ public class BlockClickDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
                 CANCEL_EVENT, property(false),
-                "blocklocation", plain(LocationUtils.locationToString(block.getLocation())),
-                "blocktype", plain(block.getType()),
-                "block", plain(block.getType()) // FIXME Why there is a copy?
+                "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
+                "blocktype", simple(block.getType()),
+                "block", simple(block.getType()) // FIXME Why there is a copy?
         );
     }
 

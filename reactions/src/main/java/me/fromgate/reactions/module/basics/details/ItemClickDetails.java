@@ -58,7 +58,7 @@ public class ItemClickDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = new HashMap<>();
         vars.put(CANCEL_EVENT, property(false));
-        vars.put("hand", plain(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
+        vars.put("hand", simple(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
         if (item != null) {
             vars.put("item", lazy(() -> VirtualItem.asString(item)));
             vars.put("item-str", lazy(() -> ItemUtils.toDisplayString(item)));

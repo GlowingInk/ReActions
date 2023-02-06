@@ -45,7 +45,7 @@ public class PickupItemDetails extends Details {
                 CANCEL_EVENT, property(false),
                 PICKUP_DELAY, property(pickupDelay),
                 ITEM, lazy(() -> VirtualItem.asString(item)),
-                "droplocation", plain(LocationUtils.locationToString(dropLoc))
+                "droplocation", simple(LocationUtils.locationToString(dropLoc))
         );
     }
 

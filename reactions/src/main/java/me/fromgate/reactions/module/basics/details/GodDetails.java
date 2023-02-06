@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-10-27.
@@ -33,7 +33,7 @@ public class GodDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
                 CANCEL_EVENT, property(false),
-                "god", plain(god)
+                "god", simple(god)
         );
     }
 

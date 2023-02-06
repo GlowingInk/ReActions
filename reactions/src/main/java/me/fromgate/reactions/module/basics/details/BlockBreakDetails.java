@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -39,9 +39,9 @@ public class BlockBreakDetails extends Details {
         return Map.of(
                 CANCEL_EVENT, property(false),
                 DO_DROP, property(dropItems),
-                "blocklocation", plain(LocationUtils.locationToString(block.getLocation())),
-                "blocktype", plain(block.getType()),
-                "block", plain(block.getType()) // FIXME Why there is a copy?
+                "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
+                "blocktype", simple(block.getType()),
+                "block", simple(block.getType()) // FIXME Why there is a copy?
         );
     }
 

@@ -15,7 +15,7 @@ public class StoredAction implements Parameterizable {
         this.placeholders = params.contains("%");
     }
 
-    public @NotNull Action getAction() {
+    public @NotNull Action getActivity() {
         return action;
     }
 

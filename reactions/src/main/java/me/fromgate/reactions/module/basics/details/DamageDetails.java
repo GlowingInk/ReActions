@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -43,9 +43,9 @@ public class DamageDetails extends Details {
         Map<String, Variable> vars = new HashMap<>();
         vars.put(CANCEL_EVENT, property(false));
         vars.put(DAMAGE, property(damage));
-        vars.put("final_damage", plain(finalDamage));
-        vars.put("cause", plain(cause));
-        vars.put("source", plain(source));
+        vars.put("final_damage", simple(finalDamage));
+        vars.put("cause", simple(cause));
+        vars.put("source", simple(source));
         return vars;
     }
 

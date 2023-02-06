@@ -17,7 +17,7 @@ public class StoredFlag implements Parameterizable {
         this.placeholders = params.contains("%");
     }
 
-    public @NotNull Flag getFlag() {
+    public @NotNull Flag getActivity() {
         return flag;
     }
 

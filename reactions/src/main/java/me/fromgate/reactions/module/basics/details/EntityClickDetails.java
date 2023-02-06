@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -35,8 +35,8 @@ public class EntityClickDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
                 CANCEL_EVENT, property(false),
-                "entitytype", plain(entity.getType()),
-                "entity_name", plain(EntityUtils.getEntityDisplayName(entity))
+                "entitytype", simple(entity.getType()),
+                "entity_name", simple(EntityUtils.getEntityDisplayName(entity))
         );
     }
 

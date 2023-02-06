@@ -28,7 +28,7 @@ public class SneakDetails extends Details {
 
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
-        return Map.of("sneak", Variable.plain(sneaking));
+        return Map.of("sneak", Variable.simple(sneaking));
     }
 
     public boolean isSneaking() {

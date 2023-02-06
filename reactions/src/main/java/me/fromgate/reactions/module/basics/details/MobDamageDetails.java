@@ -35,8 +35,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class MobDamageDetails extends Details {
     public static final String DAMAGE = "damage";
@@ -65,12 +65,12 @@ public class MobDamageDetails extends Details {
         return Map.of(
                 CANCEL_EVENT, property(false),
                 DAMAGE, property(damage),
-                "final_damage", plain(finalDamage),
-                "moblocation", plain(LocationUtils.locationToString(entity.getLocation())),
-                "mobdamager", plain(player == null ? "" : player.getName()),
-                "mobtype", plain(entity.getType()),
-                "mobname", plain(EntityUtils.getEntityDisplayName(entity)),
-                "cause", plain(cause)
+                "final_damage", simple(finalDamage),
+                "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
+                "mobdamager", simple(player == null ? "" : player.getName()),
+                "mobtype", simple(entity.getType()),
+                "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
+                "cause", simple(cause)
         );
     }
 

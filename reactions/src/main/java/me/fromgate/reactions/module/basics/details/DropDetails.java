@@ -42,7 +42,7 @@ public class DropDetails extends Details {
                 CANCEL_EVENT, property(false),
                 PICKUP_DELAY, property(pickupDelay),
                 ITEM, lazy(() -> VirtualItem.asString(item)),
-                "droplocation", plain(LocationUtils.locationToString(player.getLocation()))
+                "droplocation", simple(LocationUtils.locationToString(player.getLocation()))
         );
     }
 

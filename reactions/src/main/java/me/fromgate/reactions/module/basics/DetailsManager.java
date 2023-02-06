@@ -176,7 +176,7 @@ public final class DetailsManager {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getHand() != EquipmentSlot.HAND) return false;
         Block block = event.getClickedBlock();
         if (block == null || !Tag.BUTTONS.isTagged(block.getType())) return false;
-        Switch button = (Switch) event.getClickedBlock().getBlockData();
+        Switch button = (Switch) block.getBlockData();
         if (button.isPowered()) return false;
         ButtonDetails be = new ButtonDetails(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(be);

@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class WeSelectionRegionDetails extends Details {
     private final WeSelection selection;
@@ -33,11 +33,11 @@ public class WeSelectionRegionDetails extends Details {
         Map<String, Variable> vars = new HashMap<>();
         vars.put(CANCEL_EVENT, property(false));
         if (selection.isValid()) {
-            vars.put("seltype", plain(selection.selType()));
+            vars.put("seltype", simple(selection.selType()));
             World world = selection.world();
-            vars.put("world", plain((world != null) ? world.getName() : ""));
-            vars.put("selblocks", plain(selection.area()));
-            vars.put("region", plain(selection.region()));
+            vars.put("world", simple((world != null) ? world.getName() : ""));
+            vars.put("selblocks", simple(selection.area()));
+            vars.put("region", simple(selection.region()));
         }
         return vars;
     }

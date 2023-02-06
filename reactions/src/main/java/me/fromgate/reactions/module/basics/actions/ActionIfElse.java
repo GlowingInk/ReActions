@@ -63,7 +63,7 @@ public class ActionIfElse implements Action {
         if (param.isEmpty() || !param.containsAny("activator", "exec")) return false;
         param = param.with("player", p == null ? "~null" : p.getName());
         Map<String, Variable> vars = new HashMap<>();
-        vars.put("condition", Variable.plain(condition));
+        vars.put("condition", Variable.simple(condition));
         DetailsManager.triggerExec(p, param, new Variables(vars));
         return true;
     }
@@ -128,7 +128,7 @@ public class ActionIfElse implements Action {
             actions.add(new StoredAction(action, param));
         }
         if (!actions.isEmpty())
-            actions.forEach(action -> action.getAction().proceed(context, action.getParameters()));
+            actions.forEach(action -> action.getActivity().proceed(context, action.getParameters()));
         return true;
     }
 

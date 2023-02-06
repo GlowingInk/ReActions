@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class DeathDetails extends Details {
 
@@ -56,10 +56,10 @@ public class DeathDetails extends Details {
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
         Map<String, Variable> vars = new HashMap<>();
-        vars.put("cause", plain(cause.name()));
+        vars.put("cause", simple(cause.name()));
         if (killer != null) {
-            vars.put("killer-type", plain(killer.getType()));
-            vars.put("killer-name", plain(EntityUtils.getEntityDisplayName(killer)));
+            vars.put("killer-type", simple(killer.getType()));
+            vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
         }
         return vars;
     }

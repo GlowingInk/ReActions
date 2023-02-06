@@ -106,9 +106,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     public void intoConfiguration(@NotNull ConfigurationSection cfg) {
         cfg.set("world", format(worldName));
-        cfg.set("x", format(x));
-        cfg.set("y", format(y));
-        cfg.set("z", format(z));
+        cfg.set("x", formatNum(x));
+        cfg.set("y", formatNum(y));
+        cfg.set("z", formatNum(z));
     }
 
     public @Nullable String worldName() {
@@ -268,5 +268,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     private static @NotNull String format(@Nullable Object obj) {
         return obj == null ? "*" : obj.toString();
+    }
+
+    private static @NotNull Object formatNum(@Nullable Integer num) {
+        return num == null ? "*" : num;
     }
 }

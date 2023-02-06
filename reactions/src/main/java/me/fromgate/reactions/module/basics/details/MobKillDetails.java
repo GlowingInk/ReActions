@@ -34,8 +34,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 public class MobKillDetails extends Details {
 
@@ -55,10 +55,10 @@ public class MobKillDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
                 CANCEL_EVENT, property(false),
-                "moblocation", plain(LocationUtils.locationToString(entity.getLocation())),
-                "mobkiller", plain(player == null ? "" : player.getName()),
-                "mobtype", plain(entity.getType()),
-                "mobname", plain(EntityUtils.getEntityDisplayName(entity))
+                "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
+                "mobkiller", simple(player == null ? "" : player.getName()),
+                "mobtype", simple(entity.getType()),
+                "mobname", simple(EntityUtils.getEntityDisplayName(entity))
         );
     }
 

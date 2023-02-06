@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.plain;
 import static me.fromgate.reactions.logic.context.Variable.property;
+import static me.fromgate.reactions.logic.context.Variable.simple;
 
 /**
  * Created by MaxDikiy on 17/10/2017.
@@ -39,8 +39,8 @@ public class WeChangeDetails extends Details {
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
                 CANCEL_EVENT, property(false),
-                "blocktype", plain(blockType),
-                "blocklocation", plain(LocationUtils.locationToString(location))
+                "blocktype", simple(blockType),
+                "blocklocation", simple(LocationUtils.locationToString(location))
         );
     }
 

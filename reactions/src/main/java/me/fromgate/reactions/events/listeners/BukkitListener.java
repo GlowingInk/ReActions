@@ -356,9 +356,9 @@ public class BukkitListener implements Listener {
         triggerItemClick(event);
         triggerItemWear(event.getPlayer());
         if (
-                triggerBlockClick(event) ||
-                triggerButton(event) ||
                 triggerPlate(event) ||
+                (triggerBlockClick(event) |
+                triggerButton(event)) ||
                 triggerLever(event) ||
                 triggerDoor(event)
         ) {
