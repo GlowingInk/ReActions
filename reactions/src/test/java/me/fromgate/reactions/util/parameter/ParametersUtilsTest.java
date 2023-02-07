@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static me.fromgate.reactions.util.parameter.ParametersUtils.escapeParameters;
+import static me.fromgate.reactions.util.parameter.Parameters.escapeParameters;
 import static me.fromgate.reactions.util.parameter.ParametersUtils.splitSafely;
 import static org.testng.Assert.assertEquals;
 

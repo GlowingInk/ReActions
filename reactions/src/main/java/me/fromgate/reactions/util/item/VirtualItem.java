@@ -155,14 +155,14 @@ public final class VirtualItem implements Parameterizable {
     }
 
     @Contract(pure = true)
-    public @NotNull VirtualItem affect(@NotNull VirtualItem item) {
-        Map<String, MetaAspect.Instance> aspectsMap = item.aspects.stream().collect(Collectors.toMap(MetaAspect.Instance::getName, a -> a));
-        aspects.forEach(a -> aspectsMap.put(a.getName(), a));
+    public @NotNull VirtualItem affect(@NotNull VirtualItem other) {
+        var aspectsMap = other.aspects.stream().collect(Collectors.toMap(MetaAspect.Instance::getName, a -> a));
+        this.aspects.forEach(a -> aspectsMap.put(a.getName(), a));
         return new VirtualItem(
-                item.getType(),
-                item.getAmount(),
+                type == null ? other.getType() : type,
+                amount < 1 ? other.getAmount() : amount,
                 new ArrayList<>(aspectsMap.values()),
-                item.asParameters().with(asParameters())
+                other.asParameters().with(asParameters())
         );
     }
 

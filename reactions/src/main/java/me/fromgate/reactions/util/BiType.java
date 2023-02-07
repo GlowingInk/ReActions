@@ -40,15 +40,15 @@ public class BiType<A, B> {
     }
 
     public @NotNull A a() {
-        return a == null ? (a = requireNonNull(converter).convertB(b)) : a;
+        return a == null ? (a = requireNonNull(converter).convertBtoA(b)) : a;
     }
 
     public @NotNull B b() {
-        return b == null ? (b = requireNonNull(converter).convertA(a)) : b;
+        return b == null ? (b = requireNonNull(converter).convertAtoB(a)) : b;
     }
 
     public interface Converter<A, B> {
-        @NotNull B convertA(@NotNull A a);
-        @NotNull A convertB(@NotNull B b);
+        @NotNull B convertAtoB(@NotNull A a);
+        @NotNull A convertBtoA(@NotNull B b);
     }
 }

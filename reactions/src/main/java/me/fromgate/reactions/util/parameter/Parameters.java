@@ -9,7 +9,6 @@ import me.fromgate.reactions.util.function.SafeSupplier;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,10 +21,12 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
     public static final String ORIGIN = "origin:string";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
+    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
     private final String origin;
     private final Map<String, String> params;
@@ -83,7 +84,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return Parameters.EMPTY;
         Map<String, String> params = Maps.caseInsensitive(map);
-        String str = ParametersUtils.formatMap(map);
+        String str = formatMap(map);
         return new Parameters(str, str, params);
     }
 
@@ -91,7 +92,7 @@ public class Parameters implements Parameterizable {
         return fromString(str, null);
     }
 
-    public static @NotNull Parameters fromString(final @NotNull String str, @Pattern("[^ :]+") @Nullable String defKey) {
+    public static @NotNull Parameters fromString(final @NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return Parameters.EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = Maps.caseInsensitive();
@@ -196,14 +197,61 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
         Map<String, String> params = Maps.caseInsensitive(2);
         params.put(key, value);
-        String escaped = ParametersUtils.escapeParameters(value);
+        String escaped = escapeParameters(value);
         String origin;
-        if (ParametersUtils.requiresBrackets(escaped, value)) {
+        if (requiresBrackets(escaped, value)) {
             origin = key + ":{" + escaped + "}";
         } else {
             origin = key + ":" + escaped;
         }
         return new Parameters(origin, origin, params);
+    }
+
+    public static @NotNull String formatMap(@NotNull Map<String, String> map) {
+        StringBuilder bld = new StringBuilder();
+        map.forEach((key, value) -> {
+            if (key.equals(ORIGIN)) return;
+            bld.append(key).append(':');
+            String escaped = escapeParameters(value);
+            if (requiresBrackets(escaped, value)) {
+                bld.append('{').append(escaped).append('}');
+            } else {
+                bld.append(value);
+            }
+            bld.append(' ');
+        });
+        return Utils.cutBuilder(bld, 1);
+    }
+
+    public static boolean requiresBrackets(@NotNull String escaped, @NotNull String value) {
+        return value.length() >= 20 || escaped.length() != value.length() || value.isEmpty() ||
+                value.indexOf(' ') != -1 || value.indexOf(':') != -1 || value.charAt(0) == '{';
+    }
+
+    public static @NotNull String escapeParameters(@NotNull String str) {
+        if (str.isEmpty()) return str;
+        int brackets = 0;
+        boolean escaped = false;
+        for (int i = 0; i < str.length(); i++) {
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            char ch = str.charAt(i);
+            if (ch == '\\') {
+                escaped = true;
+            } else if (ch == '{') {
+                ++brackets;
+            } else if (ch == '}' && --brackets < 0) {
+                break;
+            }
+        }
+        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || str.charAt(str.length() - 2) != '\\')) {
+            str += '\\';
+        }
+        return brackets != 0
+                ? UNESCAPED.matcher(str).replaceAll("\\\\$0")
+                : str;
     }
 
     public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter) {
@@ -444,7 +492,7 @@ public class Parameters implements Parameterizable {
 
     public @NotNull String originFormatted() {
         return formatted == null
-                ? (formatted = ParametersUtils.formatMap(params))
+                ? (formatted = formatMap(params))
                 : formatted;
     }
 
@@ -475,11 +523,23 @@ public class Parameters implements Parameterizable {
     }
 
     public boolean isEmpty() {
-        return params.size() == 0;
+        return size() == 0;
     }
 
     public int size() {
         return params.size() - 1;
+    }
+
+    @Override
+    public int hashCode() {
+        if (this.hash == null) {
+            int hash = 1; // To skip (un)boxing on calculation
+            for (String key : keySetStrict()) {
+                hash = 31 * hash + key.toLowerCase(Locale.ROOT).hashCode() + getString(key).hashCode();
+            }
+            this.hash = hash;
+        }
+        return this.hash;
     }
 
     @Override
@@ -488,25 +548,13 @@ public class Parameters implements Parameterizable {
         if (obj instanceof Parameters other) {
             if (other.size() != size()) return false;
             for (String key : keySetStrict()) {
-                if (!Objects.equals(getString(key, null), other.getString(key, null))) {
+                if (!Objects.equals(getString(key), other.getString(key, null))) {
                     return false;
                 }
             }
             return true;
         }
         return false;
-    }
-
-    @Override
-    public int hashCode() {
-        if (this.hash == null) {
-            int hash = 1; // To skip (un)boxing on calculation
-            for (String key : keySetStrict()) {
-                hash = 31 * hash + key.hashCode() + getString(key).hashCode();
-            }
-            this.hash = hash;
-        }
-        return this.hash;
     }
 
     @Override
