@@ -49,7 +49,7 @@ public class Variables {
         return get(key).get();
     }
 
-    public @Nullable String getUnsafeString(@NotNull String key) {
+    public @Nullable String getStringUnsafe(@NotNull String key) {
         Variable vari = getUnsafe(key);
         return vari == null ? null : vari.get();
     }

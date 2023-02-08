@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.actions;
 
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.util.message.Msg;
+import me.fromgate.reactions.module.basics.BasicModule;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,7 @@ public class ActionBroadcast implements Action {
 
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Bukkit.broadcastMessage(Msg.colorize(params));
+        Bukkit.broadcast(BasicModule.getMineDown(params).toComponent());
         return true;
     }
 

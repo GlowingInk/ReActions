@@ -16,8 +16,8 @@ public enum HandType {
         http://yaml.org/type/bool.html
          */
         return switch (clickStr.toUpperCase(Locale.ROOT)) {
-            case "MAIN", "LEFT" -> HandType.MAIN;
-            case "OFF", "FALSE", "SECOND", "RIGHT" -> HandType.SECOND;
+            case "MAIN" -> HandType.MAIN;
+            case "OFF", "FALSE", "SECOND" -> HandType.SECOND;
             default -> HandType.ANY;
         };
     }
