@@ -29,7 +29,7 @@ import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-@Aliased.Names("RUN")
+@Aliased.Names({"RUN", "EXEC"})
 public class ActionExecute implements Action {
 
     @Override

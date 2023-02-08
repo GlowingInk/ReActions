@@ -51,8 +51,8 @@ public enum TriBoolean {
     public static @NotNull TriBoolean of(@Nullable String str) {
         if (str == null) return ANY;
         return switch (str.toUpperCase(Locale.ROOT)) {
-            case "TRUE", "ON", "ENABLE", "ENABLED" -> TRUE;
-            case "FALSE", "OFF", "DISABLE", "DISABLED" -> FALSE;
+            case "TRUE", "ON", "YES", "ALLOW", "ALLOWED", "ENABLE", "ENABLED" -> TRUE;
+            case "FALSE", "OFF", "NO", "DENY", "DENIED", "DISABLE", "DISABLED" -> FALSE;
             default -> ANY;
         };
     }

@@ -204,7 +204,6 @@ public class ActivatorsManager {
         }
     }
 
-    @Deprecated
     public void activate(@NotNull Details details, @NotNull String id) {
         details.initialize();
         activatorsNames.get(id).executeActivator(details);

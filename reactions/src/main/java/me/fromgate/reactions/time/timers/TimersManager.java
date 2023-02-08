@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TimersManager {
+public class TimersManager { // TODO Rework from scratch; maybe rework with WaitingManager
 	/*
 		Command example:
 		/react add timer <name> activator:<exec> time:<HH:MM,HH:MM|0_0/5_*_*_*_?> [player:<player>] [world:<world>]
