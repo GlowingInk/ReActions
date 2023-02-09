@@ -44,7 +44,7 @@ import me.fromgate.reactions.placeholders.ModernPlaceholdersManager;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;
 import me.fromgate.reactions.save.SavingManager;
 import me.fromgate.reactions.selectors.SelectorsManager;
-import me.fromgate.reactions.time.LazyDelayManager;
+import me.fromgate.reactions.time.CooldownManager;
 import me.fromgate.reactions.time.timers.TimersManager;
 import me.fromgate.reactions.time.wait.WaitingManager;
 import me.fromgate.reactions.util.message.Messenger;
@@ -111,7 +111,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         Commander.init(this);
         TimersManager.init();
         FakeCommander.init(this);
-        LazyDelayManager.load();
+        CooldownManager.load();
         if (!Cfg.playerSelfVarFile) variablesManager.load();
         else variablesManager.loadVars();
         LocationHolder.loadLocs();

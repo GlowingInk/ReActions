@@ -5,7 +5,7 @@ import me.fromgate.reactions.commands.custom.FakeCommander;
 import me.fromgate.reactions.holders.LocationHolder;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.menu.InventoryMenu;
-import me.fromgate.reactions.time.LazyDelayManager;
+import me.fromgate.reactions.time.CooldownManager;
 import me.fromgate.reactions.time.timers.TimersManager;
 import me.fromgate.reactions.util.NumberUtils;
 import me.fromgate.reactions.util.NumberUtils.Is;
@@ -47,7 +47,7 @@ public class CmdList extends Cmd {
                 case "type" -> printActType(sender, mask, page, lpp);
                 case "group" -> printActGroup(sender, mask, page, lpp);
                 case "timer", "timers" -> TimersManager.listTimers(sender, page);
-                case "delay", "delays" -> LazyDelayManager.printDelayList(sender, page, lpp);
+                case "delay", "delays" -> CooldownManager.printDelayList(sender, page, lpp);
                 case "loc", "location" -> LocationHolder.printLocList(sender, page, lpp);
                 case "var", "variables", "variable" -> ReActions.getVariables().printList(sender, page, mask);
                 case "menu", "menus" -> InventoryMenu.printMenuList(sender, page, mask);
