@@ -66,7 +66,7 @@ public class EnchantmentsAspect implements MetaAspect {
                 }
                 builder.append(",");
             }
-            return new EnchantmentsInst(enchants, cutBuilder(builder, 2));
+            return new EnchantmentsInst(enchants, cutBuilder(builder, 1));
         }
         return null;
     }
