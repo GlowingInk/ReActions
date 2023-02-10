@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
-import static me.fromgate.reactions.util.Utils.cutBuilder;
+import static me.fromgate.reactions.util.Utils.cutLast;
 
 @Aliased.Names({"enchants", "stored-enchantments", "stored-enchants"})
 public class EnchantmentsAspect implements MetaAspect {
@@ -66,7 +66,7 @@ public class EnchantmentsAspect implements MetaAspect {
                 }
                 builder.append(",");
             }
-            return new EnchantmentsInst(enchants, cutBuilder(builder, 1));
+            return new EnchantmentsInst(enchants, cutLast(builder, 1));
         }
         return null;
     }

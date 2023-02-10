@@ -59,7 +59,7 @@ public class BookAspect implements MetaAspect {
                 for (String page : pages) {
                     builder.append(page.replace("\n", "&z")).append("\\n");
                 }
-                pagesStr = Utils.cutBuilder(builder, 2);
+                pagesStr = Utils.cutLast(builder, 2);
             }
         }
 

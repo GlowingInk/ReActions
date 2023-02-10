@@ -102,4 +102,30 @@ public class ParametersTest {
     public void keyedListTest(String input, List<String> expected) {
         assertEquals(fromString(input).keyedList("key"), expected);
     }
+
+    @DataProvider
+    public static Object[][] escapeParametersData() {
+        return new Object[][] {
+                {"basic text", "basic text"},
+                {"", ""},
+                {"\\", "\\\\"},
+                {"}", "\\}"},
+                {"already\\{escaped", "already\\{escaped"},
+                {"on\\ly \\the last\\", "on\\ly \\the last\\\\"},
+                {"{equal amount}", "{equal amount}"},
+                {"{unequal amount}}", "\\{unequal amount\\}\\}"},
+                {"{{unequal amount}", "\\{\\{unequal amount\\}"},
+                {"{unequal escaped\\}}", "{unequal escaped\\}}"},
+                {"{unequal with last}}\\", "\\{unequal with last\\}\\}\\\\"},
+                {"}wrong order{", "\\}wrong order\\{"}
+        };
+    }
+
+    @Test(dataProvider = "escapeParametersData")
+    public void escapeParametersTest(String input, String expected) {
+        String result = escapeParameters(input);
+        assertEquals(result, expected);
+        assertEquals(escapeParameters(result), expected); // Escaping the escaped should not work
+    }
+
 }

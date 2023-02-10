@@ -50,7 +50,7 @@ public class BannerAspect implements MetaAspect {
                 for (Pattern pattern : patterns) {
                     builder.append(pattern.getPattern()).append(':').append(pattern.getColor()).append(",");
                 }
-                return new PatternInst(Utils.cutBuilder(builder, 1), patterns);
+                return new PatternInst(Utils.cutLast(builder, 1), patterns);
             }
         }
         return null;

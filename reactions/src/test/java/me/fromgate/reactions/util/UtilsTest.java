@@ -113,7 +113,7 @@ public class UtilsTest {
     @Test(dataProvider = "cutBuilderData")
     public void cutBuilderTest(String input, int offset, String expected) {
         assertEquals(
-                cutBuilder(new StringBuilder(input), offset),
+                cutLast(new StringBuilder(input), offset),
                 expected
         );
     }

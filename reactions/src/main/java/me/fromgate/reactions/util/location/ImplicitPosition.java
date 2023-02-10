@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class ImplicitPosition implements BlockPosition, Parameterizable {
-    public static final ImplicitPosition EMPTY = new ImplicitPosition(null, null, null, null);
-    private static final Pattern LOCATION_PATTERN = Pattern.compile("(\\w+|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*)(?:(?:,-?\\d+(?:\\.\\d+)?){2})?");
+    public static final ImplicitPosition EVERYWHERE = new ImplicitPosition(null, null, null, null);
+    private static final Pattern POS_PATTERN = Pattern.compile("(\\w+|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*)(?:(?:,-?\\d+(?:\\.\\d+)?){2})?");
 
     private final String worldName;
     private final Integer x;
@@ -48,12 +48,14 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     public static @NotNull ImplicitPosition of(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
-        return (worldName == null && x == null && y == null && z == null) ? EMPTY : new ImplicitPosition(worldName, x, y, z);
+        return (worldName == null && x == null && y == null && z == null)
+                ? EVERYWHERE
+                : new ImplicitPosition(worldName, x, y, z);
     }
 
     public static @NotNull ImplicitPosition of(@Nullable String loc) {
-        if (Utils.isStringEmpty(loc)) return EMPTY;
-        Matcher matcher = LOCATION_PATTERN.matcher(loc);
+        if (Utils.isStringEmpty(loc)) return EVERYWHERE;
+        Matcher matcher = POS_PATTERN.matcher(loc);
         if (matcher.matches()) {
             return new ImplicitPosition(
                     matcher.group(1).equals("*") ? null : matcher.group(1),
@@ -62,12 +64,12 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
                     matcher.group(4).equals("*") ? null : (int) NumberUtils.asDouble(matcher.group(4), 0)
             );
         } else {
-            return EMPTY;
+            return EVERYWHERE;
         }
     }
 
     public static @NotNull ImplicitPosition of(@Nullable Location loc) {
-        if (loc == null) return EMPTY;
+        if (loc == null) return EVERYWHERE;
         return new ImplicitPosition(
                 loc.getWorld().getName(),
                 loc.blockX(),
@@ -94,6 +96,13 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         );
     }
 
+    public void intoConfiguration(@NotNull ConfigurationSection cfg) {
+        cfg.set("world", format(worldName));
+        cfg.set("x", formatNum(x));
+        cfg.set("y", formatNum(y));
+        cfg.set("z", formatNum(z));
+    }
+
     @Override
     public @NotNull Parameters asParameters() {
         return Parameters.fromMap(Map.of(
@@ -102,13 +111,6 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
                 "y", format(y),
                 "z", format(z)
         ));
-    }
-
-    public void intoConfiguration(@NotNull ConfigurationSection cfg) {
-        cfg.set("world", format(worldName));
-        cfg.set("x", formatNum(x));
-        cfg.set("y", formatNum(y));
-        cfg.set("z", formatNum(z));
     }
 
     public @Nullable String worldName() {
@@ -224,7 +226,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     @Override
     @Contract(pure = true)
     public @NotNull Location toLocation(@NotNull World world) {
-        return toCenter().toLocation(world);
+        return toCenter().offset(0, -0.5, 0).toLocation(world);
     }
 
     public boolean isValidAt(@NotNull Location loc) {

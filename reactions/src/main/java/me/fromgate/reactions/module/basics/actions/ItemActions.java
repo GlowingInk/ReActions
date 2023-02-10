@@ -396,7 +396,7 @@ public class ItemActions implements Action {
         for (ItemStack item : items) {
             builder.append(ItemUtils.toDisplayString(item)).append(", ");
         }
-        return Utils.cutBuilder(builder, 2);
+        return Utils.cutLast(builder, 2);
     }
 
     public enum Type {

@@ -220,7 +220,7 @@ public class Parameters implements Parameterizable {
             }
             bld.append(' ');
         });
-        return Utils.cutBuilder(bld, 1);
+        return Utils.cutLast(bld, 1);
     }
 
     public static boolean requiresBrackets(@NotNull String escaped, @NotNull String value) {

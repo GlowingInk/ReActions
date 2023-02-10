@@ -11,7 +11,6 @@ public class Cfg {
 
     public static boolean debugMode = false;
     public static boolean saveEmptySections = false;
-    public static String actionMsg = "tp,grpadd,grprmv,townset,townkick,itemrmv,invitemrmv,itemgive,moneypay,moneygive"; //отображать сообщения о выполнении действий
     public static String language = "english";
     public static boolean languageSave = false;
     public static boolean centerTpCoords = true;
@@ -46,7 +45,6 @@ public class Cfg {
         config.set("reactions.activators.god.enable", godActivatorEnable);
         config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
-        config.set("reactions.show-messages-for-actions", actionMsg);
         config.set("reactions.center-player-teleport", centerTpCoords);
         config.set("reactions.region-recheck-delay", worldguardRecheck);
         config.set("reactions.item-hold-recheck-delay", itemHoldRecheck);
@@ -80,7 +78,6 @@ public class Cfg {
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
         saveEmptySections = config.getBoolean("reactions.save-empty-actions-and-flags-sections", false);
         centerTpCoords = config.getBoolean("reactions.center-player-teleport", true);
-        actionMsg = config.getString("reactions.show-messages-for-actions", "tp,grpadd,grprmv,townset,townkick,itemrmv,itemgive,moneypay,moneygive");
         worldguardRecheck = config.getInt("reactions.region-recheck-delay", 2);
         itemHoldRecheck = config.getInt("reactions.item-hold-recheck-delay", 2);
         itemWearRecheck = config.getInt("reactions.item-wear-recheck-delay", 2);

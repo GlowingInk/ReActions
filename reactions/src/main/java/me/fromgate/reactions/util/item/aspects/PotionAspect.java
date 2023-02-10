@@ -134,7 +134,7 @@ public class PotionAspect implements MetaAspect {
                             .append(':').append(effect.getAmplifier())
                             .append(':').append(effect.getDuration()).append("t; ");
                 }
-                this.effectsStr = Utils.cutBuilder(builder, 2);
+                this.effectsStr = Utils.cutLast(builder, 2);
             }
         }
 

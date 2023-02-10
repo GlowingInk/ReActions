@@ -14,9 +14,13 @@ public final class NumberUtils {
     private static final double TRIM_VALUE = 1_0000;
 
     public static final Pattern INT = Pattern.compile("-?\\d+");
-    public static final Pattern FLOAT = Pattern.compile("-?\\d+(\\.\\d+)?");
+    public static final Pattern FLOAT = Pattern.compile("-?\\d+(?:\\.\\d+([eE][+\\-]\\d+)?)?");
 
     private NumberUtils() {}
+
+    public static boolean equals(double a, double b, double error) {
+        return Math.abs(a - b) < error;
+    }
 
     public static double asDouble(@Nullable String str) {
         return asDouble(str, 0);

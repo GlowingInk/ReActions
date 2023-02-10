@@ -136,7 +136,7 @@ public class FireworkAspect implements MetaAspect {
                     }
                     builder.append(",");
                 }
-                effectsStr = Utils.cutBuilder(builder, 2);
+                effectsStr = Utils.cutLast(builder, 2);
             }
         }
 

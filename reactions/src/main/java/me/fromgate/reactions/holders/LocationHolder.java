@@ -25,10 +25,11 @@ package me.fromgate.reactions.holders;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
-import me.fromgate.reactions.util.location.TpLocation;
+import me.fromgate.reactions.util.location.RealPosition;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -40,7 +41,7 @@ import java.util.Map;
 
 public final class LocationHolder {
     private static final Map<String, Location> locs = new HashMap<>();
-    private static final Map<String, TpLocation> tports = new HashMap<>();
+    private static final Map<String, RealPosition> tports = new HashMap<>();
 
     private LocationHolder() {}
 
@@ -58,14 +59,8 @@ public final class LocationHolder {
         if (tports.size() > 0) {
             File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "locations.yml");
             YamlConfiguration lcs = new YamlConfiguration();
-            for (String key : tports.keySet()) {
-                TpLocation tploc = tports.get(key);
-                lcs.set(key + ".world", tploc.getWorld());
-                lcs.set(key + ".x", tploc.getX());
-                lcs.set(key + ".y", tploc.getY());
-                lcs.set(key + ".z", tploc.getZ());
-                lcs.set(key + ".yaw", tploc.getYaw());
-                lcs.set(key + ".pitch", tploc.getPitch());
+            for (var entry : tports.entrySet()) {
+                entry.getValue().intoConfiguration(lcs.createSection(entry.getKey()));
             }
             FileUtils.saveCfg(lcs, f, "Failed to save locations to configuration file");
         }
@@ -76,22 +71,15 @@ public final class LocationHolder {
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "locations.yml");
         YamlConfiguration lcs = new YamlConfiguration();
         if (FileUtils.loadCfg(lcs, f, "Failed to load locations configuration file"))
-            for (String key : lcs.getKeys(false))
-                tports.put(key, new TpLocation(lcs.getString(key + ".world"),
-                        lcs.getDouble(key + ".x"),
-                        lcs.getDouble(key + ".y"),
-                        lcs.getDouble(key + ".z"),
-                        (float) lcs.getDouble(key + ".yaw"),
-                        (float) lcs.getDouble(key + ".pitch")));
-    }
-
-    @SuppressWarnings("unused")
-    public static boolean containsTpLoc(String locstr) {
-        return tports.containsKey(locstr);
+            for (String key : lcs.getKeys(false)) {
+                ConfigurationSection locCfg = lcs.getConfigurationSection(key);
+                if (locCfg == null) continue;
+                tports.put(key, RealPosition.fromConfiguration(locCfg));
+            }
     }
 
     public static Location getTpLoc(String locstr) {
-        if (tports.containsKey(locstr)) return tports.get(locstr).getLocation();
+        if (tports.containsKey(locstr)) return tports.get(locstr).toLocation();
         return null;
     }
 
@@ -101,7 +89,7 @@ public final class LocationHolder {
 
     public static boolean addTpLoc(String id, Location loc) {
         if (Utils.isStringEmpty(id)) return false;
-        tports.put(id, new TpLocation(loc));
+        tports.put(id, RealPosition.of(loc));
         return true;
     }
 

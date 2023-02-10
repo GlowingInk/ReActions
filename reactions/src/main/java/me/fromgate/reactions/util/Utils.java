@@ -260,9 +260,15 @@ public final class Utils {
         }
     }
 
-    public static @NotNull String cutBuilder(@NotNull StringBuilder builder, int offset) {
+    public static @NotNull String cutLast(@NotNull StringBuilder builder, int offset) {
         return offset < builder.length()
                 ? builder.substring(0, builder.length() - offset)
+                : "";
+    }
+
+    public static @NotNull String cutLast(@NotNull String str, int offset) {
+        return offset < str.length()
+                ? str.substring(0, str.length() - offset)
                 : "";
     }
 

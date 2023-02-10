@@ -56,12 +56,13 @@ public class DamageAction implements Action {
         return false;
     }
 
-
     private boolean damagePlayer(Player player, double damage) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
-        if (damage > 0) player.damage(damage);
-        else player.playEffect(EntityEffect.HURT);
+        if (damage > 0) {
+            player.damage(damage);
+        } else {
+            player.playEffect(EntityEffect.HURT);
+        }
         return true;
     }
-
 }
