@@ -19,15 +19,6 @@ public record WaitTask(
         @NotNull List<StoredAction> actions,
         long executionTime
 ) implements Comparable<WaitTask> {
-    public WaitTask(@NotNull Environment env, @NotNull List<StoredAction> actions, long executionTime) {
-        this(
-                env.getVariables(),
-                env.getPlayer() == null ? null : env.getPlayer().getUniqueId(),
-                actions,
-                executionTime
-        );
-    }
-
     public boolean isTime() {
         return System.currentTimeMillis() >= executionTime;
     }

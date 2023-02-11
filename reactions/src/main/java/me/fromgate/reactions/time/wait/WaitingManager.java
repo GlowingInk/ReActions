@@ -177,9 +177,16 @@ public class WaitingManager implements Saveable {
             } else {
                 playerId = null;
             }
+            Variables vars;
+            if (taskCfg.isConfigurationSection("variables")) {
+                //noinspection ConstantConditions
+                vars = Variables.readConfiguration(taskCfg.getConfigurationSection("variables"));
+            } else {
+                vars = new Variables();
+            }
             long executionTime = taskCfg.getLong("execution-time");
             tasks.add(new WaitTask(
-                    new Variables(),
+                    vars,
                     playerId,
                     actions,
                     executionTime
@@ -198,10 +205,17 @@ public class WaitingManager implements Saveable {
             scheduler.runTask(rea.getPlugin(), () -> {
                 for (WaitTask task : tasks) {
                     UUID id = UUID.randomUUID();
-                    ConfigurationSection taskCfg = cfg.createSection(id.toString());
+                    var taskCfg = cfg.createSection(id.toString());
                     taskCfg.set("player-id", task.playerId());
                     taskCfg.set("execution-time", task.executionTime());
                     taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
+                    Variables vars = task.variables();
+                    if (!vars.isEmpty()) {
+                        var varsCfg = taskCfg.createSection("variables");
+                        for (String varKey : vars.keys()) {
+                            varsCfg.set(varKey, vars.getString(varKey));
+                        }
+                    }
                 }
                 scheduler.runTaskAsynchronously(
                         rea.getPlugin(),
@@ -223,6 +237,13 @@ public class WaitingManager implements Saveable {
             taskCfg.set("player-id", task.playerId());
             taskCfg.set("execution-time", task.executionTime());
             taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
+            Variables vars = task.variables();
+            if (!vars.isEmpty()) {
+                var varsCfg = taskCfg.createSection("variables");
+                for (String varKey : vars.keys()) {
+                    varsCfg.set(varKey, vars.getString(varKey));
+                }
+            }
         }
         FileUtils.saveCfg(cfg, file, "Failed to save delayed actions");
     }

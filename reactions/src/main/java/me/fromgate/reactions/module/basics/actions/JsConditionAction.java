@@ -116,7 +116,7 @@ public class JsConditionAction implements Action { // TODO: Implement custom act
         params = Parameters.fromString(params.getString("actions"));
 
         if (!params.contains("action1")) return false;
-        for (String actionKey : params.keySet()) {
+        for (String actionKey : params.keys()) {
             if (!((actionKey.toLowerCase(Locale.ROOT)).startsWith("action"))) continue;
             if (params.isEmpty() || !params.origin().contains("=")) continue;
             String actionStr = params.getString(actionKey);

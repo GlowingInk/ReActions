@@ -1,12 +1,17 @@
 package me.fromgate.reactions.logic.context;
 
+import me.fromgate.reactions.util.parameter.Parameters;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -23,6 +28,24 @@ public class Variables {
 
     public Variables() {
         this.variables = new HashMap<>(0);
+    }
+
+    public static @NotNull Variables readConfiguration(@NotNull ConfigurationSection cfg) {
+        Set<String> keys = cfg.getKeys(false);
+        Map<String, Variable> vars = new HashMap<>(keys.size());
+        for (String key : keys) {
+            vars.put(key.toLowerCase(Locale.ROOT), Variable.simple(cfg.getString(key, "")));
+        }
+        return new Variables(vars, false);
+    }
+
+    public static @NotNull Variables readParameters(@NotNull Parameters params) {
+        Set<String> keys = params.keysStrict();
+        Map<String, Variable> vars = new HashMap<>(keys.size());
+        for (String key : keys) {
+            vars.put(key.toLowerCase(Locale.ROOT), Variable.simple(params.getString(key)));
+        }
+        return new Variables(vars, false);
     }
 
     public @NotNull Map<String, Variable> forkMap() {
@@ -81,5 +104,13 @@ public class Variables {
         } else {
             variables.put(key, variables.getOrDefault(key.toLowerCase(Locale.ROOT), Variable.EMPTY).set(str));
         }
+    }
+
+    public @UnmodifiableView @NotNull Set<String> keys() {
+        return Collections.unmodifiableSet(variables.keySet());
+    }
+
+    public boolean isEmpty() {
+        return variables.isEmpty();
     }
 }

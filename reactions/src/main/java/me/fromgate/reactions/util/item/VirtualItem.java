@@ -279,7 +279,7 @@ public final class VirtualItem implements Parameterizable {
         Material type = null;
         int amount = -1;
         boolean regex = params.getBoolean("regex", false);
-        for (String key : params.keySet()) {
+        for (String key : params.keys()) {
             key = key.toLowerCase(Locale.ROOT);
             String value = params.getString(key);
             switch (key) {
