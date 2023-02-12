@@ -6,7 +6,7 @@
 
     <groupId>me.fromgate.reactions</groupId>
     <artifactId>reactions-project</artifactId>
-    <version>0.14.2</version>
+    <version>0.14.3</version>
     <packaging>pom</packaging>
 
     <name>ReActions-Project</name>
