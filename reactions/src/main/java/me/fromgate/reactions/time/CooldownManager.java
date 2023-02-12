@@ -38,19 +38,18 @@ import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class CooldownManager {
-    // TODO: I don't like anything here...
+public final class CooldownManager { // TODO Requires refactoring
     private static final DateFormat HH_MM_SS = new SimpleDateFormat("HH:mm:ss");
 
-    private static final Object2LongMap<String> delays = new Object2LongOpenHashMap<>();
+    private static final Object2LongMap<String> cooldowns = new Object2LongOpenHashMap<>();
 
     private CooldownManager() {}
 
     public static void save() {
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
-        for (String key : delays.keySet()) {
-            long delayTime = delays.getLong(key);
+        for (String key : cooldowns.keySet()) {
+            long delayTime = cooldowns.getLong(key);
             if (delayTime > System.currentTimeMillis())
                 cfg.set(key, delayTime);
         }
@@ -58,7 +57,7 @@ public final class CooldownManager {
     }
 
     public static void load() {
-        delays.clear();
+        cooldowns.clear();
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
         if (FileUtils.loadCfg(cfg, f, "Failed to load delay configuration file")) {
@@ -66,56 +65,56 @@ public final class CooldownManager {
                 if (!key.contains(".")) continue;
                 long delayTime = cfg.getLong(key);
                 if (delayTime > System.currentTimeMillis()) {
-                    delays.put(key, delayTime);
+                    cooldowns.put(key, delayTime);
                 }
             }
         }
     }
 
-    public static boolean checkDelay(String id, long updateTime) {
+    public static boolean checkCooldown(String id, long updateTime) {
         if (id.indexOf('.') == -1) id = "global." + id;
-        long delay = delays.getOrDefault(id, -1);
+        long delay = cooldowns.getOrDefault(id, -1);
         boolean result = delay < System.currentTimeMillis();
-        if (result && updateTime > 0) setDelay(id, updateTime, false);
+        if (result && updateTime > 0) setCooldown(id, updateTime, false);
         return result;
     }
 
-    public static boolean checkPersonalDelay(String playerName, String id, long updateTime) {
-        return checkDelay(playerName + "." + id, updateTime);
+    public static boolean checkPersonalCooldown(String playerName, String id, long updateTime) {
+        return checkCooldown(playerName + "." + id, updateTime);
     }
 
-    public static void setDelay(String id, long delayTime, boolean add) {
-        setDelaySave(id, delayTime, true, add);
+    public static void setCooldown(String id, long delayTime, boolean add) {
+        setCooldownSave(id, delayTime, true, add);
     }
 
-    public static void setDelaySave(String id, long delayTime, boolean save, boolean add) {
+    public static void setCooldownSave(String id, long delayTime, boolean save, boolean add) {
         if (id.indexOf('.') == -1) id = "global." + id;
-        long currentDelay = add && delays.containsKey(id) ? delays.getLong(id) : System.currentTimeMillis();
-        delays.put(id, delayTime + currentDelay);
+        long currentDelay = add && cooldowns.containsKey(id) ? cooldowns.getLong(id) : System.currentTimeMillis();
+        cooldowns.put(id, delayTime + currentDelay);
         if (save) save();
     }
 
-    public static void setPersonalDelay(String playerName, String id, long delayTime, boolean add) {
-        setDelay(playerName + "." + id, delayTime, add);
+    public static void setPersonalCooldown(String playerName, String id, long delayTime, boolean add) {
+        setCooldown(playerName + "." + id, delayTime, add);
     }
 
-    public static void printDelayList(CommandSender sender, int pageNum, int linePerPage) {
+    public static void printCooldownList(CommandSender sender, int pageNum, int linePerPage) {
         Set<String> lst = new TreeSet<>();
-        for (String key : delays.keySet()) {
-            long delayTime = delays.getLong(key);
+        for (String key : cooldowns.keySet()) {
+            long delayTime = cooldowns.getLong(key);
             if (delayTime < System.currentTimeMillis()) continue;
             String[] ln = key.split("\\.", 2);
             if (ln.length != 2) continue;
-            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.formatTime(delays.getLong(key)));
+            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.formatTime(cooldowns.getLong(key)));
         }
         Msg.printPage(sender, lst, Msg.MSG_LISTDELAY, pageNum, linePerPage, true);
     }
 
     public static String[] getStringTime(String playerName, String id) {
         String fullId = (id.contains(".") ? id : (playerName == null || playerName.isEmpty() ? "global." + id : playerName + "." + id));
-        if (checkDelay(fullId, 0)) return null;
-        if (!delays.containsKey(fullId)) return null;
-        long time = delays.getLong(fullId);
+        if (checkCooldown(fullId, 0)) return null;
+        if (!cooldowns.containsKey(fullId)) return null;
+        long time = cooldowns.getLong(fullId);
         String[] times = new String[8];
         times[0] = TimeUtils.formatTime(time);
         times[1] = TimeUtils.formatTime(time, HH_MM_SS);
@@ -143,9 +142,19 @@ public final class CooldownManager {
         return times;
     }
 
-    public static void setTempPlaceholders(Environment context, String playerName, String id) {
+    public static void setTempPlaceholders(Environment context, String playerName, String id) { // TODO Make vars lazy
         String[] times = CooldownManager.getStringTime(playerName, id);
         if (times != null) {
+            context.getVariables().set("cooldown-fulltime", times[0]);
+            context.getVariables().set("cooldown-time", times[1]);
+            context.getVariables().set("cooldown-left", times[7]);
+            context.getVariables().set("cooldown-left-full", times[3]);
+            context.getVariables().set("cooldown-left-hms", times[2]);
+            context.getVariables().set("cooldown-left-hh", times[4]);
+            context.getVariables().set("cooldown-left-mm", times[5]);
+            context.getVariables().set("cooldown-left-ss", times[6]);
+
+            // TODO Remove legacy
             context.getVariables().set("delay-fulltime", times[0]);
             context.getVariables().set("delay-time", times[1]);
             context.getVariables().set("delay-left", times[7]);

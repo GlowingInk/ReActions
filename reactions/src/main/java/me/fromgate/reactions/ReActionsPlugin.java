@@ -87,11 +87,12 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
             );
             this.placeholdersManager = new LegacyPlaceholdersManager();
         }
-        this.activitiesRegistry = new ActivitiesRegistry();
+        this.activitiesRegistry = new ActivitiesRegistry(this);
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
         this.selectorsManager = new SelectorsManager();
         this.modulesRegistry = new ModulesRegistry(this);
+        this.waitingManager = new WaitingManager(this);
         ReActions.setPlatform(this);
         modulesRegistry.registerModule(new BasicModule());
         modulesRegistry.loadFolderModules();
@@ -99,10 +100,9 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onEnable() {
-        this.waitingManager = new WaitingManager(this);
         this.savingManager = new SavingManager(this);
         savingManager.register(waitingManager);
-        waitingManager.load();
+        waitingManager.init();
 
         // TODO god why
         Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);

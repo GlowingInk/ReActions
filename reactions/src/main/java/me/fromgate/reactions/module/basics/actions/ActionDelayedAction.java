@@ -4,11 +4,16 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.time.wait.WaitTask;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import static me.fromgate.reactions.util.TimeUtils.offsetNow;
 
 @Aliased.Names({"ACTDELAY", "DELAYED_ACTION"})
 public class ActionDelayedAction implements Action {
@@ -37,8 +42,12 @@ public class ActionDelayedAction implements Action {
             return false;
         }
 
-        StoredAction av = new StoredAction(action, paramStr);
-        ReActions.getWaiter().schedule(av, delay);
+        ReActions.getWaiter().schedule(new WaitTask(
+                context.getVariables(),
+                context.getPlayer() != null ? context.getPlayer().getUniqueId() : null,
+                List.of(new StoredAction(action, paramStr)),
+                offsetNow(delay)
+        ));
         return true;
     }
 

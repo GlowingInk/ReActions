@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +39,8 @@ public class WaitingManager implements Saveable {
     private final Set<WaitTask> toSchedule;
     private boolean requiresUpdate; // We don't want ConcurrentHashMap to do extra work
 
+    private boolean init;
+
     private BukkitTask executor;
     private WaitTask next;
 
@@ -45,7 +48,6 @@ public class WaitingManager implements Saveable {
         this.rea = rea;
         this.tasks = new TreeSet<>();
         this.toSchedule = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        rea.getServer().getScheduler().runTaskTimer(rea.getPlugin(), this::updateTasks, 1L, 1L);
     }
 
     public static void setBehaviour(@NotNull AttachedBehaviour behaviour) {
@@ -54,6 +56,16 @@ public class WaitingManager implements Saveable {
 
     public static void setHoursLimit(long hours) {
         WaitingManager.timeLimit = hours * TimeUtils.MS_PER_HOUR;
+    }
+
+    @ApiStatus.Internal
+    public void init() {
+        if (init) {
+            throw new IllegalStateException("WaitingManager is already initialized");
+        }
+        init = true;
+        rea.getServer().getScheduler().runTaskTimer(rea.getPlugin(), this::updateTasks, 1L, 1L);
+        load();
     }
 
     private void updateTasks() {
@@ -73,7 +85,7 @@ public class WaitingManager implements Saveable {
                 executor.cancel();
                 executor = null;
             }
-            long offset = TimeUtils.offsetFrom(next.executionTime());
+            long offset = TimeUtils.offsetUntil(next.executionTime());
             if (offset < 1) {
                 runTasks();
             } else {
@@ -93,7 +105,7 @@ public class WaitingManager implements Saveable {
             if (!task.isTime()) break;
             if (task.playerId() != null && rea.getServer().getPlayer(task.playerId()) == null) switch (behaviour) {
                 case SKIP -> {
-                    if (timeLimit > TimeUtils.offsetTo(task.executionTime())) {
+                    if (timeLimit > TimeUtils.offsetFrom(task.executionTime())) {
                         iterator.remove();
                     }
                     continue;
@@ -107,27 +119,6 @@ public class WaitingManager implements Saveable {
             iterator.remove();
         }
         this.next = tasks.isEmpty() ? null : tasks.first();
-    }
-
-    public void schedule(@NotNull StoredAction action, long delayMs) {
-        schedule(null, List.of(action), delayMs);
-    }
-
-    public void schedule(@Nullable UUID playerId, @NotNull StoredAction action, long delayMs) {
-        schedule(playerId, List.of(action), delayMs);
-    }
-
-    public void schedule(@NotNull List<StoredAction> actions, long delayMs) {
-        schedule(null, actions, delayMs);
-    }
-
-    public void schedule(@Nullable UUID playerId, @NotNull List<StoredAction> actions, long delayMs) {
-        schedule(new WaitTask(
-                new Variables(),
-                playerId,
-                actions,
-                TimeUtils.offsetNow(delayMs)
-        ));
     }
 
     public void schedule(@NotNull WaitTask task) {
@@ -150,7 +141,7 @@ public class WaitingManager implements Saveable {
         }
     }
 
-    public void load() {
+    private void load() {
         YamlConfiguration cfg = new YamlConfiguration();
         if (!FileUtils.loadCfg(cfg, new File(rea.getDataFolder(), "delayed-actions.yml"), "Failed to load delayed actions")) return;
         ActivitiesRegistry activities = rea.getActivities();
@@ -206,7 +197,7 @@ public class WaitingManager implements Saveable {
                 for (WaitTask task : tasks) {
                     UUID id = UUID.randomUUID();
                     var taskCfg = cfg.createSection(id.toString());
-                    taskCfg.set("player-id", task.playerId());
+                    if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
                     taskCfg.set("execution-time", task.executionTime());
                     taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
                     Variables vars = task.variables();
@@ -234,7 +225,7 @@ public class WaitingManager implements Saveable {
         for (WaitTask task : tasks) {
             UUID id = UUID.randomUUID();
             ConfigurationSection taskCfg = cfg.createSection(id.toString());
-            taskCfg.set("player-id", task.playerId());
+            if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
             taskCfg.set("execution-time", task.executionTime());
             taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
             Variables vars = task.variables();

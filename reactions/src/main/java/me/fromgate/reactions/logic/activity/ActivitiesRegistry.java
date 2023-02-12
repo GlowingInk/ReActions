@@ -1,6 +1,8 @@
 package me.fromgate.reactions.logic.activity;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.actions.FunctionAction;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.activity.flags.StoredFlag;
@@ -17,9 +19,10 @@ public class ActivitiesRegistry {
     private final Map<String, Action> actionByName;
     private final Map<String, Flag> flagByName;
 
-    public ActivitiesRegistry() {
+    public ActivitiesRegistry(@NotNull ReActions.Platform platform) {
         actionByName = new HashMap<>();
         flagByName = new HashMap<>();
+        registerAction(new FunctionAction(platform));
     }
 
     public void registerAction(@NotNull Action action) {

@@ -22,22 +22,59 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
+import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
+import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.module.basics.DetailsManager;
+import me.fromgate.reactions.time.wait.WaitTask;
+import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Aliased.Names({"RUN", "EXEC"})
 public class ExecuteAction implements Action {
+    private final ReActions.Platform platform;
+    private final Action functAction;
+
+    public ExecuteAction(@NotNull ReActions.Platform platform) {
+        this.platform = platform;
+        this.functAction = Objects.requireNonNull(platform.getActivities().getAction("FUNCTION"));
+    }
 
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        String id = params.getStringSafe("activator", params::origin);
-        if (id.isEmpty()) return false;
-        return DetailsManager.triggerExec(context.getPlayer(), params, context.getVariables());
+        int repeat = Math.max(params.getInteger("repeat", 1), 1);
+        long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));
+        List<Player> targets = new ArrayList<>();
+        if (params.contains("player")) {
+            targets.addAll(platform.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"), "player")));
+        }
+        if (targets.isEmpty()) {
+            if (!params.containsAny(ReActions.getSelectors().getAllKeys())) {  // TODO Remove legacy compatibility (selectors)
+                targets.add(context.getPlayer());
+            } else {
+                return false;
+            }
+        }
+        var storedFunct = List.of(new StoredAction(functAction, paramsStr));
+        for (int i = 0; i < repeat; i++) {
+            for (Player player : targets) {
+                platform.getWaiter().schedule(new WaitTask(
+                        context.getVariables().fork(),
+                        player == null ? null : player.getUniqueId(),
+                        storedFunct,
+                        delayMs * (i + 1)
+                ));
+            }
+        }
+        return true;
     }
 
     @Override

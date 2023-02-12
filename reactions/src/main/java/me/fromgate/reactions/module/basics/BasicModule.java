@@ -124,7 +124,7 @@ public class BasicModule implements Module {
                 new CooldownActions(false),
                 new BackAction(),
                 new MobSpawnAction(),
-                new ExecuteAction(),
+                new ExecuteAction(platform),
                 new HealAction(),
                 new BlockSetAction(),
                 new SignSetAction(),

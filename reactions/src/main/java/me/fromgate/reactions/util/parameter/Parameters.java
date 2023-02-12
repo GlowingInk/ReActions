@@ -413,62 +413,36 @@ public class Parameters implements Parameterizable {
         return true;
     }
 
-    public boolean containsEvery(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
-        return containsEvery(valueCheck, Arrays.asList(keys));
+    public @Nullable String findKeyUnsafe(@NotNull String @NotNull ... keys) {
+        return findKeyUnsafe(Arrays.asList(keys));
     }
 
-    public boolean containsEvery(@NotNull Predicate<String> valueCheck, @NotNull Collection<@NotNull String> keys) {
-        if (keys.size() > size()) return false;
-        for (String key : keys) {
-            if (!contains(key, valueCheck)) {
-                return false;
-            }
-        }
-        return true;
+    public @Nullable String findKeyUnsafe(@NotNull Iterable<@NotNull String> keys) {
+        return findKey(null, keys);
     }
 
-    public @Nullable String containedKey(@NotNull String @NotNull ... keys) {
-        return containedKey(Arrays.asList(keys));
+    @Contract("!null, _ -> !null")
+    public @Nullable String findKey(@Nullable String def, @NotNull String @NotNull ... keys) {
+        return findKey(def, Arrays.asList(keys));
     }
 
-    public @Nullable String containedKey(@NotNull Iterable<@NotNull String> keys) {
-        if (isEmpty()) return null;
+    @Contract("!null, _ -> !null")
+    public @Nullable String findKey(@Nullable String def, @NotNull Iterable<@NotNull String> keys) {
+        if (isEmpty()) return def;
         for (String key : keys) {
             if (contains(key)) {
                 return key;
             }
         }
-        return null;
-    }
-
-    public @Nullable String containedKey(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
-        return containedKey(valueCheck, Arrays.asList(keys));
-    }
-
-    public @Nullable String containedKey(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
-        if (isEmpty()) return null;
-        for (String key : keys) {
-            if (contains(key, valueCheck)) {
-                return key;
-            }
-        }
-        return null;
+        return def;
     }
 
     public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return containedKey(keys) != null;
+        return findKeyUnsafe(keys) != null;
     }
 
     public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
-        return containedKey(keys) != null;
-    }
-
-    public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull String @NotNull ... keys) {
-        return containedKey(valueCheck, keys) != null;
-    }
-
-    public boolean containsAny(@NotNull Predicate<String> valueCheck, @NotNull Iterable<@NotNull String> keys) {
-        return containedKey(valueCheck, keys) != null;
+        return findKeyUnsafe(keys) != null;
     }
 
     @Contract(pure = true)

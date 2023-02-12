@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+@Deprecated
 public class ExecDetails extends Details {
     private final Variables vars;
 

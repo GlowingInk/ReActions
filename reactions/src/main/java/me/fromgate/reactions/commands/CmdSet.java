@@ -33,8 +33,8 @@ public class CmdSet extends Cmd {
             String player = params.getString("player", "");
             if (player.equalsIgnoreCase("%player%") && (p != null)) player = p.getName();
             long time = /*System.currentTimeMillis()+*/TimeUtils.parseTime(params.getString("delay", "3s")); //дефолтная задержка три секунды
-            if (player.isEmpty()) CooldownManager.setDelay(id, time, add);
-            else CooldownManager.setPersonalDelay(player, id, time, add);
+            if (player.isEmpty()) CooldownManager.setCooldown(id, time, add);
+            else CooldownManager.setPersonalCooldown(player, id, time, add);
             Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(System.currentTimeMillis() + time));
         } else if (var.equalsIgnoreCase("var") || var.equalsIgnoreCase("variable") || var.equalsIgnoreCase("v")) {
             String value = params.getString("value", "");

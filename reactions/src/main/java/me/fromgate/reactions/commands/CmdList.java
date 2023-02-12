@@ -47,7 +47,7 @@ public class CmdList extends Cmd {
                 case "type" -> printActType(sender, mask, page, lpp);
                 case "group" -> printActGroup(sender, mask, page, lpp);
                 case "timer", "timers" -> TimersManager.listTimers(sender, page);
-                case "delay", "delays" -> CooldownManager.printDelayList(sender, page, lpp);
+                case "delay", "delays" -> CooldownManager.printCooldownList(sender, page, lpp);
                 case "loc", "location" -> LocationHolder.printLocList(sender, page, lpp);
                 case "var", "variables", "variable" -> ReActions.getVariables().printList(sender, page, mask);
                 case "menu", "menus" -> InventoryMenu.printMenuList(sender, page, mask);

@@ -36,10 +36,10 @@ import java.util.List;
 
 public class CooldownActions implements Action, Aliased {
 
-    private final boolean globalDelay;
+    private final boolean global;
 
-    public CooldownActions(boolean globalDelay) {
-        this.globalDelay = globalDelay;
+    public CooldownActions(boolean global) {
+        this.global = global;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CooldownActions implements Action, Aliased {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = context.getPlayer();
         String timeStr = "";
-        String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
+        String playerName = this.global ? "" : (player != null ? player.getName() : "");
         String variableId = "";
         boolean add = false;
         if (params.contains("id") && params.containsAny("delay", "time")) {
@@ -55,7 +55,7 @@ public class CooldownActions implements Action, Aliased {
             playerName = params.getString("player", playerName);
             timeStr = params.getStringSafe("delay", () -> params.getString("time"));
             add = params.getBoolean("add", false);
-        } else {
+        } else { // TODO Remove legacy format
             String oldFormat = params.origin();
             if (oldFormat.contains("/")) {
                 String[] m = oldFormat.split("/");
@@ -68,29 +68,29 @@ public class CooldownActions implements Action, Aliased {
 
         if (timeStr.isEmpty()) return false;
         if (variableId.isEmpty()) return false;
-        setDelay(playerName, variableId, TimeUtils.parseTime(timeStr), add);
+        setCooldown(playerName, variableId, TimeUtils.parseTime(timeStr), add);
         CooldownManager.setTempPlaceholders(context, playerName, variableId);
         return true;
     }
 
     @Override
     public @NotNull String getName() {
-        return globalDelay ? "COOLDOWN" : "COOLDOWN_PLAYER";
+        return global ? "COOLDOWN" : "COOLDOWN_PLAYER";
     }
 
     @Override
     public @NotNull Collection<@NotNull String> getAliases() {
-        return List.of(globalDelay ? "DELAY" : "DELAY_PLAYER");
+        return List.of(global ? "DELAY" : "DELAY_PLAYER");
     }
 
     @Override
     public boolean requiresPlayer() {
-        return !globalDelay;
+        return !global;
     }
 
-    private void setDelay(String playerName, String variableId, long delayTime, boolean add) {
-        if (playerName.isEmpty()) CooldownManager.setDelay(variableId, delayTime, add);
-        else CooldownManager.setPersonalDelay(playerName, variableId, delayTime, add);
+    private void setCooldown(String playerName, String variableId, long cdTime, boolean add) {
+        if (playerName.isEmpty()) CooldownManager.setCooldown(variableId, cdTime, add);
+        else CooldownManager.setPersonalCooldown(playerName, variableId, cdTime, add);
     }
 
 }

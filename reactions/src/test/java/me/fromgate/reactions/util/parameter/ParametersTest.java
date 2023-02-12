@@ -128,4 +128,19 @@ public class ParametersTest {
         assertEquals(escapeParameters(result), expected); // Escaping the escaped should not work
     }
 
+    @DataProvider
+    public Object[][] findKeyData() {
+        return new Object[][] {
+                {"my test", ORIGIN, ORIGIN, List.of("test", "my", "yay")},
+                {"exec:activator", "exec", ORIGIN, List.of("other", "activator", "exec")}
+        };
+    }
+
+    @Test(dataProvider = "findKeyData")
+    public void findKeySafeTest(String paramsStr, String expectedKey, String def, List<String> keys) {
+        assertEquals(
+                Parameters.fromString(paramsStr).findKey(def, keys),
+                expectedKey
+        );
+    }
 }

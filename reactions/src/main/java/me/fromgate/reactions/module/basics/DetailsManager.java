@@ -197,15 +197,18 @@ public final class DetailsManager {
 
     // TODO: I think all of it should be inside ActionExecute class
 
+    @Deprecated
     public static boolean triggerExec(CommandSender sender, String param) {
         if (param.isEmpty()) return false;
         return triggerExec(sender, Parameters.fromString(param, "player"));
     }
 
+    @Deprecated
     public static boolean triggerExec(CommandSender sender, Parameters param) {
         return triggerExec(sender, param, new Variables());
     }
 
+    @Deprecated
     public static boolean triggerExec(CommandSender sender, Parameters param, Variables vars) {
         if (param.isEmpty()) return false;
         final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
@@ -223,7 +226,7 @@ public final class DetailsManager {
 
         int repeat = Math.min(param.getInteger("repeat", 1), 1);
 
-        long delay = TimeUtils.safeTimeToTicks(TimeUtils.parseTime(param.getString("delay", "1t")));
+        long delay = TimeUtils.timeToTicksSafe(TimeUtils.parseTime(param.getString("delay", "1t")));
 
         final Set<Player> target = new HashSet<>();
 
@@ -247,6 +250,7 @@ public final class DetailsManager {
         return true;
     }
 
+    @Deprecated
     public static boolean triggerExec(CommandSender sender, String id, Variables vars) {
         final Player player = (sender instanceof Player) ? (Player) sender : null;
         Activator act = ReActions.getActivators().getActivator(id);

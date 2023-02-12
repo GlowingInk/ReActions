@@ -44,16 +44,16 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
 
     private TimeUtils() {}
 
-    public static long offsetNow(long offset) {
-        return System.currentTimeMillis() + offset;
+    public static long offsetNow(long offsetMs) {
+        return System.currentTimeMillis() + offsetMs;
     }
 
-    public static long offsetFrom(long otherMs) {
-        return otherMs - System.currentTimeMillis();
+    public static long offsetUntil(long futureMs) {
+        return futureMs - System.currentTimeMillis();
     }
 
-    public static long offsetTo(long otherMs) {
-        return System.currentTimeMillis() - otherMs;
+    public static long offsetFrom(long pastMs) {
+        return System.currentTimeMillis() - pastMs;
     }
 
     public static String formatIngameTime() {
@@ -82,7 +82,7 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
         return format.format(new Date(msTime));
     }
 
-    public static long safeTimeToTicks(long msTime) {
+    public static long timeToTicksSafe(long msTime) {
         return Math.max(1, timeToTicks(msTime));
     }
 

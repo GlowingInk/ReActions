@@ -54,7 +54,7 @@ public class CooldownFlags implements Flag, Aliased {
             updateTime = TimeUtils.parseTime(params.getString("set-delay", params.getString("set-time", "0")));
             playerName = params.getString("player", playerName);
         }
-        boolean result = playerName.isEmpty() ? CooldownManager.checkDelay(id, updateTime) : CooldownManager.checkPersonalDelay(playerName, id, updateTime);
+        boolean result = playerName.isEmpty() ? CooldownManager.checkCooldown(id, updateTime) : CooldownManager.checkPersonalCooldown(playerName, id, updateTime);
         CooldownManager.setTempPlaceholders(context, playerName, id);
         return result;
     }

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.script.SimpleScriptContext;
 import java.util.ArrayList;
@@ -30,7 +29,8 @@ import java.util.Map;
  * Created by MaxDikiy on 2017-05-17.
  */
 @Aliased.Names("IF_ELSE")
-public class JsConditionAction implements Action { // TODO: Implement custom action for that
+@Deprecated
+public class JsConditionAction implements Action {
     private static ScriptEngine engine = null;
     private static boolean checked = false;
 
@@ -88,7 +88,7 @@ public class JsConditionAction implements Action { // TODO: Implement custom act
                 if (!executeActivator(player, condition, (result) ? then_ : else_)
                         && !executeActions(context, (result) ? then_ : else_))
                     context.getVariables().set("ifelseresult" + suffix, (result) ? then_ : else_);
-            } catch (ScriptException e) {
+            } catch (Exception e) {
                 context.getVariables().set("ifelsedebug", e.getMessage());
                 return false;
             }
@@ -123,7 +123,6 @@ public class JsConditionAction implements Action { // TODO: Implement custom act
 
             String name = actionStr.substring(0, actionStr.indexOf("="));
             String param = actionStr.substring(actionStr.indexOf("=") + 1);
-            // TODO
             Action action = ReActions.getActivities().getAction(name);
             if (action == null) continue;
             actions.add(new StoredAction(action, param));
@@ -132,35 +131,4 @@ public class JsConditionAction implements Action { // TODO: Implement custom act
             actions.forEach(action -> action.getActivity().proceed(context, action.getParameters()));
         return true;
     }
-
-	/*
-	private enum ConditionType {
-		EQUAL("="), MORE(">"), MORE_OR_EQUAL(">="), LESS("<"), LESS_OR_EQUAL("<="),
-		BOOLEAN(false, "check"), S_EQUALS(false, "equals"), IGNORE_CASE(false, "ignorecase"), REGEX(false, "regular");
-
-		@Getter private final boolean numeric;
-		private final String alias;
-		private static final Map<String, ConditionType> BY_NAME;
-		static {
-			Map<String, ConditionType> byName = new HashMap<>();
-			for(ConditionType cnd : ConditionType.values()) {
-				byName.put(cnd.name(), cnd);
-				byName.put(cnd.alias.toUpperCase(Locale.ROOT), cnd);
-			}
-			BY_NAME = Collections.unmodifiableMap(byName);
-		}
-		ConditionType(boolean num, String alias) {
-			this.alias = alias;
-			this.numeric = num;
-		}
-		ConditionType(String alias) {
-			this.alias = alias;
-			this.numeric = true;
-		}
-
-		public static ConditionType getByName(String name) {
-			return BY_NAME.get(name);
-		}
-	}
-	*/
 }
