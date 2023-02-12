@@ -1,6 +1,7 @@
 package me.fromgate.reactions.util.parameter;
 
 import me.fromgate.reactions.util.NumberUtils;
+import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.collections.Maps;
 import me.fromgate.reactions.util.enums.TriBoolean;
@@ -372,6 +373,15 @@ public class Parameters implements Parameterizable {
     public @NotNull TriBoolean getTriBoolean(@NotNull String key, @NotNull SafeSupplier<TriBoolean> def) {
         String str = getString(key, null);
         return str == null ? def.get() : TriBoolean.of(str);
+    }
+
+    public long getTime(@NotNull String key) {
+        return TimeUtils.parseTime(getString(key));
+    }
+
+    public long getTime(@NotNull String key, long def) {
+        String value = params.get(key);
+        return value == null ? def : TimeUtils.parseTime(value);
     }
 
     public @Unmodifiable @NotNull List<@NotNull String> keyedList(@NotNull String baseKey) {

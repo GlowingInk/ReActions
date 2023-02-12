@@ -148,7 +148,7 @@ public class BasicModule implements Module {
                 new SqlActions(SqlActions.Type.DELETE),
                 new SqlActions(SqlActions.Type.SET),
                 new RegexAction(),
-                new ActionDelayedAction(),
+                new RunActionAction(),
                 new OpenMenuAction(),
                 new WaitAction(),
                 new LogAction(),

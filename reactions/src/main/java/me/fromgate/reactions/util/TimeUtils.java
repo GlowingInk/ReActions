@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
-    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+(?:\\.\\d+)?))?");
+    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+(?:\\.\\d+([eE][+\\-]\\d+)?)?))?");
     private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)(ms|[dhmst])?");
     private static final DateFormat DEF_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
