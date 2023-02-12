@@ -311,4 +311,13 @@ public final class Utils {
             }
         }
     }
+
+    public static @Nullable UUID parseUniqueId(@Nullable String str) {
+        if (isStringEmpty(str)) return null;
+        try {
+            return UUID.fromString(str);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
 }
