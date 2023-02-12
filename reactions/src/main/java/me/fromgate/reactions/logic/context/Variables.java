@@ -2,6 +2,7 @@ package me.fromgate.reactions.logic.context;
 
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -13,11 +14,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class Variables {
     private final Map<String, Variable> variables;
 
+    @ApiStatus.Internal
     public Variables(@NotNull Map<String, Variable> variables) {
         this(variables, true);
     }
@@ -83,18 +84,6 @@ public class Variables {
 
     public <T> @NotNull Optional<T> getChanged(@NotNull String key, @NotNull Function<String, T> funct) {
         return getChanged(key).map(funct);
-    }
-
-    public @NotNull Optional<String> getChecked(@NotNull String key, @NotNull Predicate<String> filter) {
-        return getChanged(key).filter(filter);
-    }
-
-    public <T> @NotNull Optional<T> getChecked(@NotNull String key, @NotNull Function<String, T> funct, @NotNull Predicate<T> filter) {
-        return getChanged(key).map(funct).filter(filter);
-    }
-
-    public <T> @NotNull Optional<T> getPrechecked(@NotNull String key, @NotNull Predicate<String> filter, @NotNull Function<String, T> funct) {
-        return getChanged(key).filter(filter).map(funct);
     }
 
     public void set(@NotNull String key, @Nullable String str) {
