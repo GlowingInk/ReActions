@@ -11,7 +11,10 @@ public class LocalVarAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        context.getVariables().set(params.getStringSafe("id", () -> params.getString("key")), params.getString("value"));
+        context.getVariables().set(
+                params.getString(params.findKey("id", "key")),
+                params.getString("value", params.getBoolean("delete-empty", false) ? null : "")
+        );
         return true;
     }
 
