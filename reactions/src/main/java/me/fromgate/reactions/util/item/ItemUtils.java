@@ -62,7 +62,6 @@ public final class ItemUtils {
 
     /**
      * Get list of items from random set
-     *
      * @param items Set of items, e.g set1:{item1:{}  item2:{} item3:{} chance:50}  set2:{item1:{}  item2:{} item3:{} chance:50}
      * @return List of items
      */
@@ -117,7 +116,6 @@ public final class ItemUtils {
 
     /**
      * Get material from name
-     *
      * @param name Name of material
      * @return Material
      */
@@ -133,7 +131,6 @@ public final class ItemUtils {
 
     /**
      * Is item actually exist
-     *
      * @param item Item to check
      * @return Is item not null and not air
      */
@@ -144,7 +141,6 @@ public final class ItemUtils {
 
     /**
      * Get item in hand
-     *
      * @param player Player to use
      * @param offhand Check offhand or not
      * @return Item string

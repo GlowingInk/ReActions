@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class InventoryMenu implements Listener {
-    // TODO: Some things are weird, needs refactoring
+public class InventoryMenu implements Listener { // TODO Requires major refactoring
 
     private static final Map<String, VirtualInventory> menu = new HashMap<>();
     private static Variables vars;

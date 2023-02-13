@@ -86,12 +86,12 @@ public class Variables {
         return getChanged(key).map(funct);
     }
 
-    public void set(@NotNull String key, @Nullable String str) {
+    public void set(@NotNull String key, @Nullable String value) {
         key = key.toLowerCase(Locale.ROOT);
-        if (str == null) {
+        if (value == null) {
             variables.remove(key);
         } else {
-            variables.put(key, variables.getOrDefault(key.toLowerCase(Locale.ROOT), Variable.EMPTY).set(str));
+            variables.put(key, variables.getOrDefault(key.toLowerCase(Locale.ROOT), Variable.EMPTY).set(value));
         }
     }
 

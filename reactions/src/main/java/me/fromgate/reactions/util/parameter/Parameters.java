@@ -16,16 +16,16 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
-    public static final String ORIGIN = "origin:string";
+    public static final String ORIGIN = "::origin";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
@@ -38,7 +38,7 @@ public class Parameters implements Parameterizable {
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
-        params.put(Parameters.ORIGIN, origin);
+        params.put(ORIGIN, origin);
         this.params = Collections.unmodifiableMap(params);
     }
 
@@ -83,7 +83,7 @@ public class Parameters implements Parameterizable {
     }
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
-        if (map.isEmpty()) return Parameters.EMPTY;
+        if (map.isEmpty()) return EMPTY;
         Map<String, String> params = Maps.caseInsensitive(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
@@ -94,7 +94,7 @@ public class Parameters implements Parameterizable {
     }
 
     public static @NotNull Parameters fromString(final @NotNull String str, @Nullable String defKey) {
-        if (str.isEmpty()) return Parameters.EMPTY;
+        if (str.isEmpty()) return EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
         Map<String, String> params = Maps.caseInsensitive();
         IterationState state = IterationState.SPACE;
@@ -107,7 +107,7 @@ public class Parameters implements Parameterizable {
                 int next = i + 1;
                 if (next < str.length()) {
                     char n = str.charAt(next);
-                    if (n == '{' || n == '}' || (n == '\\' && i + 2 < str.length() && str.charAt(i + 2) == '}')) {
+                    if (n == '{' || n == '}' || (n == '\\' && next + 1 < str.length() && str.charAt(next + 1) == '}')) {
                         if (state == IterationState.SPACE) {
                             bld = new StringBuilder();
                             state = IterationState.TEXT;
@@ -326,8 +326,8 @@ public class Parameters implements Parameterizable {
     }
 
     @Contract(pure = true)
-    public @NotNull Parameters getParams(@NotNull String key) {
-        return Parameters.fromString(getString(key));
+    public @NotNull Parameters getParameters(@NotNull String key) {
+        return fromString(getString(key));
     }
 
     public double getDouble(@NotNull String key) {
@@ -405,10 +405,6 @@ public class Parameters implements Parameterizable {
         return params.containsKey(key);
     }
 
-    public boolean contains(@NotNull String key, @NotNull Predicate<String> valueCheck) {
-        return valueCheck.test(getString(key, null));
-    }
-
     public boolean containsEvery(@NotNull String @NotNull ... keys) {
         return containsEvery(Arrays.asList(keys));
     }
@@ -421,6 +417,14 @@ public class Parameters implements Parameterizable {
             }
         }
         return true;
+    }
+
+    public boolean containsAny(@NotNull String @NotNull ... keys) {
+        return findKeyUnsafe(keys) != null;
+    }
+
+    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
+        return findKeyUnsafe(keys) != null;
     }
 
     public @Nullable String findKeyUnsafe(@NotNull String @NotNull ... keys) {
@@ -437,6 +441,19 @@ public class Parameters implements Parameterizable {
     }
 
     @Contract("!null, _ -> !null")
+    public @Nullable String findKey(@Nullable String def, @NotNull String other) {
+        return isEmpty() || !contains(other) ? def : other;
+    }
+
+    @Contract("!null, _, _ -> !null")
+    public @Nullable String findKey(@Nullable String def, @NotNull String other1, @NotNull String other2) {
+        if (isEmpty()) return def;
+        if (contains(other1)) return other1;
+        if (contains(other2)) return other2;
+        return def;
+    }
+
+    @Contract("!null, _ -> !null")
     public @Nullable String findKey(@Nullable String def, @NotNull Iterable<@NotNull String> keys) {
         if (isEmpty()) return def;
         for (String key : keys) {
@@ -447,19 +464,11 @@ public class Parameters implements Parameterizable {
         return def;
     }
 
-    public boolean containsAny(@NotNull String @NotNull ... keys) {
-        return findKeyUnsafe(keys) != null;
-    }
-
-    public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
-        return findKeyUnsafe(keys) != null;
-    }
-
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull String key, @NotNull String value) {
         Map<String, String> updated = new LinkedHashMap<>(this.params);
         updated.put(key, value);
-        return Parameters.fromMap(updated);
+        return fromMap(updated);
     }
 
     @Contract(pure = true)
@@ -471,7 +480,7 @@ public class Parameters implements Parameterizable {
     public @NotNull Parameters with(@NotNull Map<String, String> params) {
         Map<String, String> updated = new LinkedHashMap<>(this.params);
         updated.putAll(params);
-        return Parameters.fromMap(updated);
+        return fromMap(updated);
     }
 
     public @NotNull String originFormatted() {
@@ -487,7 +496,7 @@ public class Parameters implements Parameterizable {
     public @Unmodifiable @NotNull Set<String> keysStrict() {
         if (this.strictKeys == null) {
             Set<String> keys = new HashSet<>(params.keySet());
-            keys.remove(Parameters.ORIGIN);
+            keys.remove(ORIGIN);
             this.strictKeys = Collections.unmodifiableSet(keys);
         }
         return this.strictKeys;
@@ -504,6 +513,12 @@ public class Parameters implements Parameterizable {
     @Override
     public @NotNull Parameters asParameters() {
         return this;
+    }
+
+    public void forEach(@NotNull BiConsumer<@NotNull String, @NotNull String> action) {
+        params.forEach((key, value) -> {
+            if (!ORIGIN.equals(key)) action.accept(key, value);
+        });
     }
 
     public boolean isEmpty() {
@@ -539,6 +554,10 @@ public class Parameters implements Parameterizable {
             return true;
         }
         return false;
+    }
+
+    public boolean equalsFull(@Nullable Parameters params) {
+        return params != null && (params == this || params.origin.equals(origin));
     }
 
     @Override

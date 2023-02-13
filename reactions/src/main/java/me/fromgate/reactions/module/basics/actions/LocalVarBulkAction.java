@@ -14,9 +14,7 @@ public class LocalVarBulkAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         if (params.isEmpty()) return false;
         Variables vars = context.getVariables();
-        for (String key : params.keysStrict()) {
-            vars.set(key, params.getString(key));
-        }
+        params.forEach(vars::set);
         return true;
     }
 

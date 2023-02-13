@@ -65,6 +65,8 @@ public interface Variable {
         return new Lazy(value);
     }
 
+    // TODO Probably make those immutable instead for better data flow control
+
     class Simple implements Variable {
         private String value;
 

@@ -60,7 +60,7 @@ public class JsConditionAction implements Action {
     private static boolean executeActivator(Player p, String condition, String paramStr) {
         Parameters param = Parameters.fromString(paramStr);
         if (!param.contains("run")) return false;
-        param = param.getParams("run");
+        param = param.getParameters("run");
         if (!param.containsAny("activator", "exec")) return false;
         param = param.with("player", p == null ? "~null" : p.getName());
         Map<String, Variable> vars = new HashMap<>();
