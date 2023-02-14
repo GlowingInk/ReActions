@@ -24,14 +24,14 @@
 
     <profiles>
         <profile>
-            <id>ci</id>
+            <id>github-actions</id>
             <activation>
                 <property>
                     <name>env.GITHUB_RUN_NUMBER</name>
                 </property>
             </activation>
             <properties>
-                <build-version>b${env.GITHUB_RUN_NUMBER}</build-version>
+                <build-version>b${env.GITHUB_RUN_NUMBER}gh</build-version>
             </properties>
         </profile>
     </profiles>

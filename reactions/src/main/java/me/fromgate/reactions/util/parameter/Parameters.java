@@ -469,7 +469,7 @@ public class Parameters implements Parameterizable {
 
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull Map<String, String> add) {
-        if (add.size() <= 1) return this; // Check for Parameters.ORIGIN
+        if (add.size() <= 1) return this; // Check 1 for Parameters.ORIGIN
         Map<String, String> updated = new LinkedHashMap<>(this.params);
         updated.putAll(add);
         return fromMap(updated);
