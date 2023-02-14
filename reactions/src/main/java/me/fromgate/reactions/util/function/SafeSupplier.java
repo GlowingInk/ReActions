@@ -10,7 +10,9 @@ public interface SafeSupplier<T> extends Supplier<T> {
     @Override
     @NotNull T get();
 
-    static <T> @NotNull SafeSupplier<T> asSafe(@NotNull Supplier<T> supplier) {
-        return () -> Objects.requireNonNull(supplier.get());
+    static <T> @NotNull SafeSupplier<T> of(@NotNull Supplier<T> supplier) {
+        return supplier instanceof SafeSupplier<T> safe
+                ? safe
+                : () -> Objects.requireNonNull(supplier.get());
     }
 }

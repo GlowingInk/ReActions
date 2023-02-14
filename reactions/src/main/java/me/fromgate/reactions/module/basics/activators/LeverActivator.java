@@ -59,7 +59,7 @@ public class LeverActivator extends Activator implements Locatable {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
-            TriBoolean state = param.getTriBoolean(Parameters.ORIGIN, () -> param.getTriBoolean("lever-state"));
+            TriBoolean state = param.getTriBoolean(param.findKey(Parameters.ORIGIN, "lever-state"));
             String world = targetBlock.getWorld().getName();
             int x = targetBlock.getX();
             int y = targetBlock.getY();

@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
@@ -268,11 +268,6 @@ public class Parameters implements Parameterizable {
         return value == null ? def : value;
     }
 
-    public <R> @Nullable R getSupplied(@NotNull String key, @NotNull Function<String, R> converter, @NotNull Supplier<R> def) {
-        R value = get(key, converter);
-        return value == null ? def.get() : value;
-    }
-
     public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull SafeSupplier<R> def) {
         R value = get(key, converter);
         return value == null ? def.get() : value;
@@ -298,10 +293,6 @@ public class Parameters implements Parameterizable {
         return get(key, (value) -> Utils.getEnum(clazz, value, def));
     }
 
-    public <R extends Enum<R>> @Nullable R getEnumSupplied(@NotNull String key, @NotNull Class<R> clazz, @NotNull Supplier<R> def) {
-        return getSupplied(key, (value) -> Utils.getEnum(clazz, value), def);
-    }
-
     public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull SafeSupplier<R> def) {
         return getSafe(key, (value) -> Utils.getEnum(clazz, value), def);
     }
@@ -315,17 +306,11 @@ public class Parameters implements Parameterizable {
         return params.getOrDefault(key, def);
     }
 
-    public @Nullable String getStringSupplied(@NotNull String key, @NotNull Supplier<String> def) {
-        String value = params.get(key);
-        return value == null ? def.get() : value;
-    }
-
     public @NotNull String getStringSafe(@NotNull String key, @NotNull SafeSupplier<String> def) {
         String value = params.get(key);
         return value == null ? def.get() : value;
     }
 
-    @Contract(pure = true)
     public @NotNull Parameters getParameters(@NotNull String key) {
         return fromString(getString(key));
     }
@@ -370,11 +355,6 @@ public class Parameters implements Parameterizable {
         return getSafe(key, TriBoolean::of);
     }
 
-    public @NotNull TriBoolean getTriBoolean(@NotNull String key, @NotNull SafeSupplier<TriBoolean> def) {
-        String str = getString(key, null);
-        return str == null ? def.get() : TriBoolean.of(str);
-    }
-
     public long getTime(@NotNull String key) {
         return TimeUtils.parseTime(getString(key));
     }
@@ -382,6 +362,15 @@ public class Parameters implements Parameterizable {
     public long getTime(@NotNull String key, long def) {
         String value = params.get(key);
         return value == null ? def : TimeUtils.parseTime(value);
+    }
+
+    public @NotNull Duration getDuration(@NotNull String key) {
+        return getDuration(key, Duration.ZERO);
+    }
+
+    @Contract("_, !null -> !null")
+    public @Nullable Duration getDuration(@NotNull String key, @Nullable Duration def) {
+        return get(key, (str) -> Duration.ofMillis(TimeUtils.parseTime(str)), def);
     }
 
     public @Unmodifiable @NotNull List<@NotNull String> keyedList(@NotNull String baseKey) {
@@ -436,21 +425,21 @@ public class Parameters implements Parameterizable {
     }
 
     @Contract("!null, _ -> !null")
-    public @Nullable String findKey(@Nullable String def, @NotNull String @NotNull ... keys) {
-        return findKey(def, Arrays.asList(keys));
-    }
-
-    @Contract("!null, _ -> !null")
-    public @Nullable String findKey(@Nullable String def, @NotNull String other) {
-        return isEmpty() || !contains(other) ? def : other;
+    public @Nullable String findKey(@Nullable String def, @NotNull String key) {
+        return isEmpty() || !contains(key) ? def : key;
     }
 
     @Contract("!null, _, _ -> !null")
-    public @Nullable String findKey(@Nullable String def, @NotNull String other1, @NotNull String other2) {
+    public @Nullable String findKey(@Nullable String def, @NotNull String key1, @NotNull String key2) {
         if (isEmpty()) return def;
-        if (contains(other1)) return other1;
-        if (contains(other2)) return other2;
+        if (contains(key1)) return key1;
+        if (contains(key2)) return key2;
         return def;
+    }
+
+    @Contract("!null, _ -> !null")
+    public @Nullable String findKey(@Nullable String def, @NotNull String @NotNull ... keys) {
+        return findKey(def, Arrays.asList(keys));
     }
 
     @Contract("!null, _ -> !null")
@@ -466,20 +455,23 @@ public class Parameters implements Parameterizable {
 
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull String key, @NotNull String value) {
+        if (isEmpty()) return singleton(key, value);
         Map<String, String> updated = new LinkedHashMap<>(this.params);
         updated.put(key, value);
         return fromMap(updated);
     }
 
     @Contract(pure = true)
-    public @NotNull Parameters with(@NotNull Parameters params) {
-        return with(params.originMap());
+    public @NotNull Parameters with(@NotNull Parameters add) {
+        if (isEmpty()) return add;
+        return with(add.originMap());
     }
 
     @Contract(pure = true)
-    public @NotNull Parameters with(@NotNull Map<String, String> params) {
+    public @NotNull Parameters with(@NotNull Map<String, String> add) {
+        if (add.size() <= 1) return this; // Check for Parameters.ORIGIN
         Map<String, String> updated = new LinkedHashMap<>(this.params);
-        updated.putAll(params);
+        updated.putAll(add);
         return fromMap(updated);
     }
 
