@@ -30,7 +30,7 @@ import me.fromgate.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"EQUALITY", "EQUAL", "COMPARE"})
-public class EqualsFlag implements Flag {
+public class EqualsFlag implements Flag { // TODO Rewrite the check
     @Override
     public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

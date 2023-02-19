@@ -464,12 +464,12 @@ public class Parameters implements Parameterizable {
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull Parameters add) {
         if (isEmpty()) return add;
+        if (add.isEmpty()) return this;
         return with(add.originMap());
     }
 
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull Map<String, String> add) {
-        if (add.size() <= 1) return this; // Check 1 for Parameters.ORIGIN
         Map<String, String> updated = new LinkedHashMap<>(this.params);
         updated.putAll(add);
         return fromMap(updated);

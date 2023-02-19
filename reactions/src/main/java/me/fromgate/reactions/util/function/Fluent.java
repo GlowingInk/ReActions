@@ -27,6 +27,10 @@ public class Fluent<T> {
         return this;
     }
 
+    public <F> @NotNull Fluent<F> then(@NotNull SafeFunction<T, F> funct) {
+        return new Fluent<>(funct.apply(obj));
+    }
+
     public <R> @Nullable R endUnsafe(@NotNull Function<T, R> funct) {
         return funct.apply(obj);
     }
