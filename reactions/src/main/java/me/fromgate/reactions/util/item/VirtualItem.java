@@ -28,7 +28,7 @@ public final class VirtualItem implements Parameterizable {
     /**
      * A VirtualItem that accepts only null or air ItemStacks
      */
-    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, List.of(), Parameters.fromMap(Map.of("type", "AIR")));
+    public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, List.of(), Parameters.singleton("type", "AIR"));
     /**
      * A VirtualItem that accepts any ItemStacks but null or air
      */
@@ -54,7 +54,7 @@ public final class VirtualItem implements Parameterizable {
         public @NotNull String asString() {
             return "true";
         }
-    }), Parameters.fromMap(Map.of("invalid", "true")));
+    }), Parameters.singleton("invalid", "true"));
 
     private static final Map<String, MetaAspect> ASPECTS_BY_NAME = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaAspect> ASPECTS = new ArrayList<>();
@@ -138,8 +138,13 @@ public final class VirtualItem implements Parameterizable {
         if (clone) {
             item = item.clone();
         }
-        if (type != null && type.isItem() && item.getType() != type) {
-            item.setType(type);
+        if (type != null) {
+            if (type.isEmpty()) {
+                item.setType(Material.AIR);
+                return item;
+            } else if (type.isItem() && item.getType() != type) {
+                item.setType(type);
+            }
         }
         if (amount > 0) {
             item.setAmount(amount);
