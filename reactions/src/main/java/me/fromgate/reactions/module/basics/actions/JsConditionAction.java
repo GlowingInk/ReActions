@@ -22,7 +22,6 @@ import javax.script.SimpleScriptContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -108,27 +107,28 @@ public class JsConditionAction implements Action {
     }
 
     private boolean executeActions(Environment env, String paramStr) {
-        List<StoredAction> actions = new ArrayList<>();
         Parameters params = Parameters.fromString(paramStr);
         if (!params.contains("run")) return false;
-        params = Parameters.fromString(params.getString("run"));
+        params = params.getParameters("run");
         if (params.isEmpty() || !params.contains("actions")) return false;
-        params = Parameters.fromString(params.getString("actions"));
+        params = params.getParameters("actions");
 
-        if (!params.contains("action1")) return false;
-        for (String actionKey : params.keys()) {
-            if (!((actionKey.toLowerCase(Locale.ROOT)).startsWith("action"))) continue;
-            if (params.isEmpty() || !params.origin().contains("=")) continue;
-            String actionStr = params.getString(actionKey);
+        List<StoredAction> toExecute = new ArrayList<>();
+        params.keyedListIterate("action", (actionKey, actions) -> {
+            if (actions.isEmpty()) return;
+            String actionStr = actions.getString(actionKey);
 
-            String name = actionStr.substring(0, actionStr.indexOf("="));
-            String param = actionStr.substring(actionStr.indexOf("=") + 1);
+            int index = actionStr.indexOf('=');
+            if (index == -1) return;
+            String name = actionStr.substring(0, index);
+            String param = actionStr.substring(index + 1);
             Action action = ReActions.getActivities().getAction(name);
-            if (action == null) continue;
-            actions.add(new StoredAction(action, param));
+            if (action == null) return;
+            toExecute.add(new StoredAction(action, param));
+        });
+        if (!toExecute.isEmpty()) {
+            toExecute.forEach(action -> action.getActivity().proceed(env, action.getParameters()));
         }
-        if (!actions.isEmpty())
-            actions.forEach(action -> action.getActivity().proceed(env, action.getParameters()));
         return true;
     }
 }

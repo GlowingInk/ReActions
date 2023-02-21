@@ -374,19 +374,34 @@ public class Parameters implements Parameterizable {
     }
 
     public @Unmodifiable @NotNull List<@NotNull String> keyedList(@NotNull String baseKey) {
-        String key = baseKey + "1";
-        if (contains(key)) {
+        baseKey = baseKey.toLowerCase(Locale.ROOT);
+        String numberedKey = baseKey + "1";
+        if (contains(numberedKey)) {
             List<String> keys = new ArrayList<>();
-            keys.add(key);
+            keys.add(numberedKey);
             int i = 1;
-            while (contains(key = baseKey + (++i))) {
-                keys.add(key);
+            while (contains(numberedKey = baseKey + (++i))) {
+                keys.add(numberedKey);
             }
             return Collections.unmodifiableList(keys);
         } else if (contains(baseKey)) {
             return List.of(baseKey);
         } else {
             return List.of();
+        }
+    }
+
+    public void keyedListIterate(@NotNull String baseKey, @NotNull BiConsumer<String, Parameters> action) {
+        baseKey = baseKey.toLowerCase(Locale.ROOT);
+        String numberedKey = baseKey + "1";
+        if (contains(numberedKey)) {
+            action.accept(numberedKey, this);
+            int i = 1;
+            while (contains(numberedKey = baseKey + (++i))) {
+                action.accept(numberedKey, this);
+            }
+        } else if (contains(baseKey)) {
+            action.accept(baseKey, this);
         }
     }
 
