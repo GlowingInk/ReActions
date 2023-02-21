@@ -1,0 +1,44 @@
+package fun.reactions.module;
+
+import fun.reactions.ReActions;
+import fun.reactions.logic.activators.type.ActivatorType;
+import fun.reactions.logic.activity.actions.Action;
+import fun.reactions.logic.activity.flags.Flag;
+import fun.reactions.placeholders.Placeholder;
+import fun.reactions.selectors.Selector;
+import fun.reactions.util.naming.Named;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.List;
+
+public interface Module extends Named {
+
+    boolean isPluginDepended();
+
+    default boolean init(@NotNull ReActions.Platform platform) {
+        return true;
+    }
+
+    @NotNull Collection<String> getAuthors();
+
+    default @NotNull Collection<ActivatorType> getActivatorTypes(@NotNull ReActions.Platform platform) {
+        return List.of();
+    }
+
+    default @NotNull Collection<Action> getActions(@NotNull ReActions.Platform platform) {
+        return List.of();
+    }
+
+    default @NotNull Collection<Flag> getFlags(@NotNull ReActions.Platform platform) {
+        return List.of();
+    }
+
+    default @NotNull Collection<Placeholder> getPlaceholders(@NotNull ReActions.Platform platform) {
+        return List.of();
+    }
+
+    default @NotNull Collection<Selector> getSelectors(@NotNull ReActions.Platform platform) {
+        return List.of();
+    }
+}

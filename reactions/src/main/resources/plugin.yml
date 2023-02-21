@@ -1,10 +1,10 @@
 name: ReActions
 api-version: '1.16'
-main: me.fromgate.reactions.ReActionsPlugin
-version: '${project.version}-${build-version}'
+main: fun.reactions.ReActionsPlugin
+version: '${project.version}${build-suffix}'
 website: https://github.com/imDaniX/ReActions
 authors:
-  - fromgate fromgate@gmail.com
+  - fromgate
   - MaxDikiy
   - imDaniX
 softdepend: [Vault,WorldGuard,WorldEdit,ProtocolLib,PlaceholderAPI]

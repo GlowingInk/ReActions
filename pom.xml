@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.fromgate.reactions</groupId>
+    <groupId>fun.reactions</groupId>
     <artifactId>reactions-project</artifactId>
     <version>0.14.3</version>
     <packaging>pom</packaging>
@@ -17,7 +17,7 @@
 
     <description>Simplest scripting engine for Bukkit</description>
     <properties>
-        <build-version>custom</build-version>
+        <build-suffix>-custom</build-suffix>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -31,7 +31,7 @@
                 </property>
             </activation>
             <properties>
-                <build-version>b${env.GITHUB_RUN_NUMBER}gh</build-version>
+                <build-suffix>-gh${env.GITHUB_RUN_NUMBER}</build-suffix>
             </properties>
         </profile>
     </profiles>

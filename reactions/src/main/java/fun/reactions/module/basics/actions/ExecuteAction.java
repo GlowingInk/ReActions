@@ -1,0 +1,89 @@
+/*
+ *  ReActions, Minecraft bukkit plugin
+ *  (c)2012-2017, fromgate, fromgate@gmail.com
+ *  http://dev.bukkit.org/server-mods/reactions/
+ *
+ *  This file is part of ReActions.
+ *
+ *  ReActions is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ReActions is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with ReActions.  If not, see <http://www.gnorg/licenses/>.
+ *
+ */
+
+package fun.reactions.module.basics.actions;
+
+import fun.reactions.ReActions;
+import fun.reactions.logic.activity.actions.Action;
+import fun.reactions.logic.activity.actions.StoredAction;
+import fun.reactions.logic.environment.Environment;
+import fun.reactions.time.wait.WaitTask;
+import fun.reactions.util.TimeUtils;
+import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.parameter.Parameters;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Aliased.Names({"RUN", "EXEC"})
+public class ExecuteAction implements Action {
+    private final ReActions.Platform platform;
+    private final Action functAction;
+
+    public ExecuteAction(@NotNull ReActions.Platform platform) {
+        this.platform = platform;
+        this.functAction = Objects.requireNonNull(platform.getActivities().getAction("RUN_FUNCTION"));
+    }
+
+    @Override
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
+        int repeat = Math.max(params.getInteger("repeat", 1), 1);
+        long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));
+        List<Player> targets = new ArrayList<>();
+        if (params.contains("player")) {
+            targets.addAll(platform.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"), "player")));
+        }
+        if (targets.isEmpty()) {
+            if (!params.containsAny(ReActions.getSelectors().getAllKeys())) {  // TODO Remove legacy compatibility (selectors)
+                targets.add(env.getPlayer());
+            } else {
+                return false;
+            }
+        }
+        var storedFunct = List.of(new StoredAction(functAction, paramsStr));
+        for (int i = 0; i < repeat; i++) {
+            for (Player player : targets) {
+                platform.getWaiter().schedule(new WaitTask(
+                        env.getVariables().fork(),
+                        player == null ? null : player.getUniqueId(),
+                        storedFunct,
+                        delayMs * (i + 1)
+                ));
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "EXECUTE";
+    }
+
+    @Override
+    public boolean requiresPlayer() {
+        return false;
+    }
+}

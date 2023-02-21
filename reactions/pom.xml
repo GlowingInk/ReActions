@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>reactions-project</artifactId>
-        <groupId>me.fromgate.reactions</groupId>
+        <groupId>fun.reactions</groupId>
         <version>0.14.3</version>
     </parent>
 
@@ -33,23 +33,23 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>me.fromgate.reactions.externals.bstats</shadedPattern>
+                                    <shadedPattern>fun.reactions.externals.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.quartz</pattern>
-                                    <shadedPattern>me.fromgate.reactions.time</shadedPattern>
+                                    <shadedPattern>fun.reactions.time</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.springframework.util</pattern>
-                                    <shadedPattern>me.fromgate.reactions.util.collections</shadedPattern>
+                                    <shadedPattern>fun.reactions.util.collections</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>de.themoep.minedown.adventure</pattern>
-                                    <shadedPattern>me.fromgate.reactions.util.message.minedown</shadedPattern>
+                                    <shadedPattern>fun.reactions.util.message.minedown</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>me.imdanix.math</pattern>
-                                    <shadedPattern>me.fromgate.reactions.util.math</shadedPattern>
+                                    <shadedPattern>fun.reactions.util.math</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
