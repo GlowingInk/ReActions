@@ -42,11 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class VariablesManager { // TODO: Should probably be reworked from scratch
+public class PersistentVariablesManager { // TODO: Should probably be reworked from scratch
 
     private final Map<String, String> vars;
 
-    public VariablesManager() {
+    public PersistentVariablesManager() {
         this.vars = Maps.caseInsensitive();
     }
 

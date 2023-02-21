@@ -96,8 +96,6 @@ public abstract class ActivationContext {
     }
 
     public boolean isCancelled() {
-        return getVariables()
-                .map(vars -> vars.getChanged(CANCEL_EVENT, Boolean::valueOf).orElse(false))
-                .orElse(false);
+        return variables != null && variables.getChanged(CANCEL_EVENT, Boolean::valueOf).orElse(false);
     }
 }

@@ -24,7 +24,6 @@ package fun.reactions.module.basics;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.commands.custom.FakeCommander;
 import fun.reactions.externals.worldguard.RaWorldGuard;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
@@ -84,11 +83,7 @@ public final class ContextManager {
 
     public static boolean triggerPrecommand(Player player, CommandSender sender, String fullCommand) {
         CommandContext context = new CommandContext(player, sender, fullCommand);
-        boolean activated = activate(context);
-        return context.isInitialized() && (
-                context.isCancelled() |
-                FakeCommander.triggerRaCommand(context, activated)
-        );
+        return context.isCancelled();
     }
 
     public static boolean triggerMobClick(Player player, LivingEntity mob) {
@@ -198,18 +193,18 @@ public final class ContextManager {
     // TODO: I think all of it should be inside ActionExecute class
 
     @Deprecated
-    public static boolean triggerExec(CommandSender sender, String param) {
+    public static boolean triggerFunction(CommandSender sender, String param) {
         if (param.isEmpty()) return false;
-        return triggerExec(sender, Parameters.fromString(param, "player"));
+        return triggerFunction(sender, Parameters.fromString(param, "player"));
     }
 
     @Deprecated
-    public static boolean triggerExec(CommandSender sender, Parameters param) {
-        return triggerExec(sender, param, new Variables());
+    public static boolean triggerFunction(CommandSender sender, Parameters param) {
+        return triggerFunction(sender, param, new Variables());
     }
 
     @Deprecated
-    public static boolean triggerExec(CommandSender sender, Parameters param, Variables vars) {
+    public static boolean triggerFunction(CommandSender sender, Parameters param, Variables vars) {
         if (param.isEmpty()) return false;
         final Player senderPlayer = (sender instanceof Player) ? (Player) sender : null;
         final String id = param.getString("activator", param.getString("exec"));
@@ -251,7 +246,7 @@ public final class ContextManager {
     }
 
     @Deprecated
-    public static boolean triggerExec(CommandSender sender, String id, Variables vars) {
+    public static boolean triggerFunction(CommandSender sender, String id, Variables vars) {
         final Player player = (sender instanceof Player) ? (Player) sender : null;
         Activator act = ReActions.getActivators().getActivator(id);
         if (act == null) {

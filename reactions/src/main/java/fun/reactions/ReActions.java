@@ -1,5 +1,6 @@
 package fun.reactions;
 
+import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
@@ -43,11 +44,15 @@ public final class ReActions {
         return platform.getActivities();
     }
 
+    public static UserCommandsManager getCommands() {
+        return platform.getCommands();
+    }
+
     public static PlaceholdersManager getPlaceholders() {
         return platform.getPlaceholders();
     }
 
-    public static VariablesManager getVariables() {
+    public static PersistentVariablesManager getVariables() {
         return platform.getVariables();
     }
 
@@ -71,8 +76,9 @@ public final class ReActions {
         @NotNull ActivatorTypesRegistry getActivatorTypes();
         @NotNull ActivatorsManager getActivators();
         @NotNull ActivitiesRegistry getActivities();
+        @NotNull UserCommandsManager getCommands();
         @NotNull PlaceholdersManager getPlaceholders();
-        @NotNull VariablesManager getVariables();
+        @NotNull PersistentVariablesManager getVariables();
         @NotNull SelectorsManager getSelectors();
         @NotNull WaitingManager getWaiter();
         @NotNull ModulesRegistry getModules();

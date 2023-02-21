@@ -1,4 +1,4 @@
-package fun.reactions.commands.custom;
+package fun.reactions.commands.user;
 
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;

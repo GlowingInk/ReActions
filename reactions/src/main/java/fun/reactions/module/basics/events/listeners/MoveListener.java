@@ -20,13 +20,13 @@
  *
  */
 
-package fun.reactions.events.listeners;
+package fun.reactions.module.basics.events.listeners;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.events.PlayerMoveByBlockEvent;
-import fun.reactions.events.PlayerStayEvent;
 import fun.reactions.holders.PushBack;
+import fun.reactions.module.basics.events.PlayerMoveByBlockEvent;
+import fun.reactions.module.basics.events.PlayerStayEvent;
 import fun.reactions.util.location.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

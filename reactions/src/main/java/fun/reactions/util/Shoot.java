@@ -104,7 +104,7 @@ public final class Shoot {
             vars.put("shooter", Variable.simple(shooter.getName()));
             vars.put("shooterloc", Variable.simple(LocationUtils.locationToString(shooter.getLocation())));
         }
-        ContextManager.triggerExec(shooter, param, new Variables(vars));
+        ContextManager.triggerFunction(shooter, param, new Variables(vars));
     }
 
     private static List<Block> getBeam(LivingEntity p, int distance) {

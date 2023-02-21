@@ -1,4 +1,4 @@
-package fun.reactions.events;
+package fun.reactions.module.basics.events;
 
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;

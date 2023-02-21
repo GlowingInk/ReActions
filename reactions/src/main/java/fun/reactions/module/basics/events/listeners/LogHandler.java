@@ -20,7 +20,7 @@
  *
  */
 
-package fun.reactions.events.listeners;
+package fun.reactions.module.basics.events.listeners;
 
 import fun.reactions.module.basics.ContextManager;
 import fun.reactions.module.basics.activators.MessageActivator;

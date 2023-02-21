@@ -1,7 +1,7 @@
 package fun.reactions.externals.placeholderapi;
 
+import fun.reactions.PersistentVariablesManager;
 import fun.reactions.ReActions;
-import fun.reactions.VariablesManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.util.StringUtil;
@@ -34,7 +34,7 @@ public class RaPapiExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String param) {
-        VariablesManager variables = ReActions.getVariables();
+        PersistentVariablesManager variables = ReActions.getVariables();
 
         if (StringUtil.startsWithIgnoreCase(param, "varp:")) {
             return player.getName() == null ?

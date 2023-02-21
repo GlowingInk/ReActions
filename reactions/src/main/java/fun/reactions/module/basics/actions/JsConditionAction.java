@@ -64,7 +64,7 @@ public class JsConditionAction implements Action {
         param = param.with("player", p == null ? "~null" : p.getName());
         Map<String, Variable> vars = new HashMap<>();
         vars.put("condition", Variable.simple(condition));
-        ContextManager.triggerExec(p, param, new Variables(vars));
+        ContextManager.triggerFunction(p, param, new Variables(vars));
         return true;
     }
 

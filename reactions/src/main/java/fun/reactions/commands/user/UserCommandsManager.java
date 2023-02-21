@@ -1,7 +1,8 @@
-package fun.reactions.commands.custom;
+package fun.reactions.commands.user;
 
-import fun.reactions.model.environment.Variables;
-import fun.reactions.module.basics.ContextManager;
+import fun.reactions.ReActions;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basics.context.CommandContext;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
@@ -9,7 +10,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,21 +25,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-// TODO: Remove statics
-public final class FakeCommander {
+public final class UserCommandsManager implements Listener {
+    private final ReActions.Platform platform;
     // TODO: Use Paper's async tab completer
-    private static final Map<String, UserCommand> commands = new HashMap<>();
-    private static File file;
+    private final Map<String, UserCommand> commands;
+    private final File file;
 
-    private FakeCommander() {}
-
-    public static void init(Plugin plugin) {
-        file = new File(plugin.getDataFolder(), "commands.yml");
-        if (!file.exists()) plugin.saveResource("commands.yml", false);
-        updateCommands();
+    public UserCommandsManager(@NotNull ReActions.Platform platform) {
+        this.platform = platform;
+        this.commands = new HashMap<>();
+        this.file = new File(platform.getDataFolder(), "commands.yml");
+        if (!file.exists()) platform.getPlugin().saveResource("commands.yml", false);
     }
 
-    public static void updateCommands() {
+    public void reload() {
         YamlConfiguration cfg = new YamlConfiguration();
         if (!FileUtils.loadCfg(cfg, file, "Failed to load commands")) return;
         commands.clear();
@@ -52,19 +56,41 @@ public final class FakeCommander {
         }
     }
 
-    public static boolean triggerRaCommand(CommandContext storage, boolean activated) {
-        UserCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ROOT));
+    @EventHandler(ignoreCancelled = true)
+    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
+        if (triggerRaCommand(new CommandContext(
+                event.getPlayer(), event.getPlayer(), event.getMessage().substring(1))
+        )) event.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onServerCommand(ServerCommandEvent event) {
+        if (triggerRaCommand(new CommandContext(
+                null, event.getSender(), event.getCommand()
+        ))) event.setCancelled(true);
+    }
+
+    private boolean triggerRaCommand(@NotNull CommandContext context) {
+        UserCommand raCmd = commands.get(context.getLabel().toLowerCase(Locale.ROOT));
         if (raCmd == null) return false;
-        String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
+        String exec = raCmd.executeCommand(context.getSender(), context.getArgs());
         if (exec != null) {
-            if (!activated) storage.initialize();
-            ContextManager.triggerExec(storage.getSender(), exec, storage.getVariables().orElse(new Variables()));
+            context.initialize();
+            Activator activator = platform.getActivators().getActivator(exec);
+            if (activator == null) {
+                platform.logger().warn("There's no activators named " + exec);
+                return false;
+            }
+            Logic logic = activator.getLogic();
+            logic.execute(context.createEnvironment(
+                    platform,
+                    logic.getName()
+            ));
         }
-        // It's not activator - context will not be generated
         return raCmd.isOverride();
     }
 
-    private static boolean register(String command, String prefix, List<String> aliases, UserCommand userCommand, boolean toBukkit) {
+    private boolean register(String command, String prefix, List<String> aliases, UserCommand userCommand, boolean toBukkit) {
         if (Utils.isStringEmpty(command)) return false;
         command = command.toLowerCase(Locale.ROOT);
         prefix = Utils.isStringEmpty(prefix) ? command : prefix.toLowerCase(Locale.ROOT);
@@ -81,11 +107,11 @@ public final class FakeCommander {
         return true;
     }
 
-    private static Set<UserCommand> getCommandsSet() {
+    private @NotNull Set<UserCommand> getCommandsSet() {
         return new HashSet<>(commands.values());
     }
 
-    public static List<String> list() {
+    public @NotNull List<String> list() {
         List<String> list = new ArrayList<>();
         for (UserCommand cmd : getCommandsSet()) {
             List<String> sublist = cmd.list();

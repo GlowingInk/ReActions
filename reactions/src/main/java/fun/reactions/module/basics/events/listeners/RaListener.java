@@ -1,13 +1,13 @@
-package fun.reactions.events.listeners;
+package fun.reactions.module.basics.events.listeners;
 
-import fun.reactions.events.PlayerMoveByBlockEvent;
-import fun.reactions.events.PlayerPickupItemEvent;
-import fun.reactions.events.PlayerStayEvent;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.ContextManager;
 import fun.reactions.module.basics.ItemContextManager;
 import fun.reactions.module.basics.context.DropContext;
+import fun.reactions.module.basics.events.PlayerMoveByBlockEvent;
+import fun.reactions.module.basics.events.PlayerPickupItemEvent;
+import fun.reactions.module.basics.events.PlayerStayEvent;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.item.VirtualItem;
 import org.bukkit.event.EventHandler;

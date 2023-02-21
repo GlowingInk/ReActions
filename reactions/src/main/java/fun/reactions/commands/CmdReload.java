@@ -2,7 +2,6 @@ package fun.reactions.commands;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.commands.custom.FakeCommander;
 import fun.reactions.externals.worldguard.RaWorldGuard;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
@@ -35,7 +34,7 @@ public class CmdReload extends Cmd {
             if (check.contains("c")) {
                 ReActions.getPlugin().reloadConfig();
                 Cfg.load(ReActions.getPlugin().getConfig());
-                FakeCommander.updateCommands();
+                ReActions.getCommands().reload();
             }
             if (check.contains("d"))
                 CooldownManager.load();
@@ -60,7 +59,7 @@ public class CmdReload extends Cmd {
             else ReActions.getVariables().loadVars();
             TimersManager.init();
             InventoryMenu.load();
-            FakeCommander.updateCommands();
+            ReActions.getCommands().reload();
         }
         Msg.MSG_CMDRELOAD.print(sender, ReActions.getActivators().search().all().size(), LocationHolder.sizeTpLoc());
         return true;

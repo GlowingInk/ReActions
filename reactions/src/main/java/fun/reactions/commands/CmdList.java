@@ -1,7 +1,6 @@
 package fun.reactions.commands;
 
 import fun.reactions.ReActions;
-import fun.reactions.commands.custom.FakeCommander;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.activators.Activator;
@@ -22,8 +21,6 @@ import java.util.Locale;
 @CmdDefine(command = "reactions", description = Msg.CMD_LIST, permission = "reactions.config",
         subCommands = {"list"}, allowConsole = true, shortDescription = "&3/react list [loc|group|type] [page]")
 public class CmdList extends Cmd {
-
-
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
@@ -51,7 +48,7 @@ public class CmdList extends Cmd {
                 case "loc", "location" -> LocationHolder.printLocList(sender, page, lpp);
                 case "var", "variables", "variable" -> ReActions.getVariables().printList(sender, page, mask);
                 case "menu", "menus" -> InventoryMenu.printMenuList(sender, page, mask);
-                case "cmd", "commands" -> FakeCommander.list().forEach(sender::sendMessage);
+                case "cmd", "commands" -> ReActions.getCommands().list().forEach(sender::sendMessage);
                 default -> printAct(sender, page, lpp);
             }
         }

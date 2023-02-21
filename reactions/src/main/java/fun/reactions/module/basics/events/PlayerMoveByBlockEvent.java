@@ -1,4 +1,4 @@
-package fun.reactions.events;
+package fun.reactions.module.basics.events;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -7,17 +7,21 @@ import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-public class PlayerStayEvent extends PlayerEvent {
+public class PlayerMoveByBlockEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
 
-    private final Location stay;
+    private final Location to;
+    private final Location from;
 
-    public PlayerStayEvent(Player player, Location stay) {
+    public PlayerMoveByBlockEvent(Player player, Location to, Location from) {
         super(player);
-        this.stay = stay;
+        this.to = to;
+        this.from = from;
     }
 
-    public Location getStay() {return this.stay;}
+    public Location getTo() {return this.to;}
+
+    public Location getFrom() {return this.from;}
 
     public static HandlerList getHandlerList() {
         return handlers;

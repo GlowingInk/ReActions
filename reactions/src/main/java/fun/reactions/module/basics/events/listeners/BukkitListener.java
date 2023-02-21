@@ -1,8 +1,6 @@
-package fun.reactions.events.listeners;
+package fun.reactions.module.basics.events.listeners;
 
 import fun.reactions.ReActions;
-import fun.reactions.events.PlayerAttacksEntityEvent;
-import fun.reactions.events.PlayerPickupItemEvent;
 import fun.reactions.externals.RaVault;
 import fun.reactions.holders.PlayerRespawner;
 import fun.reactions.holders.Teleporter;
@@ -20,6 +18,8 @@ import fun.reactions.module.basics.context.MessageContext;
 import fun.reactions.module.basics.context.MobDamageContext;
 import fun.reactions.module.basics.context.QuitContext;
 import fun.reactions.module.basics.context.TeleportContext;
+import fun.reactions.module.basics.events.PlayerAttacksEntityEvent;
+import fun.reactions.module.basics.events.PlayerPickupItemEvent;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Rng;
@@ -70,7 +70,7 @@ public class BukkitListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPickupEvent(EntityPickupItemEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
-        PlayerPickupItemEvent plEvent = new PlayerPickupItemEvent((Player) event.getEntity(), event.getItem());
+        fun.reactions.module.basics.events.PlayerPickupItemEvent plEvent = new PlayerPickupItemEvent((Player) event.getEntity(), event.getItem());
         Bukkit.getPluginManager().callEvent(plEvent);
         event.setCancelled(plEvent.isCancelled());
     }
@@ -226,7 +226,7 @@ public class BukkitListener implements Listener {
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
             String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
-            ContextManager.triggerExec(killer, exec, new Variables());
+            ContextManager.triggerFunction(killer, exec, new Variables());
         }
 
     }

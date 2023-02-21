@@ -1,4 +1,4 @@
-package fun.reactions.events.listeners;
+package fun.reactions.module.basics.events.listeners;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
