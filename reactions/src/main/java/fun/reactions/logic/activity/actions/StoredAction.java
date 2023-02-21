@@ -12,7 +12,7 @@ public class StoredAction implements Parameterizable {
     public StoredAction(@NotNull Action action, @NotNull String params) {
         this.action = action;
         this.params = params;
-        this.placeholders = params.contains("%");
+        this.placeholders = params.indexOf('%') != -1;
     }
 
     public @NotNull Action getActivity() {

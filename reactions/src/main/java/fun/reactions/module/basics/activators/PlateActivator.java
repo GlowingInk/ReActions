@@ -26,7 +26,7 @@ import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
 import fun.reactions.logic.activators.Locatable;
-import fun.reactions.module.basics.details.PlateContext;
+import fun.reactions.module.basics.context.PlateContext;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.parameter.BlockParameters;

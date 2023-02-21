@@ -1,8 +1,8 @@
 package fun.reactions.commands.custom;
 
 import fun.reactions.logic.environment.Variables;
-import fun.reactions.module.basics.DetailsManager;
-import fun.reactions.module.basics.details.CommandContext;
+import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basics.context.CommandContext;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
 import org.bukkit.Bukkit;
@@ -58,7 +58,7 @@ public final class FakeCommander {
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());
         if (exec != null) {
             if (!activated) storage.initialize();
-            DetailsManager.triggerExec(storage.getSender(), exec, storage.getVariables().orElse(new Variables()));
+            ContextManager.triggerExec(storage.getSender(), exec, storage.getVariables().orElse(new Variables()));
         }
         // It's not activator - context will not be generated
         return raCmd.isOverride();

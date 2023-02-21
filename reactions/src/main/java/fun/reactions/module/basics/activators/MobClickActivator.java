@@ -26,7 +26,7 @@ import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
 import fun.reactions.logic.activators.Locatable;
-import fun.reactions.module.basics.details.MobClickContext;
+import fun.reactions.module.basics.context.MobClickContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;

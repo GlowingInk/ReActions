@@ -58,11 +58,11 @@ public class ModulesRegistry {
         if (!module.init(platform)) {
             return;
         }
-        register("activators", module.getActivatorTypes(platform), ActivatorType::getName, platform.getActivatorTypes()::registerType);
-        register("actions", module.getActions(platform), Action::getName, platform.getActivities()::registerAction);
-        register("flags", module.getFlags(platform), Flag::getName, platform.getActivities()::registerFlag);
-        register("placeholders", module.getPlaceholders(platform), Placeholder::getName, platform.getPlaceholders()::registerPlaceholder);
-        register("selectors", module.getSelectors(platform), Selector::getName, platform.getSelectors()::registerSelector);
+        register("activators", module.getActivatorTypes(), ActivatorType::getName, platform.getActivatorTypes()::registerType);
+        register("actions", module.getActions(), Action::getName, platform.getActivities()::registerAction);
+        register("flags", module.getFlags(), Flag::getName, platform.getActivities()::registerFlag);
+        register("placeholders", module.getPlaceholders(), Placeholder::getName, platform.getPlaceholders()::registerPlaceholder);
+        register("selectors", module.getSelectors(), Selector::getName, platform.getSelectors()::registerSelector);
     }
 
     private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {

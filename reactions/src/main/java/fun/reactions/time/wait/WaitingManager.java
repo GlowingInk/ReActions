@@ -115,7 +115,7 @@ public class WaitingManager implements Saveable {
                     continue;
                 }
             }
-            task.execute();
+            task.execute(rea);
             iterator.remove();
         }
         this.next = tasks.isEmpty() ? null : tasks.first();

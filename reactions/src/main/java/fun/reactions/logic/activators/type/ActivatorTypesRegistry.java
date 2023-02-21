@@ -4,7 +4,6 @@ import fun.reactions.ReActions;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.activators.FunctionActivator;
 import fun.reactions.util.function.RaGenerator;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
@@ -31,7 +30,6 @@ public class ActivatorTypesRegistry {
         logger = platform.logger();
         types = new HashMap<>();
         typesAliases = new HashMap<>();
-        registerType(typeOf(FunctionActivator.class, "FUNCTION", FunctionActivator::create, FunctionActivator::create));
     }
 
     public void registerType(@NotNull ActivatorType type) {

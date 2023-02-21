@@ -22,7 +22,7 @@
 
 package fun.reactions.events.listeners;
 
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.module.basics.activators.MessageActivator;
 
 import java.util.logging.LogRecord;
@@ -31,7 +31,7 @@ import java.util.logging.StreamHandler;
 public class LogHandler extends StreamHandler {
     @Override
     public void publish(LogRecord record) {
-        DetailsManager.triggerMessage(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
+        ContextManager.triggerMessage(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
         super.publish(record);
     }
 }

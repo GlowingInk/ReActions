@@ -22,6 +22,7 @@
 
 package fun.reactions.logic.activators;
 
+import fun.reactions.ReActions;
 import fun.reactions.logic.environment.Environment;
 import fun.reactions.logic.environment.Variable;
 import fun.reactions.logic.environment.Variables;
@@ -63,9 +64,9 @@ public abstract class ActivationContext {
     }
 
     @Contract(pure = true)
-    public final @NotNull Environment createEnvironment(@NotNull String activatorName) {
+    public final @NotNull Environment createEnvironment(@NotNull ReActions.Platform platform, @NotNull String activatorName) {
         initialize();
-        return new Environment(activatorName, variables, player);
+        return new Environment(platform, activatorName, variables, player);
     }
 
     public final void initialize() {

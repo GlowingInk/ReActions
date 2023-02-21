@@ -6,7 +6,7 @@ import fun.reactions.logic.activity.actions.StoredAction;
 import fun.reactions.logic.environment.Environment;
 import fun.reactions.logic.environment.Variable;
 import fun.reactions.logic.environment.Variables;
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
@@ -64,7 +64,7 @@ public class JsConditionAction implements Action {
         param = param.with("player", p == null ? "~null" : p.getName());
         Map<String, Variable> vars = new HashMap<>();
         vars.put("condition", Variable.simple(condition));
-        DetailsManager.triggerExec(p, param, new Variables(vars));
+        ContextManager.triggerExec(p, param, new Variables(vars));
         return true;
     }
 

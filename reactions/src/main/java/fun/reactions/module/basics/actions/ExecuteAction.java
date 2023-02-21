@@ -35,20 +35,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Aliased.Names({"RUN", "EXEC"})
 public class ExecuteAction implements Action {
-    private final ReActions.Platform platform;
-    private final Action functAction;
+    private final RunFunctionAction functAction;
 
-    public ExecuteAction(@NotNull ReActions.Platform platform) {
-        this.platform = platform;
-        this.functAction = Objects.requireNonNull(platform.getActivities().getAction("RUN_FUNCTION"));
+    public ExecuteAction(@NotNull RunFunctionAction functAction) {
+        this.functAction = functAction;
     }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        ReActions.Platform platform = env.getPlatform();
         Parameters params = Parameters.fromString(paramsStr);
         int repeat = Math.max(params.getInteger("repeat", 1), 1);
         long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));

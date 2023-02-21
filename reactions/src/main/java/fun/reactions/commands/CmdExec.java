@@ -1,6 +1,6 @@
 package fun.reactions.commands;
 
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,7 @@ public class CmdExec extends Cmd {
         if (args.length == 0) return false;
         String commandLine = String.join(" ", args);
         Parameters param = Parameters.fromString(commandLine, "activator");
-        if (DetailsManager.triggerExec(sender, param)) {
+        if (ContextManager.triggerExec(sender, param)) {
             Msg.printMSG(sender, "cmd_runplayer", commandLine);
         } else Msg.printMSG(sender, "cmd_runplayerfail", 'c', '6', commandLine);
         return true;

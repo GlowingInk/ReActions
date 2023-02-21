@@ -29,7 +29,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import fun.reactions.ReActions;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.environment.Variables;
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.module.basics.activators.MessageActivator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -128,7 +128,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
                             if (jsonMessage != null) message = textToString(jsonMessage);
                         }
                         if (message.isEmpty()) return;
-                        Optional<Variables> optVars = DetailsManager.triggerMessage(event.getPlayer(), MessageActivator.Source.CHAT_OUTPUT, message);
+                        Optional<Variables> optVars = ContextManager.triggerMessage(event.getPlayer(), MessageActivator.Source.CHAT_OUTPUT, message);
                         if (optVars.isEmpty()) return;
                         Variables vars = optVars.get();
                         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);

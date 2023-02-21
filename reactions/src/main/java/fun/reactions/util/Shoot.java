@@ -24,7 +24,7 @@ package fun.reactions.util;
 
 import fun.reactions.logic.environment.Variable;
 import fun.reactions.logic.environment.Variables;
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
@@ -104,7 +104,7 @@ public final class Shoot {
             vars.put("shooter", Variable.simple(shooter.getName()));
             vars.put("shooterloc", Variable.simple(LocationUtils.locationToString(shooter.getLocation())));
         }
-        DetailsManager.triggerExec(shooter, param, new Variables(vars));
+        ContextManager.triggerExec(shooter, param, new Variables(vars));
     }
 
     private static List<Block> getBeam(LivingEntity p, int distance) {

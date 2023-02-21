@@ -23,7 +23,7 @@
 package fun.reactions.time.timers;
 
 import fun.reactions.ReActions;
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.collections.Maps;
@@ -191,7 +191,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
             for (String key : timers.keySet()) {
                 Timer timer = timers.get(key);
                 if (timer.isTimeToRun()) {
-                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> DetailsManager.triggerExec(null, timer.getParams()));
+                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> ContextManager.triggerExec(null, timer.getParams()));
                 }
             }
         }, 1, 4);
@@ -202,7 +202,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), () -> {
             for (Timer timer : getServerTimers().values()) {
                 if (timer.isTimeToRun()) {
-                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> DetailsManager.triggerExec(null, timer.getParams()));
+                    Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> ContextManager.triggerExec(null, timer.getParams()));
                 }
             }
         }, 1, 20);

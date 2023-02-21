@@ -22,7 +22,7 @@
 
 package fun.reactions;
 
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.Maps;
@@ -58,7 +58,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
         String prevVal = vars.put(formatId(player, var), value);
         if (!Cfg.playerSelfVarFile) save();
         else save(player);
-        DetailsManager.triggerVariable(var, player, value, prevVal == null ? "" : prevVal);
+        ContextManager.triggerVariable(var, player, value, prevVal == null ? "" : prevVal);
     }
 
     public boolean removeVariable(@Nullable String player, @NotNull String var) {
@@ -67,7 +67,7 @@ public class VariablesManager { // TODO: Should probably be reworked from scratc
         if (prevVal == null) return false;
         if (!Cfg.playerSelfVarFile) save();
         else save(player);
-        DetailsManager.triggerVariable(var, player, "", prevVal);
+        ContextManager.triggerVariable(var, player, "", prevVal);
         return true;
     }
 

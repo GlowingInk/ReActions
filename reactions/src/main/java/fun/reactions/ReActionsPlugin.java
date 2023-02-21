@@ -87,7 +87,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
             );
             this.placeholdersManager = new LegacyPlaceholdersManager();
         }
-        this.activitiesRegistry = new ActivitiesRegistry(this);
+        this.activitiesRegistry = new ActivitiesRegistry();
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this);
         this.selectorsManager = new SelectorsManager();

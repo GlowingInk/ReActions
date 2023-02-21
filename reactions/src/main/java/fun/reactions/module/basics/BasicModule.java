@@ -43,8 +43,9 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<ActivatorType> getActivatorTypes(@NotNull ReActions.Platform platform) {
+    public @NotNull Collection<ActivatorType> getActivatorTypes() {
         return List.of(
+                typeOf(FunctionActivator.class, "FUNCTION", FunctionActivator::create, FunctionActivator::create),
                 typeOf(ButtonActivator.class, "BUTTON", ButtonActivator::create, ButtonActivator::load, true),
                 typeOf(PlateActivator.class, "PLATE", PlateActivator::create, PlateActivator::load, true),
                 typeOf(TeleportActivator.class, "TELEPORT", TeleportActivator::create, TeleportActivator::load),
@@ -93,8 +94,11 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Action> getActions(@NotNull ReActions.Platform platform) {
+    public @NotNull Collection<Action> getActions() {
+        RunFunctionAction functAction = new RunFunctionAction();
         return List.of(
+                functAction,
+                new ExecuteAction(functAction),
                 new TeleportAction(),
                 new VelocityAction(),
                 new VelocityJumpAction(),
@@ -123,7 +127,6 @@ public class BasicModule implements Module {
                 new CooldownActions(false),
                 new BackAction(),
                 new MobSpawnAction(),
-                new ExecuteAction(platform),
                 new HealAction(),
                 new BlockSetAction(),
                 new SignSetAction(),
@@ -175,7 +178,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Flag> getFlags(@NotNull ReActions.Platform platform) {
+    public @NotNull Collection<Flag> getFlags() {
         return List.of(
                 new WorldTimeFlag(),
                 new ItemFlags(ItemFlags.Type.HAND),
@@ -243,7 +246,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Placeholder> getPlaceholders(@NotNull ReActions.Platform platform) {
+    public @NotNull Collection<Placeholder> getPlaceholders() {
         return List.of(
                 new PlayerPlaceholders(),
                 new PlayerInvPlaceholder(),
@@ -262,7 +265,7 @@ public class BasicModule implements Module {
     }
 
     @Override
-    public @NotNull Collection<Selector> getSelectors(@NotNull ReActions.Platform platform) {
+    public @NotNull Collection<Selector> getSelectors() {
         return List.of(
                 new PlayerSelector(),
                 new WorldSelector(),

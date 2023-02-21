@@ -4,7 +4,7 @@ import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
 import fun.reactions.logic.activators.Locatable;
-import fun.reactions.module.basics.details.BlockBreakContext;
+import fun.reactions.module.basics.context.BlockBreakContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;

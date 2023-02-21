@@ -22,23 +22,23 @@ public interface Module extends Named {
 
     @NotNull Collection<String> getAuthors();
 
-    default @NotNull Collection<ActivatorType> getActivatorTypes(@NotNull ReActions.Platform platform) {
+    default @NotNull Collection<ActivatorType> getActivatorTypes() {
         return List.of();
     }
 
-    default @NotNull Collection<Action> getActions(@NotNull ReActions.Platform platform) {
+    default @NotNull Collection<Action> getActions() {
         return List.of();
     }
 
-    default @NotNull Collection<Flag> getFlags(@NotNull ReActions.Platform platform) {
+    default @NotNull Collection<Flag> getFlags() {
         return List.of();
     }
 
-    default @NotNull Collection<Placeholder> getPlaceholders(@NotNull ReActions.Platform platform) {
+    default @NotNull Collection<Placeholder> getPlaceholders() {
         return List.of();
     }
 
-    default @NotNull Collection<Selector> getSelectors(@NotNull ReActions.Platform platform) {
+    default @NotNull Collection<Selector> getSelectors() {
         return List.of();
     }
 }

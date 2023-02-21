@@ -7,7 +7,7 @@ import fun.reactions.externals.worldguard.RaWorldGuard;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
-import fun.reactions.module.basics.details.WeChangeContext;
+import fun.reactions.module.basics.context.WeChangeContext;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;

@@ -27,6 +27,10 @@ public final class ReActions {
         ReActions.platform = platform;
     }
 
+    public static Platform getPlatform() {
+        return platform;
+    }
+
     public static ActivatorTypesRegistry getActivatorTypes() {
         return platform.getActivatorTypes();
     }

@@ -1,8 +1,6 @@
 package fun.reactions.logic.activity;
 
-import fun.reactions.ReActions;
 import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.activity.actions.RunFunctionAction;
 import fun.reactions.logic.activity.actions.StoredAction;
 import fun.reactions.logic.activity.flags.Flag;
 import fun.reactions.logic.activity.flags.StoredFlag;
@@ -15,14 +13,12 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ActivitiesRegistry {
-
     private final Map<String, Action> actionByName;
     private final Map<String, Flag> flagByName;
 
-    public ActivitiesRegistry(@NotNull ReActions.Platform platform) {
+    public ActivitiesRegistry() {
         actionByName = new HashMap<>();
         flagByName = new HashMap<>();
-        registerAction(new RunFunctionAction(platform));
     }
 
     public void registerAction(@NotNull Action action) {

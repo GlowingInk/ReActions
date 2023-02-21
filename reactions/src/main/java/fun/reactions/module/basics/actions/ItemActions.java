@@ -25,7 +25,7 @@ package fun.reactions.module.basics.actions;
 import fun.reactions.ReActions;
 import fun.reactions.logic.activity.actions.Action;
 import fun.reactions.logic.environment.Environment;
-import fun.reactions.module.basics.ItemDetailsManager;
+import fun.reactions.module.basics.ItemContextManager;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Utils;
@@ -200,7 +200,7 @@ public class ItemActions implements Action {
         if (itemStr.isEmpty()) return false;
         if (!itemStr.equalsIgnoreCase("offhand")) return false;
         player.getInventory().setItemInOffHand(item);
-        ItemDetailsManager.triggerItemWear(player);
+        ItemContextManager.triggerItemWear(player);
         return true;
     }
 
@@ -219,7 +219,7 @@ public class ItemActions implements Action {
                 player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
             }
         }
-        ItemDetailsManager.triggerItemWear(player);
+        ItemContextManager.triggerItemWear(player);
         return true;
     }
 
@@ -305,7 +305,7 @@ public class ItemActions implements Action {
         Bukkit.getScheduler().scheduleSyncDelayedTask(ReActions.getPlugin(), () -> {
             for (ItemStack i : items)
                 ItemUtils.giveItemOrDrop(player, i);
-            ItemDetailsManager.triggerItemHold(player);
+            ItemContextManager.triggerItemHold(player);
         }, 1);
         return true;
     }

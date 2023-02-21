@@ -2,7 +2,7 @@ package fun.reactions.menu;
 
 import fun.reactions.ReActions;
 import fun.reactions.logic.environment.Variables;
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
@@ -222,7 +222,7 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
         if (activators.size() > clickedSlot) {
             String activator = activators.get(clickedSlot);
             if (!activator.isEmpty()) {
-                DetailsManager.triggerExec(player, Parameters.fromString(activator, "activator"), vars);
+                ContextManager.triggerExec(player, Parameters.fromString(activator, "activator"), vars);
             }
         }
         // TODO: Do not close menu option?

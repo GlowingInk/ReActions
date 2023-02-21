@@ -3,7 +3,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
-import fun.reactions.module.basics.details.TeleportContext;
+import fun.reactions.module.basics.context.TeleportContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;

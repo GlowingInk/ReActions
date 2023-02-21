@@ -1,5 +1,6 @@
 package fun.reactions.time.wait;
 
+import fun.reactions.ReActions;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activity.actions.StoredAction;
 import fun.reactions.logic.environment.Environment;
@@ -22,9 +23,9 @@ public record WaitTask(
         return System.currentTimeMillis() >= executionTime;
     }
 
-    public void execute() {
+    public void execute(@NotNull ReActions.Platform platform) {
         Player player = playerId == null ? null : Bukkit.getPlayer(playerId);
-        Logic.executeActions(new Environment("", variables, player), actions, player != null);
+        Logic.executeActions(new Environment(platform, "", variables, player), actions, player != null);
     }
 
     @Override

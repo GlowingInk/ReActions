@@ -2,7 +2,7 @@ package fun.reactions.events.listeners;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.module.basics.DetailsManager;
+import fun.reactions.module.basics.ContextManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -79,10 +79,10 @@ public class GodModeListener implements Listener {
             Player player = (Player) event.getEntity();
             if (event.isCancelled()) {
                 if (GodModeListener.checkGod(player) && GodModeListener.setGod(player)) return;
-                if (GodModeListener.setGod(player) && DetailsManager.triggerGod(player, true)) {
+                if (GodModeListener.setGod(player) && ContextManager.triggerGod(player, true)) {
                     GodModeListener.removeGod(player);
                 }
-            } else if (GodModeListener.removeGod(player) && DetailsManager.triggerGod(player, false)) {
+            } else if (GodModeListener.removeGod(player) && ContextManager.triggerGod(player, false)) {
                 GodModeListener.setGod(player);
                 event.setCancelled(true);
             }

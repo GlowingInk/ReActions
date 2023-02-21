@@ -27,7 +27,7 @@ import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
 import fun.reactions.logic.activators.Locatable;
-import fun.reactions.module.basics.details.ButtonContext;
+import fun.reactions.module.basics.context.ButtonContext;
 import fun.reactions.util.location.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;

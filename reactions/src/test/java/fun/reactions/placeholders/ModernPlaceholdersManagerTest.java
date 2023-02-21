@@ -17,7 +17,7 @@ public class ModernPlaceholdersManagerTest {
         vars.set("test", "yay");
         vars.set("another", "%[test],");
         assertEquals(
-                mgr.parsePlaceholders(new Environment("", vars, null), "Foo %[another] bar %[ignored]"),
+                mgr.parsePlaceholders(new Environment(null, "", vars, null), "Foo %[another] bar %[ignored]"),
                 "Foo yay, bar %[ignored]"
         );
     }

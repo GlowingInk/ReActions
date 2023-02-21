@@ -4,7 +4,6 @@ import fun.reactions.ReActions;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.type.ActivatorType;
 import fun.reactions.logic.activators.type.ActivatorTypesRegistry;
-import fun.reactions.logic.activity.ActivitiesRegistry;
 import fun.reactions.util.collections.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,22 +24,24 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class ActivatorsManager {
+    private final ReActions.Platform platform;
     private final Plugin plugin;
-    private final File actsFolder;
     private final Logger logger;
-    private final Search search;
-    private final ActivitiesRegistry activity;
+    private final File actsFolder;
     private final ActivatorTypesRegistry types;
+
     private final Map<String, Activator> activatorsNames;
     private final Map<String, Set<Activator>> activatorsGroups;
 
-    public ActivatorsManager(@NotNull ReActions.Platform react) {
-        this.plugin = react.getPlugin();
-        this.activity = react.getActivities();
-        this.types = react.getActivatorTypes();
+    private final Search search;
+
+    public ActivatorsManager(@NotNull ReActions.Platform platform) {
+        this.plugin = platform.getPlugin();
+        this.platform = platform;
+        this.types = platform.getActivatorTypes();
 
         actsFolder = new File(plugin.getDataFolder(), "Activators");
-        logger = react.logger();
+        logger = platform.logger();
         search = new Search();
 
         activatorsNames = Maps.caseInsensitive();
@@ -96,8 +97,8 @@ public class ActivatorsManager {
                 for (String name : cfgType.getKeys(false)) {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
                     Activator activator = type.loadActivator(new Logic(
-                            type.getName().toUpperCase(Locale.ROOT),
-                            name, group, cfgActivator, activity
+                            platform, type.getName().toUpperCase(Locale.ROOT),
+                            name, group, cfgActivator
                     ), cfgActivator);
                     if (activator == null || !activator.isValid()) {
                         logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'.");
@@ -211,11 +212,11 @@ public class ActivatorsManager {
         activatorsNames.get(id).executeActivator(details);
     }
 
-    public boolean activate(@NotNull ActivationContext details) {
-        ActivatorType type = types.get(details.getType());
+    public boolean activate(@NotNull ActivationContext context) {
+        ActivatorType type = types.get(context.getType());
         if (type != null && !type.isEmpty()) {
-            details.initialize();
-            type.activate(details);
+            context.initialize();
+            type.activate(context);
             return true;
         }
         return false;

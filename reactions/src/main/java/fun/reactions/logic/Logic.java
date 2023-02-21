@@ -31,6 +31,7 @@ import fun.reactions.logic.activity.actions.StoredAction;
 import fun.reactions.logic.activity.flags.Flag;
 import fun.reactions.logic.activity.flags.StoredFlag;
 import fun.reactions.logic.environment.Environment;
+import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -42,14 +43,17 @@ import java.util.Locale;
 import java.util.function.BiConsumer;
 
 public final class Logic {
-    private String group; // TODO Should not be there
+    private final ReActions.Platform platform;
     private final String name;
     private final String type;
     private final List<StoredFlag> flags;
     private final List<StoredAction> actions;
     private final List<StoredAction> reactions;
 
-    public Logic(@NotNull String type, @NotNull String name, @Nullable String group) {
+    private String group; // TODO Should not be here?
+
+    public Logic(@NotNull ReActions.Platform platform, @NotNull String type, @NotNull String name, @Nullable String group) {
+        this.platform = platform;
         this.type = type;
         this.name = name;
         this.group = Utils.isStringEmpty(group) ? "activators" : group;
@@ -58,11 +62,12 @@ public final class Logic {
         this.reactions = new ArrayList<>();
     }
 
-    public Logic(@NotNull String type, @NotNull String name, @Nullable String group, @NotNull ConfigurationSection cfg, @NotNull ActivitiesRegistry activity) {
-        this(type, name, group);
-        loadData(cfg.getStringList("flags"), (s, v) -> storeFlag(s, v, flags, activity));
-        loadData(cfg.getStringList("actions"), (s, v) -> storeAction(s, v, actions, activity));
-        loadData(cfg.getStringList("reactions"), (s, v) -> storeAction(s, v, reactions, activity));
+    public Logic(@NotNull ReActions.Platform platform, @NotNull String type, @NotNull String name, @Nullable String group, @NotNull ConfigurationSection cfg) {
+        this(platform, type, name, group);
+        ActivitiesRegistry activities = platform.getActivities();
+        loadData(cfg.getStringList("flags"), (s, v) -> storeFlag(s, v, flags, activities));
+        loadData(cfg.getStringList("actions"), (s, v) -> storeAction(s, v, actions, activities));
+        loadData(cfg.getStringList("reactions"), (s, v) -> storeAction(s, v, reactions, activities));
     }
 
     public @NotNull String getType() {
@@ -87,6 +92,10 @@ public final class Logic {
 
     public @NotNull List<StoredAction> getReactions() {
         return this.reactions;
+    }
+
+    public @NotNull ReActions.Platform getPlatform() {
+        return platform;
     }
 
     private static void loadData(List<String> data, BiConsumer<String, String> loader) {
@@ -125,16 +134,17 @@ public final class Logic {
         this.group = group;
     }
 
-    public void executeLogic(@NotNull Environment env) {
+    public void execute(@NotNull Environment env) {
         boolean noPlayer = env.getPlayer() == null;
+        PlaceholdersManager placeholders = env.getPlatform().getPlaceholders();
         for (StoredFlag flag : flags) {
             if (flag.getActivity().requiresPlayer() && noPlayer) {
                 executeActions(env, reactions, false);
                 return;
             }
-            String params = flag.hasPlaceholders() ?
-                            ReActions.getPlaceholders().parsePlaceholders(env, flag.getParameters()) : // TODO Placeholders DI
-                            flag.getParameters();
+            String params = flag.hasPlaceholders()
+                    ? placeholders.parsePlaceholders(env, flag.getParameters())
+                    : flag.getParameters();
             if (!flag.getActivity().proceed(env, params)) {
                 executeActions(env, reactions, !noPlayer);
                 return;
@@ -144,13 +154,14 @@ public final class Logic {
     }
 
     public static void executeActions(Environment env, List<StoredAction> actions, boolean hasPlayer) {
+        PlaceholdersManager placeholders = env.getPlatform().getPlaceholders();
         for (int i = 0; i < actions.size(); i++) {
             StoredAction action = actions.get(i);
             // TODO: Microoptimization - check if hasPlayer and separate iteration
             if (hasPlayer || !action.getActivity().requiresPlayer()) {
-                String params = action.hasPlaceholders() ?
-                                ReActions.getPlaceholders().parsePlaceholders(env, action.getParameters()) : // TODO Placeholders DI
-                                action.getParameters();
+                String params = action.hasPlaceholders()
+                        ? placeholders.parsePlaceholders(env, action.getParameters())
+                        : action.getParameters();
                 if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Stopper stopAction) {
                     stopAction.stop(env, action.getParameters(), new ArrayList<>(actions.subList(i + 1, actions.size())));
                     break;

@@ -3,7 +3,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
-import fun.reactions.module.basics.details.DamageByMobContext;
+import fun.reactions.module.basics.context.DamageByMobContext;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;

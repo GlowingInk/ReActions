@@ -4,7 +4,7 @@ import fun.reactions.externals.worldedit.WeSelection;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
-import fun.reactions.module.basics.details.WeSelectionRegionContext;
+import fun.reactions.module.basics.context.WeSelectionRegionContext;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;

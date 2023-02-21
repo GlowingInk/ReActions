@@ -25,7 +25,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.logic.Logic;
 import fun.reactions.logic.activators.ActivationContext;
 import fun.reactions.logic.activators.Activator;
-import fun.reactions.module.basics.details.MobDamageContext;
+import fun.reactions.module.basics.context.MobDamageContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
