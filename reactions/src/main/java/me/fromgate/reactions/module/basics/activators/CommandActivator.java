@@ -23,10 +23,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.CommandDetails;
+import me.fromgate.reactions.module.basics.details.CommandContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -56,7 +56,7 @@ public class CommandActivator extends Activator {
     // Is console allowed to perform this command?
     private final boolean consoleAllowed;
 
-    private CommandActivator(ActivatorLogic base, String command, boolean starts, boolean useRegex, boolean consoleAllowed) {
+    private CommandActivator(Logic base, String command, boolean starts, boolean useRegex, boolean consoleAllowed) {
         super(base);
         command = command == null ? "unknown" : command;
         this.command = command;
@@ -79,7 +79,7 @@ public class CommandActivator extends Activator {
         this.consoleAllowed = consoleAllowed;
     }
 
-    public static CommandActivator create(ActivatorLogic base, Parameters param) {
+    public static CommandActivator create(Logic base, Parameters param) {
         String command = param.getString("command", param.origin());
         boolean starts = param.getBoolean("starts", true);
         boolean useRegex = param.getBoolean("regex", false);
@@ -87,7 +87,7 @@ public class CommandActivator extends Activator {
         return new CommandActivator(base, command, starts, useRegex, consoleAllowed);
     }
 
-    public static CommandActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static CommandActivator load(Logic base, ConfigurationSection cfg) {
         String command = cfg.getString("command");
         boolean starts = cfg.getBoolean("starts", true);
         boolean useRegex = cfg.getBoolean("regex", false);
@@ -96,8 +96,8 @@ public class CommandActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details details) {
-        CommandDetails cs = (CommandDetails) details;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        CommandContext cs = (CommandContext) context;
         if (!consoleAllowed && cs.getSender() instanceof ConsoleCommandSender) return false;
         if (checkExact) {
             if (useRegex) {

@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.ItemClickDetails;
+import me.fromgate.reactions.module.basics.details.ItemClickContext;
 import me.fromgate.reactions.util.enums.HandType;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -36,27 +36,27 @@ public class ItemClickActivator extends Activator {
     private final VirtualItem item;
     private final HandType hand;
 
-    private ItemClickActivator(ActivatorLogic base, String item, HandType hand) {
+    private ItemClickActivator(Logic base, String item, HandType hand) {
         super(base);
         this.item = VirtualItem.fromString(item);
         this.hand = hand;
     }
 
-    public static ItemClickActivator create(ActivatorLogic base, Parameters param) {
+    public static ItemClickActivator create(Logic base, Parameters param) {
         String item = param.getString("item", param.origin());
         HandType hand = HandType.getByName(param.getString("hand", "ANY"));
         return new ItemClickActivator(base, item, hand);
     }
 
-    public static ItemClickActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static ItemClickActivator load(Logic base, ConfigurationSection cfg) {
         String item = cfg.getString("item", "");
         HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
         return new ItemClickActivator(base, item, hand);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        ItemClickDetails ie = (ItemClickDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        ItemClickContext ie = (ItemClickContext) context;
         return hand.isValidFor(ie.getHand()) && item.isSimilar(ie.getItem());
     }
 

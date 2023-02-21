@@ -4,10 +4,10 @@
 package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.WeChangeDetails;
+import me.fromgate.reactions.module.basics.details.WeChangeContext;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -23,27 +23,27 @@ public class WEChangeActivator extends Activator {
     private final Material blockType;
     private final String region;
 
-    private WEChangeActivator(ActivatorLogic base, Material blockType, String region) {
+    private WEChangeActivator(Logic base, Material blockType, String region) {
         super(base);
         this.blockType = blockType;
         this.region = region;
     }
 
-    public static WEChangeActivator create(ActivatorLogic base, Parameters param) {
+    public static WEChangeActivator create(Logic base, Parameters param) {
         Material blockType = ItemUtils.getMaterial(param.getString("blocktype"));
         String region = param.getString("region", "");
         return new WEChangeActivator(base, blockType, region);
     }
 
-    public static WEChangeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static WEChangeActivator load(Logic base, ConfigurationSection cfg) {
         Material blockType = ItemUtils.getMaterial(cfg.getString("block-type", ""));
         String region = cfg.getString("region", "");
         return new WEChangeActivator(base, blockType, region);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        WeChangeDetails e = (WeChangeDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        WeChangeContext e = (WeChangeContext) context;
         if (!checkBlockType(e.getBlockType())) return false;
         return region.isEmpty() || RaWorldGuard.isLocationInRegion(e.getLocation(), region);
     }

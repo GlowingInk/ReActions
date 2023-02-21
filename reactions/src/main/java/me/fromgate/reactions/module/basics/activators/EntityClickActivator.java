@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.EntityClickDetails;
+import me.fromgate.reactions.module.basics.details.EntityClickContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,24 +17,24 @@ import org.jetbrains.annotations.NotNull;
 public class EntityClickActivator extends Activator {
     private final EntityType entityType;
 
-    private EntityClickActivator(ActivatorLogic base, String entityType) {
+    private EntityClickActivator(Logic base, String entityType) {
         super(base);
         this.entityType = Utils.getEnum(EntityType.class, entityType);
     }
 
-    public static EntityClickActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static EntityClickActivator load(Logic base, ConfigurationSection cfg) {
         String entityType = cfg.getString("entity-type");
         return new EntityClickActivator(base, entityType);
     }
 
-    public static EntityClickActivator create(ActivatorLogic base, Parameters param) {
+    public static EntityClickActivator create(Logic base, Parameters param) {
         String entityType = param.getString("type", "");
         return new EntityClickActivator(base, entityType);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        EntityClickDetails ece = (EntityClickDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        EntityClickContext ece = (EntityClickContext) context;
         if (ece.getEntity() == null) return false;
         return isActivatorEntity(ece.getEntity());
     }

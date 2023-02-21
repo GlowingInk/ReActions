@@ -35,9 +35,9 @@ import org.jetbrains.annotations.NotNull;
 public class VelocityAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Vector v = setPlayerVelocity(context.getPlayer(), params);
+        Vector v = setPlayerVelocity(env.getPlayer(), params);
         return v != null;
     }
 

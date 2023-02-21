@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.DeathDetails;
+import me.fromgate.reactions.module.basics.details.DeathContext;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,24 +35,24 @@ public class DeathActivator extends Activator {
 
     private final DeathCause deathCause;
 
-    private DeathActivator(ActivatorLogic base, DeathCause cause) {
+    private DeathActivator(Logic base, DeathCause cause) {
         super(base);
         this.deathCause = cause;
     }
 
-    public static DeathActivator create(ActivatorLogic base, Parameters param) {
+    public static DeathActivator create(Logic base, Parameters param) {
         DeathCause cause = DeathCause.getByName(param.getString("cause", param.origin()));
         return new DeathActivator(base, cause);
     }
 
-    public static DeathActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static DeathActivator load(Logic base, ConfigurationSection cfg) {
         DeathCause cause = DeathCause.getByName(cfg.getString("death-cause", "ANY"));
         return new DeathActivator(base, cause);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        DeathDetails de = (DeathDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        DeathContext de = (DeathContext) context;
         return this.deathCause == DeathCause.ANY || de.getCause() == this.deathCause;
     }
 

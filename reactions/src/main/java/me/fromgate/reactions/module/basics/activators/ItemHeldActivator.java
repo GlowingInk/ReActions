@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.ItemHeldDetails;
+import me.fromgate.reactions.module.basics.details.ItemHeldContext;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,7 +20,7 @@ public class ItemHeldActivator extends Activator {
     private final String itemNewStr;
     private final String itemPrevStr;
 
-    private ItemHeldActivator(ActivatorLogic base, String itemPrevStr, String itemNewStr, int previousSlot, int newSlot) {
+    private ItemHeldActivator(Logic base, String itemPrevStr, String itemNewStr, int previousSlot, int newSlot) {
         super(base);
         this.itemNewStr = itemNewStr;
         this.itemPrevStr = itemPrevStr;
@@ -28,7 +28,7 @@ public class ItemHeldActivator extends Activator {
         this.newSlot = newSlot;
     }
 
-    public static ItemHeldActivator create(ActivatorLogic base, Parameters param) {
+    public static ItemHeldActivator create(Logic base, Parameters param) {
         String itemNewStr = param.getString("itemnew", "");
         String itemPrevStr = param.getString("itemprev", "");
         int newSlot = param.getInteger("slotnew", 1);
@@ -36,7 +36,7 @@ public class ItemHeldActivator extends Activator {
         return new ItemHeldActivator(base, itemPrevStr, itemNewStr, --newSlot, --previousSlot);
     }
 
-    public static ItemHeldActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static ItemHeldActivator load(Logic base, ConfigurationSection cfg) {
         String itemNewStr = cfg.getString("item-new");
         String itemPrevStr = cfg.getString("item-prev");
         int newSlot = cfg.getInt("slot-new", 1);
@@ -45,8 +45,8 @@ public class ItemHeldActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        ItemHeldDetails ihe = (ItemHeldDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        ItemHeldContext ihe = (ItemHeldContext) context;
         ItemStack itemNew = ihe.getNewItem();
         ItemStack itemPrev = ihe.getPreviousItem();
         if (!this.itemNewStr.isEmpty() && (!VirtualItem.isSimilar(this.itemNewStr, itemNew)))

@@ -22,11 +22,11 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.LeverDetails;
+import me.fromgate.reactions.module.basics.details.LeverContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -46,7 +46,7 @@ public class LeverActivator extends Activator implements Locatable {
     private final int y;
     private final int z;
 
-    private LeverActivator(ActivatorLogic base, TriBoolean state, String world, int x, int y, int z) {
+    private LeverActivator(Logic base, TriBoolean state, String world, int x, int y, int z) {
         super(base);
         this.state = state;
         this.world = world;
@@ -55,7 +55,7 @@ public class LeverActivator extends Activator implements Locatable {
         this.z = z;
     }
 
-    public static LeverActivator create(ActivatorLogic base, Parameters p) {
+    public static LeverActivator create(Logic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
@@ -68,7 +68,7 @@ public class LeverActivator extends Activator implements Locatable {
         } else return null;
     }
 
-    public static LeverActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static LeverActivator load(Logic base, ConfigurationSection cfg) {
         String world = cfg.getString("world");
         int x = cfg.getInt("x");
         int y = cfg.getInt("y");
@@ -78,8 +78,8 @@ public class LeverActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        LeverDetails le = (LeverDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        LeverContext le = (LeverContext) context;
         if (le.getLever() == null) return false;
         if (!isLocatedAt(le.getLeverLocation())) return false;
         return state.isValidFor(le.getLever().isPowered());

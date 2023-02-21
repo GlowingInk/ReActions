@@ -10,7 +10,7 @@ import java.util.Collection;
 public sealed interface Resolver<T extends Placeholder> permits PreprocessResolver, KeyedResolver, DynamicResolver {
     boolean put(@NotNull T ph);
 
-    @Nullable String parse(@NotNull Environment context, @NotNull String text);
+    @Nullable String parse(@NotNull Environment env, @NotNull String text);
 
     @NotNull Collection<T> getPlaceholders();
 }

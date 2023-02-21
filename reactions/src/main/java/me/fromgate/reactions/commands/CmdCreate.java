@@ -2,10 +2,10 @@ package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.holders.LocationHolder;
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.ActivatorType;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
+import me.fromgate.reactions.logic.activators.type.ActivatorType;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.time.timers.TimersManager;
 import me.fromgate.reactions.util.NumberUtils;
@@ -79,7 +79,7 @@ public class CmdCreate extends Cmd {
             if (type.isNeedBlock()) return false;
             params = Parameters.fromString(param);
         }
-        Activator activator = type.createActivator(new ActivatorLogic(type.getName().toUpperCase(Locale.ROOT), name, "activators"), params);
+        Activator activator = type.createActivator(new Logic(type.getName().toUpperCase(Locale.ROOT), name, "activators"), params);
         if (activator == null || !activator.isValid()) {
             Msg.CMD_NOTADDBADDEDSYNTAX.print(sender, name, type);
             return true;

@@ -12,20 +12,20 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
     private static final Pattern PRE_ESCAPE = Pattern.compile("(\\\\+)(?!%\\[|[\\\\\\]])"); // "(\\+)(?!%\[|[\\\]])"
 
     @Override
-    public @NotNull String parsePlaceholders(@NotNull Environment context, @NotNull String text) {
+    public @NotNull String parsePlaceholders(@NotNull Environment env, @NotNull String text) {
         if (text.length() < 4) return text;
         text = preEscape(text);
         String oldText;
         int limit = countLimit;
         do {
             oldText = text;
-            text = resolvePreprocess(context, text);
-            text = parse(context, text);
+            text = resolvePreprocess(env, text);
+            text = parse(env, text);
         } while (!oldText.equals(text) & --limit > 0);
         return unescapeSpecial(text);
     }
 
-    private String parse(@NotNull Environment context, @NotNull String text) {
+    private String parse(@NotNull Environment env, @NotNull String text) {
         StringBuilder builder = new StringBuilder(text.length());
         IterationStage stage = IterationStage.TEXT;
         int stepIndex = 0;
@@ -66,7 +66,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                     } else if (allowSpecial) {
                         if (c == ']') {
                             String substring = text.substring(stepIndex + 2, index);
-                            String processed = resolvePlaceholder(context, substring);
+                            String processed = resolvePlaceholder(env, substring);
                             if (processed != null) {
                                 if (text.length() > index + 3 && text.charAt(index + 1) == '(') {
                                     String options = optionsSearch(text, index + 2);

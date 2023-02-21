@@ -27,7 +27,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
     }
 
     @Override
-    public @Nullable String parse(@NotNull Environment context, @NotNull String phText) {
+    public @Nullable String parse(@NotNull Environment env, @NotNull String phText) {
         int index = phText.indexOf(':');
         String key;
         String params;
@@ -40,7 +40,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
         }
         Placeholder.Keyed ph = placeholders.get((key = key.toLowerCase(Locale.ROOT)));
         if (ph == null) return null;
-        return ph.processPlaceholder(context, key, params);
+        return ph.processPlaceholder(env, key, params);
     }
 
     @Override

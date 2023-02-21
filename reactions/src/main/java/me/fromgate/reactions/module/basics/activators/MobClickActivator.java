@@ -22,11 +22,11 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.MobClickDetails;
+import me.fromgate.reactions.module.basics.details.MobClickContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.location.LocationUtils;
 import me.fromgate.reactions.util.mob.EntityUtils;
@@ -46,14 +46,14 @@ public class MobClickActivator extends Activator implements Locatable {
     private final String mobName;
     private final String mobLocation;
 
-    private MobClickActivator(ActivatorLogic base, String type, String name, String location) {
+    private MobClickActivator(Logic base, String type, String name, String location) {
         super(base);
         this.mobType = type;
         this.mobName = name;
         this.mobLocation = location;
     }
 
-    public static MobClickActivator create(ActivatorLogic base, Parameters param) {
+    public static MobClickActivator create(Logic base, Parameters param) {
         String type = param.origin();
         String name = "";
         String location = "";
@@ -68,7 +68,7 @@ public class MobClickActivator extends Activator implements Locatable {
         return new MobClickActivator(base, type, name, location);
     }
 
-    public static MobClickActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static MobClickActivator load(Logic base, ConfigurationSection cfg) {
         String type = cfg.getString("mob-type", "");
         String name = cfg.getString("mob-name", "");
         String location = cfg.getString("location", "");
@@ -76,8 +76,8 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        MobClickDetails me = (MobClickDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        MobClickContext me = (MobClickContext) context;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         return isActivatorMob(me.getEntity());

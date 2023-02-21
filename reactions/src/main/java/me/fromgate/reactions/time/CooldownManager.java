@@ -142,27 +142,27 @@ public final class CooldownManager { // TODO Requires refactoring
         return times;
     }
 
-    public static void setTempPlaceholders(Environment context, String playerName, String id) { // TODO Make vars lazy
+    public static void setTempPlaceholders(Environment env, String playerName, String id) { // TODO Make vars lazy
         String[] times = CooldownManager.getStringTime(playerName, id);
         if (times != null) {
-            context.getVariables().set("cooldown-fulltime", times[0]);
-            context.getVariables().set("cooldown-time", times[1]);
-            context.getVariables().set("cooldown-left", times[7]);
-            context.getVariables().set("cooldown-left-full", times[3]);
-            context.getVariables().set("cooldown-left-hms", times[2]);
-            context.getVariables().set("cooldown-left-hh", times[4]);
-            context.getVariables().set("cooldown-left-mm", times[5]);
-            context.getVariables().set("cooldown-left-ss", times[6]);
+            env.getVariables().set("cooldown-fulltime", times[0]);
+            env.getVariables().set("cooldown-time", times[1]);
+            env.getVariables().set("cooldown-left", times[7]);
+            env.getVariables().set("cooldown-left-full", times[3]);
+            env.getVariables().set("cooldown-left-hms", times[2]);
+            env.getVariables().set("cooldown-left-hh", times[4]);
+            env.getVariables().set("cooldown-left-mm", times[5]);
+            env.getVariables().set("cooldown-left-ss", times[6]);
 
             // TODO Remove legacy
-            context.getVariables().set("delay-fulltime", times[0]);
-            context.getVariables().set("delay-time", times[1]);
-            context.getVariables().set("delay-left", times[7]);
-            context.getVariables().set("delay-left-full", times[3]);
-            context.getVariables().set("delay-left-hms", times[2]);
-            context.getVariables().set("delay-left-hh", times[4]);
-            context.getVariables().set("delay-left-mm", times[5]);
-            context.getVariables().set("delay-left-ss", times[6]);
+            env.getVariables().set("delay-fulltime", times[0]);
+            env.getVariables().set("delay-time", times[1]);
+            env.getVariables().set("delay-left", times[7]);
+            env.getVariables().set("delay-left-full", times[3]);
+            env.getVariables().set("delay-left-hms", times[2]);
+            env.getVariables().set("delay-left-hh", times[4]);
+            env.getVariables().set("delay-left-mm", times[5]);
+            env.getVariables().set("delay-left-ss", times[6]);
         }
     }
 

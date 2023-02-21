@@ -31,8 +31,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class WalkBlockFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
-        Location loc = context.getPlayer().getLocation();
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Location loc = env.getPlayer().getLocation();
         Block walk;
         if (loc.getY() == Math.floor(loc.getY())) {
             walk = loc.subtract(0, 0.1, 0).getBlock();

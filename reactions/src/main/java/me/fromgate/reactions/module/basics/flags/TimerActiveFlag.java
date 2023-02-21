@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TimerActiveFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
         return TimersManager.isTimerWorking(params);
     }
 

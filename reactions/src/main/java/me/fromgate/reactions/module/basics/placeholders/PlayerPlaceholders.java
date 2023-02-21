@@ -41,8 +41,8 @@ public class PlayerPlaceholders implements Placeholder.Keyed {
     }
 
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String param) {
-        Player player = context.getPlayer();
+    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+        Player player = env.getPlayer();
         if (player == null) return null;
         return switch (key) {
             case "player", "player_name" -> player.getName();

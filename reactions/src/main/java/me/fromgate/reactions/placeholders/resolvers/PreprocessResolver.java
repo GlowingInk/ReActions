@@ -19,9 +19,9 @@ public final class PreprocessResolver implements Resolver<Placeholder.Preprocess
     }
 
     @Override
-    public @NotNull String parse(@NotNull Environment context, @NotNull String fullText) {
+    public @NotNull String parse(@NotNull Environment env, @NotNull String fullText) {
         for (Placeholder.Preprocess placeholder : placeholders) {
-            fullText = placeholder.processPlaceholder(context, fullText);
+            fullText = placeholder.processPlaceholder(env, fullText);
         }
         return fullText;
     }

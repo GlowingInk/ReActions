@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.GameModeDetails;
+import me.fromgate.reactions.module.basics.details.GameModeContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.GameMode;
@@ -16,24 +16,24 @@ import org.jetbrains.annotations.NotNull;
 public class GameModeActivator extends Activator {
     private final GameMode gameMode;
 
-    private GameModeActivator(ActivatorLogic base, GameMode gameMode) {
+    private GameModeActivator(Logic base, GameMode gameMode) {
         super(base);
         this.gameMode = gameMode;
     }
 
-    public static GameModeActivator create(ActivatorLogic base, Parameters param) {
+    public static GameModeActivator create(Logic base, Parameters param) {
         GameMode gameMode = Utils.getEnum(GameMode.class, param.getString("gamemode", "ANY"));
         return new GameModeActivator(base, gameMode);
     }
 
-    public static GameModeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static GameModeActivator load(Logic base, ConfigurationSection cfg) {
         GameMode gameMode = Utils.getEnum(GameMode.class, cfg.getString("gamemode", "ANY"));
         return new GameModeActivator(base, gameMode);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        GameModeDetails e = (GameModeDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        GameModeContext e = (GameModeContext) context;
         return gameModeCheck(e.getGameMode());
     }
 

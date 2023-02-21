@@ -50,24 +50,21 @@ public final class Rng {
      * @param numsStr String with min-max values or just max value(e.g. "2-47", "76")
      * @return Random value
      */
-    public static int nextIntRanged(String numsStr) {
+    public static int nextIntRanged(String numsStr) { // TODO Requires refactoring to nextRanged
         int index = numsStr.indexOf('-');
         if (index > -1) {
             int min = 0;
             String minStr = numsStr.substring(0, index);
-            if (NumberUtils.isNumber(minStr, Is.NATURAL))
+            if (NumberUtils.isNumber(minStr, Is.NATURAL)) {
                 min = Integer.parseInt(minStr);
+            }
             int max = 0;
             String maxStr = numsStr.substring(index + 1);
-            if (NumberUtils.isNumber(maxStr, Is.NATURAL))
-                max = Integer.parseInt(maxStr);
-            if (max > min)
-                return nextInt(min, max);
-            return min;
-        } else {
-            if (NumberUtils.isNumber(numsStr, Is.NATURAL))
-                return Integer.parseInt(numsStr);
-            return 0;
+            if (NumberUtils.isNumber(maxStr, Is.NATURAL)) {
+                max = Integer.parseInt(maxStr) + 1;
+            }
+            return max > min ? nextInt(min, max) : min;
         }
+        return NumberUtils.asInteger(numsStr);
     }
 }

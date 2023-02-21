@@ -41,7 +41,7 @@ public class SqlActions implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String playerName = params.getString("player");
         String varName = params.getString("variable");
@@ -55,7 +55,7 @@ public class SqlActions implements Action {
                     return false;
                 }
                 if (varName.isEmpty()) return false;
-                ReActions.getVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, context.getVariables().getString("SQL_SET")));
+                ReActions.getVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, env.getVariables().getString("SQL_SET")));
             }
             case INSERT -> { // INSERT
                 query = params.getString("query", params.origin()).trim();
@@ -91,7 +91,7 @@ public class SqlActions implements Action {
                     Msg.logOnce("needset" + query, "You need to use only \"SET\" query in SQL_SET action. Query: " + query);
                     return false;
                 }
-                context.getVariables().set("SQL_SET", query);
+                env.getVariables().set("SQL_SET", query);
             }
         }
         return true;

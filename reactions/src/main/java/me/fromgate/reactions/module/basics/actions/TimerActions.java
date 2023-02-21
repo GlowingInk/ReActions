@@ -37,7 +37,7 @@ public class TimerActions implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String timer = params.getString("timer");
         if (timer.isEmpty()) return false;

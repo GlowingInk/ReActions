@@ -1,24 +1,24 @@
 package me.fromgate.reactions.logic.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Activator {
-    protected final ActivatorLogic logic;
+    protected final Logic logic;
 
-    public Activator(@NotNull ActivatorLogic logic) {
+    public Activator(@NotNull Logic logic) {
         this.logic = logic;
     }
 
     /**
      * Execution of activator
      *
-     * @param details Details with data for activator
+     * @param context Details with data for activator
      */
-    public final void executeActivator(@NotNull Details details) {
-        if (!checkDetails(details)) return;
-        logic.executeLogic(details.generateEnvironment(logic.getName()));
+    public final void executeActivator(@NotNull ActivationContext context) {
+        if (!checkContext(context)) return;
+        logic.executeLogic(context.createEnvironment(logic.getName()));
     }
 
     /**
@@ -26,7 +26,7 @@ public abstract class Activator {
      *
      * @return Related activator logic
      */
-    public final @NotNull ActivatorLogic getLogic() {
+    public final @NotNull Logic getLogic() {
         return logic;
     }
 
@@ -43,10 +43,10 @@ public abstract class Activator {
     /**
      * Check trigger options
      *
-     * @param details Details with data for trigger
+     * @param context Details with data for trigger
      * @return Are checks successfully past
      */
-    protected abstract boolean checkDetails(@NotNull Details details);
+    protected abstract boolean checkContext(@NotNull ActivationContext context);
 
     /**
      * Save activator options to the config

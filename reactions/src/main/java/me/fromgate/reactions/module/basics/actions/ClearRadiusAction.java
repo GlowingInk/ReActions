@@ -25,14 +25,14 @@ public class ClearRadiusAction implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         int radius = params.getInteger("radius");
         String type = params.getString("type", "all");
         if (radius == 0) return false;
-        List<Location> locs = LocationUtils.getMinMaxRadiusLocations(context.getPlayer(), radius);
-        context.getVariables().set("loc1", LocationUtils.locationToString(locs.get(0)));
-        context.getVariables().set("loc2", LocationUtils.locationToString(locs.get(1)));
+        List<Location> locs = LocationUtils.getMinMaxRadiusLocations(env.getPlayer(), radius);
+        env.getVariables().set("loc1", LocationUtils.locationToString(locs.get(0)));
+        env.getVariables().set("loc2", LocationUtils.locationToString(locs.get(1)));
         if (locs.size() != 2) return false;
         Collection<Entity> en = EntityUtils.getEntities(locs.get(0), locs.get(1));
         int count = 0;

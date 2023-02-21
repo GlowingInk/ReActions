@@ -43,7 +43,7 @@ public class GroupFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        return RaVault.playerInGroup(context.getPlayer(), params);
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        return RaVault.playerInGroup(env.getPlayer(), params);
     }
 }

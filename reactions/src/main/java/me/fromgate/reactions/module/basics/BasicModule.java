@@ -3,7 +3,7 @@ package me.fromgate.reactions.module.basics;
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.MineDownParser;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.activators.ActivatorType;
+import me.fromgate.reactions.logic.activators.type.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.module.Module;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static me.fromgate.reactions.logic.activators.ActivatorTypesRegistry.typeOf;
+import static me.fromgate.reactions.logic.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
     @Override
@@ -45,7 +45,6 @@ public class BasicModule implements Module {
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes(@NotNull ReActions.Platform platform) {
         return List.of(
-                typeOf(ExecActivator.class, "EXEC", ExecActivator::create, ExecActivator::load),
                 typeOf(ButtonActivator.class, "BUTTON", ButtonActivator::create, ButtonActivator::load, true),
                 typeOf(PlateActivator.class, "PLATE", PlateActivator::create, PlateActivator::load, true),
                 typeOf(TeleportActivator.class, "TELEPORT", TeleportActivator::create, TeleportActivator::load),

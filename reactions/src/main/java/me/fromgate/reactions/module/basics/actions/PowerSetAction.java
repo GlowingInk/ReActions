@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 public class PowerSetAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Location loc = LocationUtils.parseLocation(params.getString("loc"), null);
         if (loc == null) return false;

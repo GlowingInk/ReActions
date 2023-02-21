@@ -12,8 +12,8 @@ import java.util.Objects;
 @Aliased.Names("RESPOND")
 public class ResponseAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Objects.requireNonNullElseGet(context.getPlayer(), Bukkit::getConsoleSender).sendMessage(BasicModule.getMineDown(params).toComponent());
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Objects.requireNonNullElseGet(env.getPlayer(), Bukkit::getConsoleSender).sendMessage(BasicModule.getMineDown(params).toComponent());
         return true;
     }
 

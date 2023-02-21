@@ -22,11 +22,11 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.BlockClickDetails;
+import me.fromgate.reactions.module.basics.details.BlockClickContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.ClickType;
 import me.fromgate.reactions.util.item.ItemUtils;
@@ -45,21 +45,21 @@ public class BlockClickActivator extends Activator implements Locatable {
     private final String blockLocation;
     private final ClickType click;
 
-    private BlockClickActivator(ActivatorLogic base, Material block, String location, ClickType click) {
+    private BlockClickActivator(Logic base, Material block, String location, ClickType click) {
         super(base);
         this.blockType = block;
         this.blockLocation = location;
         this.click = click;
     }
 
-    public static BlockClickActivator create(ActivatorLogic base, Parameters param) {
+    public static BlockClickActivator create(Logic base, Parameters param) {
         Material block = ItemUtils.getMaterial(param.getString("block-type"));
         ClickType click = ClickType.getByName(param.getString("click-type"));
         String loc = param.getString("location");
         return new BlockClickActivator(base, block, loc, click);
     }
 
-    public static BlockClickActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static BlockClickActivator load(Logic base, ConfigurationSection cfg) {
         Material block = ItemUtils.getMaterial(cfg.getString("block-type", ""));
         ClickType click = ClickType.getByName(cfg.getString("click-type", ""));
         String loc = cfg.getString("location");
@@ -67,8 +67,8 @@ public class BlockClickActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        BlockClickDetails bce = (BlockClickDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        BlockClickContext bce = (BlockClickContext) context;
         if (bce.getBlock() == null) return false;
         if (!isActivatorBlock(bce.getBlock())) return false;
         return click.checkRight(!bce.isLeftClick());

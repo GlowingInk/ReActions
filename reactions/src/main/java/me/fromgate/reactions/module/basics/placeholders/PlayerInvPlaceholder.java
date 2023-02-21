@@ -17,8 +17,8 @@ import static me.fromgate.reactions.util.NumberUtils.Is.NATURAL;
 @Aliased.Names("invplayer")
 public class PlayerInvPlaceholder implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String text) {
-        return getPlayerInventory(context.getPlayer(), text);
+    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String text) {
+        return getPlayerInventory(env.getPlayer(), text);
     }
 
     private static String getPlayerInventory(Player player, String value) {

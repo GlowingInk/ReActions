@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerIdAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         String uuid;
         String pName;
 
@@ -23,8 +23,8 @@ public class PlayerIdAction implements Action {
         String playerParam = params.getString("player");
 
         if (Utils.isStringEmpty(playerParam)) {
-            uuid = context.getPlayer().getUniqueId().toString();
-            pName = context.getPlayer().getName();
+            uuid = env.getPlayer().getUniqueId().toString();
+            pName = env.getPlayer().getName();
         } else {
             OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(playerParam);
             uuid = offPlayer.getUniqueId().toString();
@@ -40,8 +40,8 @@ public class PlayerIdAction implements Action {
                 ReActions.getVariables().setVariable(playerParam, varName, pName);
         }
 
-        context.getVariables().set("playerid", uuid);
-        context.getVariables().set("playername", pName);
+        env.getVariables().set("playerid", uuid);
+        env.getVariables().set("playername", pName);
         return true;
     }
 

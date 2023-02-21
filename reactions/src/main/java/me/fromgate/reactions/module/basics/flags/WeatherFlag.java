@@ -29,8 +29,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class WeatherFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         if (params.equalsIgnoreCase("rain")) return !player.getWorld().isThundering() && player.getWorld().hasStorm();
         if (params.equalsIgnoreCase("thunder")) return player.getWorld().isThundering() && player.getWorld().hasStorm();
         return !player.getWorld().hasStorm();

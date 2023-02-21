@@ -33,9 +33,9 @@ import org.jetbrains.annotations.NotNull;
 public class MobSpawnAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        MobSpawn.mobSpawn(context.getPlayer(), params);
+        MobSpawn.mobSpawn(env.getPlayer(), params);
         return true;
     }
 

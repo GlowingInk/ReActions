@@ -1,6 +1,6 @@
 package me.fromgate.reactions.util.function;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
 import me.fromgate.reactions.logic.activators.Activator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
  * @param <D> Data class for activators creation
  */
 @FunctionalInterface
-public interface RaGenerator<D> extends BiFunction<ActivatorLogic, D, Activator> {
+public interface RaGenerator<D> extends BiFunction<Logic, D, Activator> {
     /**
      * Generate activator from logic and data container
      *
@@ -22,5 +22,5 @@ public interface RaGenerator<D> extends BiFunction<ActivatorLogic, D, Activator>
      * @return Generated activator, or null if failed
      */
     @Override
-    @Nullable Activator apply(@NotNull ActivatorLogic logic, @NotNull D data);
+    @Nullable Activator apply(@NotNull Logic logic, @NotNull D data);
 }

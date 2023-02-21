@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("POWER")
 public class BlockPoweredFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String locStr = params.getString("loc", params.origin());
         if (locStr.isEmpty()) return false;

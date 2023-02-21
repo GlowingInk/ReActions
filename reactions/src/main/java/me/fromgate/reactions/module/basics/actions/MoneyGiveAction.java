@@ -38,9 +38,9 @@ import java.util.Map;
 public class MoneyGiveAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
         if (params.isEmpty()) return false;
         if (params.size() <= 2) params = parseOldFormat(player, params.origin());

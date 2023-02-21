@@ -37,7 +37,7 @@ public class SqlFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!SQLManager.isEnabled()) return false;
         if (!params.containsEvery("value", "select", "from") &&
@@ -53,7 +53,7 @@ public class SqlFlags implements Flag {
             query = "SELECT " + select + " FROM " + from + (where.isEmpty() ? "" : " WHERE " + where);
         }
         int column = params.getInteger("column", 1);
-        if (check) return SQLManager.compareSelect(value, query, column, params, context.getVariables().getString("SQL_SET"));
+        if (check) return SQLManager.compareSelect(value, query, column, params, env.getVariables().getString("SQL_SET"));
         else return SQLManager.isSelectResultEmpty(query);
     }
 

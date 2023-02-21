@@ -23,11 +23,11 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.ButtonDetails;
+import me.fromgate.reactions.module.basics.details.ButtonContext;
 import me.fromgate.reactions.util.location.ImplicitPosition;
 import me.fromgate.reactions.util.parameter.BlockParameters;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -39,23 +39,23 @@ import org.jetbrains.annotations.NotNull;
 public class ButtonActivator extends Activator implements Locatable {
     private final ImplicitPosition pos;
 
-    private ButtonActivator(ActivatorLogic base, ImplicitPosition pos) {
+    private ButtonActivator(Logic base, ImplicitPosition pos) {
         super(base);
         this.pos = pos;
     }
 
-    public static ButtonActivator create(ActivatorLogic base, Parameters p) {
+    public static ButtonActivator create(Logic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         return new ButtonActivator(base, ImplicitPosition.of(param.getBlock().getLocation()));
     }
 
-    public static ButtonActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static ButtonActivator load(Logic base, ConfigurationSection cfg) {
         return new ButtonActivator(base, ImplicitPosition.fromConfiguration(cfg));
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        ButtonDetails be = (ButtonDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        ButtonContext be = (ButtonContext) context;
         return pos.isValidAt(be.getButtonLocation());
     }
 

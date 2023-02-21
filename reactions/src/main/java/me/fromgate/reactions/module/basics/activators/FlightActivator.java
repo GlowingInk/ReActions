@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.FlightDetails;
+import me.fromgate.reactions.module.basics.details.FlightContext;
 import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,22 +15,22 @@ import org.jetbrains.annotations.NotNull;
 public class FlightActivator extends Activator {
     private final TriBoolean flight;
 
-    private FlightActivator(ActivatorLogic base, TriBoolean type) {
+    private FlightActivator(Logic base, TriBoolean type) {
         super(base);
         this.flight = type;
     }
 
-    public static FlightActivator create(ActivatorLogic base, Parameters param) {
+    public static FlightActivator create(Logic base, Parameters param) {
         return new FlightActivator(base, param.getTriBoolean("flight"));
     }
 
-    public static FlightActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static FlightActivator load(Logic base, ConfigurationSection cfg) {
         return new FlightActivator(base, TriBoolean.of(cfg.getString("flight")));
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        FlightDetails fe = (FlightDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        FlightContext fe = (FlightContext) context;
         return flight.isValidFor(fe.isFlying());
     }
 

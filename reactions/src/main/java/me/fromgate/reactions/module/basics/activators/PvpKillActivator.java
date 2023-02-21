@@ -22,28 +22,28 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public class PvpKillActivator extends Activator {
-    private PvpKillActivator(ActivatorLogic base) {
+    private PvpKillActivator(Logic base) {
         super(base);
     }
 
-    public static PvpKillActivator create(ActivatorLogic base, Parameters ignore) {
+    public static PvpKillActivator create(Logic base, Parameters ignore) {
         return new PvpKillActivator(base);
     }
 
-    public static PvpKillActivator load(ActivatorLogic base, ConfigurationSection ignore) {
+    public static PvpKillActivator load(Logic base, ConfigurationSection ignore) {
         return new PvpKillActivator(base);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
+    public boolean checkContext(@NotNull ActivationContext context) {
         return true;
     }
 

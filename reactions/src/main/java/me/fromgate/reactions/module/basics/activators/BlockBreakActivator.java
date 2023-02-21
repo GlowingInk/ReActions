@@ -1,10 +1,10 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.BlockBreakDetails;
+import me.fromgate.reactions.module.basics.details.BlockBreakContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -25,27 +25,27 @@ public class BlockBreakActivator extends Activator implements Locatable {
     // TODO: VirtualLocation
     private final String blockLocation;
 
-    private BlockBreakActivator(ActivatorLogic base, Material block, String location) {
+    private BlockBreakActivator(Logic base, Material block, String location) {
         super(base);
         this.blockType = block;
         this.blockLocation = location;
     }
 
-    public static BlockBreakActivator create(ActivatorLogic base, Parameters param) {
+    public static BlockBreakActivator create(Logic base, Parameters param) {
         Material block = ItemUtils.getMaterial(param.getString("block"));
         String loc = param.getString("loc");
         return new BlockBreakActivator(base, block, loc);
     }
 
-    public static BlockBreakActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static BlockBreakActivator load(Logic base, ConfigurationSection cfg) {
         Material block = ItemUtils.getMaterial(cfg.getString("block", ""));
         String loc = cfg.getString("loc");
         return new BlockBreakActivator(base, block, loc);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        BlockBreakDetails bbe = (BlockBreakDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        BlockBreakContext bbe = (BlockBreakContext) context;
         Block brokenBlock = bbe.getBlock();
         if (brokenBlock == null) return false;
         return isActivatorBlock(brokenBlock);

@@ -44,7 +44,7 @@ public class ClearRegionAction implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String region = params.getString("region");
         String type = params.getString("type", "all");

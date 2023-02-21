@@ -43,20 +43,20 @@ public class ItemFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         switch (flagType) {
             case HAND:
                 ItemStack item = player.getInventory().getItemInMainHand();
-                context.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
+                env.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
                 return VirtualItem.fromString(params).isSimilar(item);
             case INVENTORY:
-                return hasItemInInventory(context, params);
+                return hasItemInInventory(env, params);
             case WEAR:
                 return isItemWeared(player, params);
             case OFFHAND:
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
-                context.getVariables().set("item_amount", String.valueOf(inOffhand.getAmount()));
+                env.getVariables().set("item_amount", String.valueOf(inOffhand.getAmount()));
                 return VirtualItem.fromString(params).isSimilar(inOffhand);
         }
         return false;
@@ -69,13 +69,13 @@ public class ItemFlags implements Flag {
         return false;
     }
 
-    private boolean hasItemInInventory(Environment context, String itemStr) {
-        Player player = context.getPlayer();
+    private boolean hasItemInInventory(Environment env, String itemStr) {
+        Player player = env.getPlayer();
         Parameters params = Parameters.fromString(itemStr);
 
         if (!params.containsEvery("slot", "item")) {
             int countAmount = countItemsInInventory(player.getInventory(), itemStr);
-            context.getVariables().set("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
+            env.getVariables().set("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
             int amount = params.getInteger("amount", 1);
             return countAmount >= amount;
         }

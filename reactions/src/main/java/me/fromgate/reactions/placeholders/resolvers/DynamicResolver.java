@@ -20,9 +20,9 @@ public final class DynamicResolver implements Resolver<Placeholder.Dynamic> {
     }
 
     @Override
-    public @Nullable String parse(@NotNull Environment context, @NotNull String phText) {
+    public @Nullable String parse(@NotNull Environment env, @NotNull String phText) {
         for (Placeholder.Dynamic ph : placeholders) {
-            String result = ph.processPlaceholder(context, phText);
+            String result = ph.processPlaceholder(env, phText);
             if (result != null) return result;
         }
         return null;

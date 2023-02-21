@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.SneakDetails;
+import me.fromgate.reactions.module.basics.details.SneakContext;
 import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,22 +15,22 @@ import org.jetbrains.annotations.NotNull;
 public class SneakActivator extends Activator {
     private final TriBoolean sneak;
 
-    private SneakActivator(ActivatorLogic base, TriBoolean sneak) {
+    private SneakActivator(Logic base, TriBoolean sneak) {
         super(base);
         this.sneak = sneak;
     }
 
-    public static SneakActivator create(ActivatorLogic base, Parameters param) {
+    public static SneakActivator create(Logic base, Parameters param) {
         return new SneakActivator(base, param.getTriBoolean("sneak"));
     }
 
-    public static SneakActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static SneakActivator load(Logic base, ConfigurationSection cfg) {
         return new SneakActivator(base, TriBoolean.of(cfg.getString("sneak")));
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        SneakDetails se = (SneakDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        SneakContext se = (SneakContext) context;
         return sneak.isValidFor(se.isSneaking());
     }
 

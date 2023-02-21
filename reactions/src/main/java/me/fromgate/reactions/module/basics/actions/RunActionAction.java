@@ -17,7 +17,7 @@ import static me.fromgate.reactions.util.TimeUtils.offsetNow;
 @Aliased.Names({"ACTDELAY", "DELAYED_ACTION", "ACTION_DELAYED", "RUNTIME_ACTION"})
 public class RunActionAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
 
         long delayMs = params.getTime(params.findKey("delay", "time"));
@@ -46,13 +46,13 @@ public class RunActionAction implements Action {
         }
 
         if (delayMs <= 0) {
-            if (!action.requiresPlayer() || context.getPlayer() != null) {
-                action.proceed(context, actionParamsStr);
+            if (!action.requiresPlayer() || env.getPlayer() != null) {
+                action.proceed(env, actionParamsStr);
             }
         } else {
             ReActions.getWaiter().schedule(new WaitTask(
-                    context.getVariables(),
-                    context.getPlayer() != null ? context.getPlayer().getUniqueId() : null,
+                    env.getVariables(),
+                    env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
                     List.of(new StoredAction(action, actionParamsStr)),
                     offsetNow(delayMs)
             ));

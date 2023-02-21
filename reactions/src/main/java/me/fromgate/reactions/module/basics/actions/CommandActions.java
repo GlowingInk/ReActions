@@ -59,8 +59,8 @@ public class CommandActions implements Action, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         if (commandAs != Type.CONSOLE && player == null) return false;
         switch (commandAs) {
             default -> dispatchCommand(false, player, params);

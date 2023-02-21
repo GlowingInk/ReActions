@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.TeleportDetails;
+import me.fromgate.reactions.module.basics.details.TeleportContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -16,27 +16,27 @@ public class TeleportActivator extends Activator {
     private final TeleportCause cause;
     private final String worldTo;
 
-    private TeleportActivator(ActivatorLogic base, TeleportCause cause, String worldTo) {
+    private TeleportActivator(Logic base, TeleportCause cause, String worldTo) {
         super(base);
         this.cause = cause;
         this.worldTo = worldTo;
     }
 
-    public static TeleportActivator create(ActivatorLogic base, Parameters param) {
+    public static TeleportActivator create(Logic base, Parameters param) {
         TeleportCause cause = Utils.getEnum(TeleportCause.class, param.getString("cause"));
         String worldTo = param.getString("world");
         return new TeleportActivator(base, cause, worldTo);
     }
 
-    public static TeleportActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static TeleportActivator load(Logic base, ConfigurationSection cfg) {
         TeleportCause cause = Utils.getEnum(TeleportCause.class, cfg.getString("cause"));
         String worldTo = cfg.getString("world");
         return new TeleportActivator(base, cause, worldTo);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details details) {
-        TeleportDetails tpStorage = (TeleportDetails) details;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        TeleportContext tpStorage = (TeleportContext) context;
         if (cause != null && tpStorage.getCause() != cause) return false;
         return worldTo == null || tpStorage.getWorldTo().equalsIgnoreCase(worldTo);
     }

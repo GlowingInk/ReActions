@@ -38,8 +38,8 @@ import java.util.stream.Stream;
 public class PlayerStateFlag implements Flag {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         Posture pt = Posture.getByName(params);
         if (pt == null) return false;
         switch (pt) {

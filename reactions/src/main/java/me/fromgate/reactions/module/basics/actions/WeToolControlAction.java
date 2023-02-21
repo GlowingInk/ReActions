@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class WeToolControlAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         boolean isToolControl = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN, false));
         if (params.contains("player"))
             player = Bukkit.getPlayerExact(params.getString("player"));

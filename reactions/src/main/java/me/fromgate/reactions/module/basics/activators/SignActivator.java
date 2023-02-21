@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.SignDetails;
+import me.fromgate.reactions.module.basics.details.SignContext;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.enums.ClickType;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -45,13 +45,13 @@ public class SignActivator extends Activator {
     private final List<String> maskLines;
     private final ClickType click;
 
-    private SignActivator(ActivatorLogic base, ClickType click, List<String> maskLines) {
+    private SignActivator(Logic base, ClickType click, List<String> maskLines) {
         super(base);
         this.click = click;
         this.maskLines = maskLines;
     }
 
-    public static SignActivator create(ActivatorLogic base, Parameters p) {
+    public static SignActivator create(Logic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
         Sign sign = null;
@@ -73,7 +73,7 @@ public class SignActivator extends Activator {
         return new SignActivator(base, click, maskLines);
     }
 
-    public static SignActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static SignActivator load(Logic base, ConfigurationSection cfg) {
         ClickType click = ClickType.getByName(cfg.getString("click-type", "ANY"));
         List<String> maskLines = cfg.getStringList("sign-mask");
         return new SignActivator(base, click, maskLines);
@@ -96,8 +96,8 @@ public class SignActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        SignDetails signEvent = (SignDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        SignContext signEvent = (SignContext) context;
         if (click.checkRight(signEvent.isLeftClick())) return false;
         return checkMask(signEvent.getSignLines());
     }

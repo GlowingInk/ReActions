@@ -16,15 +16,15 @@ public class NumCompareFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         double paramValue = params.getDouble("param");
         double value = params.getDouble("value");
         if (greater) {
-            context.getVariables().set("gparam", Double.toString(paramValue));
+            env.getVariables().set("gparam", Double.toString(paramValue));
             return paramValue > value;
         } else {
-            context.getVariables().set("lparam", Double.toString(paramValue));
+            env.getVariables().set("lparam", Double.toString(paramValue));
             return paramValue < value;
         }
     }

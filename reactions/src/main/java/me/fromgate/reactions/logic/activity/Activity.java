@@ -5,7 +5,7 @@ import me.fromgate.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 
 public interface Activity extends Named {
-    boolean proceed(@NotNull Environment context, @NotNull String paramsStr);
+    boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
     boolean requiresPlayer();
 

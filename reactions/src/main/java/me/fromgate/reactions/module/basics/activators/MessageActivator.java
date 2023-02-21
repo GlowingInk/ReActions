@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.MessageDetails;
+import me.fromgate.reactions.module.basics.details.MessageContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -41,21 +41,21 @@ public class MessageActivator extends Activator {
     private final Source source;
     private final String mask;
 
-    private MessageActivator(ActivatorLogic base, CheckType type, Source source, String mask) {
+    private MessageActivator(Logic base, CheckType type, Source source, String mask) {
         super(base);
         this.type = type;
         this.source = source;
         this.mask = mask;
     }
 
-    public static MessageActivator create(ActivatorLogic base, Parameters param) {
+    public static MessageActivator create(Logic base, Parameters param) {
         CheckType type = CheckType.getByName(param.getString("type", "EQUAL"));
         Source source = Source.getByName(param.getString("source", "CHAT_MESSAGE"));
         String mask = param.getString("mask", param.getString("message", "Message mask"));
         return new MessageActivator(base, type, source, mask);
     }
 
-    public static MessageActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static MessageActivator load(Logic base, ConfigurationSection cfg) {
         CheckType type = CheckType.getByName(cfg.getString("type", "EQUAL"));
         Source source = Source.getByName(cfg.getString("source", "CHAT_INPUT"));
         String mask = cfg.getString("mask", "Message mask");
@@ -70,8 +70,8 @@ public class MessageActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        MessageDetails e = (MessageDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        MessageContext e = (MessageContext) context;
         return e.isForActivator(this);
     }
 

@@ -22,11 +22,11 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.PlateDetails;
+import me.fromgate.reactions.module.basics.details.PlateContext;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -44,7 +44,7 @@ public class PlateActivator extends Activator implements Locatable {
     private final int y;
     private final int z;
 
-    private PlateActivator(ActivatorLogic base, String world, int x, int y, int z) {
+    private PlateActivator(Logic base, String world, int x, int y, int z) {
         super(base);
         this.world = world;
         this.x = x;
@@ -52,7 +52,7 @@ public class PlateActivator extends Activator implements Locatable {
         this.z = z;
     }
 
-    public static PlateActivator create(ActivatorLogic base, Parameters p) {
+    public static PlateActivator create(Logic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
         if (targetBlock != null && BlockUtils.isPlate(targetBlock)) {
@@ -65,7 +65,7 @@ public class PlateActivator extends Activator implements Locatable {
         return null;
     }
 
-    public static PlateActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static PlateActivator load(Logic base, ConfigurationSection cfg) {
         String world = cfg.getString("world");
         int x = cfg.getInt("x");
         int y = cfg.getInt("y");
@@ -74,8 +74,8 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        PlateDetails be = (PlateDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        PlateContext be = (PlateContext) context;
         return isLocatedAt(be.getLocation());
     }
 

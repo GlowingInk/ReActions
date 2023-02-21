@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.ItemWearDetails;
+import me.fromgate.reactions.module.basics.details.ItemWearContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.message.Msg;
@@ -38,31 +38,31 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     private final String item;
     // private final WearSlot slot;
 
-    private ItemWearActivator(ActivatorLogic base, String item/*, WearSlot slot*/) {
+    private ItemWearActivator(Logic base, String item/*, WearSlot slot*/) {
         super(base);
         this.item = item;
         // this.slot = slot;
     }
 
-    public static ItemWearActivator create(ActivatorLogic base, Parameters param) {
+    public static ItemWearActivator create(Logic base, Parameters param) {
         String item = param.getString("item", Parameters.ORIGIN);
         // WearSlot slot = WearSlot.getByName(param.getParam("slot", "any"));
         return new ItemWearActivator(base, item/*, slot*/);
     }
 
-    public static ItemWearActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static ItemWearActivator load(Logic base, ConfigurationSection cfg) {
         String item = cfg.getString("item");
         // WearSlot slot = WearSlot.getByName(cfg.getString("wear-slot", "any"));
         return new ItemWearActivator(base, item/*, slot*/);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
+    public boolean checkContext(@NotNull ActivationContext context) {
         if (item.isEmpty() || (VirtualItem.asItemStack(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
             return false;
         }
-        ItemWearDetails iw = (ItemWearDetails) event;
+        ItemWearContext iw = (ItemWearContext) context;
         return iw.isItemWeared(this.item);
     }
 

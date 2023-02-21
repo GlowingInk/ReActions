@@ -45,9 +45,9 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
-        saveTempVar(context, params);
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
+        saveTempVar(env, params);
         long currentTime = Bukkit.getWorlds().get(0).getTime();
         if (player != null) currentTime = player.getWorld().getTime();
 
@@ -69,7 +69,7 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
         return false;
     }
 
-    private void saveTempVar(Environment context, String time) {
+    private void saveTempVar(Environment env, String time) {
         StringBuilder result = new StringBuilder(time);
         if (!(time.equalsIgnoreCase("day") || time.equalsIgnoreCase("night"))) {
             String[] ln = time.split(",");
@@ -81,7 +81,7 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
                     else result.append(", ").append(tmp);
                 }
         }
-        context.getVariables().set("time", result.toString());
+        env.getVariables().set("time", result.toString());
     }
 }
 

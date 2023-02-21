@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"CHAT", "CHAT_MESSAGE"})
 public class SendChatAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        if (context.getPlayer() != null) {
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        if (env.getPlayer() != null) {
             String msg = params;
             msg = msg.replaceFirst("^[\\s/]+", "");
-            context.getPlayer().chat(msg);
+            env.getPlayer().chat(msg);
         }
         return true;
     }

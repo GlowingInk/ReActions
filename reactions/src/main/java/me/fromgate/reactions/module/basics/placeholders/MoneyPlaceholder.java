@@ -11,12 +11,12 @@ import org.jetbrains.annotations.Nullable;
 public class MoneyPlaceholder implements Placeholder.Keyed {
 
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String param) {
-        if (context.getPlayer() == null) return "0";
+    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+        if (env.getPlayer() == null) return "0";
         if (param.isEmpty()) {
-            return Double.toString(RaVault.getBalance(context.getPlayer()));
+            return Double.toString(RaVault.getBalance(env.getPlayer()));
         } else {
-            return Double.toString(RaVault.getBalance(context.getPlayer(), param));
+            return Double.toString(RaVault.getBalance(env.getPlayer(), param));
         }
     }
 

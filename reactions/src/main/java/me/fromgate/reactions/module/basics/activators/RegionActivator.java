@@ -24,11 +24,11 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.externals.worldguard.WGBridge;
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.RegionDetails;
+import me.fromgate.reactions.module.basics.details.RegionContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -43,26 +43,26 @@ public class RegionActivator extends Activator implements Locatable {
 
     private final String region;
 
-    private RegionActivator(ActivatorLogic base, String region) {
+    private RegionActivator(Logic base, String region) {
         super(base);
         this.region = region;
     }
 
     public String getRegion() {return this.region;}
 
-    public static RegionActivator create(ActivatorLogic base, Parameters param) {
+    public static RegionActivator create(Logic base, Parameters param) {
         String region = param.getString("region", param.origin());
         return new RegionActivator(base, region);
     }
 
-    public static RegionActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static RegionActivator load(Logic base, ConfigurationSection cfg) {
         String region = cfg.getString("region", "region");
         return new RegionActivator(base, region);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        RegionDetails be = (RegionDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        RegionContext be = (RegionContext) context;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }
 

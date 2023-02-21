@@ -11,31 +11,31 @@ public sealed interface Placeholder extends Named permits Placeholder.Keyed, Pla
     non-sealed interface Keyed extends Placeholder {
         /**
          * Process this placeholder
-         * @param context Context of activation
+         * @param env Context of activation
          * @param key Key of placeholder(e.g. %var:test% - var) in lower case
          * @param params Text of placeholder(e.g. %var:test% - test)
          * @return Processed placeholder
          */
-        @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String params);
+        @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String params);
     }
 
     non-sealed interface Dynamic extends Placeholder {
         /**
          * Process this placeholder
-         * @param context Context of activation
+         * @param env Context of activation
          * @param phText Full placeholder(e.g. %temp_variable% - temp_variable)
          * @return Processed placeholder
          */
-        @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String phText);
+        @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String phText);
     }
 
     non-sealed interface Preprocess extends Placeholder {
         /**
          * Process this placeholder
-         * @param context Context of activation
+         * @param env Context of activation
          * @param fullText Full message text
          * @return Processed text
          */
-        @NotNull String processPlaceholder(@NotNull Environment context, @NotNull String fullText);
+        @NotNull String processPlaceholder(@NotNull Environment env, @NotNull String fullText);
     }
 }

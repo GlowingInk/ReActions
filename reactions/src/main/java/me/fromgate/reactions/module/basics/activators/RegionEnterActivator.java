@@ -24,11 +24,11 @@ package me.fromgate.reactions.module.basics.activators;
 
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.externals.worldguard.WGBridge;
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.RegionEnterDetails;
+import me.fromgate.reactions.module.basics.details.RegionEnterContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -42,26 +42,26 @@ public class RegionEnterActivator extends Activator implements Locatable {
 
     private final String region;
 
-    private RegionEnterActivator(ActivatorLogic base, String region) {
+    private RegionEnterActivator(Logic base, String region) {
         super(base);
         this.region = region;
     }
 
     public String getRegion() {return this.region;}
 
-    public static RegionEnterActivator create(ActivatorLogic base, Parameters param) {
+    public static RegionEnterActivator create(Logic base, Parameters param) {
         String region = param.getString("region", param.origin());
         return new RegionEnterActivator(base, region);
     }
 
-    public static RegionEnterActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static RegionEnterActivator load(Logic base, ConfigurationSection cfg) {
         String region = cfg.getString("region", "region");
         return new RegionEnterActivator(base, region);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        RegionEnterDetails be = (RegionEnterDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        RegionEnterContext be = (RegionEnterContext) context;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }
 

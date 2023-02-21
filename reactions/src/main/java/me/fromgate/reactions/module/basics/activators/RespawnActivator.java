@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.RespawnDetails;
+import me.fromgate.reactions.module.basics.details.RespawnContext;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,24 +35,24 @@ public class RespawnActivator extends Activator {
 
     private final DeathCause deathCause;
 
-    private RespawnActivator(ActivatorLogic base, DeathCause cause) {
+    private RespawnActivator(Logic base, DeathCause cause) {
         super(base);
         this.deathCause = cause;
     }
 
-    public static RespawnActivator create(ActivatorLogic base, Parameters param) {
+    public static RespawnActivator create(Logic base, Parameters param) {
         DeathCause cause = DeathCause.getByName(param.getString("cause", param.origin()));
         return new RespawnActivator(base, cause);
     }
 
-    public static RespawnActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static RespawnActivator load(Logic base, ConfigurationSection cfg) {
         DeathCause cause = DeathCause.getByName(cfg.getString("death-cause", "ANY"));
         return new RespawnActivator(base, cause);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        RespawnDetails pe = (RespawnDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        RespawnContext pe = (RespawnContext) context;
         return this.deathCause == DeathCause.ANY || pe.getDeathCause() == this.deathCause;
     }
 

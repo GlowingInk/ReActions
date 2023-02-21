@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.DamageByMobDetails;
+import me.fromgate.reactions.module.basics.details.DamageByMobContext;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,7 +28,7 @@ public class DamageByMobActivator extends Activator {
     // TODO: Use Enum
     private final String damageCause;
 
-    private DamageByMobActivator(ActivatorLogic base, String damagerName, String damagerType, String entityType, String damageCause) {
+    private DamageByMobActivator(Logic base, String damagerName, String damagerType, String entityType, String damageCause) {
         super(base);
         this.damagerName = damagerName;
         this.damagerType = damagerType;
@@ -58,7 +58,7 @@ public class DamageByMobActivator extends Activator {
         return "ANY";
     }
 
-    public static DamageByMobActivator create(ActivatorLogic base, Parameters param) {
+    public static DamageByMobActivator create(Logic base, Parameters param) {
         String damagerType = param.origin();
         String damagerName;
         if (damagerType.contains("$")) {
@@ -74,7 +74,7 @@ public class DamageByMobActivator extends Activator {
         return new DamageByMobActivator(base, damagerType, damagerName, entityType, damageCause);
     }
 
-    public static DamageByMobActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static DamageByMobActivator load(Logic base, ConfigurationSection cfg) {
         String damagerName = cfg.getString("damager-name", "");
         String damagerType = cfg.getString("damager-type", "");
         String entityType = cfg.getString("entity-type", "");
@@ -83,8 +83,8 @@ public class DamageByMobActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        DamageByMobDetails pde = (DamageByMobDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        DamageByMobContext pde = (DamageByMobContext) context;
         if (damagerType.isEmpty()) return false;
         Entity damager = pde.getDamager();
         if (damager != null && !isActivatorDamager(damager)) return false;

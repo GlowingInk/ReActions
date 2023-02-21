@@ -22,7 +22,7 @@
 
 package me.fromgate.reactions.module.basics.actions;
 
-import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.context.Environment;
 import me.fromgate.reactions.util.naming.Aliased;
@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 public class CancelEventAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
-        context.getVariables().set(Details.CANCEL_EVENT, paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        env.getVariables().set(ActivationContext.CANCEL_EVENT, paramsStr);
         return true;
     }
 

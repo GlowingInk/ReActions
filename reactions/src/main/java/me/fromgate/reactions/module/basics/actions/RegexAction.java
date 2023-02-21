@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class RegexAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String prefix = params.getString("prefix");
         String regex = params.getString("regex");
@@ -33,9 +33,9 @@ public class RegexAction implements Action {
             for (int i = 0; i <= m.groupCount(); i++) {
                 if (m.group(i) != null) group = m.group(i);
                 else group = "";
-                context.getVariables().set(prefix + "group" + count + "" + i, group);
-                context.getVariables().set(prefix + "group_" + count + "_" + i, group);
-                context.getVariables().set(prefix + "group:" + count + ":" + i, group);
+                env.getVariables().set(prefix + "group" + count + "" + i, group);
+                env.getVariables().set(prefix + "group_" + count + "_" + i, group);
+                env.getVariables().set(prefix + "group:" + count + ":" + i, group);
             }
         }
         return true;

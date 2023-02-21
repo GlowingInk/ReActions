@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.ItemHoldDetails;
+import me.fromgate.reactions.module.basics.details.ItemHoldContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.enums.HandType;
 import me.fromgate.reactions.util.item.VirtualItem;
@@ -39,7 +39,7 @@ public class ItemHoldActivator extends Activator {
     private final String item;
     private final HandType hand;
 
-    private ItemHoldActivator(ActivatorLogic base, String item, HandType hand) {
+    private ItemHoldActivator(Logic base, String item, HandType hand) {
         super(base);
         this.item = item;
         this.hand = hand;
@@ -49,25 +49,25 @@ public class ItemHoldActivator extends Activator {
 
     public HandType getHand() {return this.hand;}
 
-    public static ItemHoldActivator create(ActivatorLogic base, Parameters param) {
+    public static ItemHoldActivator create(Logic base, Parameters param) {
         String item = param.getString("item", "");
         HandType hand = HandType.getByName(param.getString("hand", "ANY"));
         return new ItemHoldActivator(base, item, hand);
     }
 
-    public static ItemHoldActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static ItemHoldActivator load(Logic base, ConfigurationSection cfg) {
         String item = cfg.getString("item", "");
         HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
         return new ItemHoldActivator(base, item, hand);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
+    public boolean checkContext(@NotNull ActivationContext context) {
         if (item.isEmpty() || (VirtualItem.asItemStack(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorholdempty", "Failed to parse itemStr of activator " + logic.getName());
             return false;
         }
-        ItemHoldDetails ie = (ItemHoldDetails) event;
+        ItemHoldContext ie = (ItemHoldContext) context;
         return hand.isValidFor(ie.getHand()) && VirtualItem.isSimilar(this.item, ie.getItem());
     }
 

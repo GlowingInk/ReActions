@@ -36,20 +36,20 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("WE_SEL_BLOCKS")
 public class WeSelectionFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         int selectionBlocks = RaWorldEdit.getArea(player);
         Vector minPoint = RaWorldEdit.getMinimumPoint(player);
         Vector maxPoint = RaWorldEdit.getMaximumPoint(player);
-        context.getVariables().set("minpoint", (minPoint == null) ? "" : minPoint.toString());
-        context.getVariables().set("minX", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockX()));
-        context.getVariables().set("minY", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockY()));
-        context.getVariables().set("minZ", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockZ()));
-        context.getVariables().set("maxpoint", (maxPoint == null) ? "" : maxPoint.toString());
-        context.getVariables().set("maxX", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockX()));
-        context.getVariables().set("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
-        context.getVariables().set("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
-        context.getVariables().set("selblocks", Integer.toString(selectionBlocks));
+        env.getVariables().set("minpoint", (minPoint == null) ? "" : minPoint.toString());
+        env.getVariables().set("minX", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockX()));
+        env.getVariables().set("minY", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockY()));
+        env.getVariables().set("minZ", (minPoint == null) ? "" : Integer.toString(minPoint.getBlockZ()));
+        env.getVariables().set("maxpoint", (maxPoint == null) ? "" : maxPoint.toString());
+        env.getVariables().set("maxX", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockX()));
+        env.getVariables().set("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
+        env.getVariables().set("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
+        env.getVariables().set("selblocks", Integer.toString(selectionBlocks));
         return NumberUtils.isNumber(params, Is.NATURAL) && selectionBlocks <= Integer.parseInt(params);
     }
 

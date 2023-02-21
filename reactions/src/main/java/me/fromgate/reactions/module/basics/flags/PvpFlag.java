@@ -32,9 +32,9 @@ import org.jetbrains.annotations.NotNull;
 public class PvpFlag implements Flag { // TODO: Requires rework
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         if (!player.hasMetadata("reactions-pvp-time")) return false;
         String timeStr = params.getString("time", params.origin());
         long delay = TimeUtils.parseTime(timeStr);

@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.DamageDetails;
+import me.fromgate.reactions.module.basics.details.DamageContext;
 import me.fromgate.reactions.util.enums.DamageType;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,27 +18,27 @@ public class DamageActivator extends Activator {
     private final String damageCause;
     private final DamageType source;
 
-    private DamageActivator(ActivatorLogic base, String cause, DamageType source) {
+    private DamageActivator(Logic base, String cause, DamageType source) {
         super(base);
         this.damageCause = cause;
         this.source = source;
     }
 
-    public static DamageActivator create(ActivatorLogic base, Parameters param) {
+    public static DamageActivator create(Logic base, Parameters param) {
         String cause = param.getString("cause", "ANY");
         DamageType source = DamageType.getByName(param.getString("source", "ANY"));
         return new DamageActivator(base, cause, source);
     }
 
-    public static DamageActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static DamageActivator load(Logic base, ConfigurationSection cfg) {
         String cause = cfg.getString("cause", "ANY");
         DamageType source = DamageType.getByName(cfg.getString("source", "ANY"));
         return new DamageActivator(base, cause, source);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        DamageDetails de = (DamageDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        DamageContext de = (DamageContext) context;
         if (!damageCauseCheck(de.getCause())) return false;
         return sourceCheck(de.getSource());
     }

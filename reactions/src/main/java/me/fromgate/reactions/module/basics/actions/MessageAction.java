@@ -43,9 +43,9 @@ import java.util.Set;
 public class MessageAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        sendMessage(context.getPlayer(), params);
+        sendMessage(env.getPlayer(), params);
         return true;
     }
 

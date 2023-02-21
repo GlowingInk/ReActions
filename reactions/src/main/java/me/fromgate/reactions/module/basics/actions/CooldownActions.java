@@ -43,9 +43,9 @@ public class CooldownActions implements Action, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         String timeStr = "";
         String playerName = this.global ? "" : (player != null ? player.getName() : "");
         String variableId = "";
@@ -69,7 +69,7 @@ public class CooldownActions implements Action, Aliased {
         if (timeStr.isEmpty()) return false;
         if (variableId.isEmpty()) return false;
         setCooldown(playerName, variableId, TimeUtils.parseTime(timeStr), add);
-        CooldownManager.setTempPlaceholders(context, playerName, variableId);
+        CooldownManager.setTempPlaceholders(env, playerName, variableId);
         return true;
     }
 

@@ -1,7 +1,7 @@
 package me.fromgate.reactions;
 
-import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
+import me.fromgate.reactions.logic.activators.type.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.module.ModulesRegistry;
 import me.fromgate.reactions.placeholders.PlaceholdersManager;

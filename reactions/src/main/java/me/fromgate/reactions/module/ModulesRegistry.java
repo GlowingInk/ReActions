@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.activators.ActivatorType;
+import me.fromgate.reactions.logic.activators.type.ActivatorType;
 import me.fromgate.reactions.logic.activity.actions.Action;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.placeholders.Placeholder;

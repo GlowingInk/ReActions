@@ -33,9 +33,9 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("PLAY_SOUND")
 public class SoundAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         String str = Utils.soundPlay(player == null ? null : player.getLocation(), params);
         return !str.isEmpty();
     }

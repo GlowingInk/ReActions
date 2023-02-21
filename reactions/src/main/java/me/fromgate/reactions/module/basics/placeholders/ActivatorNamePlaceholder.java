@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("activatorname")
 public class ActivatorNamePlaceholder implements Placeholder.Keyed {
     @Override
-    public @NotNull String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String param) {
-        return context.getActivatorName();
+    public @NotNull String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+        return env.getActivatorName();
     }
 
     @Override

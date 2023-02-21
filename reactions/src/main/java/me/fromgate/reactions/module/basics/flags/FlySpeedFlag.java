@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class FlySpeedFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         if (!NumberUtils.isNumber(params, Is.NATURAL)) return false;
         long flySpeed = Math.round(player.getFlySpeed() * 10);
-        context.getVariables().set("flyspeed", Integer.toString((int) flySpeed));
+        env.getVariables().set("flyspeed", Integer.toString((int) flySpeed));
         return flySpeed >= Integer.parseInt(params);
     }
 

@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LocalVariablePlaceholder implements Placeholder.Dynamic {
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String phText) {
-        return context.getVariables().getStringUnsafe(phText);
+    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String phText) {
+        return env.getVariables().getStringUnsafe(phText);
     }
 
     @Override

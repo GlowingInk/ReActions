@@ -22,29 +22,29 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public class QuitActivator extends Activator {
 
-    private QuitActivator(ActivatorLogic base) {
+    private QuitActivator(Logic base) {
         super(base);
     }
 
-    public static QuitActivator create(ActivatorLogic base, Parameters ignore) {
+    public static QuitActivator create(Logic base, Parameters ignore) {
         return new QuitActivator(base);
     }
 
-    public static QuitActivator load(ActivatorLogic base, ConfigurationSection ignore) {
+    public static QuitActivator load(Logic base, ConfigurationSection ignore) {
         return new QuitActivator(base);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
+    public boolean checkContext(@NotNull ActivationContext context) {
         return true;
     }
 

@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 public class OpenMenuAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return InventoryMenu.createAndOpenInventory(context.getPlayer(), params, context.getVariables());
+        return InventoryMenu.createAndOpenInventory(env.getPlayer(), params, env.getVariables());
     }
 
     @Override

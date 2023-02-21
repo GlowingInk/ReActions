@@ -40,9 +40,9 @@ public class EitherFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
         List<String> split = ParametersUtils.splitSafely(params, ' ');
-        boolean hasPlayer = context.getPlayer() != null;
+        boolean hasPlayer = env.getPlayer() != null;
         for (String flagFullStr : split) {
             String[] flagSplit = flagFullStr.split(":", 2);
             if (flagSplit.length == 1) {
@@ -53,7 +53,7 @@ public class EitherFlag implements Flag {
             }
             boolean invert = flagSplit[0].startsWith("!");
             Flag flag = registry.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
-            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.proceed(context, flagSplit[1])) {
+            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.proceed(env, flagSplit[1])) {
                 return true;
             }
         }

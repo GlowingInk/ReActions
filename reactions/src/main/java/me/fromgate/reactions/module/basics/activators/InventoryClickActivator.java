@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.InventoryClickDetails;
+import me.fromgate.reactions.module.basics.details.InventoryClickContext;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,7 +22,7 @@ public class InventoryClickActivator extends Activator {
     private final String slotStr;
     private final VirtualItem item;
 
-    private InventoryClickActivator(ActivatorLogic base, String inventoryName, ClickType click, InventoryAction action,
+    private InventoryClickActivator(Logic base, String inventoryName, ClickType click, InventoryAction action,
                                     InventoryType inventory, SlotType slotType, String numberKey, String slotStr, String itemStr) {
         super(base);
         this.inventoryName = inventoryName;
@@ -56,7 +56,7 @@ public class InventoryClickActivator extends Activator {
         return "ANY";
     }
 
-    public static InventoryClickActivator create(ActivatorLogic base, Parameters param) {
+    public static InventoryClickActivator create(Logic base, Parameters param) {
         String inventoryName = param.getString("name", "");
         ClickType click = ClickType.getByName(param.getString("click", "ANY"));
         InventoryAction action = InventoryAction.getByName(param.getString("action", "ANY"));
@@ -68,7 +68,7 @@ public class InventoryClickActivator extends Activator {
         return new InventoryClickActivator(base, inventoryName, click, action, inventory, slotType, numberKey, slotStr, itemStr);
     }
 
-    public static InventoryClickActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static InventoryClickActivator load(Logic base, ConfigurationSection cfg) {
         String inventoryName = cfg.getString("name", "");
         ClickType click = ClickType.getByName(cfg.getString("click-type", "ANY"));
         InventoryAction action = InventoryAction.getByName(cfg.getString("action-type", "ANY"));
@@ -81,8 +81,8 @@ public class InventoryClickActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        InventoryClickDetails pice = (InventoryClickDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        InventoryClickContext pice = (InventoryClickContext) context;
         if (!inventoryName.isEmpty() && !pice.getInventoryName().equalsIgnoreCase(inventoryName)) return false;
         if (pice.getClickType() == null) return false;
         if (!clickCheck(pice.getClickType())) return false;

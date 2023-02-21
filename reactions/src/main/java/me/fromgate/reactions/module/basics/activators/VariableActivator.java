@@ -23,10 +23,10 @@
 package me.fromgate.reactions.module.basics.activators;
 
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.VariableDetails;
+import me.fromgate.reactions.module.basics.details.VariableContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -36,27 +36,27 @@ public class VariableActivator extends Activator {
     private final String id;
     private final boolean personal;
 
-    private VariableActivator(ActivatorLogic base, String id, boolean personal) {
+    private VariableActivator(Logic base, String id, boolean personal) {
         super(base);
         this.id = id;
         this.personal = personal;
     }
 
-    public static VariableActivator create(ActivatorLogic base, Parameters param) {
+    public static VariableActivator create(Logic base, Parameters param) {
         String id = param.getString("id", "UnknownVariable");
         boolean personal = param.getBoolean("personal", false);
         return new VariableActivator(base, id, personal);
     }
 
-    public static VariableActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static VariableActivator load(Logic base, ConfigurationSection cfg) {
         String id = cfg.getString("variable-id", "UnknownVariable");
         boolean personal = cfg.getBoolean("personal", false);
         return new VariableActivator(base, id, personal);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        VariableDetails ve = (VariableDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        VariableContext ve = (VariableContext) context;
         if (!this.id.equalsIgnoreCase(ve.getVariableId())) return false;
         return !personal || ve.getPlayer() == null;
     }

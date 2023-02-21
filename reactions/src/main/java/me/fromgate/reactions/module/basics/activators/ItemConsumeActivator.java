@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.ItemConsumeDetails;
+import me.fromgate.reactions.module.basics.details.ItemConsumeContext;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -37,23 +37,23 @@ public class ItemConsumeActivator extends Activator {
     private final VirtualItem item;
     // TODO: Hand option
 
-    private ItemConsumeActivator(ActivatorLogic base, String item) {
+    private ItemConsumeActivator(Logic base, String item) {
         super(base);
         this.item = VirtualItem.fromString(item);
     }
 
-    public static ItemConsumeActivator create(ActivatorLogic base, Parameters param) {
+    public static ItemConsumeActivator create(Logic base, Parameters param) {
         String item = param.getString("item", param.origin());
         return new ItemConsumeActivator(base, item);
     }
 
-    public static ItemConsumeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static ItemConsumeActivator load(Logic base, ConfigurationSection cfg) {
         String item = cfg.getString("item", "");
         return new ItemConsumeActivator(base, item);
     }
 
-    public boolean checkDetails(@NotNull Details event) {
-        ItemConsumeDetails ie = (ItemConsumeDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        ItemConsumeContext ie = (ItemConsumeContext) context;
         return item.isSimilar(ie.getItem());
     }
 

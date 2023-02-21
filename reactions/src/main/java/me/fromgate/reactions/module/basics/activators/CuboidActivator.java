@@ -1,8 +1,8 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
 import me.fromgate.reactions.util.location.Cuboid;
 import me.fromgate.reactions.util.location.ImplicitPosition;
@@ -24,14 +24,14 @@ public class CuboidActivator extends Activator implements Locatable {
     private final Cuboid cuboid;
     private final Set<UUID> within;
 
-    private CuboidActivator(ActivatorLogic base, Cuboid cuboid, CuboidMode mode) {
+    private CuboidActivator(Logic base, Cuboid cuboid, CuboidMode mode) {
         super(base);
         this.cuboid = cuboid;
         this.mode = mode;
         this.within = new HashSet<>();
     }
 
-    public static CuboidActivator create(ActivatorLogic base, Parameters param) {
+    public static CuboidActivator create(Logic base, Parameters param) {
         CuboidMode mode = CuboidMode.getByName(param.getString("mode", "ENTER"));
         String world = param.getString("world", Bukkit.getWorlds().get(0).getName());
         ImplicitPosition loc1 = ImplicitPosition.of(world, param.getInteger("loc1.x"), param.getInteger("loc1.y"), param.getInteger("loc1.z"));
@@ -39,7 +39,7 @@ public class CuboidActivator extends Activator implements Locatable {
         return new CuboidActivator(base, new Cuboid(loc1, loc2), mode);
     }
 
-    public static CuboidActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static CuboidActivator load(Logic base, ConfigurationSection cfg) {
         CuboidMode mode = CuboidMode.getByName(cfg.getString("mode", "ENTER"));
         String world = cfg.getString("world");
         ImplicitPosition loc1 = ImplicitPosition.of(world, cfg.getInt("loc1.x"), cfg.getInt("loc1.y"), cfg.getInt("loc1.z"));
@@ -48,8 +48,8 @@ public class CuboidActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        Player player = event.getPlayer();
+    public boolean checkContext(@NotNull ActivationContext context) {
+        Player player = context.getPlayer();
         UUID id = player.getUniqueId();
         boolean inCuboid = cuboid.isInside(player.getLocation(), true);
         switch (mode) {

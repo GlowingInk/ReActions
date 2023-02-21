@@ -44,11 +44,11 @@ public class ExecuteAction implements Action {
 
     public ExecuteAction(@NotNull ReActions.Platform platform) {
         this.platform = platform;
-        this.functAction = Objects.requireNonNull(platform.getActivities().getAction("FUNCTION"));
+        this.functAction = Objects.requireNonNull(platform.getActivities().getAction("RUN_FUNCTION"));
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         int repeat = Math.max(params.getInteger("repeat", 1), 1);
         long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));
@@ -58,7 +58,7 @@ public class ExecuteAction implements Action {
         }
         if (targets.isEmpty()) {
             if (!params.containsAny(ReActions.getSelectors().getAllKeys())) {  // TODO Remove legacy compatibility (selectors)
-                targets.add(context.getPlayer());
+                targets.add(env.getPlayer());
             } else {
                 return false;
             }
@@ -67,7 +67,7 @@ public class ExecuteAction implements Action {
         for (int i = 0; i < repeat; i++) {
             for (Player player : targets) {
                 platform.getWaiter().schedule(new WaitTask(
-                        context.getVariables().fork(),
+                        env.getVariables().fork(),
                         player == null ? null : player.getUniqueId(),
                         storedFunct,
                         delayMs * (i + 1)

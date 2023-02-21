@@ -1,7 +1,7 @@
 package me.fromgate.reactions.commands;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,7 @@ public class CmdClear extends Cmd {
         String arg2 = args.length >= 3 ? args[2] : "";
         Activator activator = ReActions.getActivators().getActivator(activatorId);
         if (activator != null) {
-            ActivatorLogic logic = activator.getLogic();
+            Logic logic = activator.getLogic();
             if (arg2.equalsIgnoreCase("f") || arg2.equalsIgnoreCase("flag")) {
                 logic.clearFlags();
                 Msg.MSG_CLEARFLAG.print(sender, activatorId);

@@ -23,11 +23,11 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.DoorDetails;
+import me.fromgate.reactions.module.basics.details.DoorContext;
 import me.fromgate.reactions.util.BlockUtils;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.BlockParameters;
@@ -49,7 +49,7 @@ public class DoorActivator extends Activator implements Locatable {
     private final int y;
     private final int z;
 
-    private DoorActivator(ActivatorLogic base, String state, String world, int x, int y, int z) {
+    private DoorActivator(Logic base, String state, String world, int x, int y, int z) {
         super(base);
         this.state = state;
         this.world = world;
@@ -58,7 +58,7 @@ public class DoorActivator extends Activator implements Locatable {
         this.z = z;
     }
 
-    public static DoorActivator create(ActivatorLogic base, Parameters p) {
+    public static DoorActivator create(Logic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
         Block targetBlock = param.getBlock();
         if (targetBlock == null || BlockUtils.isOpenable(targetBlock)) {
@@ -72,7 +72,7 @@ public class DoorActivator extends Activator implements Locatable {
         } else return null;
     }
 
-    public static DoorActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static DoorActivator load(Logic base, ConfigurationSection cfg) {
         String state = cfg.getString("state", "ANY");
         if (!(state.equalsIgnoreCase("open") || state.equalsIgnoreCase("close"))) state = "ANY";
         String world = cfg.getString("world");
@@ -83,8 +83,8 @@ public class DoorActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        DoorDetails de = (DoorDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        DoorContext de = (DoorContext) context;
         if (de.getDoorBlock() == null) return false;
         if (!isLocatedAt(de.getDoorLocation())) return false;
         if (this.state.equalsIgnoreCase("open") && de.isDoorOpened()) return false;

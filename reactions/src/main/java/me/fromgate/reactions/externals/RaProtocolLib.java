@@ -27,7 +27,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.module.basics.activators.MessageActivator.Source;
@@ -131,7 +131,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
                         Optional<Variables> optVars = DetailsManager.triggerMessage(event.getPlayer(), Source.CHAT_OUTPUT, message);
                         if (optVars.isEmpty()) return;
                         Variables vars = optVars.get();
-                        vars.getChanged(Details.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+                        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
                     }
                 });
     }

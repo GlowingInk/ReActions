@@ -42,10 +42,10 @@ import org.jetbrains.annotations.NotNull;
 public class SignSetAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         // loc:world,x,y,z line1:text line2:text line3:text line4:text clear:1,2,3,4
-        String locStr = params.getString("loc", context.getVariables().getString("sign_loc")); // TODO What, why?
+        String locStr = params.getString("loc", env.getVariables().getString("sign_loc")); // TODO What, why?
         if (Utils.isStringEmpty(locStr)) return false;
         Location loc = LocationUtils.parseCoordinates(locStr);
         if (loc == null) return false;

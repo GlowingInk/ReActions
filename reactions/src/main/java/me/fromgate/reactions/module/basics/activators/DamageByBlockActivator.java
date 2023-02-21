@@ -1,10 +1,10 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
 import me.fromgate.reactions.logic.activators.Locatable;
-import me.fromgate.reactions.module.basics.details.DamageByBlockDetails;
+import me.fromgate.reactions.module.basics.details.DamageByBlockContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -27,21 +27,21 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     private final String blockLocation;
     private final String damageCause;
 
-    private DamageByBlockActivator(ActivatorLogic base, String block, String location, String cause) {
+    private DamageByBlockActivator(Logic base, String block, String location, String cause) {
         super(base);
         this.blockType = ItemUtils.getMaterial(block.startsWith("type:") ? block.substring(5) : block);
         this.blockLocation = location;
         this.damageCause = cause;
     }
 
-    public static DamageByBlockActivator create(ActivatorLogic base, Parameters param) {
+    public static DamageByBlockActivator create(Logic base, Parameters param) {
         String block = param.getString("block", "");
         String location = param.getString("loc", "");
         String cause = param.getString("cause", "ANY");
         return new DamageByBlockActivator(base, block, location, cause);
     }
 
-    public static DamageByBlockActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static DamageByBlockActivator load(Logic base, ConfigurationSection cfg) {
         String block = cfg.getString("block", "");
         String location = cfg.getString("loc", "");
         String cause = cfg.getString("cause", "ANY");
@@ -50,8 +50,8 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        DamageByBlockDetails db = (DamageByBlockDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        DamageByBlockContext db = (DamageByBlockContext) context;
         Block damagerBlock = db.getBlockDamager();
         if (damagerBlock == null) return false;
         if (!isActivatorBlock(damagerBlock)) return false;

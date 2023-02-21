@@ -41,7 +41,7 @@ import java.util.List;
 @Aliased.Names("FILL_BLOCK")
 public class BlockFillAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!params.contains("region") && !params.containsEvery("loc1", "loc2")) return false;
         boolean phys = params.getBoolean("physics", false);

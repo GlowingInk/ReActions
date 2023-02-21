@@ -5,8 +5,8 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.module.basics.activators.ItemHoldActivator;
 import me.fromgate.reactions.module.basics.activators.ItemWearActivator;
-import me.fromgate.reactions.module.basics.details.ItemHoldDetails;
-import me.fromgate.reactions.module.basics.details.ItemWearDetails;
+import me.fromgate.reactions.module.basics.details.ItemHoldContext;
+import me.fromgate.reactions.module.basics.details.ItemWearContext;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ public final class ItemDetailsManager {
         if (!player.isOnline()) return;
         String rg = "iw-" + itemStr;
         if (!DetailsManager.isTimeToRaiseEvent(player, rg, Cfg.itemWearRecheck, repeat)) return;
-        ItemWearDetails iwe = new ItemWearDetails(player);
+        ItemWearContext iwe = new ItemWearContext(player);
         if (!iwe.isItemWeared(itemStr)) return;
         ReActions.getActivators().activate(iwe);
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20L * Cfg.itemWearRecheck);
@@ -72,7 +72,7 @@ public final class ItemDetailsManager {
     }
 
     private static void processItemHoldActivator(Player player, ItemStack item, EquipmentSlot hand) {
-        ItemHoldDetails ihe = new ItemHoldDetails(player, item, hand);
+        ItemHoldContext ihe = new ItemHoldContext(player, item, hand);
         ReActions.getActivators().activate(ihe);
     }
 

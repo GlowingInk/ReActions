@@ -35,9 +35,9 @@ import org.jetbrains.annotations.NotNull;
 public class HealAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         if (params.contains("player"))
             player = Bukkit.getPlayerExact(params.getString("player"));
         if (player == null) return false;

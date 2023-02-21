@@ -26,10 +26,10 @@ import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.commands.custom.FakeCommander;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
+import me.fromgate.reactions.logic.activators.FunctionActivator;
 import me.fromgate.reactions.logic.context.Variables;
-import me.fromgate.reactions.module.basics.activators.ExecActivator;
 import me.fromgate.reactions.module.basics.activators.MessageActivator;
 import me.fromgate.reactions.module.basics.activators.SignActivator;
 import me.fromgate.reactions.module.basics.details.*;
@@ -77,13 +77,13 @@ public final class DetailsManager {
     private DetailsManager() {}
 
     public static @NotNull Optional<Variables> triggerTeleport(Player player, TeleportCause cause, Location to) {
-        TeleportDetails details = new TeleportDetails(player, cause, to);
+        TeleportContext details = new TeleportContext(player, cause, to);
         activate(details);
         return details.getVariables();
     }
 
     public static boolean triggerPrecommand(Player player, CommandSender sender, String fullCommand) {
-        CommandDetails details = new CommandDetails(player, sender, fullCommand);
+        CommandContext details = new CommandContext(player, sender, fullCommand);
         boolean activated = activate(details);
         return details.isInitialized() && (
                 details.isCancelled() |
@@ -93,39 +93,39 @@ public final class DetailsManager {
 
     public static boolean triggerMobClick(Player player, LivingEntity mob) {
         if (mob == null) return false;
-        MobClickDetails e = new MobClickDetails(player, mob);
+        MobClickContext e = new MobClickContext(player, mob);
         activate(e);
         return e.isCancelled();
     }
 
     public static void triggerMobKill(Player player, LivingEntity mob) {
         if (mob == null) return;
-        MobKillDetails e = new MobKillDetails(player, mob);
+        MobKillContext e = new MobKillContext(player, mob);
         activate(e);
     }
 
     public static void triggerJoin(Player player, boolean joinfirst) {
-        JoinDetails e = new JoinDetails(player, joinfirst);
+        JoinContext e = new JoinContext(player, joinfirst);
         activate(e);
     }
 
     public static boolean triggerDoor(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
         if (!BlockUtils.isOpenable(event.getClickedBlock()) || event.getHand() != EquipmentSlot.HAND) return false;
-        DoorDetails e = new DoorDetails(event.getPlayer(), BlockUtils.getBottomDoor(event.getClickedBlock()));
+        DoorContext e = new DoorContext(event.getPlayer(), BlockUtils.getBottomDoor(event.getClickedBlock()));
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerItemConsume(PlayerItemConsumeEvent event) {
-        ItemConsumeDetails ce = new ItemConsumeDetails(event.getPlayer(), event.getItem(), event.getPlayer().getInventory().getItemInMainHand().isSimilar(event.getItem()));
+        ItemConsumeContext ce = new ItemConsumeContext(event.getPlayer(), event.getItem(), event.getPlayer().getInventory().getItemInMainHand().isSimilar(event.getItem()));
         activate(ce);
         return ce.isCancelled();
     }
 
     public static boolean triggerItemClick(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        ItemClickDetails details = new ItemClickDetails(
+        ItemClickContext details = new ItemClickContext(
                 player,
                 event.getHand() == EquipmentSlot.HAND
                         ? player.getInventory().getItemInMainHand()
@@ -137,7 +137,7 @@ public final class DetailsManager {
 
     public static boolean triggerItemClick(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
-        ItemClickDetails details = new ItemClickDetails(event.getPlayer(), event.getItem(), event.getHand());
+        ItemClickContext details = new ItemClickContext(event.getPlayer(), event.getItem(), event.getHand());
         activate(details);
         return details.isCancelled();
     }
@@ -148,7 +148,7 @@ public final class DetailsManager {
             return false;
         if (event.getHand() != EquipmentSlot.HAND) return false;
         if (event.getClickedBlock().getType() != Material.LEVER) return false;
-        LeverDetails e = new LeverDetails(event.getPlayer(), event.getClickedBlock());
+        LeverContext e = new LeverContext(event.getPlayer(), event.getClickedBlock());
         activate(e);
         return e.isCancelled();
     }
@@ -158,7 +158,7 @@ public final class DetailsManager {
         Player deadplayer = event.getEntity();
         Player killer = EntityUtils.getKillerPlayer(deadplayer.getLastDamageCause());
         if (killer == null) return;
-        PvpKillDetails pe = new PvpKillDetails(killer, deadplayer);
+        PvpKillContext pe = new PvpKillContext(killer, deadplayer);
         activate(pe);
     }
 
@@ -167,7 +167,7 @@ public final class DetailsManager {
         Player deadplayer = event.getEntity();
         LivingEntity killer = EntityUtils.getKillerEntity(deadplayer.getLastDamageCause());
         DeathCause ds = (killer == null) ? DeathCause.OTHER : (killer instanceof Player) ? DeathCause.PVP : DeathCause.PVE;
-        DeathDetails pe = new DeathDetails(killer, deadplayer, ds);
+        DeathContext pe = new DeathContext(killer, deadplayer, ds);
         activate(pe);
     }
 
@@ -178,7 +178,7 @@ public final class DetailsManager {
         if (block == null || !Tag.BUTTONS.isTagged(block.getType())) return false;
         Switch button = (Switch) block.getBlockData();
         if (button.isPowered()) return false;
-        ButtonDetails be = new ButtonDetails(event.getPlayer(), event.getClickedBlock().getLocation());
+        ButtonContext be = new ButtonContext(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(be);
         return be.isCancelled();
     }
@@ -187,7 +187,7 @@ public final class DetailsManager {
         for (Activator act : ReActions.getActivatorTypes().get(SignActivator.class).getActivators()) {
             SignActivator sign = (SignActivator) act;
             if (sign.checkMask(lines)) {
-                SignDetails se = new SignDetails(player, lines, loc, leftClick);
+                SignContext se = new SignContext(player, lines, loc, leftClick);
                 activate(se);
                 return se.isCancelled();
             }
@@ -219,7 +219,7 @@ public final class DetailsManager {
             Msg.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
             return false;
         }
-        if (act.getClass() != ExecActivator.class) {
+        if (act.getClass() != FunctionActivator.class) {
             Msg.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
             return false;
         }
@@ -241,7 +241,7 @@ public final class DetailsManager {
             Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
                 for (Player player : target) {
                     // if (ReActions.getActivators().isStopped(player, id, true)) continue;
-                    ExecDetails ce = new ExecDetails(player, vars);
+                    ExecContext ce = new ExecContext(player, vars);
                     // TODO Custom ActivatorType for Exec
                     ReActions.getActivators().activate(ce, id);
                 }
@@ -258,13 +258,13 @@ public final class DetailsManager {
             Msg.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
             return false;
         }
-        if (act.getClass() != ExecActivator.class) {
+        if (act.getClass() != FunctionActivator.class) {
             Msg.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
             return false;
         }
         // TODO Custom ActivatorType to handle exec stopping
         // if (ReActions.getActivators().isStopped(player, id, true)) return true;
-        ExecDetails ce = new ExecDetails(player, vars);
+        ExecContext ce = new ExecContext(player, vars);
         ReActions.getActivators().activate(ce, id);
         return true;
     }
@@ -273,13 +273,13 @@ public final class DetailsManager {
         if (event.getAction() != Action.PHYSICAL) return false;
         // TODO EnumSet Plates?
         if (!(event.getClickedBlock().getType().name().endsWith("_PRESSURE_PLATE"))) return false;
-        PlateDetails pe = new PlateDetails(event.getPlayer(), event.getClickedBlock().getLocation());
+        PlateContext pe = new PlateContext(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(pe);
         return pe.isCancelled();
     }
 
     public static void triggerCuboid(final Player player) {
-        ReActions.getActivators().activate(new CuboidDetails(player));
+        ReActions.getActivators().activate(new CuboidContext(player));
     }
 
     public static void triggerAllRegions(final Player player, final Location to, final Location from) {
@@ -301,7 +301,7 @@ public final class DetailsManager {
         if (regionTo.isEmpty()) return;
         for (String rg : regionTo)
             if (!regionFrom.contains(rg)) {
-                RegionEnterDetails wge = new RegionEnterDetails(player, rg);
+                RegionEnterContext wge = new RegionEnterContext(player, rg);
                 activate(wge);
             }
     }
@@ -310,7 +310,7 @@ public final class DetailsManager {
         if (regionFrom.isEmpty()) return;
         for (String rg : regionFrom)
             if (!regionTo.contains(rg)) {
-                RegionLeaveDetails wge = new RegionLeaveDetails(player, rg);
+                RegionLeaveContext wge = new RegionLeaveContext(player, rg);
                 activate(wge);
             }
     }
@@ -331,7 +331,7 @@ public final class DetailsManager {
         String rg = "rg-" + region;
         if (!isTimeToRaiseEvent(player, rg, Cfg.worldguardRecheck, repeat)) return;
 
-        RegionDetails wge = new RegionDetails(player, region);
+        RegionContext wge = new RegionContext(player, region);
         activate(wge);
 
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureRegionCheck(playerName, region, true), 20L * Cfg.worldguardRecheck);
@@ -351,7 +351,7 @@ public final class DetailsManager {
         for (Activator act : ReActions.getActivatorTypes().get(MessageActivator.class).getActivators()) {
             MessageActivator a = (MessageActivator) act;
             if (a.filterMessage(source, message)) {
-                MessageDetails me = new MessageDetails(player, a, message);
+                MessageContext me = new MessageContext(player, a, message);
                 activate(me);
                 return me.getVariables();
             }
@@ -363,18 +363,18 @@ public final class DetailsManager {
         if (newValue.equalsIgnoreCase(prevValue)) return;
         Player player = Bukkit.getPlayerExact(playerName);
         if (!playerName.isEmpty() && player == null) return;
-        VariableDetails ve = new VariableDetails(player, var, newValue, prevValue);
+        VariableContext ve = new VariableContext(player, var, newValue, prevValue);
         activate(ve);
     }
 
     public static @NotNull Optional<Variables> triggerMobDamage(Player damager, LivingEntity entity, double damage, double finalDamage, EntityDamageEvent.DamageCause cause) {
-        MobDamageDetails mde = new MobDamageDetails(entity, damager, cause, damage, finalDamage);
+        MobDamageContext mde = new MobDamageContext(entity, damager, cause, damage, finalDamage);
         activate(mde);
         return mde.getVariables();
     }
 
     public static @NotNull Optional<Variables> triggerQuit(PlayerQuitEvent event) {
-        QuitDetails qu = new QuitDetails(event.getPlayer(), event.getQuitMessage());
+        QuitContext qu = new QuitContext(event.getPlayer(), event.getQuitMessage());
         activate(qu);
         return qu.getVariables();
     }
@@ -394,13 +394,13 @@ public final class DetailsManager {
             default:
                 return false;
         }
-        BlockClickDetails e = new BlockClickDetails(event.getPlayer(), block, leftClick);
+        BlockClickContext e = new BlockClickContext(event.getPlayer(), block, leftClick);
         activate(e);
         return e.isCancelled();
     }
 
     public static @NotNull Optional<Variables> triggerInventoryClick(InventoryClickEvent event) {
-        InventoryClickDetails e = new InventoryClickDetails((Player) event.getWhoClicked(), event.getAction(),
+        InventoryClickContext e = new InventoryClickContext((Player) event.getWhoClicked(), event.getAction(),
                 event.getClick(), event.getInventory(), event.getSlotType(),
                 event.getCurrentItem(), event.getHotbarButton(),
                 event.getView(), event.getSlot());
@@ -409,49 +409,49 @@ public final class DetailsManager {
     }
 
     public static @NotNull Optional<Variables> triggerDrop(Player player, Item item, int pickupDelay) {
-        DropDetails e = new DropDetails(player, item, pickupDelay);
+        DropContext e = new DropContext(player, item, pickupDelay);
         activate(e);
         return e.getVariables();
     }
 
     public static boolean triggerFlight(Player player, boolean flying) {
-        FlightDetails e = new FlightDetails(player, flying);
+        FlightContext e = new FlightContext(player, flying);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerEntityClick(Player player, Entity rightClicked) {
-        EntityClickDetails e = new EntityClickDetails(player, rightClicked);
+        EntityClickContext e = new EntityClickContext(player, rightClicked);
         activate(e);
         return e.isCancelled();
     }
 
     public static @NotNull Optional<Variables> triggerBlockBreak(Player player, Block block, boolean dropItems) {
-        BlockBreakDetails e = new BlockBreakDetails(player, block, dropItems);
+        BlockBreakContext e = new BlockBreakContext(player, block, dropItems);
         activate(e);
         return e.getVariables();
     }
 
     public static void triggerSneak(PlayerToggleSneakEvent event) {
-        SneakDetails e = new SneakDetails(event.getPlayer(), event.isSneaking());
+        SneakContext e = new SneakContext(event.getPlayer(), event.isSneaking());
         activate(e);
     }
 
     public static @NotNull Optional<Variables> triggerDamageByMob(EntityDamageByEntityEvent event) {
-        DamageByMobDetails dm = new DamageByMobDetails((Player) event.getEntity(), event.getDamager(), event.getCause(), event.getDamage(), event.getDamage());
+        DamageByMobContext dm = new DamageByMobContext((Player) event.getEntity(), event.getDamager(), event.getCause(), event.getDamage(), event.getDamage());
         activate(dm);
         return dm.getVariables();
     }
 
     public static @NotNull Optional<Variables> triggerDamageByBlock(EntityDamageByBlockEvent event, Block blockDamager) {
         double damage = event.getDamage();
-        DamageByBlockDetails db = new DamageByBlockDetails((Player) event.getEntity(), blockDamager, event.getCause(), damage, event.getFinalDamage());
+        DamageByBlockContext db = new DamageByBlockContext((Player) event.getEntity(), blockDamager, event.getCause(), damage, event.getFinalDamage());
         activate(db);
         return db.getVariables();
     }
 
     public static @NotNull Optional<Variables> triggerDamage(EntityDamageEvent event, String source) {
-        DamageDetails de = new DamageDetails(
+        DamageContext de = new DamageContext(
                 (Player) event.getEntity(), 
                 event.getCause(), 
                 source, 
@@ -463,36 +463,36 @@ public final class DetailsManager {
     }
 
     public static @NotNull Optional<Variables> triggerPickupItem(Player player, Item item, int pickupDelay) {
-        PickupItemDetails e = new PickupItemDetails(player, item, pickupDelay);
+        PickupItemContext e = new PickupItemContext(player, item, pickupDelay);
         activate(e);
         return e.getVariables();
     }
 
     public static boolean triggerGamemode(Player player, GameMode gameMode) {
-        GameModeDetails e = new GameModeDetails(player, gameMode);
+        GameModeContext e = new GameModeContext(player, gameMode);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerGod(Player player, boolean god) {
-        GodDetails e = new GodDetails(player, god);
+        GodContext e = new GodContext(player, god);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerItemHeld(Player player, int newSlot, int previousSlot) {
-        ItemHeldDetails e = new ItemHeldDetails(player, newSlot, previousSlot);
+        ItemHeldContext e = new ItemHeldContext(player, newSlot, previousSlot);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerWeatherChange(String world, boolean raining) {
-        WeatherChangeDetails details = new WeatherChangeDetails(world, raining);
+        WeatherChangeContext details = new WeatherChangeContext(world, raining);
         activate(details);
         return details.isCancelled();
     }
     
-    private static boolean activate(Details details) {
+    private static boolean activate(ActivationContext details) {
         return ReActions.getActivators().activate(details);
     }
 }

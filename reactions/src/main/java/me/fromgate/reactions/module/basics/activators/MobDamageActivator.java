@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.MobDamageDetails;
+import me.fromgate.reactions.module.basics.details.MobDamageContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.parameter.Parameters;
@@ -42,14 +42,14 @@ public class MobDamageActivator extends Activator {
     private final String mobType;
     private final VirtualItem item;
 
-    private MobDamageActivator(ActivatorLogic base, String type, String name, String item) {
+    private MobDamageActivator(Logic base, String type, String name, String item) {
         super(base);
         this.mobType = type;
         this.mobName = name;
         this.item = VirtualItem.fromString(item);
     }
 
-    public static MobDamageActivator create(ActivatorLogic base, Parameters param) {
+    public static MobDamageActivator create(Logic base, Parameters param) {
         String type = param.origin();
         String name = "";
         String itemStr = "";
@@ -64,7 +64,7 @@ public class MobDamageActivator extends Activator {
         return new MobDamageActivator(base, type, name, itemStr);
     }
 
-    public static MobDamageActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static MobDamageActivator load(Logic base, ConfigurationSection cfg) {
         String type = cfg.getString("mob-type", "");
         String name = cfg.getString("mob-name", "");
         String itemStr = cfg.getString("item", "");
@@ -72,8 +72,8 @@ public class MobDamageActivator extends Activator {
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        MobDamageDetails me = (MobDamageDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        MobDamageContext me = (MobDamageContext) context;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         if (!isActivatorMob(me.getEntity())) return false;

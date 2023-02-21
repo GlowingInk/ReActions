@@ -1,9 +1,9 @@
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.WeatherChangeDetails;
+import me.fromgate.reactions.module.basics.details.WeatherChangeContext;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,15 +16,15 @@ public class WeatherChangeActivator extends Activator {
     private final String world;
     private final WeatherState state;
 
-    private WeatherChangeActivator(ActivatorLogic base, String world, WeatherState state) {
+    private WeatherChangeActivator(Logic base, String world, WeatherState state) {
         super(base);
         this.world = world;
         this.state = state;
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details strg) {
-        WeatherChangeDetails storage = (WeatherChangeDetails) strg;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        WeatherChangeContext storage = (WeatherChangeContext) context;
         if (world != null && !storage.getWorld().equalsIgnoreCase(world)) return false;
         if (state == WeatherState.ANY) return true;
         return storage.isRaining() == (state == WeatherState.RAINING);
@@ -36,13 +36,13 @@ public class WeatherChangeActivator extends Activator {
         cfg.set("weather", state.name());
     }
 
-    public static WeatherChangeActivator create(ActivatorLogic base, Parameters params) {
+    public static WeatherChangeActivator create(Logic base, Parameters params) {
         String world = params.getString("world");
         WeatherState state = WeatherState.getByName(params.getString("weather", "any"));
         return new WeatherChangeActivator(base, world, state);
     }
 
-    public static WeatherChangeActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static WeatherChangeActivator load(Logic base, ConfigurationSection cfg) {
         String world = cfg.getString("world");
         WeatherState state = WeatherState.getByName(cfg.getString("weather", "any"));
         return new WeatherChangeActivator(base, world, state);

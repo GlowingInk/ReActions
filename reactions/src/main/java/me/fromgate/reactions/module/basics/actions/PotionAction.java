@@ -42,9 +42,9 @@ import java.util.Locale;
 public class PotionAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        String str = potionEffect(context.getPlayer(), params);
+        String str = potionEffect(env.getPlayer(), params);
         return !str.isEmpty();
     }
 

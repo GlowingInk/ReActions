@@ -33,8 +33,8 @@ import me.fromgate.reactions.externals.Externals;
 import me.fromgate.reactions.externals.RaVault;
 import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.holders.LocationHolder;
-import me.fromgate.reactions.logic.activators.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
+import me.fromgate.reactions.logic.activators.type.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.menu.InventoryMenu;
 import me.fromgate.reactions.module.ModulesRegistry;
@@ -89,7 +89,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         }
         this.activitiesRegistry = new ActivitiesRegistry(this);
         this.typesRegistry = new ActivatorTypesRegistry(this);
-        this.activatorsManager = new ActivatorsManager(this, activitiesRegistry, typesRegistry);
+        this.activatorsManager = new ActivatorsManager(this);
         this.selectorsManager = new SelectorsManager();
         this.modulesRegistry = new ModulesRegistry(this);
         this.waitingManager = new WaitingManager(this);

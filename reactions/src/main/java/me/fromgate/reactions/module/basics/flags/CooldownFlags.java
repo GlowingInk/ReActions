@@ -43,9 +43,9 @@ public class CooldownFlags implements Flag, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
         String id = params.origin();
@@ -55,7 +55,7 @@ public class CooldownFlags implements Flag, Aliased {
             playerName = params.getString("player", playerName);
         }
         boolean result = playerName.isEmpty() ? CooldownManager.checkCooldown(id, updateTime) : CooldownManager.checkPersonalCooldown(playerName, id, updateTime);
-        CooldownManager.setTempPlaceholders(context, playerName, id);
+        CooldownManager.setTempPlaceholders(env, playerName, id);
         return result;
     }
 

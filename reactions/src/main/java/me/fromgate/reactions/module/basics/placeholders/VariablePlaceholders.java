@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 @Aliased.Names({"var", "varp", "varplayer"})
 public class VariablePlaceholders implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment context, @NotNull String key, @NotNull String params) {
+    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String params) {
         switch (key) {
             case "var": case "variable":
                 int index = params.indexOf('.');
@@ -21,7 +21,7 @@ public class VariablePlaceholders implements Placeholder.Keyed {
                 }
 
             case "varp": case "varplayer":
-                return context.getPlayer() == null ? ReActions.getVariables().getVariable(context.getPlayer().getName(), params) : null;
+                return env.getPlayer() == null ? ReActions.getVariables().getVariable(env.getPlayer().getName(), params) : null;
 
             default:
                 return null;

@@ -44,10 +44,10 @@ public class MoneyFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         if (!RaVault.isEconomyConnected()) return false;
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         double amount = params.getDouble("amount", () -> params.getDouble(Parameters.ORIGIN, -1));
         if (amount < 0) return false;
         String account = params.getString("player", player == null ? "" : player.getName());

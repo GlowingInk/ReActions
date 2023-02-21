@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class WeToolControlFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         return Boolean.parseBoolean(params) == RaWorldEdit.isToolControl(player);
     }
 

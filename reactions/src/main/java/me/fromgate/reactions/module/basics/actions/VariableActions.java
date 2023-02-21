@@ -45,9 +45,9 @@ public class VariableActions implements Action, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
         Parameters params = Parameters.fromString(paramsStr);
-        Player p = context.getPlayer();
+        Player p = env.getPlayer();
 
         String player = (p != null && this.personal) ? p.getName() : "";
 

@@ -2,7 +2,7 @@ package me.fromgate.reactions.commands.custom;
 
 import me.fromgate.reactions.logic.context.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
-import me.fromgate.reactions.module.basics.details.CommandDetails;
+import me.fromgate.reactions.module.basics.details.CommandContext;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.Bukkit;
@@ -52,7 +52,7 @@ public final class FakeCommander {
         }
     }
 
-    public static boolean triggerRaCommand(CommandDetails storage, boolean activated) {
+    public static boolean triggerRaCommand(CommandContext storage, boolean activated) {
         UserCommand raCmd = commands.get(storage.getLabel().toLowerCase(Locale.ROOT));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(storage.getSender(), storage.getArgs());

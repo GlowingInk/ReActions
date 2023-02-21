@@ -35,8 +35,8 @@ import java.util.stream.Stream;
 public class DirectionFlag implements Flag {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         Direction d1 = Direction.getByName(params);
         if (d1 == null) return false;
         Direction d2 = Direction.getByYaw(player);

@@ -17,7 +17,7 @@ public class FileAction implements Action {
     private static final String dir = new File("").getAbsolutePath();
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         String action = params.getString("action");
         String fileName = params.getString("fileName");
@@ -25,7 +25,7 @@ public class FileAction implements Action {
         if (action.isEmpty() || fileName.isEmpty()) return false;
 
         File file = new File(dir + File.separator + fileName);
-        context.getVariables().set("fullpath", file.getAbsolutePath());
+        env.getVariables().set("fullpath", file.getAbsolutePath());
 
         if (action.equalsIgnoreCase("remove")) {
             int c = 0;
@@ -37,7 +37,7 @@ public class FileAction implements Action {
             } else {
                 if (file.delete()) c = 1;
             }
-            context.getVariables().set("removecount", Integer.toString(c));
+            env.getVariables().set("removecount", Integer.toString(c));
             return true;
 
         } else {
@@ -55,7 +55,7 @@ public class FileAction implements Action {
                     return true;
                 }
             } catch (IOException e) {
-                context.getVariables().set("filedebug", e.getLocalizedMessage());
+                env.getVariables().set("filedebug", e.getLocalizedMessage());
             }
 
         }

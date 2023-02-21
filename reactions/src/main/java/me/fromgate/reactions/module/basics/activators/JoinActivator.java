@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.JoinDetails;
+import me.fromgate.reactions.module.basics.details.JoinContext;
 import me.fromgate.reactions.util.enums.TriBoolean;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,22 +34,22 @@ import org.jetbrains.annotations.NotNull;
 public class JoinActivator extends Activator {
     private final TriBoolean firstJoin;
 
-    private JoinActivator(ActivatorLogic base, TriBoolean firstJoin) {
+    private JoinActivator(Logic base, TriBoolean firstJoin) {
         super(base);
         this.firstJoin = firstJoin;
     }
 
-    public static JoinActivator create(ActivatorLogic base, Parameters param) {
+    public static JoinActivator create(Logic base, Parameters param) {
         return new JoinActivator(base, param.getTriBoolean("first-join"));
     }
 
-    public static JoinActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static JoinActivator load(Logic base, ConfigurationSection cfg) {
         return new JoinActivator(base, TriBoolean.of(cfg.getString("first-join")));
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        JoinDetails ce = (JoinDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        JoinContext ce = (JoinContext) context;
         return firstJoin.isValidFor(ce.isFirstJoin());
     }
 

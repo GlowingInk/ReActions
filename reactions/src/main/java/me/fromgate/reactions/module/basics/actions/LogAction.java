@@ -44,12 +44,12 @@ public class LogAction implements Action {
     private static final Logger LOGGER = Logger.getLogger("Minecraft");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private void saveToFile(Environment context, String fileName, String message) {
+    private void saveToFile(Environment env, String fileName, String message) {
         File path = new File("");
         String dir = path.getAbsolutePath();
 
         File file = new File(dir + "/" + fileName);
-        context.getVariables().set("fullpath", file.getAbsolutePath());
+        env.getVariables().set("fullpath", file.getAbsolutePath());
         if (fileName.isEmpty()) return;
 
         Date date = new Date();
@@ -72,12 +72,12 @@ public class LogAction implements Action {
             }
 
         } catch (IOException e) {
-            context.getVariables().set("logdebug", e.getLocalizedMessage());
+            env.getVariables().set("logdebug", e.getLocalizedMessage());
         }
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (params.containsAny("prefix", "color", "file")) {
             String plg_name = ReActions.getPlugin().getDescription().getName();
@@ -91,7 +91,7 @@ public class LogAction implements Action {
                     this.log(message, plg_name, color);
                 } else this.log(message, "", color);
             } else {
-                saveToFile(context, file, message);
+                saveToFile(env, file, message);
             }
         } else Msg.logMessage(params.origin());
 

@@ -22,10 +22,10 @@
 
 package me.fromgate.reactions.module.basics.activators;
 
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.activators.Details;
-import me.fromgate.reactions.module.basics.details.MobKillDetails;
+import me.fromgate.reactions.module.basics.details.MobKillContext;
 import me.fromgate.reactions.util.Utils;
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
@@ -40,13 +40,13 @@ public class MobKillActivator extends Activator {
     private final String mobType;
     private final String mobName;
 
-    private MobKillActivator(ActivatorLogic base, String type, String name) {
+    private MobKillActivator(Logic base, String type, String name) {
         super(base);
         this.mobType = type;
         this.mobName = name;
     }
 
-    public static MobKillActivator create(ActivatorLogic base, Parameters param) {
+    public static MobKillActivator create(Logic base, Parameters param) {
         String type = param.origin();
         String name = "";
         if (param.contains("type")) {
@@ -59,15 +59,15 @@ public class MobKillActivator extends Activator {
         return new MobKillActivator(base, type, name);
     }
 
-    public static MobKillActivator load(ActivatorLogic base, ConfigurationSection cfg) {
+    public static MobKillActivator load(Logic base, ConfigurationSection cfg) {
         String type = cfg.getString("mob-type", "");
         String name = cfg.getString("mob-name", "");
         return new MobKillActivator(base, type, name);
     }
 
     @Override
-    public boolean checkDetails(@NotNull Details event) {
-        MobKillDetails me = (MobKillDetails) event;
+    public boolean checkContext(@NotNull ActivationContext context) {
+        MobKillContext me = (MobKillContext) context;
         if (mobType.isEmpty()) return false;
         if (me.getEntity() == null) return false;
         return isActivatorMob(me.getEntity());

@@ -37,13 +37,13 @@ import org.jetbrains.annotations.NotNull;
 public class TeleportAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return teleportPlayer(context, params) != null;
+        return teleportPlayer(env, params) != null;
     }
 
-    private Location teleportPlayer(Environment context, Parameters params) {
-        Player player = context.getPlayer();
+    private Location teleportPlayer(Environment env, Parameters params) {
+        Player player = env.getPlayer();
         Location loc;
         int radius = 0;
         if (params.isEmpty()) return null;
@@ -63,10 +63,10 @@ public class TeleportAction implements Action {
             }
             if (!loc.getChunk().isLoaded()) loc.getChunk().load();
 
-            context.getVariables().set("loc-from", LocationUtils.locationToString(player.getLocation()));
-            context.getVariables().set("loc-from-str", LocationUtils.locationToStringFormatted(player.getLocation()));
-            context.getVariables().set("loc-to", LocationUtils.locationToString(loc));
-            context.getVariables().set("loc-to-str", LocationUtils.locationToStringFormatted(loc));
+            env.getVariables().set("loc-from", LocationUtils.locationToString(player.getLocation()));
+            env.getVariables().set("loc-from-str", LocationUtils.locationToStringFormatted(player.getLocation()));
+            env.getVariables().set("loc-to", LocationUtils.locationToString(loc));
+            env.getVariables().set("loc-to-str", LocationUtils.locationToStringFormatted(loc));
             Teleporter.teleport(player, loc);
         }
         return loc;

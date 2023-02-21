@@ -31,9 +31,9 @@ import org.jetbrains.annotations.NotNull;
 public class BackAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return PushBack.teleportToPrev(context.getPlayer(), params.getInteger(Parameters.ORIGIN, 1));
+        return PushBack.teleportToPrev(env.getPlayer(), params.getInteger(Parameters.ORIGIN, 1));
     }
 
     @Override

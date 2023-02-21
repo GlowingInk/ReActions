@@ -1,7 +1,9 @@
 package me.fromgate.reactions.logic.activators;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.ActivatorLogic;
+import me.fromgate.reactions.logic.Logic;
+import me.fromgate.reactions.logic.activators.type.ActivatorType;
+import me.fromgate.reactions.logic.activators.type.ActivatorTypesRegistry;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.util.collections.Maps;
 import org.bukkit.Bukkit;
@@ -32,10 +34,10 @@ public class ActivatorsManager {
     private final Map<String, Activator> activatorsNames;
     private final Map<String, Set<Activator>> activatorsGroups;
 
-    public ActivatorsManager(@NotNull ReActions.Platform react, @NotNull ActivitiesRegistry activity, @NotNull ActivatorTypesRegistry types) {
+    public ActivatorsManager(@NotNull ReActions.Platform react) {
         this.plugin = react.getPlugin();
-        this.activity = activity;
-        this.types = types;
+        this.activity = react.getActivities();
+        this.types = react.getActivatorTypes();
 
         actsFolder = new File(plugin.getDataFolder(), "Activators");
         logger = react.logger();
@@ -93,7 +95,7 @@ public class ActivatorsManager {
                 ConfigurationSection cfgType = Objects.requireNonNull(cfg.getConfigurationSection(strType));
                 for (String name : cfgType.getKeys(false)) {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
-                    Activator activator = type.loadActivator(new ActivatorLogic(
+                    Activator activator = type.loadActivator(new Logic(
                             type.getName().toUpperCase(Locale.ROOT),
                             name, group, cfgActivator, activity
                     ), cfgActivator);
@@ -122,7 +124,7 @@ public class ActivatorsManager {
     }
 
     public boolean addActivator(@NotNull Activator activator, boolean save) {
-        ActivatorLogic logic = activator.getLogic();
+        Logic logic = activator.getLogic();
         String name = logic.getName();
         if (activatorsNames.containsKey(name)) {
             logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists!");
@@ -204,12 +206,12 @@ public class ActivatorsManager {
         }
     }
 
-    public void activate(@NotNull Details details, @NotNull String id) {
+    public void activate(@NotNull ActivationContext details, @NotNull String id) {
         details.initialize();
         activatorsNames.get(id).executeActivator(details);
     }
 
-    public boolean activate(@NotNull Details details) {
+    public boolean activate(@NotNull ActivationContext details) {
         ActivatorType type = types.get(details.getType());
         if (type != null && !type.isEmpty()) {
             details.initialize();

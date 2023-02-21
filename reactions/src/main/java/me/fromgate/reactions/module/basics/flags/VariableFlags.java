@@ -72,9 +72,9 @@ public class VariableFlags implements Flag, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         String variableId;
         String value;
         String playerName = this.personal && (player != null) ? player.getName() : "";

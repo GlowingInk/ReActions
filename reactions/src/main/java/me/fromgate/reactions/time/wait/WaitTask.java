@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-import static me.fromgate.reactions.logic.ActivatorLogic.executeActions;
+import static me.fromgate.reactions.logic.Logic.executeActions;
 
 public record WaitTask(
         @NotNull Variables variables,

@@ -70,10 +70,10 @@ public class JsConditionAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         if (!engineCheck()) return false;
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = context.getPlayer();
+        Player player = env.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {
             final ScriptContext scriptContext = new SimpleScriptContext();
             scriptContext.setBindings(new SimpleBindings(), ScriptContext.ENGINE_SCOPE);
@@ -86,10 +86,10 @@ public class JsConditionAction implements Action {
             try {
                 boolean result = (boolean) engine.eval(condition, scriptContext);
                 if (!executeActivator(player, condition, (result) ? then_ : else_)
-                        && !executeActions(context, (result) ? then_ : else_))
-                    context.getVariables().set("ifelseresult" + suffix, (result) ? then_ : else_);
+                        && !executeActions(env, (result) ? then_ : else_))
+                    env.getVariables().set("ifelseresult" + suffix, (result) ? then_ : else_);
             } catch (Exception e) {
-                context.getVariables().set("ifelsedebug", e.getMessage());
+                env.getVariables().set("ifelsedebug", e.getMessage());
                 return false;
             }
             return true;
@@ -107,7 +107,7 @@ public class JsConditionAction implements Action {
         return false;
     }
 
-    private boolean executeActions(Environment context, String paramStr) {
+    private boolean executeActions(Environment env, String paramStr) {
         List<StoredAction> actions = new ArrayList<>();
         Parameters params = Parameters.fromString(paramStr);
         if (!params.contains("run")) return false;
@@ -128,7 +128,7 @@ public class JsConditionAction implements Action {
             actions.add(new StoredAction(action, param));
         }
         if (!actions.isEmpty())
-            actions.forEach(action -> action.getActivity().proceed(context, action.getParameters()));
+            actions.forEach(action -> action.getActivity().proceed(env, action.getParameters()));
         return true;
     }
 }

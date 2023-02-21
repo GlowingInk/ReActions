@@ -38,8 +38,8 @@ public class RegionFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String params) {
-        Player player = context.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+        Player player = env.getPlayer();
         if (!RaWorldGuard.isConnected()) return false;
         return switch (flagType) {
             case REGION -> RaWorldGuard.isPlayerInRegion(player, params);

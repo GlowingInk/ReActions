@@ -31,9 +31,9 @@ import org.jetbrains.annotations.NotNull;
 public class ShootAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment context, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Shoot.shoot(context.getPlayer(), params);
+        Shoot.shoot(env.getPlayer(), params);
         return true;
     }
 
