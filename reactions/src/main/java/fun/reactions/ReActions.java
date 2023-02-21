@@ -1,8 +1,8 @@
 package fun.reactions;
 
-import fun.reactions.logic.activators.ActivatorsManager;
-import fun.reactions.logic.activators.type.ActivatorTypesRegistry;
-import fun.reactions.logic.activity.ActivitiesRegistry;
+import fun.reactions.model.activators.ActivatorsManager;
+import fun.reactions.model.activators.type.ActivatorTypesRegistry;
+import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.module.ModulesRegistry;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.selectors.SelectorsManager;

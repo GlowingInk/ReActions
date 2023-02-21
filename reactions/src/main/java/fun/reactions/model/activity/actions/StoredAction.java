@@ -1,4 +1,4 @@
-package fun.reactions.logic.activity.actions;
+package fun.reactions.model.activity.actions;
 
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;

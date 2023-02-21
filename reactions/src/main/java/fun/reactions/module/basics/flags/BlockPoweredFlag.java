@@ -22,8 +22,8 @@
 
 package fun.reactions.module.basics.flags;
 
-import fun.reactions.logic.activity.flags.Flag;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;

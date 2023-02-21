@@ -1,8 +1,8 @@
-package fun.reactions.logic.activators.type;
+package fun.reactions.model.activators.type;
 
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
 import fun.reactions.util.naming.Named;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;

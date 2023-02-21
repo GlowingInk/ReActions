@@ -2,11 +2,11 @@ package fun.reactions.commands;
 
 import fun.reactions.ReActions;
 import fun.reactions.holders.LocationHolder;
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.activators.ActivatorsManager;
-import fun.reactions.logic.activators.type.ActivatorType;
 import fun.reactions.menu.InventoryMenu;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.ActivatorsManager;
+import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.NumberUtils.Is;

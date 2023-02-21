@@ -1,8 +1,8 @@
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.environment.Variable;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.module.basics.activators.EntityClickActivator;
 import fun.reactions.util.mob.EntityUtils;
 import org.bukkit.entity.Entity;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static fun.reactions.logic.environment.Variable.simple;
+import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-05-14.

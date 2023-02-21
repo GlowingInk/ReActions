@@ -1,7 +1,7 @@
 package fun.reactions.module.basics.placeholders;
 
 import fun.reactions.Cfg;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;

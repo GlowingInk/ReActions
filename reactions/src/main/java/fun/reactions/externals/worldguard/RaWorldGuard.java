@@ -25,7 +25,7 @@ package fun.reactions.externals.worldguard;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import fun.reactions.ReActions;
-import fun.reactions.logic.activators.Activator;
+import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basics.activators.RegionActivator;
 import fun.reactions.module.basics.activators.RegionEnterActivator;
 import fun.reactions.module.basics.activators.RegionLeaveActivator;

@@ -1,7 +1,7 @@
 package fun.reactions.menu;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.item.ItemUtils;

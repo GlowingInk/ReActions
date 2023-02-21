@@ -3,9 +3,9 @@ package fun.reactions.module.basics;
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.MineDownParser;
 import fun.reactions.ReActions;
-import fun.reactions.logic.activators.type.ActivatorType;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.activity.flags.Flag;
+import fun.reactions.model.activators.type.ActivatorType;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.module.Module;
 import fun.reactions.module.basics.actions.*;
 import fun.reactions.module.basics.activators.*;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static fun.reactions.logic.activators.type.ActivatorTypesRegistry.typeOf;
+import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
     @Override

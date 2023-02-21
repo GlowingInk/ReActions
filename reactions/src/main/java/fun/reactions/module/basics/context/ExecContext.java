@@ -22,10 +22,10 @@
 
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.environment.Variable;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.activators.FunctionActivator;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

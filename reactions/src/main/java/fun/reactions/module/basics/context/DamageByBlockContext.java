@@ -1,7 +1,7 @@
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.environment.Variable;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.module.basics.activators.DamageByBlockActivator;
 import fun.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static fun.reactions.logic.environment.Variable.simple;
+import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-07-23.

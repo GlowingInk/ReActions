@@ -1,6 +1,6 @@
 package fun.reactions.placeholders;
 
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.resolvers.DynamicResolver;
 import fun.reactions.placeholders.resolvers.KeyedResolver;
 import fun.reactions.placeholders.resolvers.PreprocessResolver;

@@ -1,4 +1,4 @@
-package fun.reactions.logic.environment;
+package fun.reactions.model.environment;
 
 import fun.reactions.ReActions;
 import org.bukkit.entity.Player;

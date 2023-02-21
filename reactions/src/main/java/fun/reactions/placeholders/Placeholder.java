@@ -1,6 +1,6 @@
 package fun.reactions.placeholders;
 
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

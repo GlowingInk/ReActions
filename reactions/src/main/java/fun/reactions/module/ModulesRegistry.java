@@ -1,9 +1,9 @@
 package fun.reactions.module;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.activators.type.ActivatorType;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.activity.flags.Flag;
+import fun.reactions.model.activators.type.ActivatorType;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.selectors.Selector;
 import org.jetbrains.annotations.NotNull;

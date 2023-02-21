@@ -22,8 +22,8 @@
 
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.naming.Aliased;

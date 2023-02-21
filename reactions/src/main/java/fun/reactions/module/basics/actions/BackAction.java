@@ -23,8 +23,8 @@
 package fun.reactions.module.basics.actions;
 
 import fun.reactions.holders.PushBack;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 

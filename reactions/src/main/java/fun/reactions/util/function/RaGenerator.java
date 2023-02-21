@@ -1,7 +1,7 @@
 package fun.reactions.util.function;
 
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activators.Activator;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.Activator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

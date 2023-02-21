@@ -24,8 +24,8 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.TemporaryOp;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.Bukkit;

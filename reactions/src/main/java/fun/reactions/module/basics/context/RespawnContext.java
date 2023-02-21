@@ -22,9 +22,9 @@
 
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.environment.Variable;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.module.basics.activators.RespawnActivator;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.location.LocationUtils;
@@ -37,8 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fun.reactions.logic.environment.Variable.property;
-import static fun.reactions.logic.environment.Variable.simple;
+import static fun.reactions.model.environment.Variable.property;
+import static fun.reactions.model.environment.Variable.simple;
 
 public class RespawnContext extends ActivationContext {
     public static final String RESPAWN_LOCATION = "respawn_loc";

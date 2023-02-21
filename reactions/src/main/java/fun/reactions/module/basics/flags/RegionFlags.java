@@ -23,8 +23,8 @@
 package fun.reactions.module.basics.flags;
 
 import fun.reactions.externals.worldguard.RaWorldGuard;
-import fun.reactions.logic.activity.flags.Flag;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

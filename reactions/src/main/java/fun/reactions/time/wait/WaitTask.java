@@ -1,10 +1,10 @@
 package fun.reactions.time.wait;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activity.actions.StoredAction;
-import fun.reactions.logic.environment.Environment;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.environment.Environment;
+import fun.reactions.model.environment.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

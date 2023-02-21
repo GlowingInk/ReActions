@@ -1,7 +1,7 @@
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.environment.Variable;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.module.basics.activators.DamageByMobActivator;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;

@@ -1,9 +1,9 @@
 package fun.reactions.time.wait;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.activity.ActivitiesRegistry;
-import fun.reactions.logic.activity.actions.StoredAction;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.activity.ActivitiesRegistry;
+import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.save.Saveable;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.TimeUtils;

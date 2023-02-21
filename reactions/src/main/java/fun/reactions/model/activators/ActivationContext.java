@@ -20,12 +20,12 @@
  *
  */
 
-package fun.reactions.logic.activators;
+package fun.reactions.model.activators;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.environment.Environment;
-import fun.reactions.logic.environment.Variable;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.environment.Environment;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.Variables;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

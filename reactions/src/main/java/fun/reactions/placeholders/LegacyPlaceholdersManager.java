@@ -1,6 +1,6 @@
 package fun.reactions.placeholders;
 
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;

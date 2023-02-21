@@ -23,10 +23,10 @@
 
 package fun.reactions.module.basics.activators;
 
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.activators.Locatable;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.Locatable;
 import fun.reactions.module.basics.context.ButtonContext;
 import fun.reactions.util.location.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;

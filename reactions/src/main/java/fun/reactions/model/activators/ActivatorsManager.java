@@ -1,9 +1,9 @@
-package fun.reactions.logic.activators;
+package fun.reactions.model.activators;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activators.type.ActivatorType;
-import fun.reactions.logic.activators.type.ActivatorTypesRegistry;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.type.ActivatorType;
+import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.util.collections.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

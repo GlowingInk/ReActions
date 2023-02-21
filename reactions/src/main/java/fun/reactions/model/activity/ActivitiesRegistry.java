@@ -1,9 +1,9 @@
-package fun.reactions.logic.activity;
+package fun.reactions.model.activity;
 
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.activity.actions.StoredAction;
-import fun.reactions.logic.activity.flags.Flag;
-import fun.reactions.logic.activity.flags.StoredFlag;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.activity.flags.StoredFlag;
 import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

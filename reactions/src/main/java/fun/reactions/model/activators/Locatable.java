@@ -1,4 +1,4 @@
-package fun.reactions.logic.activators;
+package fun.reactions.model.activators;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;

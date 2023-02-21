@@ -22,9 +22,9 @@
 
 package fun.reactions.module.basics.flags;
 
-import fun.reactions.logic.activity.ActivitiesRegistry;
-import fun.reactions.logic.activity.flags.Flag;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.ActivitiesRegistry;
+import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.ParametersUtils;
 import org.jetbrains.annotations.NotNull;

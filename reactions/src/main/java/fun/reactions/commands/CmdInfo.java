@@ -1,10 +1,10 @@
 package fun.reactions.commands;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.Logic;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.activity.flags.StoredFlag;
 import fun.reactions.menu.InventoryMenu;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activity.flags.StoredFlag;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Location;

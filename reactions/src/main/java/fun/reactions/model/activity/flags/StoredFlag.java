@@ -1,4 +1,4 @@
-package fun.reactions.logic.activity.flags;
+package fun.reactions.model.activity.flags;
 
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;

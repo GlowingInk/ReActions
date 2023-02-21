@@ -1,8 +1,8 @@
 package fun.reactions.module.basics.flags;
 
-import fun.reactions.logic.activity.ActivitiesRegistry;
-import fun.reactions.logic.environment.Environment;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.activity.ActivitiesRegistry;
+import fun.reactions.model.environment.Environment;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.test.MockFlag;
 import org.testng.annotations.Test;
 

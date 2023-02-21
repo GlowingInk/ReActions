@@ -1,7 +1,7 @@
 package fun.reactions.test;
 
-import fun.reactions.logic.activity.flags.Flag;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 public class MockFlag implements Flag {

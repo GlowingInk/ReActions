@@ -1,7 +1,7 @@
-package fun.reactions.logic.activity.flags;
+package fun.reactions.model.activity.flags;
 
-import fun.reactions.logic.activity.Activity;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.Activity;
+import fun.reactions.model.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 public interface Flag extends Activity {

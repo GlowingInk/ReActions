@@ -1,7 +1,7 @@
 package fun.reactions.commands;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.activators.Activator;
+import fun.reactions.model.activators.Activator;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.message.Msg;

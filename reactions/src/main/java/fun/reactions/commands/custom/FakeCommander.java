@@ -1,6 +1,6 @@
 package fun.reactions.commands.custom;
 
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.ContextManager;
 import fun.reactions.module.basics.context.CommandContext;
 import fun.reactions.util.FileUtils;

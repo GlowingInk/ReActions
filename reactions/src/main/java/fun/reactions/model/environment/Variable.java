@@ -1,4 +1,4 @@
-package fun.reactions.logic.environment;
+package fun.reactions.model.environment;
 
 import fun.reactions.util.function.FunctionalUtils;
 import fun.reactions.util.function.SafeSupplier;

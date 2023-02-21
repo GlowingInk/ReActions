@@ -22,9 +22,9 @@
 
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.environment.Variable;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.module.basics.activators.BlockClickActivator;
 import fun.reactions.util.location.LocationUtils;
 import org.bukkit.block.Block;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static fun.reactions.logic.environment.Variable.simple;
+import static fun.reactions.model.environment.Variable.simple;
 
 public class BlockClickContext extends ActivationContext {
 

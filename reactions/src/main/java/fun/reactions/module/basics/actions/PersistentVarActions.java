@@ -23,8 +23,8 @@
 package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;

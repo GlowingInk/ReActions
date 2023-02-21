@@ -1,9 +1,9 @@
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.activators.ActivatorsManager;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.ActivatorsManager;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.module.basics.activators.FunctionActivator;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;

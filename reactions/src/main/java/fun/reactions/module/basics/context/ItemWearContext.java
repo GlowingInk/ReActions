@@ -22,8 +22,8 @@
 
 package fun.reactions.module.basics.context;
 
-import fun.reactions.logic.activators.ActivationContext;
-import fun.reactions.logic.activators.Activator;
+import fun.reactions.model.activators.ActivationContext;
+import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basics.activators.ItemWearActivator;
 import fun.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;

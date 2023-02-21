@@ -2,7 +2,7 @@ package fun.reactions.module.basics;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.logic.activators.Activator;
+import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basics.activators.ItemHoldActivator;
 import fun.reactions.module.basics.activators.ItemWearActivator;
 import fun.reactions.module.basics.context.ItemHoldContext;

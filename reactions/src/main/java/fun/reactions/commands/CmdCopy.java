@@ -1,8 +1,8 @@
 package fun.reactions.commands;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.activators.Activator;
-import fun.reactions.logic.activators.ActivatorsManager;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 

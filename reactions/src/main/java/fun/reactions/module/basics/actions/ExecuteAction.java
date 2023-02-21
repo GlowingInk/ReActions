@@ -23,9 +23,9 @@
 package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.activity.actions.StoredAction;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.time.wait.WaitTask;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.naming.Aliased;

@@ -23,7 +23,7 @@
 package fun.reactions.time;
 
 import fun.reactions.ReActions;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;

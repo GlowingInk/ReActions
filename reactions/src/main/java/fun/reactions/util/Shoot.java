@@ -22,8 +22,8 @@
 
 package fun.reactions.util;
 
-import fun.reactions.logic.environment.Variable;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.ContextManager;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;

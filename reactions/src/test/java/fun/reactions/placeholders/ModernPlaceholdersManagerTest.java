@@ -1,7 +1,7 @@
 package fun.reactions.placeholders;
 
-import fun.reactions.logic.environment.Environment;
-import fun.reactions.logic.environment.Variables;
+import fun.reactions.model.environment.Environment;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.placeholders.LocalVarPlaceholder;
 import org.testng.annotations.Test;
 

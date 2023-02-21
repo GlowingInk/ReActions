@@ -20,17 +20,17 @@
  *
  */
 
-package fun.reactions.logic;
+package fun.reactions.model;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.logic.activity.ActivitiesRegistry;
-import fun.reactions.logic.activity.actions.Action;
-import fun.reactions.logic.activity.actions.Stopper;
-import fun.reactions.logic.activity.actions.StoredAction;
-import fun.reactions.logic.activity.flags.Flag;
-import fun.reactions.logic.activity.flags.StoredFlag;
-import fun.reactions.logic.environment.Environment;
+import fun.reactions.model.activity.ActivitiesRegistry;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.actions.Stopper;
+import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.activity.flags.StoredFlag;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;

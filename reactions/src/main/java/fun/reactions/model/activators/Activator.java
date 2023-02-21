@@ -1,6 +1,6 @@
-package fun.reactions.logic.activators;
+package fun.reactions.model.activators;
 
-import fun.reactions.logic.Logic;
+import fun.reactions.model.Logic;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
