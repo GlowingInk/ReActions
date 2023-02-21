@@ -34,12 +34,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class VariableActions implements Action, Aliased {
+public class PersistentVarActions implements Action, Aliased {
 
     private final Type actType;
     private final boolean personal;
 
-    public VariableActions(Type actType, boolean personalVar) {
+    public PersistentVarActions(Type actType, boolean personalVar) {
         this.actType = actType;
         this.personal = personalVar;
     }

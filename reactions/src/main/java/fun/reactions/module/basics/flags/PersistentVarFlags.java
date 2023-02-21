@@ -35,11 +35,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
-public class VariableFlags implements Flag, Aliased {
+public class PersistentVarFlags implements Flag, Aliased {
     private final Type flagType;
     private final boolean personal;
 
-    public VariableFlags(Type flagType, boolean personal) {
+    public PersistentVarFlags(Type flagType, boolean personal) {
         this.flagType = flagType;
         this.personal = personal;
     }

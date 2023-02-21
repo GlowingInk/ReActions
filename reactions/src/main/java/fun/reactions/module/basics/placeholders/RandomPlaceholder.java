@@ -7,6 +7,7 @@ import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Rng;
 import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -17,9 +18,12 @@ public class RandomPlaceholder implements Placeholder.Keyed {
     private static final Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
 
     @Override
-    public @NotNull String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
-        if (NumberUtils.isNumber(param, Is.NATURAL))
+    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+        if (param.isEmpty()) return null;
+
+        if (NumberUtils.isNumber(param, Is.NATURAL)) {
             return Integer.toString(Rng.nextInt(Integer.parseInt(param)));
+        }
 
         if (INT_MIN_MAX.matcher(param).matches()) {
             return Integer.toString(Rng.nextIntRanged(param));
