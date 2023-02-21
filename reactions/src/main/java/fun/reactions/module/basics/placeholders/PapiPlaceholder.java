@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PapiPlaceholder implements Placeholder.Preprocess {
     @Override
-    public @NotNull String processPlaceholder(@NotNull Environment env, @NotNull String text) {
-        return text.contains("%")
-                ? RaPlaceholderAPI.processPlaceholder(env.getPlayer(), text)
-                : text;
+    public @NotNull String resolveAll(@NotNull Environment env, @NotNull String text) {
+        return RaPlaceholderAPI.processPlaceholder(env.getPlayer(), text);
     }
 
     @Override

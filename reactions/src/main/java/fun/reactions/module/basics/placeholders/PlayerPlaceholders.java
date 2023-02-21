@@ -41,7 +41,7 @@ public class PlayerPlaceholders implements Placeholder.Keyed {
     }
 
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         Player player = env.getPlayer();
         if (player == null) return null;
         return switch (key) {

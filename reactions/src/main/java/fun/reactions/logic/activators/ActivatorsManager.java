@@ -222,7 +222,7 @@ public class ActivatorsManager {
         return false;
     }
 
-    public Search search() {
+    public @NotNull Search search() {
         return search;
     }
 

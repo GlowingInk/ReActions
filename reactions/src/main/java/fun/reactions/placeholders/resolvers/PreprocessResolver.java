@@ -13,15 +13,15 @@ public final class PreprocessResolver implements Resolver<Placeholder.Preprocess
     private final List<Placeholder.Preprocess> placeholders = new ArrayList<>();
 
     @Override
-    public boolean put(@NotNull Placeholder.Preprocess ph) {
+    public boolean add(@NotNull Placeholder.Preprocess ph) {
         placeholders.add(ph);
         return true;
     }
 
     @Override
-    public @NotNull String parse(@NotNull Environment env, @NotNull String fullText) {
+    public @NotNull String resolve(@NotNull Environment env, @NotNull String fullText) {
         for (Placeholder.Preprocess placeholder : placeholders) {
-            fullText = placeholder.processPlaceholder(env, fullText);
+            fullText = placeholder.resolveAll(env, fullText);
         }
         return fullText;
     }

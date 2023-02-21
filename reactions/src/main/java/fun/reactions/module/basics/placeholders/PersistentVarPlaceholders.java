@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 @Aliased.Names({"var", "varp", "varplayer"})
 public class PersistentVarPlaceholders implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String params) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
         switch (key) {
             case "var": case "variable":
                 int index = params.indexOf('.');

@@ -18,7 +18,7 @@ public class RandomPlaceholder implements Placeholder.Keyed {
     private static final Pattern INT_MIN_MAX = Pattern.compile("\\d+(-\\d+)?");
 
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         if (param.isEmpty()) return null;
 
         if (NumberUtils.isNumber(param, Is.NATURAL)) {

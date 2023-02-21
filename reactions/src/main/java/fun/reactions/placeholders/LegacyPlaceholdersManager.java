@@ -12,7 +12,7 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
     private static final Pattern PLACEHOLDER_RAW = Pattern.compile("&\\\\(%\\S+%)");
 
     @Override
-    public @NotNull String parsePlaceholders(@NotNull Environment env, @NotNull String text) {
+    public @NotNull String parse(@NotNull Environment env, @NotNull String text) {
         if (text.length() < 3) return text;
 
         String oldText;

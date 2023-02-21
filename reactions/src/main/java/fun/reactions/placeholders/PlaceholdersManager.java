@@ -26,11 +26,11 @@ public abstract class PlaceholdersManager {
 
     public final void registerPlaceholder(@NotNull Placeholder ph) {
         if (ph instanceof Placeholder.Dynamic phDynamic) {
-            dynamic.put(phDynamic);
+            dynamic.add(phDynamic);
         } else if (ph instanceof Placeholder.Preprocess phPreprocess) {
-            preprocess.put(phPreprocess);
+            preprocess.add(phPreprocess);
         } else if (ph instanceof Placeholder.Keyed phKeyed) {
-            if (!keyed.put(phKeyed)) {
+            if (!keyed.add(phKeyed)) {
                 throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder - its name is already used");
             }
         } else  {
@@ -38,16 +38,16 @@ public abstract class PlaceholdersManager {
         }
     }
 
-    public abstract @NotNull String parsePlaceholders(@NotNull Environment env, @NotNull String text);
+    public abstract @NotNull String parse(@NotNull Environment env, @NotNull String text);
 
     protected final @Nullable String resolvePlaceholder(@NotNull Environment env, @NotNull String phText) {
-        String result = keyed.parse(env, phText);
+        String result = keyed.resolve(env, phText);
         return result == null
-                ? dynamic.parse(env, phText)
+                ? dynamic.resolve(env, phText)
                 : result;
     }
 
     protected final @NotNull String resolvePreprocess(@NotNull Environment env, @NotNull String fullText) {
-        return preprocess.parse(env, fullText);
+        return preprocess.resolve(env, fullText);
     }
 }

@@ -14,15 +14,15 @@ public final class DynamicResolver implements Resolver<Placeholder.Dynamic> {
     private final List<Placeholder.Dynamic> placeholders = new ArrayList<>();
 
     @Override
-    public boolean put(@NotNull Placeholder.Dynamic ph) {
+    public boolean add(@NotNull Placeholder.Dynamic ph) {
         placeholders.add(ph);
         return true;
     }
 
     @Override
-    public @Nullable String parse(@NotNull Environment env, @NotNull String phText) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String phText) {
         for (Placeholder.Dynamic ph : placeholders) {
-            String result = ph.processPlaceholder(env, phText);
+            String result = ph.resolve(env, phText);
             if (result != null) return result;
         }
         return null;

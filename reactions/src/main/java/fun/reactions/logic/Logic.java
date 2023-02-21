@@ -143,7 +143,7 @@ public final class Logic {
                 return;
             }
             String params = flag.hasPlaceholders()
-                    ? placeholders.parsePlaceholders(env, flag.getParameters())
+                    ? placeholders.parse(env, flag.getParameters())
                     : flag.getParameters();
             if (!flag.getActivity().proceed(env, params)) {
                 executeActions(env, reactions, !noPlayer);
@@ -160,7 +160,7 @@ public final class Logic {
             // TODO: Microoptimization - check if hasPlayer and separate iteration
             if (hasPlayer || !action.getActivity().requiresPlayer()) {
                 String params = action.hasPlaceholders()
-                        ? placeholders.parsePlaceholders(env, action.getParameters())
+                        ? placeholders.parse(env, action.getParameters())
                         : action.getParameters();
                 if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Stopper stopAction) {
                     stopAction.stop(env, action.getParameters(), new ArrayList<>(actions.subList(i + 1, actions.size())));

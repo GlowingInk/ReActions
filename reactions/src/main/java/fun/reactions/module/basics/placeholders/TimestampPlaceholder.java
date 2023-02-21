@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TimestampPlaceholder implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String params) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
         return Long.toString(System.currentTimeMillis());
     }
 

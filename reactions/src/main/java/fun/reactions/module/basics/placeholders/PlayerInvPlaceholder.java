@@ -17,7 +17,7 @@ import static fun.reactions.util.NumberUtils.Is.NATURAL;
 @Aliased.Names("invplayer")
 public class PlayerInvPlaceholder implements Placeholder.Keyed {
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String text) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String text) {
         return getPlayerInventory(env.getPlayer(), text);
     }
 

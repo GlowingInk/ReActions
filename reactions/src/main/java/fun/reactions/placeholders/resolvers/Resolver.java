@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public sealed interface Resolver<T extends Placeholder> permits PreprocessResolver, KeyedResolver, DynamicResolver {
-    boolean put(@NotNull T ph);
+    boolean add(@NotNull T ph);
 
-    @Nullable String parse(@NotNull Environment env, @NotNull String text);
+    @Nullable String resolve(@NotNull Environment env, @NotNull String text);
 
     @NotNull Collection<T> getPlaceholders();
 }

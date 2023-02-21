@@ -16,7 +16,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
     private final Map<String, Placeholder.Keyed> placeholders = new HashMap<>();
 
     @Override
-    public boolean put(@NotNull Placeholder.Keyed ph) {
+    public boolean add(@NotNull Placeholder.Keyed ph) {
         String key = ph.getName().toLowerCase(Locale.ROOT);
         if (placeholders.containsKey(key)) return false;
         placeholders.put(key, ph);
@@ -27,7 +27,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
     }
 
     @Override
-    public @Nullable String parse(@NotNull Environment env, @NotNull String phText) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String phText) {
         int index = phText.indexOf(':');
         String key;
         String params;
@@ -40,7 +40,7 @@ public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
         }
         Placeholder.Keyed ph = placeholders.get((key = key.toLowerCase(Locale.ROOT)));
         if (ph == null) return null;
-        return ph.processPlaceholder(env, key, params);
+        return ph.resolve(env, key, params);
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class MoneyPlaceholder implements Placeholder.Keyed {
 
     @Override
-    public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String key, @NotNull String param) {
+    public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         if (env.getPlayer() == null) return "0";
         if (param.isEmpty()) {
             return Double.toString(RaVault.getBalance(env.getPlayer()));
