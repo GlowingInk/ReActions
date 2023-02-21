@@ -452,6 +452,15 @@ public class Parameters implements Parameterizable {
         return def;
     }
 
+    @Contract("!null, _, _, _ -> !null")
+    public @Nullable String findKey(@Nullable String def, @NotNull String key1, @NotNull String key2, @NotNull String key3) {
+        if (isEmpty()) return def;
+        if (contains(key1)) return key1;
+        if (contains(key2)) return key2;
+        if (contains(key3)) return key3;
+        return def;
+    }
+
     @Contract("!null, _ -> !null")
     public @Nullable String findKey(@Nullable String def, @NotNull String @NotNull ... keys) {
         return findKey(def, Arrays.asList(keys));

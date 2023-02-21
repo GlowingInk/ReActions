@@ -1,6 +1,6 @@
 package me.fromgate.reactions.commands.custom;
 
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.module.basics.details.CommandContext;
 import me.fromgate.reactions.util.FileUtils;

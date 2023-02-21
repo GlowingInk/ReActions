@@ -4,7 +4,7 @@ import me.fromgate.reactions.events.PlayerMoveByBlockEvent;
 import me.fromgate.reactions.events.PlayerPickupItemEvent;
 import me.fromgate.reactions.events.PlayerStayEvent;
 import me.fromgate.reactions.logic.activators.ActivationContext;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.ItemDetailsManager;
 import me.fromgate.reactions.module.basics.details.DropContext;
 import me.fromgate.reactions.util.NumberUtils;

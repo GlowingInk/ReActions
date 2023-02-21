@@ -2,7 +2,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.environment.Variable;
 import me.fromgate.reactions.module.basics.activators.DropActivator;
 import me.fromgate.reactions.util.item.VirtualItem;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.*;
+import static me.fromgate.reactions.logic.environment.Variable.*;
 
 /**
  * Created by MaxDikiy on 2017-05-01.

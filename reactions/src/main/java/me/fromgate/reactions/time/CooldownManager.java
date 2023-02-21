@@ -25,7 +25,7 @@ package me.fromgate.reactions.time;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;
 import me.fromgate.reactions.util.message.Msg;

@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;

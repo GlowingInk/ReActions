@@ -1,8 +1,8 @@
 package me.fromgate.reactions.time.wait;
 
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
-import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Environment;
+import me.fromgate.reactions.logic.environment.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.environment.Variable;
 import me.fromgate.reactions.module.basics.activators.InventoryClickActivator;
 import me.fromgate.reactions.util.item.VirtualItem;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.*;
+import static me.fromgate.reactions.logic.environment.Variable.*;
 
 public class InventoryClickContext extends ActivationContext {
     public static final String ITEM = "item";

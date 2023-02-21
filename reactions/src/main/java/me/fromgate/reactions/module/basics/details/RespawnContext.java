@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.environment.Variable;
 import me.fromgate.reactions.module.basics.activators.RespawnActivator;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -37,8 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.property;
-import static me.fromgate.reactions.logic.context.Variable.simple;
+import static me.fromgate.reactions.logic.environment.Variable.property;
+import static me.fromgate.reactions.logic.environment.Variable.simple;
 
 public class RespawnContext extends ActivationContext {
     public static final String RESPAWN_LOCATION = "respawn_loc";

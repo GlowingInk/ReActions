@@ -1,4 +1,4 @@
-package me.fromgate.reactions.logic.context;
+package me.fromgate.reactions.logic.environment;
 
 import me.fromgate.reactions.util.function.FunctionalUtils;
 import me.fromgate.reactions.util.function.SafeSupplier;

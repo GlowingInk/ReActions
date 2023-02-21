@@ -2,7 +2,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.environment.Variable;
 import me.fromgate.reactions.module.basics.activators.GameModeActivator;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.property;
-import static me.fromgate.reactions.logic.context.Variable.simple;
+import static me.fromgate.reactions.logic.environment.Variable.property;
+import static me.fromgate.reactions.logic.environment.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-10-27.

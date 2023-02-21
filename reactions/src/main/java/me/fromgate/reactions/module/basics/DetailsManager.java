@@ -29,7 +29,7 @@ import me.fromgate.reactions.externals.worldguard.RaWorldGuard;
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.FunctionActivator;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.activators.MessageActivator;
 import me.fromgate.reactions.module.basics.activators.SignActivator;
 import me.fromgate.reactions.module.basics.details.*;

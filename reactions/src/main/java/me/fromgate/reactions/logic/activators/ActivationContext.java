@@ -22,9 +22,9 @@
 
 package me.fromgate.reactions.logic.activators;
 
-import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.logic.context.Variable;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Environment;
+import me.fromgate.reactions.logic.environment.Variable;
+import me.fromgate.reactions.logic.environment.Variables;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

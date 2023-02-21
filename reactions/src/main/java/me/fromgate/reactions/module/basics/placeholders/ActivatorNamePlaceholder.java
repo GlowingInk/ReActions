@@ -1,6 +1,6 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;

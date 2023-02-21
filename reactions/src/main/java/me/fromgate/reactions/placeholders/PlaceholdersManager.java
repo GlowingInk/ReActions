@@ -1,6 +1,6 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.placeholders.resolvers.DynamicResolver;
 import me.fromgate.reactions.placeholders.resolvers.KeyedResolver;
 import me.fromgate.reactions.placeholders.resolvers.PreprocessResolver;

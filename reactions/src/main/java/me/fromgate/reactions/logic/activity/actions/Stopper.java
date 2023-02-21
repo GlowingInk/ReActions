@@ -1,6 +1,6 @@
 package me.fromgate.reactions.logic.activity.actions;
 
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -4,7 +4,7 @@ import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.ActivatorsManager;
 import me.fromgate.reactions.logic.activators.FunctionActivator;
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.util.message.Msg;
 import me.fromgate.reactions.util.naming.Aliased;
 import me.fromgate.reactions.util.parameter.Parameters;

@@ -1,6 +1,6 @@
 package me.fromgate.reactions.logic.activity;
 
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 

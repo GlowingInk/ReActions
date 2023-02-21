@@ -24,7 +24,7 @@ package me.fromgate.reactions.module.basics.details;
 
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
-import me.fromgate.reactions.logic.context.Variable;
+import me.fromgate.reactions.logic.environment.Variable;
 import me.fromgate.reactions.module.basics.activators.DeathActivator;
 import me.fromgate.reactions.util.enums.DeathCause;
 import me.fromgate.reactions.util.mob.EntityUtils;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.fromgate.reactions.logic.context.Variable.simple;
+import static me.fromgate.reactions.logic.environment.Variable.simple;
 
 public class DeathContext extends ActivationContext {
 

@@ -3,7 +3,7 @@ package me.fromgate.reactions.time.wait;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.save.Saveable;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.TimeUtils;

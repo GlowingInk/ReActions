@@ -1,7 +1,7 @@
 package me.fromgate.reactions.module.basics.placeholders;
 
 import me.fromgate.reactions.externals.placeholderapi.RaPlaceholderAPI;
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
 

@@ -22,8 +22,8 @@
 
 package me.fromgate.reactions.util;
 
-import me.fromgate.reactions.logic.context.Variable;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variable;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.item.ItemUtils;
 import me.fromgate.reactions.util.location.LocationUtils;
@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static me.fromgate.reactions.logic.context.Variable.simple;
+import static me.fromgate.reactions.logic.environment.Variable.simple;
 
 // TODO Make from scratch
 public final class Shoot {

@@ -1,4 +1,4 @@
-package me.fromgate.reactions.logic.context;
+package me.fromgate.reactions.logic.environment;
 
 import me.fromgate.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;

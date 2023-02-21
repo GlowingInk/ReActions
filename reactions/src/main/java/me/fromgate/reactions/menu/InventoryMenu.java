@@ -1,7 +1,7 @@
 package me.fromgate.reactions.menu;
 
 import me.fromgate.reactions.ReActions;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.util.FileUtils;
 import me.fromgate.reactions.util.item.ItemUtils;

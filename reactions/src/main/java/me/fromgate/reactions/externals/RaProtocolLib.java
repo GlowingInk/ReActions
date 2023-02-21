@@ -28,7 +28,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activators.ActivationContext;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.DetailsManager;
 import me.fromgate.reactions.module.basics.activators.MessageActivator.Source;
 import org.bukkit.Bukkit;

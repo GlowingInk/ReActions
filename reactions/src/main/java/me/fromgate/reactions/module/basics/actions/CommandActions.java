@@ -25,7 +25,7 @@ package me.fromgate.reactions.module.basics.actions;
 import me.fromgate.reactions.Cfg;
 import me.fromgate.reactions.ReActions;
 import me.fromgate.reactions.logic.activity.actions.Action;
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.util.TemporaryOp;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.bukkit.Bukkit;

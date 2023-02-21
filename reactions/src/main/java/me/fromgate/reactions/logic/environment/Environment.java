@@ -1,4 +1,4 @@
-package me.fromgate.reactions.logic.context;
+package me.fromgate.reactions.logic.environment;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

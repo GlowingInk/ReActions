@@ -30,7 +30,7 @@ import me.fromgate.reactions.logic.activity.actions.Stopper;
 import me.fromgate.reactions.logic.activity.actions.StoredAction;
 import me.fromgate.reactions.logic.activity.flags.Flag;
 import me.fromgate.reactions.logic.activity.flags.StoredFlag;
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import me.fromgate.reactions.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

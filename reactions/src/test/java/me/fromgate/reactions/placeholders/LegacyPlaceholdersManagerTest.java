@@ -1,7 +1,7 @@
 package me.fromgate.reactions.placeholders;
 
-import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Environment;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.module.basics.placeholders.LocalVariablePlaceholder;
 import org.testng.annotations.Test;
 

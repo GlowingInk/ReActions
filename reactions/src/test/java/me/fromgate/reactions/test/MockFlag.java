@@ -1,7 +1,7 @@
 package me.fromgate.reactions.test;
 
 import me.fromgate.reactions.logic.activity.flags.Flag;
-import me.fromgate.reactions.logic.context.Environment;
+import me.fromgate.reactions.logic.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 public class MockFlag implements Flag {

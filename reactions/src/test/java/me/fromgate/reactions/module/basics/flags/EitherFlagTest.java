@@ -1,8 +1,8 @@
 package me.fromgate.reactions.module.basics.flags;
 
 import me.fromgate.reactions.logic.activity.ActivitiesRegistry;
-import me.fromgate.reactions.logic.context.Environment;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Environment;
+import me.fromgate.reactions.logic.environment.Variables;
 import me.fromgate.reactions.test.MockFlag;
 import org.testng.annotations.Test;
 

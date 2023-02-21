@@ -25,8 +25,8 @@ package me.fromgate.reactions.module.basics.details;
 import me.fromgate.reactions.logic.activators.ActivationContext;
 import me.fromgate.reactions.logic.activators.Activator;
 import me.fromgate.reactions.logic.activators.FunctionActivator;
-import me.fromgate.reactions.logic.context.Variable;
-import me.fromgate.reactions.logic.context.Variables;
+import me.fromgate.reactions.logic.environment.Variable;
+import me.fromgate.reactions.logic.environment.Variables;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
