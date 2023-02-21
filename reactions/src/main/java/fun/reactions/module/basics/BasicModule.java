@@ -251,8 +251,8 @@ public class BasicModule implements Module {
                 new TimePlaceholders(),
                 new CalcPlaceholder(),
                 new ActivatorNamePlaceholder(),
-                new VariablePlaceholders(),
-                new LocalVariablePlaceholder(),
+                new VarPlaceholders(),
+                new LocalVarPlaceholder(),
                 // Vault
                 new MoneyPlaceholder(),
                 // PAPI

@@ -5,7 +5,7 @@ import fun.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LocalVariablePlaceholder implements Placeholder.Dynamic {
+public class LocalVarPlaceholder implements Placeholder.Dynamic {
     @Override
     public @Nullable String processPlaceholder(@NotNull Environment env, @NotNull String phText) {
         return env.getVariables().getStringUnsafe(phText);

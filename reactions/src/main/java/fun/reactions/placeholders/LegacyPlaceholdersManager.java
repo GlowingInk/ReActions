@@ -52,15 +52,6 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         );
         if (result == null) return;
         matcher.appendReplacement(builder, "");
-        builder.append(
-                resolvePlaceholder(
-                        env,
-                        parseRecursive(
-                                matcher.group(1),
-                                pattern,
-                                env
-                        )
-                )
-        );
+        builder.append(result);
     }
 }
