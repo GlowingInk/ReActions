@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+import static fun.reactions.logic.environment.Variable.property;
 import static fun.reactions.logic.environment.Variable.simple;
 
 /**
@@ -36,11 +37,11 @@ public class BlockBreakContext extends ActivationContext {
     @Override
     protected @NotNull Map<String, Variable> prepareVariables() {
         return Map.of(
-                CANCEL_EVENT, Variable.property(false),
-                DO_DROP, Variable.property(dropItems),
+                CANCEL_EVENT, property(false),
+                DO_DROP, property(dropItems),
                 "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
-                "blocktype", Variable.simple(block.getType()),
-                "block", Variable.simple(block.getType()) // FIXME Why there is a copy?
+                "blocktype", simple(block.getType()),
+                "block", simple(block.getType()) // FIXME Why there is a copy?
         );
     }
 

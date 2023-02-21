@@ -25,7 +25,6 @@ package fun.reactions.module.basics.flags;
 import fun.reactions.logic.activity.flags.Flag;
 import fun.reactions.logic.environment.Environment;
 import fun.reactions.time.CooldownManager;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -36,22 +35,22 @@ import java.util.List;
 
 public class CooldownFlags implements Flag, Aliased {
 
-    private final boolean globalDelay;
+    private final boolean global;
 
-    public CooldownFlags(boolean globalDelay) {
-        this.globalDelay = globalDelay;
+    public CooldownFlags(boolean global) {
+        this.global = global;
     }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
-        String playerName = this.globalDelay ? "" : (player != null ? player.getName() : "");
+        String playerName = this.global ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
         String id = params.origin();
         if (params.contains("id")) {
             id = params.getString("id");
-            updateTime = TimeUtils.parseTime(params.getString("set-delay", params.getString("set-time", "0")));
+            updateTime = params.getTime(params.findKey("set-delay", "set-time", "set-cooldown"));
             playerName = params.getString("player", playerName);
         }
         boolean result = playerName.isEmpty() ? CooldownManager.checkCooldown(id, updateTime) : CooldownManager.checkPersonalCooldown(playerName, id, updateTime);
@@ -61,16 +60,16 @@ public class CooldownFlags implements Flag, Aliased {
 
     @Override
     public @NotNull String getName() {
-        return globalDelay ? "COOLDOWN" : "COOLDOWN_PLAYER";
+        return global ? "COOLDOWN" : "COOLDOWN_PLAYER";
     }
 
     @Override
     public @NotNull Collection<@NotNull String> getAliases() {
-        return List.of(globalDelay ? "DELAY" : "DELAY_PLAYER");
+        return List.of(global ? "DELAY" : "DELAY_PLAYER");
     }
 
     @Override
     public boolean requiresPlayer() {
-        return !globalDelay;
+        return !global;
     }
 }
