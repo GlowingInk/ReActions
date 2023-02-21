@@ -4,7 +4,7 @@ import me.fromgate.reactions.logic.Logic;
 import me.fromgate.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
-@Aliased.Names({"EXEC", "EXE", "EXECUTABLE"})
+@Aliased.Names({"EXEC", "EXE", "EXECUTABLE", "FUNCT"})
 public class FunctionActivator extends Activator {
     private FunctionActivator(Logic base) {
         super(base);
