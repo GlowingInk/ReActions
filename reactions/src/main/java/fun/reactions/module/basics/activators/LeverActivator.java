@@ -26,7 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.context.LeverContext;
+import fun.reactions.module.basics.contexts.LeverContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.BlockParameters;

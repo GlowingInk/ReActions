@@ -3,7 +3,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.context.GodContext;
+import fun.reactions.module.basics.contexts.GodContext;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;

@@ -3,7 +3,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.context.FlightContext;
+import fun.reactions.module.basics.contexts.FlightContext;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;

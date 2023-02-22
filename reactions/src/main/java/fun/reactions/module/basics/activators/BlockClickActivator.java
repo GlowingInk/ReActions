@@ -26,7 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.context.BlockClickContext;
+import fun.reactions.module.basics.contexts.BlockClickContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.item.ItemUtils;

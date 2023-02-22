@@ -25,7 +25,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.context.SignContext;
+import fun.reactions.module.basics.contexts.SignContext;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.parameter.BlockParameters;

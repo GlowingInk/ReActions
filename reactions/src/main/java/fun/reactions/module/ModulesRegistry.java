@@ -1,11 +1,13 @@
 package fun.reactions.module;
 
+import fun.reactions.Cfg;
 import fun.reactions.ReActions;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.selectors.Selector;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -39,14 +41,14 @@ public class ModulesRegistry {
             throw new IllegalStateException("Plugin-depended modules are already registered.");
         }
         if (!later.isEmpty()) {
-            platform.logger().info("Registering plugin-depended modules.");
+            optionalInfo("Registering plugin-depended modules.");
             later.forEach(this::register);
         }
         later = null;
     }
 
     public void registerModule(@NotNull Module module) {
-        if (module.isPluginDepended() && later != null) {
+        if (!module.requiredPlugins().isEmpty() && later != null) {
             later.add(module);
         } else {
             register(module);
@@ -54,15 +56,30 @@ public class ModulesRegistry {
     }
 
     private void register(@NotNull Module module) {
-        platform.logger().info("Registering " + module.getName() + " module (by " + String.join(", ", module.getAuthors()) + ")");
-        if (!module.init(platform)) {
+        platform.logger().info("Registering '" + module.getName() + "' module (by " + String.join(", ", module.getAuthors()) + ")");
+        List<String> missingPlugins = checkPlugins(module);
+        if (!missingPlugins.isEmpty()) {
+            platform.logger().warn("Module '" + module.getName() + "' cannot be registered because some plugins are missing: " + String.join(", ", missingPlugins));
             return;
         }
+        module.preRegister(platform);
         register("activators", module.getActivatorTypes(), ActivatorType::getName, platform.getActivatorTypes()::registerType);
         register("actions", module.getActions(), Action::getName, platform.getActivities()::registerAction);
         register("flags", module.getFlags(), Flag::getName, platform.getActivities()::registerFlag);
         register("placeholders", module.getPlaceholders(), Placeholder::getName, platform.getPlaceholders()::registerPlaceholder);
         register("selectors", module.getSelectors(), Selector::getName, platform.getSelectors()::registerSelector);
+        module.postRegister(platform);
+    }
+
+    private @NotNull List<String> checkPlugins(@NotNull Module module) {
+        List<String> missingPlugins = new ArrayList<>(0);
+        PluginManager pluginManager = platform.getServer().getPluginManager();
+        for (String str : module.requiredPlugins()) {
+            if (!pluginManager.isPluginEnabled(str)) {
+                missingPlugins.add(str);
+            }
+        }
+        return missingPlugins;
     }
 
     private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {
@@ -79,7 +96,7 @@ public class ModulesRegistry {
             }
         }
         if (!names.isEmpty()) {
-            platform.logger().info("Registered " + names.size() + " " + what + ": " + String.join(", ", names));
+            optionalInfo("Added " + names.size() + " " + what + ": " + String.join(", ", names));
         }
         if (failed != null && !failed.isEmpty()) {
             failed.forEach(platform.logger()::warn);
@@ -118,5 +135,11 @@ public class ModulesRegistry {
             }
         }
         loaded = true;
+    }
+
+    private void optionalInfo(String msg) {
+        if (Cfg.logRegistering) {
+            platform.logger().info(msg);
+        }
     }
 }

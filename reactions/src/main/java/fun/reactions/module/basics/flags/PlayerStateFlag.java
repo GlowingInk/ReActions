@@ -22,9 +22,9 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.events.listeners.GodModeListener;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.module.basics.events.listeners.GodModeListener;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

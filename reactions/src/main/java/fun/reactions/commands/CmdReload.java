@@ -2,9 +2,9 @@ package fun.reactions.commands;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.externals.worldguard.RaWorldGuard;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
+import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.util.message.Msg;

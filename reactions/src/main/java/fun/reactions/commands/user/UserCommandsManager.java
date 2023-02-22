@@ -3,7 +3,7 @@ package fun.reactions.commands.user;
 import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.context.CommandContext;
+import fun.reactions.module.basics.contexts.CommandContext;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
 import org.bukkit.Bukkit;

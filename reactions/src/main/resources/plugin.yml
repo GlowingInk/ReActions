@@ -7,7 +7,7 @@ authors:
   - fromgate
   - MaxDikiy
   - imDaniX
-softdepend: [Vault,WorldGuard,WorldEdit,ProtocolLib,PlaceholderAPI]
+softdepend: [ProtocolLib]
 description: '${project.description}'
 commands:
   reactions:

@@ -24,21 +24,22 @@ package fun.reactions;
 
 import fun.reactions.commands.Commander;
 import fun.reactions.commands.user.UserCommandsManager;
-import fun.reactions.externals.Externals;
-import fun.reactions.externals.RaVault;
-import fun.reactions.externals.worldguard.RaWorldGuard;
+import fun.reactions.events.listeners.BukkitListener;
+import fun.reactions.events.listeners.GodModeListener;
+import fun.reactions.events.listeners.LogHandler;
+import fun.reactions.events.listeners.MoveListener;
+import fun.reactions.events.listeners.RaListener;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.module.ModulesRegistry;
-import fun.reactions.module.basics.BasicModule;
-import fun.reactions.module.basics.events.listeners.BukkitListener;
-import fun.reactions.module.basics.events.listeners.GodModeListener;
-import fun.reactions.module.basics.events.listeners.LogHandler;
-import fun.reactions.module.basics.events.listeners.MoveListener;
-import fun.reactions.module.basics.events.listeners.RaListener;
+import fun.reactions.module.basics.ReActionsModule;
+import fun.reactions.module.papi.PapiModule;
+import fun.reactions.module.vault.VaultModule;
+import fun.reactions.module.worldedit.WorldEditModule;
+import fun.reactions.module.worldguard.WorldGuardModule;
 import fun.reactions.placeholders.LegacyPlaceholdersManager;
 import fun.reactions.placeholders.ModernPlaceholdersManager;
 import fun.reactions.placeholders.PlaceholdersManager;
@@ -96,7 +97,12 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.waitingManager = new WaitingManager(this);
         this.userCommandsManager = new UserCommandsManager(this);
         ReActions.setPlatform(this);
-        modulesRegistry.registerModule(new BasicModule());
+
+        modulesRegistry.registerModule(new ReActionsModule());
+        modulesRegistry.registerModule(new VaultModule());
+        modulesRegistry.registerModule(new PapiModule());
+        modulesRegistry.registerModule(new WorldEditModule());
+        modulesRegistry.registerModule(new WorldGuardModule());
         modulesRegistry.loadFolderModules();
     }
 
@@ -128,12 +134,9 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
         new Metrics(this, 1894);
-        Externals.init();
-        RaVault.init();
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);
-            RaWorldGuard.updateRegionCache();
         });
     }
 

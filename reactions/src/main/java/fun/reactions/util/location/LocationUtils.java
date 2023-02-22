@@ -22,8 +22,8 @@
 
 package fun.reactions.util.location;
 
-import fun.reactions.externals.worldguard.RaWorldGuard;
 import fun.reactions.holders.LocationHolder;
+import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Rng;
 import fun.reactions.util.parameter.Parameters;

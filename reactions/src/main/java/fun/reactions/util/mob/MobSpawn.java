@@ -23,7 +23,7 @@
 package fun.reactions.util.mob;
 
 import fun.reactions.ReActions;
-import fun.reactions.externals.worldguard.RaWorldGuard;
+import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Rng;

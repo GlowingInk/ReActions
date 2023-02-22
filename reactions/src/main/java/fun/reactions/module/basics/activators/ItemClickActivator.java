@@ -25,7 +25,7 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.context.ItemClickContext;
+import fun.reactions.module.basics.contexts.ItemClickContext;
 import fun.reactions.util.enums.HandType;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;

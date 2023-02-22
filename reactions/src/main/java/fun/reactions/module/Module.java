@@ -14,11 +14,13 @@ import java.util.List;
 
 public interface Module extends Named {
 
-    boolean isPluginDepended();
-
-    default boolean init(@NotNull ReActions.Platform platform) {
-        return true;
+    default @NotNull Collection<String> requiredPlugins() {
+        return List.of();
     }
+
+    default void preRegister(@NotNull ReActions.Platform platform) { }
+
+    default void postRegister(@NotNull ReActions.Platform platform) { }
 
     @NotNull Collection<String> getAuthors();
 

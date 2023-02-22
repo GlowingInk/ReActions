@@ -22,9 +22,9 @@
 
 package fun.reactions.module.basics.flags;
 
-import fun.reactions.externals.RaVault;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
+import fun.reactions.module.vault.external.RaVault;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
