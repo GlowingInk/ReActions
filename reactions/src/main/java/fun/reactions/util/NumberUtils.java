@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public final class NumberUtils {
     private static final double TRIM_VALUE = 1_0000;
 
-    public static final Pattern INT = Pattern.compile("-?\\d+");
+    public static final Pattern INT = Pattern.compile("-?\\d+(?:\\.0+)?");
     public static final Pattern FLOAT = Pattern.compile("-?\\d+(?:\\.\\d+([eE][+\\-]\\d+)?)?");
 
     private NumberUtils() {}

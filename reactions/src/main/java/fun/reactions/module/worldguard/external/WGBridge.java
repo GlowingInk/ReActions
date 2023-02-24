@@ -73,14 +73,14 @@ public class WGBridge {
 
     public static World getRegionWorld(World w, String worldAndRegion) {
         if (!worldAndRegion.contains(".")) return w;
-        String worldName = worldAndRegion.substring(0, worldAndRegion.indexOf("."));
+        String worldName = worldAndRegion.substring(0, worldAndRegion.indexOf('.'));
         World world = Bukkit.getWorld(worldName);
         return world == null ? w : world;
     }
 
     public static String getRegionName(String worldAndRegion) {
         if (!worldAndRegion.contains(".")) return worldAndRegion;
-        String regionName = worldAndRegion.substring(worldAndRegion.indexOf(".") + 1);
+        String regionName = worldAndRegion.substring(worldAndRegion.indexOf('.') + 1);
         return regionName.isEmpty() ? worldAndRegion : regionName;
     }
 

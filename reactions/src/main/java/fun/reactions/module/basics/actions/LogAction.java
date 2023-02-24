@@ -56,7 +56,7 @@ public class LogAction implements Action {
         String d = DATE_FORMAT.format(date);
         try {
             if (fileName.contains("/")) {
-                String ph = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf("\\") + 1);
+                String ph = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('\\') + 1);
                 File fileDir = new File(ph);
                 if (!fileDir.exists() && !fileDir.mkdirs()) return;
             }

@@ -126,7 +126,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
         for (String mbs : ln) {
             String name = "";
             if (mbs.contains("$")) {
-                name = mbs.substring(0, mbs.indexOf("$"));
+                name = mbs.substring(0, mbs.indexOf('$'));
                 mbs = mbs.substring(name.length() + 1);
             }
 

@@ -2,7 +2,7 @@ package fun.reactions.module.papi;
 
 import fun.reactions.ReActions;
 import fun.reactions.module.Module;
-import fun.reactions.module.papi.external.RaPlaceholderApi;
+import fun.reactions.module.papi.external.RaPapiExpansion;
 import fun.reactions.module.papi.placeholders.PapiPlaceholder;
 import fun.reactions.placeholders.Placeholder;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +17,8 @@ public class PapiModule implements Module {
     }
 
     @Override
-    public void preRegister(ReActions.@NotNull Platform platform) {
-        RaPlaceholderApi.init();
+    public void preRegister(@NotNull ReActions.Platform platform) {
+        new RaPapiExpansion().register();
     }
 
     @Override

@@ -58,7 +58,7 @@ public class MobDamageActivator extends Activator {
             name = param.getString("name");
             itemStr = param.getString("item");
         } else if (param.origin().contains("$")) {
-            name = type.substring(0, type.indexOf("$"));
+            name = type.substring(0, type.indexOf('$'));
             type = type.substring(name.length() + 1);
         }
         return new MobDamageActivator(base, type, name, itemStr);

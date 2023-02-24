@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Context created per activator
  */
-public class Environment {
+public final class Environment {
     private final ReActions.Platform platform;
     private final String activatorName;
     private final Player player;

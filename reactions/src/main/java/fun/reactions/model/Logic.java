@@ -102,7 +102,7 @@ public final class Logic {
         for (String str : data) {
             String param = str;
             String value = "";
-            int index = str.indexOf("=");
+            int index = str.indexOf('=');
             if (index != -1) {
                 param = str.substring(0, index).trim();
                 value = str.substring(index + 1);

@@ -53,7 +53,7 @@ public class MobKillActivator extends Activator {
             type = param.getString("type");
             name = param.getString("name");
         } else if (param.origin().contains("$")) {
-            name = type.substring(0, type.indexOf("$"));
+            name = type.substring(0, type.indexOf('$'));
             type = type.substring(name.length() + 1);
         }
         return new MobKillActivator(base, type, name);
