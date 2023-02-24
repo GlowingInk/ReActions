@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"FUNCT", "FUNCTION"})
 public class RunFunctionAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         ActivatorsManager activators = env.getPlatform().getActivators();
         String id = params.getString(params.findKey(Parameters.ORIGIN, "id", "activator", "exec"));
         Activator activator = activators.getActivator(id);

@@ -509,7 +509,7 @@ public class Parameters implements Parameterizable {
         return origin;
     }
 
-    public @Unmodifiable @NotNull Set<String> keysStrict() {
+    public @Unmodifiable @NotNull Set<String> keys() {
         if (this.strictKeys == null) {
             Set<String> keys = new HashSet<>(params.keySet());
             keys.remove(ORIGIN);
@@ -518,7 +518,7 @@ public class Parameters implements Parameterizable {
         return this.strictKeys;
     }
 
-    public @Unmodifiable @NotNull Set<String> keys() {
+    public @Unmodifiable @NotNull Set<String> keysFull() {
         return params.keySet();
     }
 
@@ -549,7 +549,7 @@ public class Parameters implements Parameterizable {
     public int hashCode() {
         if (this.hash == null) {
             int hash = 1; // To skip (un)boxing on calculation
-            for (String key : keysStrict()) {
+            for (String key : keys()) {
                 hash = 31 * hash + key.toLowerCase(Locale.ROOT).hashCode() + getString(key).hashCode();
             }
             this.hash = hash;
@@ -562,7 +562,7 @@ public class Parameters implements Parameterizable {
         if (obj == this) return true;
         if (obj instanceof Parameters other) {
             if (other.size() != size()) return false;
-            for (String key : keysStrict()) {
+            for (String key : keys()) {
                 if (!Objects.equals(getString(key), other.getString(key, null))) {
                     return false;
                 }

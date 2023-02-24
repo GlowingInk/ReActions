@@ -45,19 +45,19 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        saveTempVar(env, params);
+        saveTempVar(env, content);
         long currentTime = Bukkit.getWorlds().get(0).getTime();
         if (player != null) currentTime = player.getWorld().getTime();
 
-        if (params.equalsIgnoreCase("day")) {
+        if (content.equalsIgnoreCase("day")) {
             return ((currentTime >= 0) && (currentTime < 12000));
-        } else if (params.equalsIgnoreCase("night")) {
+        } else if (content.equalsIgnoreCase("night")) {
             return ((currentTime >= 12000) && (currentTime < 23999));
 
         } else {
-            String[] tln = params.split(",");
+            String[] tln = content.split(",");
             if (tln.length > 0) {
                 for (String timeStr : tln)
                     if (NumberUtils.isNumber(timeStr, Is.NATURAL)) {

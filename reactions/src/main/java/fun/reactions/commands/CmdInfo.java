@@ -4,7 +4,7 @@ import fun.reactions.ReActions;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.model.activity.flags.StoredFlag;
+import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Location;
@@ -52,8 +52,8 @@ public class CmdInfo extends Cmd {
         if (f && (!base.getFlags().isEmpty())) {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getFlags().size(); i++) {
-                StoredFlag flag = base.getFlags().get(i);
-                flg.add((flag.isInverted() ? "&4! &e" : "  &e") + flag.getActivity().getName() + " &3= &a" + flag.getParameters());
+                Flag.Stored flag = base.getFlags().get(i);
+                flg.add((flag.isInverted() ? "&4! &e" : "  &e") + flag.getActivity().getName() + " &3= &a" + flag.getContent());
             }
             Msg.printPage(sender, flg, Msg.LST_FLAGS, 1, 100, true);
         }
@@ -61,7 +61,7 @@ public class CmdInfo extends Cmd {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getActions().size(); i++) {
                 String action = base.getActions().get(i).getActivity().getName();
-                String param = base.getActions().get(i).getParameters();
+                String param = base.getActions().get(i).getContent();
                 if (action.equalsIgnoreCase("tp")) {
                     Location loc = LocationUtils.parseCoordinates(param);//Util.parseLocation(param);
                     if (loc != null) param = LocationUtils.locationToStringFormatted(loc);
@@ -74,7 +74,7 @@ public class CmdInfo extends Cmd {
             List<String> flg = new ArrayList<>();
             for (int i = 0; i < base.getReactions().size(); i++) {
                 String action = base.getReactions().get(i).getActivity().getName();
-                String param = base.getReactions().get(i).getParameters();
+                String param = base.getReactions().get(i).getContent();
                 if (action.equalsIgnoreCase("tp")) {
                     Location loc = LocationUtils.parseCoordinates(param);
                     if (loc != null) param = LocationUtils.locationToStringFormatted(loc);

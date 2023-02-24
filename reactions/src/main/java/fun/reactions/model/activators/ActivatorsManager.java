@@ -96,10 +96,10 @@ public class ActivatorsManager {
                 ConfigurationSection cfgType = Objects.requireNonNull(cfg.getConfigurationSection(strType));
                 for (String name : cfgType.getKeys(false)) {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
-                    Activator activator = type.loadActivator(new Logic(
-                            platform, type.getName().toUpperCase(Locale.ROOT),
-                            name, group, cfgActivator
-                    ), cfgActivator);
+                    Logic logic = new Logic(platform, type.getName().toUpperCase(Locale.ROOT), name);
+                    logic.setGroup(group);
+                    logic.load(cfgActivator);
+                    Activator activator = type.loadActivator(logic, cfgActivator);
                     if (activator == null || !activator.isValid()) {
                         logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'.");
                         continue;

@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"SLOT", "HELP_SLOT"}) // My legacy typo...
 public class HeldSlotFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        return NumberUtils.asInteger(params, -1) == player.getInventory().getHeldItemSlot();
+        return NumberUtils.asInteger(content, -1) == player.getInventory().getHeldItemSlot();
     }
 
     @Override

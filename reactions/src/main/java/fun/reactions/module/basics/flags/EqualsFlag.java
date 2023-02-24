@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"EQUALITY", "EQUAL", "COMPARE"})
 public class EqualsFlag implements Flag { // TODO Rewrite the check
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         String paramValue = params.getString("param", null);
         if (paramValue == null) return false;
         Double paramNum = NumberUtils.isNumber(paramValue) ? Double.valueOf(paramValue) : null;

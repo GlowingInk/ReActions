@@ -33,8 +33,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("RMVPOT")
 public class PotionRemoveAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
-        String str = removePotionEffect(env.getPlayer(), params);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        String str = removePotionEffect(env.getPlayer(), content);
         return !str.isEmpty();
     }
 

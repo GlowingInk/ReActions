@@ -37,8 +37,8 @@ public class TimerActions implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         String timer = params.getString("timer");
         if (timer.isEmpty()) return false;
         return TimersManager.setPause(timer, pauseTimer);

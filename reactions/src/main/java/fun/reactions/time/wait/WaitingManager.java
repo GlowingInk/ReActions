@@ -2,7 +2,7 @@ package fun.reactions.time.wait;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.ActivitiesRegistry;
-import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.save.Saveable;
 import fun.reactions.util.FileUtils;
@@ -150,10 +150,9 @@ public class WaitingManager implements Saveable {
             List<String> actionsCfg = taskCfg.isList("actions")
                     ? taskCfg.getStringList("actions")
                     : taskCfg.getStringList("actions.list"); // Legacy
-            List<StoredAction> actions = new ArrayList<>(actionsCfg.size());
+            List<Action.Stored> actions = new ArrayList<>(actionsCfg.size());
             for (String str : actionsCfg) {
-                StoredAction action = activities.storedActionOf(str);
-                if (action != null) actions.add(action);
+                actions.add(activities.storedActionOf(str));
             }
             UUID playerId;
             if (taskCfg.isString("player-id")) {
@@ -199,7 +198,7 @@ public class WaitingManager implements Saveable {
                     var taskCfg = cfg.createSection(id.toString());
                     if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
                     taskCfg.set("execution-time", task.executionTime());
-                    taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
+                    taskCfg.set("actions", task.actions().stream().map(Action.Stored::toString).collect(Collectors.toList()));
                     Variables vars = task.variables();
                     if (!vars.isEmpty()) {
                         var varsCfg = taskCfg.createSection("variables");
@@ -227,7 +226,7 @@ public class WaitingManager implements Saveable {
             ConfigurationSection taskCfg = cfg.createSection(id.toString());
             if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
             taskCfg.set("execution-time", task.executionTime());
-            taskCfg.set("actions", task.actions().stream().map(StoredAction::toString).collect(Collectors.toList()));
+            taskCfg.set("actions", task.actions().stream().map(Action.Stored::toString).collect(Collectors.toList()));
             Variables vars = task.variables();
             if (!vars.isEmpty()) {
                 var varsCfg = taskCfg.createSection("variables");

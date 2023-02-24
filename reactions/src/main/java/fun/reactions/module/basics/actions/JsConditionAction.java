@@ -2,7 +2,6 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.StoredAction;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.Variables;
@@ -69,9 +68,9 @@ public class JsConditionAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         if (!engineCheck()) return false;
-        Parameters params = Parameters.fromString(paramsStr);
+        Parameters params = Parameters.fromString(content);
         Player player = env.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {
             final ScriptContext scriptContext = new SimpleScriptContext();
@@ -113,7 +112,7 @@ public class JsConditionAction implements Action {
         if (params.isEmpty() || !params.contains("actions")) return false;
         params = params.getParameters("actions");
 
-        List<StoredAction> toExecute = new ArrayList<>();
+        List<Stored> toExecute = new ArrayList<>();
         params.keyedListIterate("action", (actionKey, actions) -> {
             if (actions.isEmpty()) return;
             String actionStr = actions.getString(actionKey);
@@ -124,10 +123,10 @@ public class JsConditionAction implements Action {
             String param = actionStr.substring(index + 1);
             Action action = ReActions.getActivities().getAction(name);
             if (action == null) return;
-            toExecute.add(new StoredAction(action, param));
+            toExecute.add(new Stored(action, param));
         });
         if (!toExecute.isEmpty()) {
-            toExecute.forEach(action -> action.getActivity().proceed(env, action.getParameters()));
+            toExecute.forEach(action -> action.getActivity().proceed(env, action.getContent()));
         }
         return true;
     }

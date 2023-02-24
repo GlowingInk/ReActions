@@ -34,9 +34,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class WeSuperPickaxeFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        return Boolean.parseBoolean(params) == RaWorldEdit.hasSuperPickAxe(player);
+        return Boolean.parseBoolean(content) == RaWorldEdit.hasSuperPickAxe(player);
     }
 
     @Override

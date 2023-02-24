@@ -32,9 +32,9 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("HP")
 public class HealthFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        return NumberUtils.FLOAT.matcher(params).matches() && player.getHealth() >= Double.parseDouble(params);
+        return NumberUtils.FLOAT.matcher(content).matches() && player.getHealth() >= Double.parseDouble(content);
     }
 
     @Override

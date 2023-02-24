@@ -40,8 +40,8 @@ public class EitherFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
-        List<String> split = ParametersUtils.splitSafely(params, ' ');
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        List<String> split = ParametersUtils.splitSafely(content, ' ');
         boolean hasPlayer = env.getPlayer() != null;
         for (String flagFullStr : split) {
             String[] flagSplit = flagFullStr.split(":", 2);

@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"GM", "GAME_MODE"})
 public class GamemodeFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
-        return env.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, params);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        return env.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, content);
     }
 
     @Override

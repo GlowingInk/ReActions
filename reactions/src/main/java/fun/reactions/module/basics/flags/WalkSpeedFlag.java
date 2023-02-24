@@ -14,12 +14,12 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("WALKSPEED")
 public class WalkSpeedFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        if (!NumberUtils.isNumber(params, Is.NATURAL)) return false;
+        if (!NumberUtils.isNumber(content, Is.NATURAL)) return false;
         long walkSpeed = Math.round(player.getWalkSpeed() * 10); // TODO: Why?
         env.getVariables().set("walkspeed", Long.toString(walkSpeed));
-        return walkSpeed >= Integer.parseInt(params);
+        return walkSpeed >= Integer.parseInt(content);
     }
 
     @Override

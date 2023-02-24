@@ -2,7 +2,6 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.StoredAction;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.wait.WaitTask;
 import fun.reactions.util.message.Msg;
@@ -17,8 +16,8 @@ import static fun.reactions.util.TimeUtils.offsetNow;
 @Aliased.Names({"ACTDELAY", "DELAYED_ACTION", "ACTION_DELAYED", "RUNTIME_ACTION"})
 public class RunActionAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
 
         long delayMs = params.getTime(params.findKey("delay", "time"));
 
@@ -53,7 +52,7 @@ public class RunActionAction implements Action {
             ReActions.getWaiter().schedule(new WaitTask(
                     env.getVariables(),
                     env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
-                    List.of(new StoredAction(action, actionParamsStr)),
+                    List.of(new Stored(action, actionParamsStr)),
                     offsetNow(delayMs)
             ));
         }

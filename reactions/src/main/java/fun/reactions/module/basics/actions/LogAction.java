@@ -77,8 +77,8 @@ public class LogAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         if (params.containsAny("prefix", "color", "file")) {
             String plg_name = ReActions.getPlugin().getDescription().getName();
             boolean prefix = params.getBoolean("prefix", true);

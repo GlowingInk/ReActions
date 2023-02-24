@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"FOODLEVEL", "FOOD"})
 public class FoodLevelFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        if (!NumberUtils.isNumber(params, Is.NATURAL)) return false;
-        return player.getFoodLevel() >= Integer.parseInt(params);
+        if (!NumberUtils.isNumber(content, Is.NATURAL)) return false;
+        return player.getFoodLevel() >= Integer.parseInt(content);
     }
 
     @Override

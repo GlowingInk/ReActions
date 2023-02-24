@@ -41,8 +41,8 @@ public class SqlActions implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         String playerName = params.getString("player");
         String varName = params.getString("variable");
         int column = params.getInteger("column", 1);

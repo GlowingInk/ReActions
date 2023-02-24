@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 public class GroupAddAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
-        return RaVault.playerAddGroup(env.getPlayer(), params);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        return RaVault.playerAddGroup(env.getPlayer(), content);
     }
 
     @Override

@@ -241,7 +241,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
             if (params.isEmpty()) continue;
             String timerType = timer.isIngameTimer() ? "INGAME" : "SERVER";
             String root = timerType + "." + name + ".";
-            for (String key : params.keysStrict()) {
+            for (String key : params.keys()) {
                 if (key.equalsIgnoreCase("timer-type")) continue;
                 cfg.set(root + key, key.equalsIgnoreCase("time") ? params.getString(key).replace("_", " ") : params.getString(key));
             }

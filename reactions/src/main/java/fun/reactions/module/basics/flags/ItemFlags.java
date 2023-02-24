@@ -43,21 +43,21 @@ public class ItemFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
         switch (flagType) {
             case HAND:
                 ItemStack item = player.getInventory().getItemInMainHand();
                 env.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
-                return VirtualItem.fromString(params).isSimilar(item);
+                return VirtualItem.fromString(content).isSimilar(item);
             case INVENTORY:
-                return hasItemInInventory(env, params);
+                return hasItemInInventory(env, content);
             case WEAR:
-                return isItemWeared(player, params);
+                return isItemWeared(player, content);
             case OFFHAND:
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
                 env.getVariables().set("item_amount", String.valueOf(inOffhand.getAmount()));
-                return VirtualItem.fromString(params).isSimilar(inOffhand);
+                return VirtualItem.fromString(content).isSimilar(inOffhand);
         }
         return false;
     }

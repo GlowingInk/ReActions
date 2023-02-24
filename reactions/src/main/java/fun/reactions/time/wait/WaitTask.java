@@ -2,7 +2,7 @@ package fun.reactions.time.wait;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
-import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.model.environment.Variables;
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public record WaitTask(
         @NotNull Variables variables,
         @Nullable UUID playerId,
-        @NotNull List<StoredAction> actions,
+        @NotNull List<Action.Stored> actions,
         long executionTime
 ) implements Comparable<WaitTask> {
     public boolean isTime() {

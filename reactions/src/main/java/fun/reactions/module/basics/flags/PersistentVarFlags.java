@@ -72,8 +72,8 @@ public class PersistentVarFlags implements Flag, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         Player player = env.getPlayer();
         String variableId;
         String value;

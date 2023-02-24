@@ -1,9 +1,9 @@
 package fun.reactions.model.activity;
 
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.activity.actions.DummyAction;
+import fun.reactions.model.activity.flags.DummyFlag;
 import fun.reactions.model.activity.flags.Flag;
-import fun.reactions.model.activity.flags.StoredFlag;
 import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,20 +49,24 @@ public class ActivitiesRegistry {
         return flagByName.get(name.toUpperCase(Locale.ROOT));
     }
 
-    public @Nullable StoredAction storedActionOf(@NotNull String str) {
+    public @NotNull Action.Stored storedActionOf(@NotNull String str) {
         String[] split = str.split("=", 2);
-        if (split.length != 2) return null;
+        split[0] = split[0].trim();
         Action action = getAction(split[0]);
-        if (action == null) return null;
-        return new StoredAction(action, split[1]);
+        if (action == null) {
+            action = new DummyAction(split[0]);
+        }
+        return new Action.Stored(action, split.length > 1 ? split[1] : "");
     }
 
-    public @Nullable StoredFlag storedFlagOf(@NotNull String str) {
+    public @NotNull Flag.Stored storedFlagOf(@NotNull String str) {
         String[] split = str.split("=", 2);
-        if (split.length != 2) return null;
+        split[0] = split[0].trim();
         boolean inverted = split[0].startsWith("!");
         Flag flag = getFlag(inverted ? split[0].substring(1) : split[0]);
-        if (flag == null) return null;
-        return new StoredFlag(flag, split[1], inverted);
+        if (flag == null) {
+            flag = new DummyFlag(split[0]);
+        }
+        return new Flag.Stored(flag, split.length > 1 ? split[1] : "", inverted);
     }
 }

@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"var_temp", "var_temp_set", "temp_var", "temp_variable", "var_local", "change"})
 public class LocalVarAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         env.getVariables().set(
                 params.getString(params.findKey("id", "key")),
                 params.getString("value", params.getBoolean("delete-empty", false) ? null : "")

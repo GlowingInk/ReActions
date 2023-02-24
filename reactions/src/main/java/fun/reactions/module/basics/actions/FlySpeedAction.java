@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("FLIGHT_SPEED")
 public class FlySpeedAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         Player player = env.getPlayer();
         double speed = params.getInteger("speed", () -> params.getInteger(Parameters.ORIGIN));
         if (params.contains("player"))

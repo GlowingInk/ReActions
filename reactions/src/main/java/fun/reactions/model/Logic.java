@@ -25,49 +25,42 @@ package fun.reactions.model;
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.ActivitiesRegistry;
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.actions.DummyAction;
 import fun.reactions.model.activity.actions.Stopper;
-import fun.reactions.model.activity.actions.StoredAction;
+import fun.reactions.model.activity.flags.DummyFlag;
 import fun.reactions.model.activity.flags.Flag;
-import fun.reactions.model.activity.flags.StoredFlag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class Logic {
     private final ReActions.Platform platform;
     private final String name;
     private final String type;
-    private final List<StoredFlag> flags;
-    private final List<StoredAction> actions;
-    private final List<StoredAction> reactions;
+    private final List<Flag.Stored> flags;
+    private final List<Action.Stored> actions;
+    private final List<Action.Stored> reactions;
 
     private String group; // TODO Should not be here?
 
-    public Logic(@NotNull ReActions.Platform platform, @NotNull String type, @NotNull String name, @Nullable String group) {
+    public Logic(@NotNull ReActions.Platform platform, @NotNull String type, @NotNull String name) {
         this.platform = platform;
         this.type = type;
         this.name = name;
-        this.group = Utils.isStringEmpty(group) ? "activators" : group;
+        this.group = "activators";
         this.flags = new ArrayList<>();
         this.actions = new ArrayList<>();
         this.reactions = new ArrayList<>();
-    }
-
-    public Logic(@NotNull ReActions.Platform platform, @NotNull String type, @NotNull String name, @Nullable String group, @NotNull ConfigurationSection cfg) {
-        this(platform, type, name, group);
-        ActivitiesRegistry activities = platform.getActivities();
-        loadData(cfg.getStringList("flags"), (s, v) -> storeFlag(s, v, flags, activities));
-        loadData(cfg.getStringList("actions"), (s, v) -> storeAction(s, v, actions, activities));
-        loadData(cfg.getStringList("reactions"), (s, v) -> storeAction(s, v, reactions, activities));
     }
 
     public @NotNull String getType() {
@@ -82,15 +75,15 @@ public final class Logic {
         return this.group;
     }
 
-    public @NotNull List<StoredFlag> getFlags() {
+    public @NotNull List<Flag.Stored> getFlags() {
         return this.flags;
     }
 
-    public @NotNull List<StoredAction> getActions() {
+    public @NotNull List<Action.Stored> getActions() {
         return this.actions;
     }
 
-    public @NotNull List<StoredAction> getReactions() {
+    public @NotNull List<Action.Stored> getReactions() {
         return this.reactions;
     }
 
@@ -98,53 +91,21 @@ public final class Logic {
         return platform;
     }
 
-    private static void loadData(List<String> data, BiConsumer<String, String> loader) {
-        for (String str : data) {
-            String param = str;
-            String value = "";
-            int index = str.indexOf('=');
-            if (index != -1) {
-                param = str.substring(0, index).trim();
-                value = str.substring(index + 1);
-            }
-            loader.accept(param, value);
-        }
-    }
-
-    private static void storeFlag(String flagStr, String value, List<StoredFlag> flags, ActivitiesRegistry activity) {
-        boolean inverted = flagStr.startsWith("!");
-        Flag flag = activity.getFlag(inverted ? flagStr.substring(1) : flagStr);
-        if (flag == null) {
-            // TODO Error
-            return;
-        }
-        flags.add(new StoredFlag(flag, value, inverted));
-    }
-
-    private static void storeAction(String actionStr, String value, List<StoredAction> actions, ActivitiesRegistry activity) {
-        Action action = activity.getAction(actionStr);
-        if (action == null) {
-            // TODO Error
-            return;
-        }
-        actions.add(new StoredAction(action, value));
-    }
-
     public void setGroup(@NotNull String group) {
-        this.group = group;
+        this.group = Utils.isStringEmpty(group) ? "activators" : group;
     }
 
     public void execute(@NotNull Environment env) {
         boolean noPlayer = env.getPlayer() == null;
         PlaceholdersManager placeholders = env.getPlatform().getPlaceholders();
-        for (StoredFlag flag : flags) {
+        for (Flag.Stored flag : flags) {
             if (flag.getActivity().requiresPlayer() && noPlayer) {
                 executeActions(env, reactions, false);
                 return;
             }
             String params = flag.hasPlaceholders()
-                    ? placeholders.parse(env, flag.getParameters())
-                    : flag.getParameters();
+                    ? placeholders.parse(env, flag.getContent())
+                    : flag.getContent();
             if (!flag.getActivity().proceed(env, params)) {
                 executeActions(env, reactions, !noPlayer);
                 return;
@@ -153,17 +114,17 @@ public final class Logic {
         executeActions(env, actions, !noPlayer);
     }
 
-    public static void executeActions(Environment env, List<StoredAction> actions, boolean hasPlayer) {
+    public static void executeActions(Environment env, List<Action.Stored> actions, boolean hasPlayer) {
         PlaceholdersManager placeholders = env.getPlatform().getPlaceholders();
         for (int i = 0; i < actions.size(); i++) {
-            StoredAction action = actions.get(i);
+            Action.Stored action = actions.get(i);
             // TODO: Microoptimization - check if hasPlayer and separate iteration
             if (hasPlayer || !action.getActivity().requiresPlayer()) {
                 String params = action.hasPlaceholders()
-                        ? placeholders.parse(env, action.getParameters())
-                        : action.getParameters();
+                        ? placeholders.parse(env, action.getContent())
+                        : action.getContent();
                 if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Stopper stopAction) {
-                    stopAction.stop(env, action.getParameters(), new ArrayList<>(actions.subList(i + 1, actions.size())));
+                    stopAction.stop(env, action.getContent(), new ArrayList<>(actions.subList(i + 1, actions.size())));
                     break;
                 }
             }
@@ -178,7 +139,7 @@ public final class Logic {
      * @param inverted Is indentation needed
      */
     public void addFlag(@NotNull Flag flag, @NotNull String param, boolean inverted) {
-        flags.add(new StoredFlag(flag, param, inverted));
+        flags.add(new Flag.Stored(flag, param, inverted));
     }
 
     /**
@@ -200,7 +161,7 @@ public final class Logic {
      * @param param  Parameters of action
      */
     public void addAction(@NotNull Action action, @NotNull String param) {
-        actions.add(new StoredAction(action, param));
+        actions.add(new Action.Stored(action, param));
     }
 
     /**
@@ -222,7 +183,7 @@ public final class Logic {
      * @param param  Parameters of action
      */
     public void addReaction(@NotNull Action action, @NotNull String param) {
-        reactions.add(new StoredAction(action, param));
+        reactions.add(new Action.Stored(action, param));
     }
 
     /**
@@ -258,6 +219,29 @@ public final class Logic {
         reactions.clear();
     }
 
+    public void load(@NotNull ConfigurationSection cfg) {
+        ActivitiesRegistry activities = platform.getActivities();
+        for (String flagStr : cfg.getStringList("flags")) {
+            loadActivity(flagStr, activities::storedFlagOf, f -> f instanceof DummyFlag, flags);
+        }
+        for (String actionStr : cfg.getStringList("actions")) {
+            loadActivity(actionStr, activities::storedActionOf, f -> f instanceof DummyAction, actions);
+        }
+        for (String reactionsStr : cfg.getStringList("reactions")) {
+            loadActivity(reactionsStr, activities::storedActionOf, f -> f instanceof DummyAction, reactions);
+        }
+    }
+
+    private <A extends Activity, S extends Activity.Stored<A>> void loadActivity(
+            String value, Function<String, S> reader, Predicate<A> isDummy, List<S> list
+    ) {
+        S stored = reader.apply(value);
+        if (isDummy.test(stored.getActivity())) {
+            platform.logger().warn("Activator '" + name + "' loaded unknown activity '" + stored.getActivity().getName() + "'.");
+        }
+        list.add(stored);
+    }
+
     /**
      * Save activator to config
      *
@@ -265,13 +249,13 @@ public final class Logic {
      */
     public void save(@NotNull ConfigurationSection cfg) {
         List<String> flg = new ArrayList<>();
-        for (StoredFlag f : flags) flg.add(f.toString());
+        for (Flag.Stored f : flags) flg.add(f.toString());
         cfg.set("flags", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
         flg = new ArrayList<>();
-        for (StoredAction a : actions) flg.add(a.toString());
+        for (Action.Stored a : actions) flg.add(a.toString());
         cfg.set("actions", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
         flg = new ArrayList<>();
-        for (StoredAction a : reactions) flg.add(a.toString());
+        for (Action.Stored a : reactions) flg.add(a.toString());
         cfg.set("reactions", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
     }
 

@@ -41,7 +41,7 @@ public class Variables {
     }
 
     public static @NotNull Variables readParameters(@NotNull Parameters params) {
-        Set<String> keys = params.keysStrict();
+        Set<String> keys = params.keys();
         Map<String, Variable> vars = new HashMap<>(keys.size());
         for (String key : keys) {
             vars.put(key.toLowerCase(Locale.ROOT), Variable.simple(params.getString(key)));

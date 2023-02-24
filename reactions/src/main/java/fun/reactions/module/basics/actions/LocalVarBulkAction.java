@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"LOCAL_VAR_BATCH", "LOCAL_VAR_MULTIPLE"})
 public class LocalVarBulkAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         if (params.isEmpty()) return false;
         Variables vars = env.getVariables();
         params.forEach(vars::set);

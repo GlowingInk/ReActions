@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("WE_SEL_BLOCKS")
 public class WeSelectionFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
         int selectionBlocks = RaWorldEdit.getArea(player);
         Vector minPoint = RaWorldEdit.getMinimumPoint(player);
@@ -50,7 +50,7 @@ public class WeSelectionFlag implements Flag {
         env.getVariables().set("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
         env.getVariables().set("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
         env.getVariables().set("selblocks", Integer.toString(selectionBlocks));
-        return NumberUtils.isNumber(params, Is.NATURAL) && selectionBlocks <= Integer.parseInt(params);
+        return NumberUtils.isNumber(content, Is.NATURAL) && selectionBlocks <= Integer.parseInt(content);
     }
 
     @Override

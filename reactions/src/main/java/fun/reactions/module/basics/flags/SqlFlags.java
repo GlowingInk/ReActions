@@ -37,8 +37,8 @@ public class SqlFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         if (!SQLManager.isEnabled()) return false;
         if (!params.containsEvery("value", "select", "from") &&
                 !(params.contains("query"))) return false;

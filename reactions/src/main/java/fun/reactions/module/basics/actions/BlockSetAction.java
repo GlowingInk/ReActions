@@ -37,8 +37,8 @@ import org.jetbrains.annotations.NotNull;
 public class BlockSetAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         //String istr = params.getParam("block", "");
         boolean phys = params.getBoolean("physics", false);
         boolean drop = params.getBoolean("drop", false);

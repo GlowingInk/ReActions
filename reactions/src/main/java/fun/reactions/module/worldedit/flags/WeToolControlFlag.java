@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class WeToolControlFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        return Boolean.parseBoolean(params) == RaWorldEdit.isToolControl(player);
+        return Boolean.parseBoolean(content) == RaWorldEdit.isToolControl(player);
     }
 
     @Override

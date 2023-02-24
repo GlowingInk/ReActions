@@ -32,9 +32,9 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("LIGHT")
 public class LightLevelFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String params) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Player player = env.getPlayer();
-        return player.getEyeLocation().getBlock().getLightLevel() >= NumberUtils.asInteger(params, -1);
+        return player.getEyeLocation().getBlock().getLightLevel() >= NumberUtils.asInteger(content, -1);
     }
 
     @Override

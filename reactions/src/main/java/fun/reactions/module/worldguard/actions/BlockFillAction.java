@@ -42,8 +42,8 @@ import java.util.function.DoublePredicate;
 @Aliased.Names({"FILL_BLOCK", "BLOCK_FILL"})
 public class BlockFillAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         if (!params.contains("region") && !params.containsEvery("loc1", "loc2")) return false;
         boolean phys = params.getBoolean("physics", false);
         boolean drop = params.getBoolean("drop", false);

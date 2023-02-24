@@ -24,7 +24,6 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.StoredAction;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.wait.WaitTask;
 import fun.reactions.util.TimeUtils;
@@ -45,9 +44,9 @@ public class ExecuteAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
         ReActions.Platform platform = env.getPlatform();
-        Parameters params = Parameters.fromString(paramsStr);
+        Parameters params = Parameters.fromString(content);
         int repeat = Math.max(params.getInteger("repeat", 1), 1);
         long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));
         List<Player> targets = new ArrayList<>();
@@ -61,7 +60,7 @@ public class ExecuteAction implements Action {
                 return false;
             }
         }
-        var storedFunct = List.of(new StoredAction(functAction, paramsStr));
+        var storedFunct = List.of(new Stored(functAction, content));
         for (int i = 0; i < repeat; i++) {
             for (Player player : targets) {
                 platform.getWaiter().schedule(new WaitTask(

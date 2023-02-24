@@ -43,8 +43,8 @@ import java.util.Set;
 public class MessageAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+        Parameters params = Parameters.fromString(content);
         sendMessage(env.getPlayer(), params);
         return true;
     }
