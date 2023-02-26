@@ -49,7 +49,6 @@ public class ClearRegionAction implements Action {
         String region = params.getString("region");
         String type = params.getString("type", "all");
         if (region.isEmpty()) return false;
-        if (!RaWorldGuard.isConnected()) return false;
         List<Location> locs = RaWorldGuard.getRegionMinMaxLocations(region);
         if (locs.size() != 2) return false;
         Collection<Entity> en = EntityUtils.getEntities(locs.get(0), locs.get(1));

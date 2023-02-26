@@ -10,6 +10,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -22,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,14 @@ public class WGBridge {
         if (connected) {
             Msg.logMessage("WorldGuard " + wgPlugin.getDescription().getVersion() + " found. Bridge loaded: " + getVersion());
         } else Msg.logMessage("Worlguard not found...");
+    }
+
+    public static boolean isAccessible(@NotNull Player bukkitPlayer, @NotNull Location loc, @NotNull StateFlag flag) {
+        LocalPlayer player = RaWorldGuard.getWrapPlayer(bukkitPlayer);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+
+        return query.testState(BukkitAdapter.adapt(loc), player, flag);
     }
 
     public static boolean checkRegionInRadius(Player p, int radius) {

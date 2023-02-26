@@ -67,7 +67,6 @@ public class RegionActivator extends Activator implements Locatable {
     }
 
     public boolean isLocatedAt(Location loc) {
-        if (!RaWorldGuard.isConnected()) return false;
         return RaWorldGuard.isLocationInRegion(loc, this.region);
     }
 

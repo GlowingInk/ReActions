@@ -17,7 +17,6 @@ public class RegionSelector implements Selector {
 
     @Override
     public @NotNull Set<Player> getPlayers(@NotNull String regionStr) {
-        if (!RaWorldGuard.isConnected()) return Set.of();
         if (regionStr.isEmpty()) return Set.of();
         String[] arrRegion = regionStr.split(",");
         Set<Player> players = new HashSet<>();

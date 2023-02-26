@@ -13,6 +13,7 @@ import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.module.worldguard.flags.RegionFlags;
 import fun.reactions.module.worldguard.flags.RegionInRadiusFlag;
+import fun.reactions.module.worldguard.flags.WgAccessFlag;
 import fun.reactions.module.worldguard.selectors.RegionSelector;
 import fun.reactions.selectors.Selector;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +69,8 @@ public class WorldGuardModule implements Module {
                 new RegionFlags(RegionFlags.Type.REGION_MEMBER),
                 new RegionFlags(RegionFlags.Type.REGION_OWNER),
                 new RegionFlags(RegionFlags.Type.REGION_STATE),
-                new RegionInRadiusFlag()
+                new RegionInRadiusFlag(),
+                new WgAccessFlag()
         );
     }
 
