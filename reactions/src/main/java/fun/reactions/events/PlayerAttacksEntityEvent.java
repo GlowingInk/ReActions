@@ -8,7 +8,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
 public class PlayerAttacksEntityEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private final LivingEntity entity;
@@ -17,6 +16,7 @@ public class PlayerAttacksEntityEvent extends PlayerEvent implements Cancellable
     private double damage;
     private final double finalDamage;
 
+    @Deprecated
     public PlayerAttacksEntityEvent(Player player, LivingEntity entity, double damage, double finalDamage, EntityDamageEvent.DamageCause cause) {
         super(player);
         this.entity = entity;

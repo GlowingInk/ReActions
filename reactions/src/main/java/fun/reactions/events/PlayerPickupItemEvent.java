@@ -7,12 +7,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
 public class PlayerPickupItemEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private final Item item;
     private boolean cancel;
 
+    @Deprecated
     public PlayerPickupItemEvent(Player player, Item item) {
         super(player);
         this.item = item;

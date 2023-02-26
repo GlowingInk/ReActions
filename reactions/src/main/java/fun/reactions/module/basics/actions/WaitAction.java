@@ -2,7 +2,7 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.Stopper;
+import fun.reactions.model.activity.actions.Interrupting;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.wait.WaitTask;
 import fun.reactions.util.naming.Aliased;
@@ -15,7 +15,7 @@ import static fun.reactions.util.TimeUtils.offsetNow;
 import static fun.reactions.util.TimeUtils.parseTime;
 
 @Aliased.Names("PAUSE")
-public class WaitAction implements Action, Stopper {
+public class WaitAction implements Action, Interrupting {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String content) {
         Parameters params = Parameters.fromString(content, "time");

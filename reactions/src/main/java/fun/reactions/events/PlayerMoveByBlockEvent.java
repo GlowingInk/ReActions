@@ -6,13 +6,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
 public class PlayerMoveByBlockEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
 
     private final Location to;
     private final Location from;
 
+    @Deprecated
     public PlayerMoveByBlockEvent(Player player, Location to, Location from) {
         super(player);
         this.to = to;

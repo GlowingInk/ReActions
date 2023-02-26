@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Some actions can stop execution of activator
  */
-public interface Stopper {
+public interface Interrupting {
     /**
      * This method will be called after {@link Action#proceed(Environment, String)} if it returned {@code true}
      * @param actions List of actions that were stopped

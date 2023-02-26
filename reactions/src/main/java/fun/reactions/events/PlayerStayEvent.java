@@ -6,12 +6,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
 public class PlayerStayEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
 
     private final Location stay;
 
+    @Deprecated
     public PlayerStayEvent(Player player, Location stay) {
         super(player);
         this.stay = stay;

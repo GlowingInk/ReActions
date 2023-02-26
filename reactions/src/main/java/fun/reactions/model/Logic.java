@@ -28,7 +28,7 @@ import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.actions.DummyAction;
-import fun.reactions.model.activity.actions.Stopper;
+import fun.reactions.model.activity.actions.Interrupting;
 import fun.reactions.model.activity.flags.DummyFlag;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
@@ -123,7 +123,7 @@ public final class Logic {
                 String params = action.hasPlaceholders()
                         ? placeholders.parse(env, action.getContent())
                         : action.getContent();
-                if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Stopper stopAction) {
+                if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Interrupting stopAction) {
                     stopAction.stop(env, action.getContent(), new ArrayList<>(actions.subList(i + 1, actions.size())));
                     break;
                 }
