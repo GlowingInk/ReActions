@@ -50,12 +50,12 @@ import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivitiesRegistry activitiesRegistry;
@@ -141,8 +141,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     }
 
     @Override
-    public @NotNull Logger logger() {
-        return getSLF4JLogger();
+    public @NotNull ComponentLogger logger() {
+        return getComponentLogger();
     }
 
     @Override

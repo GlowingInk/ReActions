@@ -53,20 +53,20 @@ public final class LocationUtils { // TODO: Requires refactoring
     /**
      * Returns location defined by group of parameter:
      *
-     * @param param           String that contains parameters:
-     *                        parameter1:value1 parameter2:value2 ... parameterN:valueN
-     *                        Parameters:
-     *                        <WorldName,X,Y,Z[,Yaw,Pitch]> - default, the simplest way to define location
-     *                        loc:<WorldName,X,Y,Z[,Yaw,Pitch]> - same as previous
-     *                        <p>
-     *                        loc:<WorldName,X,Y,Z[,Yaw,Pitch]> radius:<Radius> - find random location around the defined block
-     *                        region:<RegionName> - find random location in provided region
-     *                        loc1:<WorldName,X,Y,Z> loc2:<WorldName,X,Y,Z> - find random location in area defined by too points
-     *                        <p>
-     *                        Additional parameters:
-     *                        land:true - forces to find location in point where player can stay (solid block with two blocks above it)
-     *                        add-vector:<X,Y,Z> - allows to modify result of locations selections. For example,
-     *                        loc:world,10,10,10 add-vector:0,5,0 will point to action world,10,15,10.
+     * @param param String that contains parameters:
+     *              parameter1:value1 parameter2:value2 ... parameterN:valueN
+     *              Parameters:
+     *              <WorldName,X,Y,Z[,Yaw,Pitch]> - default, the simplest way to define location
+     *              loc:<WorldName,X,Y,Z[,Yaw,Pitch]> - same as previous
+     *              <p>
+     *              loc:<WorldName,X,Y,Z[,Yaw,Pitch]> radius:<Radius> - find random location around the defined block
+     *              region:<RegionName> - find random location in provided region
+     *              loc1:<WorldName,X,Y,Z> loc2:<WorldName,X,Y,Z> - find random location in area defined by too points
+     *              <p>
+     *              Additional parameters:
+     *              land:true - forces to find location in point where player can stay (solid block with two blocks above it)
+     *              add-vector:<X,Y,Z> - allows to modify result of locations selections. For example,
+     *              loc:world,10,10,10 add-vector:0,5,0 will point to action world,10,15,10.
      * @param def default location, used when definitions of locations is wrong or missed
      * @return Location
      */

@@ -8,10 +8,10 @@ import fun.reactions.module.ModulesRegistry;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.selectors.SelectorsManager;
 import fun.reactions.time.wait.WaitingManager;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import java.io.File;
 
@@ -64,7 +64,7 @@ public final class ReActions {
         return platform.getWaiter();
     }
 
-    public static Logger getLogger() {
+    public static ComponentLogger getLogger() {
         return platform.logger();
     }
 
@@ -82,7 +82,7 @@ public final class ReActions {
         @NotNull SelectorsManager getSelectors();
         @NotNull WaitingManager getWaiter();
         @NotNull ModulesRegistry getModules();
-        @NotNull Logger logger();
+        @NotNull ComponentLogger logger();
         @NotNull Plugin getPlugin();
         @NotNull File getDataFolder();
         @NotNull Server getServer();

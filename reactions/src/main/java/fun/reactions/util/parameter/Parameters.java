@@ -25,7 +25,7 @@ import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
-    public static final String ORIGIN = "::origin";
+    public static final String ORIGIN = " :";
     public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
