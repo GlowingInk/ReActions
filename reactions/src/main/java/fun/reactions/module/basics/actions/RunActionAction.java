@@ -16,8 +16,8 @@ import static fun.reactions.util.TimeUtils.offsetNow;
 @Aliased.Names({"ACTDELAY", "DELAYED_ACTION", "ACTION_DELAYED", "RUNTIME_ACTION"})
 public class RunActionAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
 
         long delayMs = params.getTime(params.findKey("delay", "time"));
 

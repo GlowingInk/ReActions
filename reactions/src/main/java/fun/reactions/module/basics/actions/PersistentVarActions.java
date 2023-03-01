@@ -45,8 +45,8 @@ public class PersistentVarActions implements Action, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) { // TODO: There's a lot of room for improvements
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
+        Parameters params = Parameters.fromString(paramsStr);
         Player p = env.getPlayer();
 
         String player = (p != null && this.personal) ? p.getName() : "";

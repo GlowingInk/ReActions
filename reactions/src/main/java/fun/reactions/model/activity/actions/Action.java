@@ -10,11 +10,11 @@ public interface Action extends Activity {
     /**
      * Execute an action
      * @param env context of activation
-     * @param content parameters of action
+     * @param paramsStr parameters of action
      * @return is action executed successfully
      */
     @Override
-    boolean proceed(@NotNull Environment env, @NotNull String content);
+    boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
     final class Stored implements Activity.Stored<Action> {
         private final Action action;

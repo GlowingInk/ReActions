@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class WalkBlockFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Location loc = env.getPlayer().getLocation();
         Block walk;
         if (loc.getY() == Math.floor(loc.getY())) {
@@ -39,7 +39,7 @@ public class WalkBlockFlag implements Flag {
         } else {
             walk = loc.getBlock();
         }
-        return walk.getType() == ItemUtils.getMaterial(content.startsWith("type:") ? content.substring(5) : content);
+        return walk.getType() == ItemUtils.getMaterial(paramsStr.startsWith("type:") ? paramsStr.substring(5) : paramsStr);
     }
 
     @Override

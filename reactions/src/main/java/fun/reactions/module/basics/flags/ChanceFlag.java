@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names("PROBABILITY")
 public class ChanceFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        env.getVariables().set("chance", content + "%");
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        env.getVariables().set("chance", paramsStr + "%");
         double d = 50;
-        if (NumberUtils.isNumber(content, Is.POSITIVE)) d = Double.parseDouble(content);
+        if (NumberUtils.isNumber(paramsStr, Is.POSITIVE)) d = Double.parseDouble(paramsStr);
         d = Math.max(Math.min(d, 100), 0);
         return Rng.percentChance(d);
     }

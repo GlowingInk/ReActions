@@ -54,8 +54,8 @@ public class ItemActions implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
             case GIVE_ITEM -> giveItemPlayer(env, params.origin());
             case REMOVE_ITEM_HAND -> removeItemInHand(env, params);

@@ -42,8 +42,8 @@ import org.jetbrains.annotations.NotNull;
 public class SignSetAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         // loc:world,x,y,z line1:text line2:text line3:text line4:text clear:1,2,3,4
         String locStr = params.getString("loc", env.getVariables().getString("sign_loc")); // TODO What, why?
         if (Utils.isStringEmpty(locStr)) return false;

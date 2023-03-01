@@ -59,14 +59,14 @@ public class CommandActions implements Action, Aliased {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
         if (commandAs != Type.CONSOLE && player == null) return false;
         switch (commandAs) {
-            default -> dispatchCommand(false, player, content);
-            case OP -> dispatchCommand(true, player, content);
-            case CONSOLE -> dispatchCommand(false, Bukkit.getConsoleSender(), content);
-            case CHAT -> player.chat("/" + content);
+            default -> dispatchCommand(false, player, paramsStr);
+            case OP -> dispatchCommand(true, player, paramsStr);
+            case CONSOLE -> dispatchCommand(false, Bukkit.getConsoleSender(), paramsStr);
+            case CHAT -> player.chat("/" + paramsStr);
         }
         return true;
     }

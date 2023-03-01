@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class WgAccessFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Location loc = params.get("loc", LocationUtils::parseLocation);
         if (loc == null) return true;
         // TODO params.get("flag"...)

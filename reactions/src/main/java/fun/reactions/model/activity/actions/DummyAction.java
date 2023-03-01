@@ -18,7 +18,7 @@ public final class DummyAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         return false;
     }
 

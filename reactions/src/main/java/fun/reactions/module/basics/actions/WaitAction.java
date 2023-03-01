@@ -17,8 +17,8 @@ import static fun.reactions.util.TimeUtils.parseTime;
 @Aliased.Names("PAUSE")
 public class WaitAction implements Action, Interrupting {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content, "time");
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr, "time");
         long time = parseTime(params.getString("time", "0"));
         return time > 0;
     }

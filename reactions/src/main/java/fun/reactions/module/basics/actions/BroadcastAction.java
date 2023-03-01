@@ -33,8 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class BroadcastAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Bukkit.broadcast(ReActionsModule.getMineDown(content).toComponent());
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Bukkit.broadcast(ReActionsModule.getMineDown(paramsStr).toComponent());
         return true;
     }
 

@@ -44,9 +44,9 @@ public class ExecuteAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         ReActions.Platform platform = env.getPlatform();
-        Parameters params = Parameters.fromString(content);
+        Parameters params = Parameters.fromString(paramsStr);
         int repeat = Math.max(params.getInteger("repeat", 1), 1);
         long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));
         List<Player> targets = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ExecuteAction implements Action {
                 return false;
             }
         }
-        var storedFunct = List.of(new Stored(functAction, content));
+        var storedFunct = List.of(new Stored(functAction, paramsStr));
         for (int i = 0; i < repeat; i++) {
             for (Player player : targets) {
                 platform.getWaiter().schedule(new WaitTask(

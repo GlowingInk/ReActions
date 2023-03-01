@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class RegexFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         String regex = params.getString("regex", "");
         if (regex.isEmpty()) return false;
         String value = params.getString("value", "");

@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerIdAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         String uuid;
         String pName;
 
-        Parameters params = Parameters.fromString(content);
+        Parameters params = Parameters.fromString(paramsStr);
         String playerParam = params.getString("player");
 
         if (Utils.isStringEmpty(playerParam)) {

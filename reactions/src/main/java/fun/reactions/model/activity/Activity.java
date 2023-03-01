@@ -6,7 +6,7 @@ import fun.reactions.util.parameter.Parameterizable;
 import org.jetbrains.annotations.NotNull;
 
 public interface Activity extends Named {
-    boolean proceed(@NotNull Environment env, @NotNull String content);
+    boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
     boolean requiresPlayer();
 

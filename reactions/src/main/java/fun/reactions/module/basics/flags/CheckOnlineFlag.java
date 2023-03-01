@@ -12,9 +12,9 @@ import java.util.UUID;
 @Aliased.Names("IS_ONLINE")
 public class CheckOnlineFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        UUID id = Utils.parseUniqueId(content);
-        return (id == null ? Bukkit.getPlayerExact(content) : Bukkit.getPlayer(id)) != null;
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        UUID id = Utils.parseUniqueId(paramsStr);
+        return (id == null ? Bukkit.getPlayerExact(paramsStr) : Bukkit.getPlayer(id)) != null;
     }
 
     @Override

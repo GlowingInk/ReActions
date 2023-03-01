@@ -38,9 +38,9 @@ import java.util.stream.Stream;
 public class PlayerStateFlag implements Flag {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
-        Posture pt = Posture.getByName(content);
+        Posture pt = Posture.getByName(paramsStr);
         if (pt == null) return false;
         switch (pt) {
             case SNEAK:
@@ -64,7 +64,7 @@ public class PlayerStateFlag implements Flag {
                 return player.isOp();
             case VEHICLE_TYPED:
                 if (!player.isInsideVehicle()) return false;
-                return player.getVehicle().getType().name().equalsIgnoreCase(content.substring(8));
+                return player.getVehicle().getType().name().equalsIgnoreCase(paramsStr.substring(8));
             case SPECTATOR_TARGET:
                 return player.getSpectatorTarget() != null;
             case GLIDE:

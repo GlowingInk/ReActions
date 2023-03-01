@@ -16,8 +16,8 @@ public class NumCompareFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         double paramValue = params.getDouble("param");
         double value = params.getDouble("value");
         if (greater) {

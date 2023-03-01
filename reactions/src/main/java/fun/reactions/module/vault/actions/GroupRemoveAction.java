@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 public class GroupRemoveAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
-        if (RaVault.playerInGroup(player, content))
-            return RaVault.playerRemoveGroup(player, content);
+        if (RaVault.playerInGroup(player, paramsStr))
+            return RaVault.playerRemoveGroup(player, paramsStr);
         return true;
     }
 

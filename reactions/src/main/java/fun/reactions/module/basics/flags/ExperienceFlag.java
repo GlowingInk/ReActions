@@ -32,9 +32,9 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"XP", "EXP"})
 public class ExperienceFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
-        return player.getTotalExperience() >= NumberUtils.asInteger(content, -1);
+        return player.getTotalExperience() >= NumberUtils.asInteger(paramsStr, -1);
     }
 
     @Override

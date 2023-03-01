@@ -31,10 +31,10 @@ import org.jetbrains.annotations.NotNull;
 // TODO: WG module
 public class RegionInRadiusFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
         int radius = 0;
-        if (!content.isEmpty()) radius = Integer.parseInt(content);
+        if (!paramsStr.isEmpty()) radius = Integer.parseInt(paramsStr);
         return WGBridge.checkRegionInRadius(player, radius);
     }
 

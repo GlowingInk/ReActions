@@ -35,8 +35,8 @@ import org.jetbrains.annotations.NotNull;
 public class DamageAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         double damage = params.getInteger("damage", () -> params.getInteger(Parameters.ORIGIN));
         if (params.contains("player")) {

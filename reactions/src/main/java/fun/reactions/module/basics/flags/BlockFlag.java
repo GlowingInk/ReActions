@@ -24,8 +24,8 @@ public class BlockFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         Location loc = LocationUtils.parseLocation(params.getString("loc", ""), player.getLocation());
         if (loc == null) return false;

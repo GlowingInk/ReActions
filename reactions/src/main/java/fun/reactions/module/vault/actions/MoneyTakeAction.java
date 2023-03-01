@@ -38,8 +38,8 @@ import java.util.Map;
 public class MoneyTakeAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
         if (params.size() == 0) return false;

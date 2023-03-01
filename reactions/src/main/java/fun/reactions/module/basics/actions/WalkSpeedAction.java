@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class WalkSpeedAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         double speed = params.getInteger("speed", () -> params.getInteger(Parameters.ORIGIN));
         if (params.contains("player"))

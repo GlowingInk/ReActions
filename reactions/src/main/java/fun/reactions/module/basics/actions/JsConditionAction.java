@@ -68,9 +68,9 @@ public class JsConditionAction implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         if (!engineCheck()) return false;
-        Parameters params = Parameters.fromString(content);
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {
             final ScriptContext scriptContext = new SimpleScriptContext();

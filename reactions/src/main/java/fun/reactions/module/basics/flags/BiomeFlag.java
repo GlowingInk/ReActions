@@ -41,7 +41,7 @@ public class BiomeFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        return env.getPlayer().getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        return env.getPlayer().getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, paramsStr);
     }
 }

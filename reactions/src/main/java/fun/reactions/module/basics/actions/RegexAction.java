@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 public class RegexAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         String prefix = params.getString("prefix");
         String regex = params.getString("regex");
         String input = params.getString("input", removeParams(params.origin()));

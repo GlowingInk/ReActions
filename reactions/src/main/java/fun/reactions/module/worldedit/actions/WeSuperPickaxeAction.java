@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class WeSuperPickaxeAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         boolean isSP = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN, false));
         if (params.contains("player"))

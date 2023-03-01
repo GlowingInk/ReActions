@@ -34,8 +34,8 @@ import org.jetbrains.annotations.NotNull;
 public class OnlineCountFlag implements Flag {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        return NumberUtils.isNumber(content, Is.POSITIVE_NATURAL) && Integer.parseInt(content) <= Bukkit.getOnlinePlayers().size();
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        return NumberUtils.isNumber(paramsStr, Is.POSITIVE_NATURAL) && Integer.parseInt(paramsStr) <= Bukkit.getOnlinePlayers().size();
     }
 
     @Override

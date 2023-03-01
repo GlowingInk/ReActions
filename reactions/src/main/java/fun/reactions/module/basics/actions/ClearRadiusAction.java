@@ -25,8 +25,8 @@ public class ClearRadiusAction implements Action {
     // TODO: Too weird. Optimize, simplify
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         int radius = params.getInteger("radius");
         String type = params.getString("type", "all");
         if (radius == 0) return false;

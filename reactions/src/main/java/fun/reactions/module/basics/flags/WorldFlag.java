@@ -28,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class WorldFlag implements Flag {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        return env.getPlayer().getWorld().getName().equalsIgnoreCase(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        return env.getPlayer().getWorld().getName().equalsIgnoreCase(paramsStr);
     }
 
     @Override

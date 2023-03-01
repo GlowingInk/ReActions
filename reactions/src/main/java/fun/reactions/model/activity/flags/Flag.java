@@ -10,11 +10,11 @@ public interface Flag extends Activity {
     /**
      * Check the flag against current context
      * @param env activation context
-     * @param content parameters of flag
+     * @param paramsStr parameters of flag
      * @return is flag satisfied
      */
     @Override
-    boolean proceed(@NotNull Environment env, @NotNull String content);
+    boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
     final class Stored implements Activity.Stored<Flag> {
         private final Flag flag;

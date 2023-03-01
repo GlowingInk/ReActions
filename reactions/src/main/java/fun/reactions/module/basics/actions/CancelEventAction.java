@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 public class CancelEventAction implements Action {
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        env.getVariables().set(ActivationContext.CANCEL_EVENT, content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        env.getVariables().set(ActivationContext.CANCEL_EVENT, paramsStr);
         return true;
     }
 

@@ -40,7 +40,7 @@ public class PermissionFlag implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        return env.getPlayer().hasPermission(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        return env.getPlayer().hasPermission(paramsStr);
     }
 }

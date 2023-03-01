@@ -2,7 +2,6 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.model.environment.Variables;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -10,11 +9,10 @@ import org.jetbrains.annotations.NotNull;
 @Aliased.Names({"LOCAL_VAR_BATCH", "LOCAL_VAR_MULTIPLE"})
 public class LocalVarBulkAction implements Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String content) {
-        Parameters params = Parameters.fromString(content);
+    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+        Parameters params = Parameters.fromString(paramsStr);
         if (params.isEmpty()) return false;
-        Variables vars = env.getVariables();
-        params.forEach(vars::set);
+        params.forEach(env.getVariables()::set);
         return true;
     }
 
