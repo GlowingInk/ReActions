@@ -56,20 +56,20 @@ public final class NumberUtils {
                 : Double.toString(d);
     }
 
-    public static boolean isNumber(@NotNull String str) {
-        return FLOAT.matcher(str).matches();
+    public static boolean isNumber(@Nullable String str) {
+        return str != null && FLOAT.matcher(str).matches();
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> flag) {
+    public static boolean isNumber(@Nullable String str, @NotNull Predicate<String> flag) {
         return isNumber(str) && flag.test(str);
     }
 
     @SafeVarargs
-    public static boolean isNumber(@NotNull String str, @NotNull Predicate<String> @NotNull ... flags) {
+    public static boolean isNumber(@Nullable String str, @NotNull Predicate<String> @NotNull ... flags) {
         return isNumber(str, Arrays.asList(flags));
     }
 
-    public static boolean isNumber(@NotNull String str, @NotNull Iterable<? extends @NotNull Predicate<String>> flags) {
+    public static boolean isNumber(@Nullable String str, @NotNull Iterable<? extends @NotNull Predicate<String>> flags) {
         if (!isNumber(str)) return false;
         for (Predicate<String> flag : flags) {
             if (!flag.test(str)) return false;

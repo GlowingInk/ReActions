@@ -1,6 +1,5 @@
 package fun.reactions.util.location;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;
@@ -13,6 +12,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static fun.reactions.util.NumberUtils.asDouble;
 
 // TODO: Use it in activators
 
@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 @SuppressWarnings("UnstableApiUsage")
 public class ImplicitPosition implements BlockPosition, Parameterizable {
     public static final ImplicitPosition EVERYWHERE = new ImplicitPosition(null, null, null, null);
-    private static final Pattern POS_PATTERN = Pattern.compile("(\\w+|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*),(-?\\d+(?:\\.\\d+)?|\\*)(?:(?:,-?\\d+(?:\\.\\d+)?){2})?");
 
     private final String worldName;
     private final Integer x;
@@ -48,24 +47,20 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     public static @NotNull ImplicitPosition of(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
-        return (worldName == null && x == null && y == null && z == null)
-                ? EVERYWHERE
-                : new ImplicitPosition(worldName, x, y, z);
+        return new ImplicitPosition(worldName, x, y, z);
     }
 
     public static @NotNull ImplicitPosition of(@Nullable String loc) {
         if (Utils.isStringEmpty(loc)) return EVERYWHERE;
-        Matcher matcher = POS_PATTERN.matcher(loc);
-        if (matcher.matches()) {
-            return new ImplicitPosition(
-                    matcher.group(1).equals("*") ? null : matcher.group(1),
-                    matcher.group(2).equals("*") ? null : (int) NumberUtils.asDouble(matcher.group(2), 0),
-                    matcher.group(3).equals("*") ? null : (int) NumberUtils.asDouble(matcher.group(3), 0),
-                    matcher.group(4).equals("*") ? null : (int) NumberUtils.asDouble(matcher.group(4), 0)
-            );
-        } else {
+        String[] split = loc.split(",");
+        if (split.length < 4) {
             return EVERYWHERE;
         }
+        String worldName = split[0].equals("*") ? null : split[0];
+        Integer x = split[1].equals("*") ? null : NumberConversions.floor(asDouble(split[1]));
+        Integer y = split[2].equals("*") ? null : NumberConversions.floor(asDouble(split[2]));
+        Integer z = split[3].equals("*") ? null : NumberConversions.floor(asDouble(split[3]));
+        return new ImplicitPosition(worldName, x, y, z);
     }
 
     public static @NotNull ImplicitPosition of(@Nullable Location loc) {
@@ -81,18 +76,23 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     public static @NotNull ImplicitPosition fromConfiguration(@NotNull ConfigurationSection cfg) {
         return new ImplicitPosition(
                 !cfg.getString("world", "*").equals("*") ? cfg.getString("world") : null,
-                cfg.contains("x") ? cfg.getInt("x") : null,
-                cfg.contains("y") ? cfg.getInt("y") : null,
-                cfg.contains("z") ? cfg.getInt("z") : null
+                cfg.isInt("x") ? cfg.getInt("x") : null,
+                cfg.isInt("y") ? cfg.getInt("y") : null,
+                cfg.isInt("z") ? cfg.getInt("z") : null
         );
     }
 
     public static @NotNull ImplicitPosition fromParameters(@NotNull Parameters params) {
+        if (params.isEmpty()) return EVERYWHERE;
+        String worldName = params.getString("world", "*");
+        String x = params.getString("x", "*");
+        String y = params.getString("y", "*");
+        String z = params.getString("z", "*");
         return new ImplicitPosition(
-                !params.getString("world", "*").equals("*") ? params.getString("world") : null,
-                params.contains("x") ? params.getInteger("x") : null,
-                params.contains("y") ? params.getInteger("y") : null,
-                params.contains("z") ? params.getInteger("z") : null
+                worldName.equals("*") ? null : worldName,
+                x.equals("*") ? null : NumberConversions.floor(params.getDouble("x")),
+                y.equals("*") ? null : NumberConversions.floor(params.getDouble("y")),
+                z.equals("*") ? null : NumberConversions.floor(params.getDouble("z"))
         );
     }
 
@@ -252,10 +252,10 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         return obj instanceof ImplicitPosition other &&
+                Objects.equals(worldName, other.worldName) &&
                 Objects.equals(x, other.x) &&
                 Objects.equals(y, other.y) &&
-                Objects.equals(z, other.z) &&
-                Objects.equals(worldName, other.worldName);
+                Objects.equals(z, other.z);
     }
 
     @Override

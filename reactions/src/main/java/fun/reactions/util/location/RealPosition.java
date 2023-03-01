@@ -39,21 +39,11 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static fun.reactions.util.NumberUtils.asDouble;
-import static fun.reactions.util.NumberUtils.isNumber;
 
 @SuppressWarnings("UnstableApiUsage")
 public class RealPosition implements FinePosition, Parameterizable { // TODO Many similarities with ImplicitPosition
-    private static final Pattern POS_PATTERN = Pattern.compile( // world,x,y,z,yaw,pitch
-            "(\\w+)" +
-            ",(" + NumberUtils.FLOAT + ")" +
-            ",(" + NumberUtils.FLOAT + ")" +
-            ",(" + NumberUtils.FLOAT + ")" +
-            "(?:,(" + NumberUtils.FLOAT + "),(" + NumberUtils.FLOAT + "))?"
-    );
     private static final DecimalFormat FORMAT = new DecimalFormat("#.####");
 
     private final String worldName;
@@ -75,21 +65,20 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
     }
 
     public static @NotNull RealPosition of(@NotNull String loc) {
-        Matcher matcher = POS_PATTERN.matcher(loc);
-        if (matcher.matches()) {
-            return new RealPosition(
-                    matcher.group(1),
-                    asDouble(matcher.group(2), 0),
-                    asDouble(matcher.group(3), 0),
-                    asDouble(matcher.group(4), 0),
-                    (isNumber(matcher.group(5)) && isNumber(matcher.group(6))
-                            ? new Rotation((float) asDouble(matcher.group(5), 0), (float) asDouble(matcher.group(6), 0))
-                            : null
-                    )
-            );
-        } else {
+        String[] split = loc.split(",");
+        if (split.length < 4) {
             return of(getDefaultWorld().getSpawnLocation());
         }
+        String worldName = split[0];
+        double x = asDouble(split[1]);
+        double y = asDouble(split[2]);
+        double z = asDouble(split[3]);
+        return new RealPosition(
+                worldName, x, y, z,
+                split.length < 6
+                        ? null
+                        : new Rotation((float) asDouble(split[4]), (float) asDouble(split[5]))
+        );
     }
 
     public static @NotNull RealPosition of(@NotNull Location loc) {
@@ -227,7 +216,7 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
     }
 
     public boolean isValidAt(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
-        return isValidAt(worldName, x, y, z) && (rotation == null || imprecise(rotation.yaw(), yaw) && imprecise(rotation.pitch(), pitch));
+        return isValidAt(worldName, x, y, z) && (rotation == null || (imprecise(rotation.yaw(), yaw) && imprecise(rotation.pitch(), pitch)));
     }
 
     @Contract(pure = true)
