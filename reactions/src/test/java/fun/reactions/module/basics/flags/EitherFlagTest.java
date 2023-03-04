@@ -15,7 +15,7 @@ public class EitherFlagTest {
         ActivitiesRegistry registry = new ActivitiesRegistry();
         registry.registerFlag(new MockFlag(false, false, "test1"));
         registry.registerFlag(new MockFlag(false, true, "test2"));
-        EitherFlag flag = new EitherFlag(registry);
+        EitherFlag flag = new EitherFlag();
         assertTrue(flag.proceed(
                 new Environment(null, "", new Variables(), null),
                 "test1:{some value} test2:other test1:repeat"
