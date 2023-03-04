@@ -34,7 +34,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -50,18 +49,20 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
     private final double x;
     private final double y;
     private final double z;
-    private final Rotation rotation;
+    private final float yaw;
+    private final float pitch;
 
-    private RealPosition(@NotNull String worldName, double x, double y, double z, @Nullable Rotation rotation) {
+    private RealPosition(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
         this.worldName = worldName;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.rotation = rotation;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
-    public static @NotNull RealPosition of(@NotNull String worldName, double x, double y, double z, @Nullable Float yaw, @Nullable Float pitch) {
-        return new RealPosition(worldName, x, y, z, (yaw != null && pitch != null ? new Rotation(yaw, pitch) : null));
+    public static @NotNull RealPosition of(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
+        return new RealPosition(worldName, x, y, z, yaw, pitch);
     }
 
     public static @NotNull RealPosition of(@NotNull String loc) {
@@ -73,12 +74,11 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
         double x = asDouble(split[1]);
         double y = asDouble(split[2]);
         double z = asDouble(split[3]);
-        return new RealPosition(
-                worldName, x, y, z,
-                split.length < 6
-                        ? null
-                        : new Rotation((float) asDouble(split[4]), (float) asDouble(split[5]))
-        );
+        if (split.length < 6) {
+            return new RealPosition(worldName, x, y, z, 0, 0);
+        } else {
+            return new RealPosition(worldName, x, y, z, (float) asDouble(split[4]), (float) asDouble(split[5]));
+        }
     }
 
     public static @NotNull RealPosition of(@NotNull Location loc) {
@@ -87,7 +87,8 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
                 loc.x(),
                 loc.y(),
                 loc.z(),
-                new Rotation(loc.getYaw(), loc.getPitch())
+                loc.getYaw(),
+                loc.getPitch()
         );
     }
 
@@ -97,10 +98,8 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
                 cfg.getDouble("x"),
                 cfg.getDouble("y"),
                 cfg.getDouble("z"),
-                (cfg.isDouble("yaw") && cfg.isDouble("pitch")
-                        ? new Rotation((float) cfg.getDouble("yaw"), (float) cfg.getDouble("pitch"))
-                        : null
-                )
+                (float) cfg.getDouble("yaw"),
+                (float) cfg.getDouble("pitch")
         );
     }
 
@@ -110,10 +109,8 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
                 params.getDouble("x"),
                 params.getDouble("y"),
                 params.getDouble("z"),
-                (params.contains("yaw") && params.contains("pitch")
-                        ? new Rotation((float) params.getDouble("yaw"), (float) params.getDouble("pitch"))
-                        : null
-                )
+                (float) params.getDouble("yaw"),
+                (float) params.getDouble("pitch")
         );
     }
 
@@ -122,31 +119,20 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
         cfg.set("x", Double.valueOf(format(x)));
         cfg.set("y", Double.valueOf(format(y)));
         cfg.set("z", Double.valueOf(format(z)));
-        if (rotation != null) {
-            cfg.set("yaw", Double.valueOf(format(rotation.yaw())));
-            cfg.set("pitch", Double.valueOf(format(rotation.pitch())));
-        }
+        cfg.set("yaw", Double.valueOf(format(yaw)));
+        cfg.set("pitch", Double.valueOf(format(yaw)));
     }
 
     @Override
     public @NotNull Parameters asParameters() {
-        if (rotation == null) {
-            return Parameters.fromMap(Map.of(
-                    "world", worldName,
-                    "x", format(x),
-                    "y", format(y),
-                    "z", format(z)
-            ));
-        } else {
-            return Parameters.fromMap(Map.of(
-                    "world", worldName,
-                    "x", format(x),
-                    "y", format(y),
-                    "z", format(z),
-                    "yaw", format(rotation.yaw()),
-                    "pitch", format(rotation.pitch())
-            ));
-        }
+        return Parameters.fromMap(Map.of(
+                "world", worldName,
+                "x", format(x),
+                "y", format(y),
+                "z", format(z),
+                "yaw", format(yaw),
+                "pitch", format(yaw)
+        ));
     }
 
     public @NotNull String worldName() {
@@ -168,20 +154,12 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
         return this.z;
     }
 
-    public @Nullable Float yaw() {
-        return rotation == null ? null : rotation.yaw();
+    public float yaw() {
+        return yaw;
     }
 
-    public @Nullable Float pitch() {
-        return rotation == null ? null : rotation.pitch();
-    }
-
-    public float yaw(float def) {
-        return rotation == null ? def : rotation.yaw();
-    }
-
-    public float pitch(float def) {
-        return rotation == null ? def : rotation.pitch();
+    public float pitch() {
+        return pitch;
     }
 
     @Override
@@ -191,12 +169,12 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
 
     @Override
     public @NotNull RealPosition offset(double x, double y, double z) {
-        return new RealPosition(worldName, x() + x, y() + y, z() + z, rotation);
+        return new RealPosition(worldName, x() + x, y() + y, z() + z, yaw, pitch);
     }
 
     @Override
     public @NotNull RealPosition toCenter() {
-        return new RealPosition(worldName, blockX() + 0.5, blockY() + 0.5, blockZ() + 0.5, rotation);
+        return new RealPosition(worldName, blockX() + 0.5, blockY() + 0.5, blockZ() + 0.5, yaw, pitch);
     }
 
     public boolean isValidAt(@NotNull Location loc) {
@@ -204,19 +182,19 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
     }
 
     public boolean isValidAt(@NotNull RealPosition pos) {
-        return isValidAt(pos.worldName(), pos.x(), pos.y(), pos.z()) && Objects.equals(rotation, pos.rotation);
+        return isValidAt(pos.worldName(), pos.x(), pos.y(), pos.z(), pos.yaw(), pos.pitch());
     }
 
     public boolean isValidAt(@NotNull String worldName, @NotNull Position pos) {
         return isValidAt(worldName, pos.x(), pos.y(), pos.z());
     }
 
-    public boolean isValidAt(@NotNull String worldName, double x, double y, double z) {
-        return this.worldName.equals(worldName) && imprecise(x(), x) && imprecise(y(), y) && imprecise(z(), z);
+    public boolean isValidAt(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
+        return isValidAt(worldName, x, y, z) && imprecise(yaw(), yaw) && imprecise(pitch(), pitch);
     }
 
-    public boolean isValidAt(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
-        return isValidAt(worldName, x, y, z) && (rotation == null || (imprecise(rotation.yaw(), yaw) && imprecise(rotation.pitch(), pitch)));
+    public boolean isValidAt(@NotNull String worldName, double x, double y, double z) {
+        return this.worldName.equals(worldName) && imprecise(x(), x) && imprecise(y(), y) && imprecise(z(), z);
     }
 
     @Contract(pure = true)
@@ -235,17 +213,24 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
 
     @Override
     public @NotNull Location toLocation(@NotNull World world) {
-        return new Location(world, x(), y(), z(), yaw(0), pitch(0));
+        return new Location(world, x(), y(), z(), yaw(), pitch());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || obj instanceof RealPosition other && isValidAt(other);
+        if (obj == this) return true;
+        if (obj instanceof Position pos) {
+            if (obj instanceof RealPosition real) {
+                return isValidAt(real);
+            }
+            return isValidAt(worldName, pos);
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(worldName, x, y, z, rotation);
+        return Objects.hash(worldName, x, y, z, yaw, pitch);
     }
 
     @Override
@@ -253,11 +238,9 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
         return worldName + "," +
                 format(x) + "," +
                 format(y) + "," +
-                format(z) +
-                (rotation == null
-                        ? ""
-                        : "," + format(rotation.yaw()) + "," + format(rotation.pitch())
-                );
+                format(z) + "," +
+                format(yaw) + "," +
+                format(pitch);
     }
 
     private static boolean imprecise(double a, double b) {
@@ -275,6 +258,4 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
     private static @NotNull World getDefaultWorld(@NotNull Server server) {
         return server.getWorlds().get(0);
     }
-
-    private record Rotation(float yaw, float pitch) {}
 }

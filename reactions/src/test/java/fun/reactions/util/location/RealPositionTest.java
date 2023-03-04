@@ -11,7 +11,7 @@ public class RealPositionTest {
     public Object[][] ofData() {
         return new Object[][] {
                 {"world,1,2,3,45,67", RealPosition.of("world", 1, 2, 3, 45f, 67f)},
-                {"world,1,2,3", RealPosition.of("world", 1, 2, 3, null, null)},
+                {"world,1,2,3", RealPosition.of("world", 1, 2, 3, 0, 0)},
         };
     }
     
@@ -27,7 +27,7 @@ public class RealPositionTest {
     public Object[][] fromParametersData() {
         return new Object[][] {
                 {"world:world x:1 y:2 z:3 yaw:4 pitch:5", RealPosition.of("world", 1, 2, 3, 4f, 5f)},
-                {"world:world x:1 y:2 z:3", RealPosition.of("world", 1, 2, 3, null, null)}
+                {"world:world x:1 y:2 z:3", RealPosition.of("world", 1, 2, 3, 0, 0)}
         };
     }
 
