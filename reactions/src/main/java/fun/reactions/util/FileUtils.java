@@ -41,8 +41,7 @@ public final class FileUtils {
     private static boolean createFile(File f, String error) {
         if (f == null) return false;
         try {
-            if (!f.exists()) f.createNewFile();
-            return true;
+            return f.exists() || f.createNewFile();
         } catch (IOException e) {
             Msg.logMessage(error);
             e.printStackTrace();
@@ -53,9 +52,7 @@ public final class FileUtils {
     private static boolean recreateFile(File f, String error) {
         if (f == null) return false;
         try {
-            if (f.exists()) f.delete();
-            f.createNewFile();
-            return true;
+            return (!f.exists() || f.delete()) && f.createNewFile();
         } catch (IOException e) {
             Msg.logMessage(error);
             e.printStackTrace();

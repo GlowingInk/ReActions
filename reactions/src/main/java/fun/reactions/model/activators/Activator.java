@@ -78,5 +78,4 @@ public abstract class Activator {
         sb.append(logic);
         return sb.toString();
     }
-
 }

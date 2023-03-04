@@ -143,4 +143,21 @@ public class ParametersTest {
                 expectedKey
         );
     }
+
+    @DataProvider
+    public Object[][] getStringData() {
+        return new Object[][] {
+                {Parameters.fromString("key:abc anOther_value:123 EXTRA:{456} key:overridden"), "key", "overridden"},
+                {Parameters.fromString("key:abc anOther_value:123 EXTRA:{456} key:overridden"), "extra", "456"},
+                {Parameters.fromString("nothing!"), "key", ""}
+        };
+    }
+
+    @Test(dataProvider = "getStringData")
+    public void getStringTest(Parameters params, String key, String expected) {
+        assertEquals(
+                params.getString(key),
+                expected
+        );
+    }
 }

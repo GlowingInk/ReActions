@@ -51,7 +51,7 @@ public class Parameters implements Parameterizable {
         return fromConfiguration(cfg, Set.of());
     }
 
-    public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg, @NotNull Collection<String> ignoredKeys) {
+    public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg, @NotNull Set<String> ignoredKeys) {
         Map<String, String> params = new LinkedHashMap<>();
         for (String key : cfg.getKeys(false)) {
             if (ignoredKeys.contains(key)) continue;
