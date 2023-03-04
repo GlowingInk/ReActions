@@ -33,16 +33,11 @@ import java.util.List;
 
 @Aliased.Names({"FLAGS_OR", "FLAG_SET"})
 public class EitherFlag implements Flag {
-    private final ActivitiesRegistry registry;
-
-    public EitherFlag(ActivitiesRegistry registry) {
-        this.registry = registry;
-    }
-
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         List<String> split = ParametersUtils.splitSafely(paramsStr, ' ');
         boolean hasPlayer = env.getPlayer() != null;
+        ActivitiesRegistry activities = env.getPlatform().getActivities();
         for (String flagFullStr : split) {
             String[] flagSplit = flagFullStr.split(":", 2);
             if (flagSplit.length == 1) {
@@ -52,7 +47,7 @@ public class EitherFlag implements Flag {
                 flagSplit[1] = flagSplit[1].substring(1, flagSplit.length - 1);
             }
             boolean invert = flagSplit[0].startsWith("!");
-            Flag flag = registry.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
+            Flag flag = activities.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
             if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.proceed(env, flagSplit[1])) {
                 return true;
             }

@@ -194,7 +194,7 @@ public class ReActionsModule implements Module {
                 new LightLevelFlag(),
                 new WalkBlockFlag(),
                 new DirectionFlag(),
-                new EitherFlag(ReActions.getActivities()),
+                new EitherFlag(),
                 new ExecuteStopFlag(),
                 new PersistentVarFlags(PersistentVarFlags.Type.EXIST, false),
                 new PersistentVarFlags(PersistentVarFlags.Type.COMPARE, false),
