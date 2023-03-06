@@ -6,6 +6,8 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public interface Flag extends Activity {
     /**
      * Check the flag against current context
@@ -16,27 +18,12 @@ public interface Flag extends Activity {
     @Override
     boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
-    final class Stored implements Activity.Stored<Flag> {
-        private final Flag flag;
-        private final String content;
+    final class Stored extends Activity.Stored<Flag> {
         private final boolean inverted;
-        private final boolean placeholders;
 
         public Stored(@NotNull Flag flag, @NotNull String content, boolean inverted) {
-            this.flag = flag;
-            this.content = content;
+            super(flag, content);
             this.inverted = inverted;
-            this.placeholders = content.indexOf('%') != -1;
-        }
-
-        @Override
-        public @NotNull Flag getActivity() {
-            return flag;
-        }
-
-        @Override
-        public @NotNull String getContent() {
-            return content;
         }
 
         public boolean isInverted() {
@@ -44,28 +31,31 @@ public interface Flag extends Activity {
         }
 
         @Override
-        public boolean hasPlaceholders() {
-            return placeholders;
-        }
-
-        @Override
         public @NotNull String toString() {
-            return (inverted ? "!" : "") + flag.getName() + "=" + content;
+            return (inverted ? "!" : "") + activity.getName() + "=" + content;
         }
 
         @Override
         public @NotNull Parameters asParameters() {
-            return Parameters.singleton(flag.getName(), content);
+            return Parameters.fromMap(Map.of(
+                    "activity-type", "flag",
+                    "activity", activity.getName(),
+                    "content", content,
+                    "inverted", Boolean.toString(inverted)
+            ));
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof Flag.Stored other && other.flag == flag && other.inverted == inverted && other.content.equals(content);
+            if (!(obj instanceof Activity.Stored<?> other)) return false;
+            return other.getActivity() instanceof Flag otherActivity
+                    && otherActivity == activity
+                    && other.getContent().equals(content);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(flag.getName(), content, inverted);
+            return Objects.hashCode(activity.getName(), content, inverted);
         }
     }
 }

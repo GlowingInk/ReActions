@@ -6,6 +6,8 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public interface Action extends Activity {
     /**
      * Execute an action
@@ -16,50 +18,36 @@ public interface Action extends Activity {
     @Override
     boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
-    final class Stored implements Activity.Stored<Action> {
-        private final Action action;
-        private final String content;
-        private final boolean placeholders;
-
+    final class Stored extends Activity.Stored<Action> {
         public Stored(@NotNull Action action, @NotNull String content) {
-            this.action = action;
-            this.content = content;
-            this.placeholders = content.indexOf('%') != -1;
-        }
-
-        @Override
-        public @NotNull Action getActivity() {
-            return action;
-        }
-
-        @Override
-        public @NotNull String getContent() {
-            return content;
-        }
-
-        @Override
-        public boolean hasPlaceholders() {
-            return placeholders;
+            super(action, content);
         }
 
         @Override
         public @NotNull Parameters asParameters() {
-            return Parameters.singleton(action.getName(), content);
+            return Parameters.fromMap(Map.of(
+                    "activity-type", "action",
+                    "activity", activity.getName(),
+                    "content", content
+            ));
         }
 
         @Override
         public @NotNull String toString() {
-            return action.getName() + "=" + content;
+            return activity.getName() + "=" + content;
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof Action.Stored other && other.action == action && other.content.equals(content);
+            if (!(obj instanceof Activity.Stored<?> other)) return false;
+            return other.getActivity() instanceof Action otherActivity
+                    && otherActivity == activity
+                    && other.getContent().equals(content);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(action.getName(), content);
+            return Objects.hashCode(activity.getName(), content);
         }
     }
 }

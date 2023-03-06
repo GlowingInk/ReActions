@@ -22,7 +22,6 @@
 
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.message.Msg;
@@ -39,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
+// TODO Refactor the action
 public class LogAction implements Action {
 
     private static final Logger LOGGER = Logger.getLogger("Minecraft");
@@ -80,11 +80,11 @@ public class LogAction implements Action {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (params.containsAny("prefix", "color", "file")) {
-            String plg_name = ReActions.getPlugin().getDescription().getName();
+            String plg_name = "ReActions";
             boolean prefix = params.getBoolean("prefix", true);
             boolean color = params.getBoolean("color", false);
             String file = params.getString("file");
-            String message = params.getString("text", removeParams(params.origin()));
+            String message = params.getString("text", removeParams(env, params.origin()));
             if (message.isEmpty()) return false;
             if (file.isEmpty()) {
                 if (prefix) {
@@ -108,8 +108,8 @@ public class LogAction implements Action {
         return false;
     }
 
-    private String removeParams(String message) {
-        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) +
+    private String removeParams(Environment env, String message) {
+        String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) +
                 "|hide|prefix|color|file):(\\{.*\\}|\\S+)\\s{0,1}";
         return message.replaceAll(sb, "");
 

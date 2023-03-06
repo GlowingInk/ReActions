@@ -22,7 +22,6 @@
 
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.TimeUtils;
@@ -45,16 +44,16 @@ public class MessageAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        sendMessage(env.getPlayer(), params);
+        sendMessage(env, env.getPlayer(), params);
         return true;
     }
 
-    private static void sendMessage(Player player, Parameters params) {
+    private static void sendMessage(Environment env, Player player, Parameters params) {
         Set<Player> players = new HashSet<>();
-        if (params.containsAny(ReActions.getSelectors().getAllKeys())) {
-            players.addAll(ReActions.getSelectors().getPlayerList(params));
+        if (params.containsAny(env.getPlatform().getSelectors().getAllKeys())) {
+            players.addAll(env.getPlatform().getSelectors().getPlayerList(params));
             if (players.isEmpty() && params.contains("player")) {
-                players.addAll(ReActions.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"))));
+                players.addAll(env.getPlatform().getSelectors().getPlayerList(Parameters.fromString(params.getString("player"))));
             }
         } else if (player != null) {
             players.add(player);
@@ -62,11 +61,11 @@ public class MessageAction implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = params.getStringSafe("text", () -> hideSelectors(params.origin()));
+        String message = params.getStringSafe("text", () -> hideSelectors(env, params.origin()));
         if (message.isEmpty()) return;
         String annoymentTime = params.getString("hide");
         for (Player p : players) {
-            if (showMessage(p, message, annoymentTime)) {
+            if (showMessage(env, p, message, annoymentTime)) {
                 switch (type.toLowerCase(Locale.ROOT)) {
                     case "title" -> p.sendTitle(Msg.colorize(message),
                             params.getString("subtitle", null),
@@ -87,7 +86,7 @@ public class MessageAction implements Action {
         }
     }
 
-    private static boolean showMessage(Player player, String message, String annoymentTime) {
+    private static boolean showMessage(Environment env, Player player, String message, String annoymentTime) {
         if (annoymentTime.isEmpty()) return true;
         long time = TimeUtils.parseTime(annoymentTime);
         if (time == 0) return false;
@@ -96,7 +95,7 @@ public class MessageAction implements Action {
             if ((player.getMetadata(key).get(0).asLong() - System.currentTimeMillis()) > 0)
                 return false;
         }
-        player.setMetadata(key, new FixedMetadataValue(ReActions.getPlugin(), System.currentTimeMillis() + time));
+        player.setMetadata(key, new FixedMetadataValue(env.getPlatform().getPlugin(), System.currentTimeMillis() + time));
         return true;
     }
 
@@ -111,8 +110,8 @@ public class MessageAction implements Action {
     }
 
     // TODO: Remove it somehow
-    private static String hideSelectors(String message) {
-        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
+    private static String hideSelectors(Environment env, String message) {
+        String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
         return message.replaceAll(sb, "");
     }
 }

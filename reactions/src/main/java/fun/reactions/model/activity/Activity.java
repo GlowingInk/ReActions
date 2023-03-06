@@ -15,11 +15,27 @@ public interface Activity extends Named {
         return true;
     }
 
-    interface Stored<A extends Activity> extends Parameterizable {
-        @NotNull A getActivity();
+    abstract class Stored<A extends Activity> implements Parameterizable {
+        protected final A activity;
+        protected final String content;
+        protected final boolean placeholders;
 
-        @NotNull String getContent();
+        public Stored(@NotNull A activity, @NotNull String content) {
+            this.activity = activity;
+            this.content = content;
+            this.placeholders = content.indexOf('%') != -1;
+        }
 
-        boolean hasPlaceholders();
+        public @NotNull A getActivity() {
+            return activity;
+        }
+
+        public @NotNull String getContent() {
+            return content;
+        }
+
+        public boolean hasPlaceholders() {
+            return placeholders;
+        }
     }
 }

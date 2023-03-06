@@ -1,6 +1,5 @@
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.Utils;
@@ -34,10 +33,10 @@ public class PlayerIdAction implements Action {
 
             String varID = params.getString("varid");
             if (!Utils.isStringEmpty(varID))
-                ReActions.getVariables().setVariable(playerParam, varID, uuid);
+                env.getPlatform().getVariables().setVariable(playerParam, varID, uuid);
             String varName = params.getString("varname");
             if (!Utils.isStringEmpty(varName))
-                ReActions.getVariables().setVariable(playerParam, varName, pName);
+                env.getPlatform().getVariables().setVariable(playerParam, varName, pName);
         }
 
         env.getVariables().set("playerid", uuid);

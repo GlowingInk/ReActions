@@ -121,7 +121,7 @@ public class JsConditionAction implements Action {
             if (index == -1) return;
             String name = actionStr.substring(0, index);
             String param = actionStr.substring(index + 1);
-            Action action = ReActions.getActivities().getAction(name);
+            Action action = env.getPlatform().getActivities().getAction(name);
             if (action == null) return;
             toExecute.add(new Stored(action, param));
         });

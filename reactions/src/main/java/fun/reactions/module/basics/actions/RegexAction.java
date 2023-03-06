@@ -1,6 +1,5 @@
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
@@ -19,7 +18,7 @@ public class RegexAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         String prefix = params.getString("prefix");
         String regex = params.getString("regex");
-        String input = params.getString("input", removeParams(params.origin()));
+        String input = params.getString("input", removeParams(env, params.origin()));
 
         if (input.isEmpty()) return false;
 
@@ -52,11 +51,10 @@ public class RegexAction implements Action {
     }
 
     // TODO: Remove it somehow
-    private String removeParams(String message) {
-        String sb = "(?i)(" + String.join("|", ReActions.getSelectors().getAllKeys()) +
+    private String removeParams(Environment env, String message) {
+        String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) +
                 "|hide|regex|prefix):(\\{.*}|\\S+)\\s?";
         return message.replaceAll(sb, "");
-
     }
 
 }

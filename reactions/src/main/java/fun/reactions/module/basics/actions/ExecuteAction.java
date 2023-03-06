@@ -54,7 +54,7 @@ public class ExecuteAction implements Action {
             targets.addAll(platform.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"), "player")));
         }
         if (targets.isEmpty()) {
-            if (!params.containsAny(ReActions.getSelectors().getAllKeys())) {  // TODO Remove legacy compatibility (selectors)
+            if (!params.containsAny(env.getPlatform().getSelectors().getAllKeys())) {  // TODO Remove legacy compatibility (selectors)
                 targets.add(env.getPlayer());
             } else {
                 return false;

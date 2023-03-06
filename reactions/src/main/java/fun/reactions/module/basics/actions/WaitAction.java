@@ -1,6 +1,5 @@
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.actions.Interrupting;
 import fun.reactions.model.environment.Environment;
@@ -12,15 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static fun.reactions.util.TimeUtils.offsetNow;
-import static fun.reactions.util.TimeUtils.parseTime;
 
 @Aliased.Names("PAUSE")
 public class WaitAction implements Action, Interrupting {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr, "time");
-        long time = parseTime(params.getString("time", "0"));
-        return time > 0;
+        return true;
     }
 
     @Override
@@ -34,12 +30,12 @@ public class WaitAction implements Action, Interrupting {
     }
 
     @Override
-    public void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Stored> actions) { // TODO Append variables
-        ReActions.getWaiter().schedule(new WaitTask(
+    public void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Stored> actions) {
+        env.getPlatform().getWaiter().schedule(new WaitTask(
                 env.getVariables().fork(),
                 env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
                 actions,
-                offsetNow(parseTime(Parameters.fromString(params, "time").getString("time", "1")))
+                offsetNow(Parameters.fromString(params, "time").getTime("time", 0))
         ));
     }
 }

@@ -1,9 +1,9 @@
 package fun.reactions.model.activity;
 
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.DummyAction;
-import fun.reactions.model.activity.flags.DummyFlag;
+import fun.reactions.model.activity.actions.InvalidAction;
 import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.activity.flags.InvalidFlag;
 import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +54,7 @@ public class ActivitiesRegistry {
         split[0] = split[0].trim();
         Action action = getAction(split[0]);
         if (action == null) {
-            action = new DummyAction(split[0]);
+            action = new InvalidAction(split[0]);
         }
         return new Action.Stored(action, split.length > 1 ? split[1] : "");
     }
@@ -65,7 +65,7 @@ public class ActivitiesRegistry {
         boolean inverted = split[0].startsWith("!");
         Flag flag = getFlag(inverted ? split[0].substring(1) : split[0]);
         if (flag == null) {
-            flag = new DummyFlag(split[0]);
+            flag = new InvalidFlag(split[0]);
         }
         return new Flag.Stored(flag, split.length > 1 ? split[1] : "", inverted);
     }

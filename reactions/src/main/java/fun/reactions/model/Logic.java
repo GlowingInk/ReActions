@@ -27,10 +27,10 @@ import fun.reactions.ReActions;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.actions.DummyAction;
 import fun.reactions.model.activity.actions.Interrupting;
-import fun.reactions.model.activity.flags.DummyFlag;
+import fun.reactions.model.activity.actions.InvalidAction;
 import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.model.activity.flags.InvalidFlag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.util.Utils;
@@ -222,13 +222,13 @@ public final class Logic {
     public void load(@NotNull ConfigurationSection cfg) {
         ActivitiesRegistry activities = platform.getActivities();
         for (String flagStr : cfg.getStringList("flags")) {
-            loadActivity(flagStr, activities::storedFlagOf, f -> f instanceof DummyFlag, flags);
+            loadActivity(flagStr, activities::storedFlagOf, f -> f instanceof InvalidFlag, flags);
         }
         for (String actionStr : cfg.getStringList("actions")) {
-            loadActivity(actionStr, activities::storedActionOf, f -> f instanceof DummyAction, actions);
+            loadActivity(actionStr, activities::storedActionOf, a -> a instanceof InvalidAction, actions);
         }
         for (String reactionsStr : cfg.getStringList("reactions")) {
-            loadActivity(reactionsStr, activities::storedActionOf, f -> f instanceof DummyAction, reactions);
+            loadActivity(reactionsStr, activities::storedActionOf, a -> a instanceof InvalidAction, reactions);
         }
     }
 
@@ -261,7 +261,7 @@ public final class Logic {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || (obj instanceof Logic logic && logic.name.equalsIgnoreCase(name));
+        return this == obj || (obj instanceof Logic other && other.name.equalsIgnoreCase(name));
     }
 
     @Override

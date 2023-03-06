@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public final class DummyFlag implements Flag {
+public final class InvalidFlag implements Flag {
     private final String name;
 
-    public DummyFlag(@NotNull String name) {
+    public InvalidFlag(@NotNull String name) {
         this.name = name.toUpperCase(Locale.ROOT);
     }
 

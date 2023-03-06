@@ -1,6 +1,5 @@
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.wait.WaitTask;
@@ -38,7 +37,7 @@ public class RunActionAction implements Action {
             actionParamsStr = params.getString("params");
         }
 
-        Action action = ReActions.getActivities().getAction(actionStr);
+        Action action = env.getPlatform().getActivities().getAction(actionStr);
         if (action == null) { // TODO Replace with some no-such-action message
             Msg.logOnce(actionStr, "Failed to execute delayed action: '" + actionStr + "'");
             return false;
@@ -49,7 +48,7 @@ public class RunActionAction implements Action {
                 action.proceed(env, actionParamsStr);
             }
         } else {
-            ReActions.getWaiter().schedule(new WaitTask(
+            env.getPlatform().getWaiter().schedule(new WaitTask(
                     env.getVariables(),
                     env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
                     List.of(new Stored(action, actionParamsStr)),

@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public final class DummyAction implements Action {
+public final class InvalidAction implements Action {
     private final String name;
 
-    public DummyAction(@NotNull String name) {
+    public InvalidAction(@NotNull String name) {
         this.name = name.toUpperCase(Locale.ROOT);
     }
 
