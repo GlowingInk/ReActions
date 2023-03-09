@@ -1,20 +1,19 @@
 package fun.reactions.util.collections;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.util.LinkedCaseInsensitiveMap;
 
 import java.util.Map;
 
 public class Maps {
-    public static <T> @NotNull LinkedCaseInsensitiveMap<T> caseInsensitive(int size) {
-        return new LinkedCaseInsensitiveMap<>(size);
+    public static <T> @NotNull Map<String, T> caseInsensitive(int size) {
+        return new CaseInsensitiveMap<>(size);
     }
 
-    public static <T> @NotNull LinkedCaseInsensitiveMap<T> caseInsensitive() {
-        return new LinkedCaseInsensitiveMap<>();
+    public static <T> @NotNull Map<String, T> caseInsensitive() {
+        return new CaseInsensitiveMap<>();
     }
 
-    public static <T> @NotNull LinkedCaseInsensitiveMap<T> caseInsensitive(Map<String, T> origin) {
-        return new LinkedCaseInsensitiveMap<>(origin);
+    public static <T> @NotNull Map<String, T> caseInsensitive(Map<String, T> origin) {
+        return new CaseInsensitiveMap<>(origin);
     }
 }
