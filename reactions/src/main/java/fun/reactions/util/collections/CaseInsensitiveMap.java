@@ -3,7 +3,15 @@ package fun.reactions.util.collections;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class CaseInsensitiveMap<V> implements Map<String, V> {
     private final Map<String, String> realKeys;
@@ -27,7 +35,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
         realMap = new LinkedHashMap<>(size);
     }
 
-    protected String convert(String key) {
+    protected String convertKey(String key) {
         return key.toLowerCase(Locale.ROOT);
     }
 
@@ -43,7 +51,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        return key instanceof String keyStr && realKeys.containsKey(convert(keyStr));
+        return key instanceof String keyStr && realKeys.containsKey(convertKey(keyStr));
     }
 
     @Override
@@ -59,30 +67,22 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
     @Override
     public V getOrDefault(Object key, V defaultValue) {
         if (!(key instanceof String strKey)) return defaultValue;
-        String convertedKey = convert(strKey);
-        String realKey = realKeys.get(convertedKey);
+        String realKey = realKeys.get(convertKey(strKey));
         return realKey == null ? defaultValue : realMap.get(realKey);
     }
 
     @Override
     public V put(String key, V value) {
-        String convertedKey = convert(key);
-        String oldKey = realKeys.put(convertedKey, key);
-        if (oldKey == null) {
-            realMap.put(key, value);
-            return null;
-        } else {
-            V oldValue = realMap.remove(oldKey);
-            realMap.put(key, value);
-            return oldValue;
-        }
+        String oldKey = realKeys.put(convertKey(key), key);
+        V oldValue = oldKey == null ? null : realMap.remove(oldKey);
+        realMap.put(key, value);
+        return oldValue;
     }
 
     @Override
     public V remove(Object key) {
         if (!(key instanceof String strKey)) return null;
-        String convertedKey = convert(strKey);
-        String realKey = realKeys.get(convertedKey);
+        String realKey = realKeys.remove(convertKey(strKey));
         return realKey == null ? null : realMap.remove(realKey);
     }
 
@@ -102,7 +102,29 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
         return keySet == null ? keySet = new KeySet() : keySet;
     }
 
-    private class KeySet extends AbstractSet<String> {
+    @Override
+    public Collection<V> values() {
+        return values == null ? values = new Values() : values;
+    }
+
+    @Override
+    public Set<Entry<String, V>> entrySet() {
+        return entrySet == null ? entrySet = new EntrySet() : entrySet;
+    }
+
+    private abstract class InternalSet<T> extends AbstractSet<T> {
+        @Override
+        public final int size() {
+            return CaseInsensitiveMap.this.size();
+        }
+
+        @Override
+        public final void clear() {
+            CaseInsensitiveMap.this.clear();
+        }
+    }
+
+    private class KeySet extends InternalSet<String> {
         @Override
         public @NotNull Iterator<String> iterator() {
             return new KeyIterator();
@@ -125,14 +147,9 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
             @Override
             public void remove() {
                 if (current == null) throw new IllegalStateException();
-                realKeys.remove(convert(current));
+                realKeys.remove(convertKey(current));
                 current = null;
             }
-        }
-
-        @Override
-        public int size() {
-            return CaseInsensitiveMap.this.size();
         }
 
         @Override
@@ -141,22 +158,12 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
         }
 
         @Override
-        public void clear() {
-            CaseInsensitiveMap.this.clear();
-        }
-
-        @Override
         public boolean contains(Object o) {
             return CaseInsensitiveMap.this.containsKey(o);
         }
     }
 
-    @Override
-    public Collection<V> values() {
-        return values == null ? values = new Values() : values;
-    }
-
-    private class Values extends AbstractCollection<V> {
+    private class Values extends InternalSet<V> {
         private final Set<Entry<String, V>> realValues = realMap.entrySet();
 
         @Override
@@ -183,14 +190,9 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
             public void remove() {
                 if (current == null) throw new IllegalStateException();
                 realIterator.remove();
-                realKeys.remove(convert(current.getKey()));
+                realKeys.remove(convertKey(current.getKey()));
                 current = null;
             }
-        }
-
-        @Override
-        public int size() {
-            return CaseInsensitiveMap.this.size();
         }
 
         @Override
@@ -198,27 +200,17 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
             var iterator = realValues.iterator();
             while (iterator.hasNext()) {
                 var entry = iterator.next();
-                if (Objects.equals(entry, o)) {
+                if (Objects.equals(entry.getValue(), o)) {
                     iterator.remove();
-                    realKeys.remove(convert(entry.getKey()));
+                    realKeys.remove(convertKey(entry.getKey()));
                     return true;
                 }
             }
             return false;
         }
-
-        @Override
-        public void clear() {
-            CaseInsensitiveMap.this.clear();
-        }
     }
 
-    @Override
-    public Set<Entry<String, V>> entrySet() {
-        return entrySet == null ? entrySet = new EntrySet() : entrySet;
-    }
-
-    private class EntrySet extends AbstractSet<Entry<String, V>> {
+    private class EntrySet extends InternalSet<Entry<String, V>> {
         private final Set<Entry<String, V>> realEntries = realMap.entrySet();
 
         @Override
@@ -244,26 +236,16 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
             public void remove() {
                 if (current == null) throw new IllegalStateException();
                 realIterator.remove();
-                realKeys.remove(convert(current.getKey()));
+                realKeys.remove(convertKey(current.getKey()));
                 current = null;
             }
-        }
-
-        @Override
-        public int size() {
-            return CaseInsensitiveMap.this.size();
-        }
-
-        @Override
-        public void clear() {
-            CaseInsensitiveMap.this.clear();
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public boolean remove(Object o) {
             if (realEntries.remove(o)) {
-                realKeys.remove(convert(((Entry<String, ?>) o).getKey()));
+                realKeys.remove(convertKey(((Entry<String, V>) o).getKey()));
                 return true;
             }
             return false;
@@ -275,7 +257,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
         if (this == other) return true;
         if (other instanceof Map<?, ?> map) {
             if (map.size() != size()) return false;
-            for (Map.Entry<?,?> entry : map.entrySet()) {
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
                 if (!Objects.equals(get(entry.getKey()), entry.getValue())) {
                     return false;
                 }
