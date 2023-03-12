@@ -3,7 +3,7 @@ package fun.reactions.util.parameter;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.Utils;
-import fun.reactions.util.collections.Maps;
+import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.function.SafeFunction;
 import fun.reactions.util.function.SafeSupplier;
@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
     public static final String ORIGIN = " :";
-    public static final Parameters EMPTY = new Parameters("", "", Maps.caseInsensitive(1));
+    public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap(1));
     private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
 
     private final String origin;
@@ -84,7 +84,7 @@ public class Parameters implements Parameterizable {
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return EMPTY;
-        Map<String, String> params = Maps.caseInsensitive(map);
+        Map<String, String> params = new CaseInsensitiveMap(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
     }
@@ -96,7 +96,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters fromString(final @NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = Maps.caseInsensitive();
+        Map<String, String> params = new CaseInsensitiveMap();
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;
@@ -187,7 +187,7 @@ public class Parameters implements Parameterizable {
         }
 
         return params.isEmpty()
-                ? new Parameters(str, Maps.caseInsensitive(1))
+                ? new Parameters(str, new CaseInsensitiveMap(1))
                 : new Parameters(str, params);
     }
 
@@ -196,7 +196,7 @@ public class Parameters implements Parameterizable {
     }
 
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
-        Map<String, String> params = Maps.caseInsensitive(2);
+        Map<String, String> params = new CaseInsensitiveMap(2);
         params.put(key, value);
         String escaped = escapeParameters(value);
         String origin;

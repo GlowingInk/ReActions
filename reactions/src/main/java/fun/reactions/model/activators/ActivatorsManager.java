@@ -4,7 +4,7 @@ import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
-import fun.reactions.util.collections.Maps;
+import fun.reactions.util.collections.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -44,7 +44,7 @@ public class ActivatorsManager {
         logger = platform.logger();
         search = new Search();
 
-        activatorsNames = Maps.caseInsensitive();
+        activatorsNames = new CaseInsensitiveMap<>();
         activatorsGroups = new HashMap<>();
     }
 

@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 public class CaseInsensitiveMap<V> implements Map<String, V> {
     private final Map<String, String> realKeys;
@@ -95,6 +96,13 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
     public void clear() {
         realKeys.clear();
         realMap.clear();
+    }
+
+    @Override
+    public void forEach(BiConsumer<? super String, ? super V> action) {
+        for (String key : realKeys.values()) {
+            action.accept(key, realMap.get(key));
+        }
     }
 
     @Override
@@ -255,17 +263,13 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
     @Override
     public boolean equals(@Nullable Object other) {
         if (this == other) return true;
-        if (other instanceof Map<?, ?> map) {
-            if (map.size() != size()) return false;
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                if (!Objects.equals(get(entry.getKey()), entry.getValue())) {
-                    return false;
-                }
+        if (!(other instanceof Map<?, ?> map) || map.size() != size()) return false;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            if (!Objects.equals(get(entry.getKey()), entry.getValue())) {
+                return false;
             }
-            return true;
-        } else {
-            return false;
         }
+        return true;
     }
 
     @Override
