@@ -100,9 +100,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     @Override
     public void forEach(BiConsumer<? super String, ? super V> action) {
-        for (String key : realKeys.values()) {
-            action.accept(key, realMap.get(key));
-        }
+        realMap.forEach(action);
     }
 
     @Override

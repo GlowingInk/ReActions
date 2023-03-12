@@ -3,7 +3,6 @@ package fun.reactions.util.parameter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -30,8 +29,14 @@ public class ParametersTest {
     @Test(dataProvider = "fromStringData")
     public void fromStringTest(String input, String expected, int size) {
         Parameters result = Parameters.fromString(input);
-        Assert.assertEquals(result, Parameters.fromString(expected)); // Testing Parameters#equals too
-        Assert.assertEquals(Parameters.fromString(result.originFormatted()).originFormatted(), expected); // We expect the result to be the same
+        assertEquals( // Testing Parameters#equals too
+                result,
+                Parameters.fromString(expected)
+        );
+        assertEquals( // We expect the result to be the same
+                Parameters.fromString(result.originFormatted()).originFormatted(),
+                expected
+        );
         assertEquals(result.size(), size);
     }
 
@@ -45,7 +50,7 @@ public class ParametersTest {
 
     @Test(dataProvider = "fromMapData")
     public void fromMapTest(Map<String, String> map, String paramsStr) {
-        Assert.assertEquals(Parameters.fromMap(map), Parameters.fromString(paramsStr));
+        assertEquals(Parameters.fromMap(map), Parameters.fromString(paramsStr));
     }
 
     @DataProvider
@@ -83,7 +88,7 @@ public class ParametersTest {
     public void fromConfigurationTest(String cfgStr, String expected) throws InvalidConfigurationException {
         FileConfiguration cfg = new YamlConfiguration();
         cfg.loadFromString(cfgStr);
-        Assert.assertEquals(
+        assertEquals(
                 Parameters.fromConfiguration(cfg, Set.of("ignored")),
                 Parameters.fromString(expected)
         );
@@ -100,7 +105,7 @@ public class ParametersTest {
 
     @Test(dataProvider = "keyedListData")
     public void keyedListTest(String input, List<String> expected) {
-        Assert.assertEquals(Parameters.fromString(input).keyedList("key"), expected);
+        assertEquals(Parameters.fromString(input).keyedList("key"), expected);
     }
 
     @DataProvider
@@ -125,7 +130,7 @@ public class ParametersTest {
     public void escapeParametersTest(String input, String expected) {
         String result = Parameters.escapeParameters(input);
         assertEquals(result, expected);
-        Assert.assertEquals(Parameters.escapeParameters(result), expected); // Escaping the escaped should not work
+        assertEquals(Parameters.escapeParameters(result), expected); // Escaping the escaped should not work
     }
 
     @DataProvider
