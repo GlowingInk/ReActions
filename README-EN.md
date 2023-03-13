@@ -31,8 +31,6 @@ Latest snapshot is available in the
 
 Project is published under [GPL v3](LICENSE.md).
 
-Also, project contains some of edited code from [Quartz Scheduler](https://github.com/quartz-scheduler/quartz) and
-[SpringFramework](https://github.com/spring-projects/spring-framework) projects under 
-[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+Also, project contains some of edited code from [Quartz Scheduler](https://github.com/quartz-scheduler/quartz).
 
 ## [Developed using IntelliJ IDEA by JetBrains](https://www.jetbrains.com/)
