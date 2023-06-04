@@ -26,7 +26,6 @@ import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.wait.WaitTask;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
@@ -34,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static fun.reactions.util.TimeUtils.offsetNow;
 
 @Aliased.Names({"RUN", "EXEC"})
 public class ExecuteAction implements Action {
@@ -48,7 +49,7 @@ public class ExecuteAction implements Action {
         ReActions.Platform platform = env.getPlatform();
         Parameters params = Parameters.fromString(paramsStr);
         int repeat = Math.max(params.getInteger("repeat", 1), 1);
-        long delayMs = TimeUtils.parseTime(params.getString("delay", "0"));
+        long delayMs = params.getTime("delay");
         List<Player> targets = new ArrayList<>();
         if (params.contains("player")) {
             targets.addAll(platform.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"), "player")));
@@ -67,7 +68,7 @@ public class ExecuteAction implements Action {
                         env.getVariables().fork(),
                         player == null ? null : player.getUniqueId(),
                         storedFunct,
-                        delayMs * (i + 1)
+                        offsetNow(delayMs * (i + 1))
                 ));
             }
         }

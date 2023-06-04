@@ -33,23 +33,19 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>fun.reactions.externals.bstats</shadedPattern>
+                                    <shadedPattern>fun.reactions.external.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.quartz</pattern>
-                                    <shadedPattern>fun.reactions.time</shadedPattern>
+                                    <shadedPattern>fun.reactions.external.time</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.springframework.util</pattern>
-                                    <shadedPattern>fun.reactions.util.collections</shadedPattern>
+                                    <pattern>ink.glowing.math</pattern>
+                                    <shadedPattern>fun.reactions.external.math</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>de.themoep.minedown.adventure</pattern>
-                                    <shadedPattern>fun.reactions.util.message.minedown</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>me.imdanix.math</pattern>
-                                    <shadedPattern>fun.reactions.util.math</shadedPattern>
+                                    <pattern>ink.glowing.text</pattern>
+                                    <shadedPattern>fun.reactions.external.text</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -74,23 +70,23 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.themoep</groupId>
-            <artifactId>minedown-adventure</artifactId>
-            <version>1.7.2-SNAPSHOT</version>
+            <groupId>ink.glowing</groupId>
+            <artifactId>inkymessage</artifactId>
+            <version>0.11.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.imDaniX</groupId>
-            <artifactId>EzMath</artifactId>
-            <version>3.17</version>
+            <groupId>ink.glowing</groupId>
+            <artifactId>ezmath</artifactId>
+            <version>3.21</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -103,12 +99,12 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.28.2</version>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
+            <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
@@ -120,6 +116,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>

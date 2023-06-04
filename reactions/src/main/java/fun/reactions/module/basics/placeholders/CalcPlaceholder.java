@@ -5,7 +5,7 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
-import me.imdanix.math.ExpressionEvaluator;
+import ink.glowing.math.ExpressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

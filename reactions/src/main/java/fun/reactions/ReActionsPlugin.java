@@ -108,13 +108,14 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onEnable() {
+        // TODO god why
+        Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
+
         this.savingManager = new SavingManager(this);
         savingManager.register(waitingManager);
         waitingManager.init();
         userCommandsManager.reload();
 
-        // TODO god why
-        Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
         getDataFolder().mkdirs();
 
         Commander.init(this);

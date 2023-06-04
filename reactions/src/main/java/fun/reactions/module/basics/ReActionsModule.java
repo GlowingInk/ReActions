@@ -1,7 +1,5 @@
 package fun.reactions.module.basics;
 
-import de.themoep.minedown.adventure.MineDown;
-import de.themoep.minedown.adventure.MineDownParser;
 import fun.reactions.ReActions;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activity.actions.Action;
@@ -244,9 +242,5 @@ public class ReActionsModule implements Module {
                 new LocSelector(),
                 new PermSelector()
         );
-    }
-
-    public static @NotNull MineDown getMineDown(@NotNull String text) {
-        return new MineDown(text).disable(MineDownParser.Option.SIMPLE_FORMATTING);
     }
 }
