@@ -128,8 +128,8 @@ public final class CooldownManager { // TODO Requires refactoring
         long days = hour / 24;
         hour = hour % 24;
 
-        times[2] = formatNum(hour) + ":" + formatNum(min) + ":" + formatNum(sec);
-        times[3] = days + "d " + times[3];
+        times[3] = formatNum(hour) + ":" + formatNum(min) + ":" + formatNum(sec);
+        times[2] = days + "d " + times[3];
         times[4] = formatNum(hour);
         times[5] = formatNum(min);
         times[6] = formatNum(sec);

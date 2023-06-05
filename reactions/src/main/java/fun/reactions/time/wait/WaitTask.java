@@ -13,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.System.identityHashCode;
+
 public record WaitTask(
         @NotNull Variables variables,
         @Nullable UUID playerId,
@@ -30,6 +32,12 @@ public record WaitTask(
 
     @Override
     public int compareTo(@NotNull WaitTask o) {
-        return executionTime > o.executionTime ? 1 : -1;
+        if (executionTime > o.executionTime) {
+            return 1;
+        } else if (executionTime < o.executionTime) {
+            return -1;
+        } else {
+            return Integer.compare(identityHashCode(this), identityHashCode(o));
+        }
     }
 }

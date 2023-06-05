@@ -29,6 +29,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static fun.reactions.util.TimeUtils.offsetUntil;
+import static fun.reactions.util.TimeUtils.timeToTicks;
+
 public class WaitingManager implements Saveable {
     private final ReActions.Platform rea;
 
@@ -85,16 +88,18 @@ public class WaitingManager implements Saveable {
                 executor.cancel();
                 executor = null;
             }
-            long offset = TimeUtils.offsetUntil(next.executionTime());
-            if (offset < 1) {
+            long offsetTicks = timeToTicks(offsetUntil(next.executionTime()));
+            if (offsetTicks < 1) {
                 runTasks();
             } else {
                 executor = rea.getServer().getScheduler().runTaskLater(
                         rea.getPlugin(),
                         this::runTasks,
-                        TimeUtils.timeToTicks(offset) + 1
+                        offsetTicks
                 );
             }
+        } else if (first.isTime()) {
+            runTasks();
         }
     }
 
@@ -102,7 +107,9 @@ public class WaitingManager implements Saveable {
         var iterator = tasks.iterator();
         while (iterator.hasNext()) {
             WaitTask task = iterator.next();
-            if (!task.isTime()) break;
+            if (!task.isTime()) {
+                break;
+            }
             if (task.playerId() != null && rea.getServer().getPlayer(task.playerId()) == null) switch (behaviour) {
                 case SKIP -> {
                     if (timeLimit > TimeUtils.offsetFrom(task.executionTime())) {
