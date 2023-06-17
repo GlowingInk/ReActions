@@ -87,6 +87,10 @@ public abstract class ActivationContext {
         return Optional.ofNullable(variables);
     }
 
+    public final boolean hasPlayer() {
+        return this.player != null;
+    }
+
     public final @Nullable Player getPlayer() {
         return this.player;
     }

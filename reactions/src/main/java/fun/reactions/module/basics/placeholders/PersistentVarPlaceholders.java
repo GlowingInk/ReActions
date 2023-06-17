@@ -21,7 +21,9 @@ public class PersistentVarPlaceholders implements Placeholder.Keyed {
                 }
 
             case "varp": case "varplayer":
-                return env.getPlayer() == null ? ReActions.getVariables().getVariable(env.getPlayer().getName(), params) : null;
+                return env.getPlayer() != null
+                        ? ReActions.getVariables().getVariable(env.getPlayer().getName(), params)
+                        : null;
 
             default:
                 return null;
