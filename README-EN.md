@@ -1,5 +1,5 @@
 # ReActions
-[**RuBukkit thread**](http://rubukkit.org/threads/165857/) | [**Documentation** (Russian)](https://github.com/imDaniX/ReActions/wiki) | [**Original**](https://github.com/Redolith/ReActions)
+[**RuBukkit thread**](http://rubukkit.org/threads/165857/) | [**Documentation** (Russian)](https://github.com/GlowingInk/ReActions/wiki) | [**Original**](https://github.com/Redolith/ReActions)
 
 ReActions plugin for Paper is a tool to handle server events. It gives you an ability to check for specific flags, 
 and by its results, perform different actions. Syntax is unbelievable simple:
@@ -22,10 +22,10 @@ EVENT:
 To compile the plugin all you need is to have Maven. So, if you already have it, just execute `mvn clean package`.
 
 You can get the latest stable release from the
-**[Releases ![Release](https://img.shields.io/github/release/imDaniX/ReActions.svg)](https://github.com/imDaniX/ReActions/releases/latest/)** tab.
+**[Releases ![Release](https://img.shields.io/github/release/GlowingInk/ReActions.svg)](https://github.com/GlowingInk/ReActions/releases/latest/)** tab.
 
 Latest snapshot is available in the
-**[Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)** tab.
+**[Actions ![Snapshot](https://github.com/GlowingInk/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/GlowingInk/ReActions/actions)** tab.
 
 ## License
 

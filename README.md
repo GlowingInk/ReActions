@@ -1,5 +1,5 @@
 # ReActions
-[**Тема на RuBukkit**](http://rubukkit.org/threads/165857/) | [**Документация**](https://github.com/imDaniX/ReActions/wiki) | [**Оригинал**](https://github.com/Redolith/ReActions)
+[**Тема на RuBukkit**](http://rubukkit.org/threads/165857/) | [**Документация**](https://github.com/GlowingInk/ReActions/wiki) | [**Оригинал**](https://github.com/Redolith/ReActions)
 
 The project is currently (still) in its early state and is not available on large platforms like SpigotMC. Because of 
 that, and as the most of project's users are Russian-speaking, this README file's language is Russian too. 
@@ -26,10 +26,10 @@ that, and as the most of project's users are Russian-speaking, this README file'
 Для компиляции плагина требуется Maven. Имея его на руках, достаточно войти в корневую папку проекта и ввести `mvn clean package`.
 
 Последний стабильный релиз доступен во вкладке
-**[Releases ![Release](https://img.shields.io/github/release/imDaniX/ReActions.svg)](https://github.com/imDaniX/ReActions/releases/latest/)**
+**[Releases ![Release](https://img.shields.io/github/release/GlowingInk/ReActions.svg)](https://github.com/GlowingInk/ReActions/releases/latest/)**
 
 Готовый снапшот можно скачать из вкладки 
-**[Actions ![Snapshot](https://github.com/imDaniX/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/imDaniX/ReActions/actions)** 
+**[Actions ![Snapshot](https://github.com/GlowingInk/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/GlowingInk/ReActions/actions)** 
 
 ## Лицензия
 
