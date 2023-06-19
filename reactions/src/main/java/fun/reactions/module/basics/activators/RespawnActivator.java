@@ -25,11 +25,22 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.RespawnContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.enums.DeathCause;
+import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.property;
+import static fun.reactions.model.environment.Variable.simple;
 
 public class RespawnActivator extends Activator {
 
@@ -52,8 +63,8 @@ public class RespawnActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        RespawnContext pe = (RespawnContext) context;
-        return this.deathCause == DeathCause.ANY || pe.getDeathCause() == this.deathCause;
+        Context pe = (Context) context;
+        return this.deathCause == DeathCause.ANY || pe.deathCause == this.deathCause;
     }
 
     @Override
@@ -64,5 +75,37 @@ public class RespawnActivator extends Activator {
     @Override
     public String toString() {
         return super.toString() + "(" + this.deathCause.name() + ")";
+    }
+
+    public static class Context extends ActivationContext {
+        public static final String RESPAWN_LOCATION = "respawn_loc";
+
+        private final DeathCause deathCause;
+        private final LivingEntity killer;
+        private final Location respawnLoc;
+
+        public Context(Player player, LivingEntity killer, DeathCause cause, Location respawnLoc) {
+            super(player);
+            this.killer = killer;
+            this.deathCause = cause;
+            this.respawnLoc = respawnLoc;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return RespawnActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(RESPAWN_LOCATION, property(LocationUtils.locationToString(respawnLoc)));
+            vars.put("cause", simple(deathCause));
+            if (killer != null) {
+                vars.put("killer-type", Variable.simple(killer.getType()));
+                vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
+            }
+            return vars;
+        }
     }
 }

@@ -27,13 +27,17 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.ButtonContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.location.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 // TODO Use TriBoolean (when clicking on disabled button)
 public class ButtonActivator extends Activator implements Locatable {
@@ -55,8 +59,8 @@ public class ButtonActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        ButtonContext be = (ButtonContext) context;
-        return pos.isValidAt(be.getButtonLocation());
+        Context be = (Context) context;
+        return pos.isValidAt(be.buttonLocation);
     }
 
     @Override
@@ -72,5 +76,24 @@ public class ButtonActivator extends Activator implements Locatable {
     @Override
     public String toString() {
         return super.toString() + " (" + pos + ")";
+    }
+
+    public static class Context extends ActivationContext {
+        private final Location buttonLocation;
+
+        public Context(Player p, Location loc) {
+            super(p);
+            this.buttonLocation = loc;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return ButtonActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(CANCEL_EVENT, Variable.property(false));
+        }
     }
 }

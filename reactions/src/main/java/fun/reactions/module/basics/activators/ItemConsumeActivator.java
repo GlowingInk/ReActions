@@ -25,12 +25,18 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.ItemConsumeContext;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Aliased.Names({"CONSUME", "EAT"})
 public class ItemConsumeActivator extends Activator {
@@ -53,8 +59,8 @@ public class ItemConsumeActivator extends Activator {
     }
 
     public boolean checkContext(@NotNull ActivationContext context) {
-        ItemConsumeContext ie = (ItemConsumeContext) context;
-        return item.isSimilar(ie.getItem());
+        Context ie = (Context) context;
+        return item.isSimilar(ie.item);
     }
 
     public void saveOptions(@NotNull ConfigurationSection cfg) {
@@ -66,5 +72,33 @@ public class ItemConsumeActivator extends Activator {
                 this.item +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+        private final ItemStack item;
+        private final boolean mainHand;
+
+        public Context(Player p, ItemStack item, boolean mainHand) {
+            super(p);
+            this.item = item;
+            this.mainHand = mainHand;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return ItemConsumeActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put("hand", Variable.simple(mainHand ? "MAIN" : "OFF"));
+            if (item != null) {
+                vars.put("item", Variable.lazy(() -> VirtualItem.asString(item)));
+                vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
+            }
+            return vars;
+        }
     }
 }

@@ -3,12 +3,17 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.ItemHeldContext;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 2017-11-11.
@@ -46,15 +51,15 @@ public class ItemHeldActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        ItemHeldContext ihe = (ItemHeldContext) context;
-        ItemStack itemNew = ihe.getNewItem();
-        ItemStack itemPrev = ihe.getPreviousItem();
+        Context ihe = (Context) context;
+        ItemStack itemNew = ihe.newItem;
+        ItemStack itemPrev = ihe.previousItem;
         if (!this.itemNewStr.isEmpty() && (!VirtualItem.isSimilar(this.itemNewStr, itemNew)))
             return false;
         if (!this.itemPrevStr.isEmpty() && (!VirtualItem.isSimilar(this.itemPrevStr, itemPrev)))
             return false;
-        if (newSlot > -1 && newSlot != ihe.getNewSlot()) return false;
-        return previousSlot <= -1 || previousSlot == ihe.getPreviousSlot();
+        if (newSlot > -1 && newSlot != ihe.newSlot) return false;
+        return previousSlot <= -1 || previousSlot == ihe.previousSlot;
     }
 
     @Override
@@ -74,5 +79,45 @@ public class ItemHeldActivator extends Activator {
                 " slotprev:" + (previousSlot + 1) +
                 ")";
         return sb;
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-11-11.
+     */
+    public static class Context extends ActivationContext {
+        private final int newSlot;
+        private final int previousSlot;
+        private final ItemStack newItem;
+        private final ItemStack previousItem;
+
+        public Context(Player player, int newSlot, int previousSlot) {
+            super(player);
+            this.newSlot = newSlot;
+            this.previousSlot = previousSlot;
+            this.newItem = this.player.getInventory().getItem(newSlot);
+            this.previousItem = this.player.getInventory().getItem(previousSlot);
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return ItemHeldActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put("slotnew", Variable.simple(newSlot + 1));
+            vars.put("slotprev", Variable.simple(previousSlot + 1));
+            if (newItem != null) {
+                vars.put("itemnew", Variable.lazy(() -> VirtualItem.asString(newItem)));
+                vars.put("itemnew-str", Variable.lazy(() -> ItemUtils.toDisplayString(newItem)));
+            }
+            if (previousItem != null) {
+                vars.put("itemprev", Variable.lazy(() -> VirtualItem.asString(previousItem)));
+                vars.put("itemprev-str", Variable.lazy(() -> ItemUtils.toDisplayString(previousItem)));
+            }
+            return vars;
+        }
     }
 }

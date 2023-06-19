@@ -3,11 +3,14 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.FlightContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 5/2/2017.
@@ -30,8 +33,8 @@ public class FlightActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        FlightContext fe = (FlightContext) context;
-        return flight.isValidFor(fe.isFlying());
+        Context fe = (Context) context;
+        return flight.isValidFor(fe.flying);
     }
 
     @Override
@@ -44,5 +47,30 @@ public class FlightActivator extends Activator {
         return super.toString() + " (" +
                 "flight:" + this.flight.name() +
                 ")";
+    }
+
+    /**
+     * Created by MaxDikiy on 5/2/2017.
+     */
+    public static class Context extends ActivationContext {
+        private final boolean flying;
+
+        public Context(Player p, boolean flying) {
+            super(p);
+            this.flying = flying;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return FlightActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "flight", Variable.simple(flying)
+            );
+        }
     }
 }

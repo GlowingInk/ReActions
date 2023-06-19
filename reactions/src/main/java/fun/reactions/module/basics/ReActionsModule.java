@@ -159,7 +159,7 @@ public class ReActionsModule implements Module {
                 new GlideAction(),
                 new WalkSpeedAction(),
                 new FlySpeedAction(),
-                new JsConditionAction(),
+                new JsConditionalAction(),
                 new ClearRadiusAction()
         );
     }

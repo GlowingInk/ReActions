@@ -3,11 +3,14 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.SneakContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 2017-05-16.
@@ -30,8 +33,8 @@ public class SneakActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        SneakContext se = (SneakContext) context;
-        return sneak.isValidFor(se.isSneaking());
+        Context se = (Context) context;
+        return sneak.isValidFor(se.sneaking);
     }
 
     @Override
@@ -44,5 +47,27 @@ public class SneakActivator extends Activator {
         return super.toString() + " (" +
                 "sneak:" + this.sneak.name() +
                 ")";
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-05-16.
+     */
+    public static class Context extends ActivationContext {
+        private final boolean sneaking;
+
+        public Context(Player player, boolean sneaking) {
+            super(player);
+            this.sneaking = sneaking;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return SneakActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of("sneak", Variable.simple(sneaking));
+        }
     }
 }

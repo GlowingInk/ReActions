@@ -3,12 +3,16 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.DamageContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.enums.DamageType;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -38,9 +42,9 @@ public class DamageActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        DamageContext de = (DamageContext) context;
-        if (!damageCauseCheck(de.getCause())) return false;
-        return sourceCheck(de.getSource());
+        Context de = (Context) context;
+        if (!damageCauseCheck(de.cause)) return false;
+        return sourceCheck(de.source);
     }
 
     private boolean damageCauseCheck(EntityDamageEvent.DamageCause dc) {
@@ -66,5 +70,41 @@ public class DamageActivator extends Activator {
                 "; source:" + this.source.name() +
                 ")";
         return sb;
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-07-23.
+     */
+    public static class Context extends ActivationContext {
+        public static final String DAMAGE = "damage";
+
+        protected final EntityDamageEvent.DamageCause cause;
+        private final String source; // TODO enum
+        private final double damage;
+        private final double finalDamage;
+
+        public Context(@NotNull Player player, @NotNull EntityDamageEvent.DamageCause cause, @NotNull String source, double damage, double finalDamage) {
+            super(player);
+            this.cause = cause;
+            this.source = source;
+            this.damage = damage;
+            this.finalDamage = finalDamage;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return DamageActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put(DAMAGE, Variable.property(damage));
+            vars.put("final_damage", Variable.simple(finalDamage));
+            vars.put("cause", Variable.simple(cause));
+            vars.put("source", Variable.simple(source));
+            return vars;
+        }
     }
 }

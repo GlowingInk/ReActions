@@ -4,7 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.DamageByBlockContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
@@ -14,8 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-07-23.
@@ -51,11 +56,11 @@ public class DamageByBlockActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        DamageByBlockContext db = (DamageByBlockContext) context;
-        Block damagerBlock = db.getBlockDamager();
+        Context db = (Context) context;
+        Block damagerBlock = db.blockDamager;
         if (damagerBlock == null) return false;
         if (!isActivatorBlock(damagerBlock)) return false;
-        return damageCauseCheck(db.getCause());
+        return damageCauseCheck(db.cause);
     }
 
     private boolean checkLocations(Block block) {
@@ -103,5 +108,32 @@ public class DamageByBlockActivator extends Activator implements Locatable {
                 "; cause:" + damageCause +
                 ")";
         return sb;
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-07-23.
+     */
+    public static class Context extends DamageActivator.Context {
+
+        private final Block blockDamager;
+
+        public Context(Player player, Block blockDamager, EntityDamageEvent.DamageCause cause, double damage, double finalDamage) {
+            super(player, cause, "BLOCK", damage, finalDamage);
+            this.blockDamager = blockDamager;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return DamageByBlockActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = super.prepareVariables();
+            vars.put("blocklocation", simple(LocationUtils.locationToString(blockDamager.getLocation())));
+            vars.put("blocktype", Variable.simple(blockDamager.getType()));
+            vars.put("block", Variable.simple(blockDamager.getType())); // FIXME Why there is a copy?
+            return vars;
+        }
     }
 }

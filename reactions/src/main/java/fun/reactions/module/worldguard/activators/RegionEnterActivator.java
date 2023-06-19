@@ -26,7 +26,6 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.worldguard.contexts.RegionEnterContext;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.module.worldguard.external.WGBridge;
 import fun.reactions.util.Utils;
@@ -35,6 +34,7 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"RGENTER", "RG_ENTER"})
@@ -61,7 +61,7 @@ public class RegionEnterActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        RegionEnterContext be = (RegionEnterContext) context;
+        Context be = (Context) context;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }
 
@@ -90,5 +90,16 @@ public class RegionEnterActivator extends Activator implements Locatable {
                 "region:" + this.region +
                 ")";
         return sb;
+    }
+
+    public static class Context extends RegionActivator.Context {
+        public Context(Player player, String region) {
+            super(player, region);
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return RegionEnterActivator.class;
+        }
     }
 }

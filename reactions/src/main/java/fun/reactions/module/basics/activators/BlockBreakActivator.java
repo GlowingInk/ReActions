@@ -4,7 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.BlockBreakContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
@@ -14,7 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.property;
+import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -45,8 +51,8 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        BlockBreakContext bbe = (BlockBreakContext) context;
-        Block brokenBlock = bbe.getBlock();
+        Context bbe = (Context) context;
+        Block brokenBlock = bbe.block;
         if (brokenBlock == null) return false;
         return isActivatorBlock(brokenBlock);
     }
@@ -85,5 +91,37 @@ public class BlockBreakActivator extends Activator implements Locatable {
                 "; loc:" + (blockLocation == null ? "-" : blockLocation) +
                 ")";
         return sb;
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-05-14.
+     */
+    public static class Context extends ActivationContext {
+        public static final String DO_DROP = "is_drop";
+
+        private final Block block;
+        private final boolean dropItems;
+
+        public Context(Player p, Block block, boolean dropItems) {
+            super(p);
+            this.block = block;
+            this.dropItems = dropItems;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return BlockBreakActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, property(false),
+                    DO_DROP, property(dropItems),
+                    "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
+                    "blocktype", simple(block.getType()),
+                    "block", simple(block.getType()) // FIXME Why there is a copy?
+            );
+        }
     }
 }

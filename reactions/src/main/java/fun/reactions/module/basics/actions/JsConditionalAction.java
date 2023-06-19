@@ -26,9 +26,9 @@ import java.util.Map;
 /**
  * Created by MaxDikiy on 2017-05-17.
  */
-@Aliased.Names("IF_ELSE")
+@Aliased.Names({"IF_ELSE", "JS_CONDITION"})
 @Deprecated
-public class JsConditionAction implements Action {
+public class JsConditionalAction implements Action {
     private static ScriptEngine engine = null;
     private static boolean checked = false;
 
@@ -97,7 +97,7 @@ public class JsConditionAction implements Action {
 
     @Override
     public @NotNull String getName() {
-        return "JS_CONDITION";
+        return "JS_CONDITIONAL";
     }
 
     @Override

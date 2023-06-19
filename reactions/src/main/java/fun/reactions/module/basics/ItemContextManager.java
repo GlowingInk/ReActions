@@ -5,8 +5,6 @@ import fun.reactions.ReActions;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basics.activators.ItemHoldActivator;
 import fun.reactions.module.basics.activators.ItemWearActivator;
-import fun.reactions.module.basics.contexts.ItemHoldContext;
-import fun.reactions.module.basics.contexts.ItemWearContext;
 import fun.reactions.util.item.VirtualItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,7 +26,7 @@ public final class ItemContextManager {
         if (!player.isOnline()) return;
         String rg = "iw-" + itemStr;
         if (!ContextManager.isTimeToRaiseEvent(player, rg, Cfg.itemWearRecheck, repeat)) return;
-        ItemWearContext iwe = new ItemWearContext(player);
+        ItemWearActivator.Context iwe = new ItemWearActivator.Context(player);
         if (!iwe.isItemWeared(itemStr)) return;
         ReActions.getActivators().activate(iwe);
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20L * Cfg.itemWearRecheck);
@@ -72,7 +70,7 @@ public final class ItemContextManager {
     }
 
     private static void processItemHoldActivator(Player player, ItemStack item, EquipmentSlot hand) {
-        ItemHoldContext ihe = new ItemHoldContext(player, item, hand);
+        ItemHoldActivator.Context ihe = new ItemHoldActivator.Context(player, item, hand);
         ReActions.getActivators().activate(ihe);
     }
 

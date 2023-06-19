@@ -3,12 +3,17 @@ package fun.reactions.module.worldedit.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.worldedit.contexts.WeSelectionContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.module.worldedit.external.WeSelection;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Aliased.Names({"WE_SELECTION_REGION", "WESELECTION"})
 public class WeSelectionActivator extends Activator {
@@ -39,7 +44,7 @@ public class WeSelectionActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        WeSelectionContext e = (WeSelectionContext) context;
+        Context e = (Context) context;
         WeSelection selection = e.getSelection();
         if (!selection.isValid()) return false;
         int selectionBlocks = selection.area();
@@ -70,5 +75,35 @@ public class WeSelectionActivator extends Activator {
                 "; type:" + typeSelection +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+        private final WeSelection selection;
+
+        public Context(Player player, WeSelection weSelection) {
+            super(player);
+            this.selection = weSelection;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return WeSelectionActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(CANCEL_EVENT, Variable.property(false));
+            if (selection.isValid()) {
+                vars.put("seltype", Variable.simple(selection.selType()));
+                World world = selection.world();
+                vars.put("world", Variable.simple((world != null) ? world.getName() : ""));
+                vars.put("selblocks", Variable.simple(selection.area()));
+                vars.put("region", Variable.simple(selection.region()));
+            }
+            return vars;
+        }
+
+        public WeSelection getSelection() {return this.selection;}
     }
 }

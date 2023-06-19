@@ -25,16 +25,23 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.MobDamageContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.VirtualItem;
+import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 public class MobDamageActivator extends Activator {
     private final String mobName;
@@ -75,8 +82,8 @@ public class MobDamageActivator extends Activator {
     public boolean checkContext(@NotNull ActivationContext context) {
         MobDamageContext me = (MobDamageContext) context;
         if (mobType.isEmpty()) return false;
-        if (me.getEntity() == null) return false;
-        if (!isActivatorMob(me.getEntity())) return false;
+        if (me.entity == null) return false;
+        if (!isActivatorMob(me.entity)) return false;
         return item.isSimilar(me.getPlayer().getInventory().getItemInMainHand());
     }
 
@@ -112,5 +119,42 @@ public class MobDamageActivator extends Activator {
                 " name:" + (mobName.isEmpty() ? "-" : mobName) +
                 ")";
         return sb;
+    }
+
+    public static class MobDamageContext extends ActivationContext {
+        public static final String DAMAGE = "damage";
+
+        private final LivingEntity entity;
+        private final EntityDamageEvent.DamageCause cause;
+
+        private final double damage;
+        private final double finalDamage;
+
+        public MobDamageContext(LivingEntity entity, Player damager, EntityDamageEvent.DamageCause cause, double damage, double finalDamage) {
+            super(damager);
+            this.entity = entity;
+            this.cause = cause;
+            this.damage = damage;
+            this.finalDamage = finalDamage;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return MobDamageActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    DAMAGE, Variable.property(damage),
+                    "final_damage", Variable.simple(finalDamage),
+                    "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
+                    "mobdamager", Variable.simple(player == null ? "" : player.getName()),
+                    "mobtype", Variable.simple(entity.getType()),
+                    "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
+                    "cause", Variable.simple(cause)
+            );
+        }
     }
 }

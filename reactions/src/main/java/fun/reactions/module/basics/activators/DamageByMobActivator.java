@@ -3,16 +3,20 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.DamageByMobContext;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 2017-06-25.
@@ -84,11 +88,11 @@ public class DamageByMobActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        DamageByMobContext pde = (DamageByMobContext) context;
+        Context pde = (Context) context;
         if (damagerType.isEmpty()) return false;
-        Entity damager = pde.getDamager();
+        Entity damager = pde.damager;
         if (damager != null && !isActivatorDamager(damager)) return false;
-        return damageCauseCheck(pde.getCause());
+        return damageCauseCheck(pde.cause);
     }
 
     private boolean isActivatorDamager(Entity damager) {
@@ -125,4 +129,31 @@ public class DamageByMobActivator extends Activator {
         return sb;
     }
 
+    /**
+     * Created by MaxDikiy on 2017-06-25.
+     */
+    public static class Context extends DamageActivator.Context {
+
+        private final Entity damager;
+
+        public Context(Player player, Entity damager, EntityDamageEvent.DamageCause cause, double damage, double finalDamage) {
+            super(player, cause, "ENTITY", damage, finalDamage);
+            this.damager = damager;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return DamageByMobActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars =  super.prepareVariables();
+            vars.put("damagerlocation", Variable.simple(LocationUtils.locationToString(damager.getLocation())));
+            vars.put("damagertype", Variable.simple(damager.getType()));
+            vars.put("entitytype", Variable.simple(damager.getType())); // FIXME Why there is a copy?
+            vars.put("damagername", Variable.simple(EntityUtils.getEntityDisplayName(damager)));
+            return vars;
+        }
+    }
 }

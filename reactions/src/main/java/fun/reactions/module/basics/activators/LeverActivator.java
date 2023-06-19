@@ -26,7 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.LeverContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.BlockParameters;
@@ -35,8 +35,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 // TODO Use ImplicitLocation
 public class LeverActivator extends Activator implements Locatable {
@@ -79,7 +83,7 @@ public class LeverActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        LeverContext le = (LeverContext) context;
+        Context le = (Context) context;
         if (le.getLever() == null) return false;
         if (!isLocatedAt(le.getLeverLocation())) return false;
         return state.isValidFor(le.getLever().isPowered());
@@ -125,5 +129,32 @@ public class LeverActivator extends Activator implements Locatable {
                 " state:" + state.name() +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+        private final Block leverBlock;
+
+        public Context(Player p, Block block) {
+            super(p);
+            this.leverBlock = block;
+        }
+
+        public Switch getLever() {
+            return (Switch) leverBlock.getBlockData();
+        }
+
+        public Location getLeverLocation() {
+            return leverBlock.getLocation();
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return LeverActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(CANCEL_EVENT, Variable.property(false));
+        }
     }
 }

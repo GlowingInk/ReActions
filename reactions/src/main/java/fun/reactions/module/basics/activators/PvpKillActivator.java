@@ -25,9 +25,13 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class PvpKillActivator extends Activator {
     private PvpKillActivator(Logic base) {
@@ -47,4 +51,22 @@ public class PvpKillActivator extends Activator {
         return true;
     }
 
+    public static class PvpKillContext extends ActivationContext {
+        private final Player killedPlayer;
+
+        public PvpKillContext(Player player, Player killedPlayer) {
+            super(player);
+            this.killedPlayer = killedPlayer;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return PvpKillActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of("targetplayer", Variable.simple(killedPlayer.getName()));
+        }
+    }
 }

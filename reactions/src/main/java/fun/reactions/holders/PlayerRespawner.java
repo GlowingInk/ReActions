@@ -23,7 +23,7 @@
 package fun.reactions.holders;
 
 import fun.reactions.ReActions;
-import fun.reactions.module.basics.contexts.RespawnContext;
+import fun.reactions.module.basics.activators.RespawnActivator;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.mob.EntityUtils;
 import org.bukkit.Location;
@@ -60,7 +60,7 @@ public final class PlayerRespawner {
         DeathCause d = killer == null ?
                 DeathCause.OTHER :
                 killer.getType() == EntityType.PLAYER ? DeathCause.PVP : DeathCause.PVE;
-        ReActions.getActivators().activate(new RespawnContext(player, killer, d, respawnLoc));
+        ReActions.getActivators().activate(new RespawnActivator.Context(player, killer, d, respawnLoc));
     }
 
 }

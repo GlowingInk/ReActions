@@ -3,13 +3,19 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.EntityClickContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
+import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * Created by MaxDikiy on 2017-05-14.
@@ -34,9 +40,9 @@ public class EntityClickActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        EntityClickContext ece = (EntityClickContext) context;
-        if (ece.getEntity() == null) return false;
-        return isActivatorEntity(ece.getEntity());
+        Context ece = (Context) context;
+        if (ece.entity == null) return false;
+        return isActivatorEntity(ece.entity);
     }
 
     private boolean isActivatorEntity(Entity entity) {
@@ -54,5 +60,32 @@ public class EntityClickActivator extends Activator {
                 "type:" + (entityType == null ? "-" : entityType.name()) +
                 ")";
         return sb;
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-05-14.
+     */
+    public static class Context extends ActivationContext {
+
+        private final Entity entity;
+
+        public Context(Player p, Entity entity) {
+            super(p);
+            this.entity = entity;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return EntityClickActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "entitytype", Variable.simple(entity.getType()),
+                    "entity_name", simple(EntityUtils.getEntityDisplayName(entity))
+            );
+        }
     }
 }

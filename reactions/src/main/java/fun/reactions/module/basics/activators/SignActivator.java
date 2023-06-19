@@ -25,19 +25,26 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.SignContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.enums.ClickType;
+import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 // TODO Add Hand
 public class SignActivator extends Activator {
@@ -98,8 +105,8 @@ public class SignActivator extends Activator {
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         SignContext signEvent = (SignContext) context;
-        if (click.checkRight(signEvent.isLeftClick())) return false;
-        return checkMask(signEvent.getSignLines());
+        if (click.checkRight(signEvent.leftClick)) return false;
+        return checkMask(signEvent.signLines);
     }
 
     @Override
@@ -135,5 +142,34 @@ public class SignActivator extends Activator {
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    public static class SignContext extends ActivationContext {
+        private final boolean leftClick;
+        private final Location location;
+        private final String[] signLines;
+
+        public SignContext(Player player, String[] signLines, Location loc, boolean leftClick) { // TODO Hand?
+            super(player);
+            this.signLines = signLines;
+            this.location = loc;
+            this.leftClick = leftClick;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return SignActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            for (int i = 0; i < signLines.length; i++) {
+                vars.put("sign_line" + (i + 1), Variable.simple(signLines[i]));
+            }
+            vars.put("sign_loc", simple(LocationUtils.locationToString(location)));
+            vars.put("click", Variable.simple(leftClick ? "left" : "right"));
+            return vars;
+        }
     }
 }

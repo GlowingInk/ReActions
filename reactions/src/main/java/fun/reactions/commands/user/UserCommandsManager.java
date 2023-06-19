@@ -3,7 +3,7 @@ package fun.reactions.commands.user;
 import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.CommandContext;
+import fun.reactions.module.basics.activators.CommandActivator;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
 import org.bukkit.Bukkit;
@@ -58,19 +58,19 @@ public final class UserCommandsManager implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
-        if (triggerRaCommand(new CommandContext(
+        if (triggerRaCommand(new CommandActivator.Context(
                 event.getPlayer(), event.getPlayer(), event.getMessage().substring(1))
         )) event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onServerCommand(ServerCommandEvent event) {
-        if (triggerRaCommand(new CommandContext(
+        if (triggerRaCommand(new CommandActivator.Context(
                 null, event.getSender(), event.getCommand()
         ))) event.setCancelled(true);
     }
 
-    private boolean triggerRaCommand(@NotNull CommandContext context) {
+    private boolean triggerRaCommand(@NotNull CommandActivator.Context context) {
         UserCommand raCmd = commands.get(context.getLabel().toLowerCase(Locale.ROOT));
         if (raCmd == null) return false;
         String exec = raCmd.executeCommand(context.getSender(), context.getArgs());

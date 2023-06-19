@@ -3,13 +3,14 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.WeatherChangeContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Map;
 
 @Aliased.Names("WEATHER")
 public class WeatherChangeActivator extends Activator {
@@ -24,10 +25,10 @@ public class WeatherChangeActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        WeatherChangeContext storage = (WeatherChangeContext) context;
-        if (world != null && !storage.getWorld().equalsIgnoreCase(world)) return false;
+        Context storage = (Context) context;
+        if (world != null && !storage.world.equalsIgnoreCase(world)) return false;
         if (state == WeatherState.ANY) return true;
-        return storage.isRaining() == (state == WeatherState.RAINING);
+        return storage.raining == (state == WeatherState.RAINING);
     }
 
     @Override
@@ -57,6 +58,31 @@ public class WeatherChangeActivator extends Activator {
                 case "CLEAR", "SUN" -> CLEAR;
                 default -> ANY;
             };
+        }
+    }
+
+    public static class Context extends ActivationContext {
+        private final String world;
+        private final boolean raining;
+
+        public Context(String world, boolean raining) {
+            super(null);
+            this.world = world;
+            this.raining = raining;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "world", Variable.simple(world),
+                    "weather", Variable.simple(raining ? "RAINING" : "CLEAR")
+            );
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return WeatherChangeActivator.class;
         }
     }
 }

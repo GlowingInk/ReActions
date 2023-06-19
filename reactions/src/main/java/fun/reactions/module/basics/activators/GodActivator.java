@@ -3,11 +3,14 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.GodContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Created by MaxDikiy on 2017-10-28.
@@ -30,8 +33,8 @@ public class GodActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        GodContext e = (GodContext) context;
-        return god.isValidFor(e.isGod());
+        Context e = (Context) context;
+        return god.isValidFor(e.god);
     }
 
     @Override
@@ -44,5 +47,30 @@ public class GodActivator extends Activator {
         return super.toString() + " (" +
                 "god:" + this.god.name() +
                 ")";
+    }
+
+    /**
+     * Created by MaxDikiy on 2017-10-27.
+     */
+    public static class Context extends ActivationContext {
+        private final boolean god;
+
+        public Context(Player player, boolean god) {
+            super(player);
+            this.god = god;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return GodActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "god", Variable.simple(god)
+            );
+        }
     }
 }

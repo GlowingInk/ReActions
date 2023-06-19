@@ -25,15 +25,21 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.MobKillContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
+import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 public class MobKillActivator extends Activator {
     // TODO: EntityType
@@ -67,10 +73,10 @@ public class MobKillActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        MobKillContext me = (MobKillContext) context;
+        Context me = (Context) context;
         if (mobType.isEmpty()) return false;
-        if (me.getEntity() == null) return false;
-        return isActivatorMob(me.getEntity());
+        if (me.entity == null) return false;
+        return isActivatorMob(me.entity);
     }
 
     private boolean isActivatorMob(LivingEntity mob) {
@@ -104,5 +110,30 @@ public class MobKillActivator extends Activator {
                 " name:" + (mobName.isEmpty() ? "-" : mobName) +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+        private final LivingEntity entity;
+
+        public Context(Player p, LivingEntity entity) {
+            super(p);
+            this.entity = entity;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return MobKillActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
+                    "mobkiller", Variable.simple(player == null ? "" : player.getName()),
+                    "mobtype", Variable.simple(entity.getType()),
+                    "mobname", simple(EntityUtils.getEntityDisplayName(entity))
+            );
+        }
     }
 }

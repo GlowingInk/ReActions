@@ -26,7 +26,6 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.worldguard.contexts.RegionContext;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.module.worldguard.external.WGBridge;
 import fun.reactions.util.Utils;
@@ -35,6 +34,7 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // TODO: Maybe it should work like Cuboid activator instead of using different activators just for one check
@@ -62,7 +62,7 @@ public class RegionActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        RegionContext be = (RegionContext) context;
+        Context be = (Context) context;
         return be.getRegion().equalsIgnoreCase(WGBridge.getFullRegionName(this.region));
     }
 
@@ -91,5 +91,24 @@ public class RegionActivator extends Activator implements Locatable {
                 "region:" + this.region +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+
+        private final String region;
+
+        public Context(Player player, String region) {
+            super(player);
+            this.region = region;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return RegionActivator.class;
+        }
+
+        public String getRegion() {
+            return this.region;
+        }
     }
 }

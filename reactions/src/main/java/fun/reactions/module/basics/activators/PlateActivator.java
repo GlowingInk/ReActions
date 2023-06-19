@@ -26,7 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.PlateContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.parameter.BlockParameters;
@@ -35,7 +35,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class PlateActivator extends Activator implements Locatable {
     // TODO: Use ImplicitPosition
@@ -111,5 +114,29 @@ public class PlateActivator extends Activator implements Locatable {
     @Override
     public String toString() {
         return super.toString() + " (" + world + ", " + x + ", " + y + ", " + z + ")";
+    }
+
+    public static class PlateContext extends ActivationContext {
+
+        private final Location location;
+
+        public PlateContext(Player p, Location loc) {
+            super(p);
+            this.location = loc;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return PlateActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(CANCEL_EVENT, Variable.property(false));
+        }
+
+        public Location getLocation() {
+            return this.location;
+        }
     }
 }

@@ -25,12 +25,13 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.ItemWearContext;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemWearActivator extends Activator /*implements Manageable*/ {
@@ -62,7 +63,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
             Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
             return false;
         }
-        ItemWearContext iw = (ItemWearContext) context;
+        Context iw = (Context) context;
         return iw.isItemWeared(this.item);
     }
 
@@ -84,6 +85,23 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     @Override
     public boolean isValid() {
         return !Utils.isStringEmpty(item);
+    }
+
+    public static class Context extends ActivationContext {
+        public Context(Player p) {
+            super(p);
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return ItemWearActivator.class;
+        }
+
+        public boolean isItemWeared(String itemStr) { // TODO: Why is it there?
+            for (ItemStack armour : player.getInventory().getArmorContents())
+                if (VirtualItem.isSimilar(itemStr, armour)) return true;
+            return false;
+        }
     }
 }
 

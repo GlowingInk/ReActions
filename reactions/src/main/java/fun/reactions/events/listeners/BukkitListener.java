@@ -9,16 +9,15 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basics.activators.BlockBreakActivator;
+import fun.reactions.module.basics.activators.DamageActivator;
+import fun.reactions.module.basics.activators.DropActivator;
+import fun.reactions.module.basics.activators.InventoryClickActivator;
 import fun.reactions.module.basics.activators.MessageActivator;
+import fun.reactions.module.basics.activators.MobDamageActivator;
+import fun.reactions.module.basics.activators.QuitActivator;
 import fun.reactions.module.basics.activators.SignActivator;
-import fun.reactions.module.basics.contexts.BlockBreakContext;
-import fun.reactions.module.basics.contexts.DamageContext;
-import fun.reactions.module.basics.contexts.DropContext;
-import fun.reactions.module.basics.contexts.InventoryClickContext;
-import fun.reactions.module.basics.contexts.MessageContext;
-import fun.reactions.module.basics.contexts.MobDamageContext;
-import fun.reactions.module.basics.contexts.QuitContext;
-import fun.reactions.module.basics.contexts.TeleportContext;
+import fun.reactions.module.basics.activators.TeleportActivator;
 import fun.reactions.module.vault.external.RaVault;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.NumberUtils;
@@ -99,7 +98,7 @@ public class BukkitListener implements Listener {
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(TeleportContext.LOCATION_TO, LocationUtils::parseLocation).ifPresent(event::setTo);
+        vars.getChanged(TeleportActivator.Context.LOCATION_TO, LocationUtils::parseLocation).ifPresent(event::setTo);
     }
 
     @EventHandler
@@ -120,7 +119,7 @@ public class BukkitListener implements Listener {
             if (optVars.isEmpty()) return;
             Variables vars = optVars.get();
             vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-            vars.getChanged(MessageContext.MESSAGE).ifPresent(event::setMessage);
+            vars.getChanged(MessageActivator.Context.MESSAGE).ifPresent(event::setMessage);
             // TODO: setFormat
         } catch (IllegalStateException ignore) {
             Msg.logOnce("asyncchaterror", "Chat is in async thread. Because of that you should use " +
@@ -251,7 +250,7 @@ public class BukkitListener implements Listener {
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(MobDamageContext.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+        vars.getChanged(MobDamageActivator.MobDamageContext.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -273,7 +272,7 @@ public class BukkitListener implements Listener {
             Optional<Variables> optVars = ContextManager.triggerDamageByMob(evdmg);;
             if (optVars.isPresent()) {
                 Variables vars = optVars.get();
-                vars.getChanged(DamageContext.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+                vars.getChanged(DamageActivator.Context.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
                 vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
             }
         } else if (event instanceof EntityDamageByBlockEvent evdmg) {
@@ -283,7 +282,7 @@ public class BukkitListener implements Listener {
                 Optional<Variables> optVars = ContextManager.triggerDamageByBlock(evdmg, blockDamager);
                 if (optVars.isPresent()) {
                     Variables vars = optVars.get();
-                    vars.getChanged(DamageContext.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+                    vars.getChanged(DamageActivator.Context.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
                     vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
                 }
             }
@@ -294,7 +293,7 @@ public class BukkitListener implements Listener {
         Optional<Variables> optVars = ContextManager.triggerDamage(event, source);
         if (optVars.isPresent()) {
             Variables vars = optVars.get();
-            vars.getChanged(DamageContext.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+            vars.getChanged(DamageActivator.Context.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
             vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
         }
     }
@@ -379,7 +378,7 @@ public class BukkitListener implements Listener {
         Optional<Variables> optVars = ContextManager.triggerInventoryClick(event);
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(InventoryClickContext.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
+        vars.getChanged(InventoryClickActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
     }
 
@@ -389,8 +388,8 @@ public class BukkitListener implements Listener {
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(DropContext.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
-        vars.getChanged(DropContext.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
+        vars.getChanged(DropActivator.Context.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
+        vars.getChanged(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -410,7 +409,7 @@ public class BukkitListener implements Listener {
         Optional<Variables> optVars = ContextManager.triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(BlockBreakContext.DO_DROP, Boolean::parseBoolean).ifPresent(event::setDropItems);
+        vars.getChanged(BlockBreakActivator.Context.DO_DROP, Boolean::parseBoolean).ifPresent(event::setDropItems);
         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::parseBoolean).ifPresent(event::setCancelled);
     }
 
@@ -424,7 +423,7 @@ public class BukkitListener implements Listener {
         TemporaryOp.removeOp(event.getPlayer());
         Optional<Variables> optVars = ContextManager.triggerQuit(event);
         if (optVars.isPresent()){
-            optVars.get().getChanged(QuitContext.QUIT_MESSAGE).ifPresent(event::setQuitMessage);
+            optVars.get().getChanged(QuitActivator.Context.QUIT_MESSAGE).ifPresent(event::setQuitMessage);
         }
         MoveListener.removeLocation(event.getPlayer());
     }

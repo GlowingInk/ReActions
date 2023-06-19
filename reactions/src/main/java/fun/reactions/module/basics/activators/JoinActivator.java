@@ -25,10 +25,10 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.JoinContext;
 import fun.reactions.util.enums.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class JoinActivator extends Activator {
@@ -49,8 +49,8 @@ public class JoinActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        JoinContext ce = (JoinContext) context;
-        return firstJoin.isValidFor(ce.isFirstJoin());
+        Context ce = (Context) context;
+        return firstJoin.isValidFor(ce.firstJoin);
     }
 
     @Override
@@ -63,4 +63,18 @@ public class JoinActivator extends Activator {
         return super.toString() + " (first-join:" + this.firstJoin + ")";
     }
 
+    public static class Context extends ActivationContext {
+        private final boolean firstJoin;
+
+        public Context(Player p, boolean firstJoin) {
+            super(p);
+            this.firstJoin = firstJoin;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return JoinActivator.class;
+        }
+        // TODO: Message
+    }
 }

@@ -27,13 +27,10 @@ import fun.reactions.ReActions;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variables;
-import fun.reactions.module.basics.activators.FunctionActivator;
-import fun.reactions.module.basics.activators.MessageActivator;
-import fun.reactions.module.basics.activators.SignActivator;
-import fun.reactions.module.basics.contexts.*;
-import fun.reactions.module.worldguard.contexts.RegionContext;
-import fun.reactions.module.worldguard.contexts.RegionEnterContext;
-import fun.reactions.module.worldguard.contexts.RegionLeaveContext;
+import fun.reactions.module.basics.activators.*;
+import fun.reactions.module.worldguard.activators.RegionActivator;
+import fun.reactions.module.worldguard.activators.RegionEnterActivator;
+import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.TimeUtils;
@@ -79,51 +76,51 @@ public final class ContextManager {
     private ContextManager() {}
 
     public static @NotNull Optional<Variables> triggerTeleport(Player player, TeleportCause cause, Location to) {
-        TeleportContext context = new TeleportContext(player, cause, to);
+        TeleportActivator.Context context = new TeleportActivator.Context(player, cause, to);
         activate(context);
         return context.getVariables();
     }
 
     public static boolean triggerPrecommand(Player player, CommandSender sender, String fullCommand) {
-        CommandContext context = new CommandContext(player, sender, fullCommand);
+        CommandActivator.Context context = new CommandActivator.Context(player, sender, fullCommand);
         return context.isCancelled();
     }
 
     public static boolean triggerMobClick(Player player, LivingEntity mob) {
         if (mob == null) return false;
-        MobClickContext e = new MobClickContext(player, mob);
+        MobClickActivator.Context e = new MobClickActivator.Context(player, mob);
         activate(e);
         return e.isCancelled();
     }
 
     public static void triggerMobKill(Player player, LivingEntity mob) {
         if (mob == null) return;
-        MobKillContext e = new MobKillContext(player, mob);
+        MobKillActivator.Context e = new MobKillActivator.Context(player, mob);
         activate(e);
     }
 
     public static void triggerJoin(Player player, boolean joinfirst) {
-        JoinContext e = new JoinContext(player, joinfirst);
+        JoinActivator.Context e = new JoinActivator.Context(player, joinfirst);
         activate(e);
     }
 
     public static boolean triggerDoor(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
         if (!BlockUtils.isOpenable(event.getClickedBlock()) || event.getHand() != EquipmentSlot.HAND) return false;
-        DoorContext e = new DoorContext(event.getPlayer(), BlockUtils.getBottomDoor(event.getClickedBlock()));
+        DoorActivator.Context e = new DoorActivator.Context(event.getPlayer(), BlockUtils.getBottomDoor(event.getClickedBlock()));
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerItemConsume(PlayerItemConsumeEvent event) {
-        ItemConsumeContext ce = new ItemConsumeContext(event.getPlayer(), event.getItem(), event.getPlayer().getInventory().getItemInMainHand().isSimilar(event.getItem()));
+        ItemConsumeActivator.Context ce = new ItemConsumeActivator.Context(event.getPlayer(), event.getItem(), event.getPlayer().getInventory().getItemInMainHand().isSimilar(event.getItem()));
         activate(ce);
         return ce.isCancelled();
     }
 
     public static boolean triggerItemClick(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        ItemClickContext context = new ItemClickContext(
+        ItemClickActivator.Context context = new ItemClickActivator.Context(
                 player,
                 event.getHand() == EquipmentSlot.HAND
                         ? player.getInventory().getItemInMainHand()
@@ -135,7 +132,7 @@ public final class ContextManager {
 
     public static boolean triggerItemClick(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
-        ItemClickContext context = new ItemClickContext(event.getPlayer(), event.getItem(), event.getHand());
+        ItemClickActivator.Context context = new ItemClickActivator.Context(event.getPlayer(), event.getItem(), event.getHand());
         activate(context);
         return context.isCancelled();
     }
@@ -146,7 +143,7 @@ public final class ContextManager {
             return false;
         if (event.getHand() != EquipmentSlot.HAND) return false;
         if (event.getClickedBlock().getType() != Material.LEVER) return false;
-        LeverContext e = new LeverContext(event.getPlayer(), event.getClickedBlock());
+        LeverActivator.Context e = new LeverActivator.Context(event.getPlayer(), event.getClickedBlock());
         activate(e);
         return e.isCancelled();
     }
@@ -156,7 +153,7 @@ public final class ContextManager {
         Player deadplayer = event.getEntity();
         Player killer = EntityUtils.getKillerPlayer(deadplayer.getLastDamageCause());
         if (killer == null) return;
-        PvpKillContext pe = new PvpKillContext(killer, deadplayer);
+        PvpKillActivator.PvpKillContext pe = new PvpKillActivator.PvpKillContext(killer, deadplayer);
         activate(pe);
     }
 
@@ -165,7 +162,7 @@ public final class ContextManager {
         Player deadplayer = event.getEntity();
         LivingEntity killer = EntityUtils.getKillerEntity(deadplayer.getLastDamageCause());
         DeathCause ds = (killer == null) ? DeathCause.OTHER : (killer instanceof Player) ? DeathCause.PVP : DeathCause.PVE;
-        DeathContext pe = new DeathContext(killer, deadplayer, ds);
+        DeathActivator.Context pe = new DeathActivator.Context(killer, deadplayer, ds);
         activate(pe);
     }
 
@@ -176,7 +173,7 @@ public final class ContextManager {
         if (block == null || !Tag.BUTTONS.isTagged(block.getType())) return false;
         Switch button = (Switch) block.getBlockData();
         if (button.isPowered()) return false;
-        ButtonContext be = new ButtonContext(event.getPlayer(), event.getClickedBlock().getLocation());
+        ButtonActivator.Context be = new ButtonActivator.Context(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(be);
         return be.isCancelled();
     }
@@ -185,7 +182,7 @@ public final class ContextManager {
         for (Activator act : ReActions.getActivatorTypes().get(SignActivator.class).getActivators()) {
             SignActivator sign = (SignActivator) act;
             if (sign.checkMask(lines)) {
-                SignContext se = new SignContext(player, lines, loc, leftClick);
+                SignActivator.SignContext se = new SignActivator.SignContext(player, lines, loc, leftClick);
                 activate(se);
                 return se.isCancelled();
             }
@@ -239,7 +236,7 @@ public final class ContextManager {
             Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
                 for (Player player : target) {
                     // if (ReActions.getActivators().isStopped(player, id, true)) continue;
-                    ExecContext ce = new ExecContext(player, vars);
+                    FunctionActivator.LegacyContext ce = new FunctionActivator.LegacyContext(player, vars);
                     // TODO Custom ActivatorType for Exec
                     ReActions.getActivators().activate(ce, id);
                 }
@@ -262,7 +259,7 @@ public final class ContextManager {
         }
         // TODO Custom ActivatorType to handle exec stopping
         // if (ReActions.getActivators().isStopped(player, id, true)) return true;
-        ExecContext ce = new ExecContext(player, vars);
+        FunctionActivator.LegacyContext ce = new FunctionActivator.LegacyContext(player, vars);
         ReActions.getActivators().activate(ce, id);
         return true;
     }
@@ -271,13 +268,13 @@ public final class ContextManager {
         if (event.getAction() != Action.PHYSICAL) return false;
         // TODO EnumSet Plates?
         if (!(event.getClickedBlock().getType().name().endsWith("_PRESSURE_PLATE"))) return false;
-        PlateContext pe = new PlateContext(event.getPlayer(), event.getClickedBlock().getLocation());
+        PlateActivator.PlateContext pe = new PlateActivator.PlateContext(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(pe);
         return pe.isCancelled();
     }
 
     public static void triggerCuboid(final Player player) {
-        ReActions.getActivators().activate(new CuboidContext(player));
+        ReActions.getActivators().activate(new CuboidActivator.Context(player));
     }
 
     public static void triggerAllRegions(final Player player, final Location to, final Location from) {
@@ -299,7 +296,7 @@ public final class ContextManager {
         if (regionTo.isEmpty()) return;
         for (String rg : regionTo)
             if (!regionFrom.contains(rg)) {
-                RegionEnterContext wge = new RegionEnterContext(player, rg);
+                RegionEnterActivator.Context wge = new RegionEnterActivator.Context(player, rg);
                 activate(wge);
             }
     }
@@ -308,7 +305,7 @@ public final class ContextManager {
         if (regionFrom.isEmpty()) return;
         for (String rg : regionFrom)
             if (!regionTo.contains(rg)) {
-                RegionLeaveContext wge = new RegionLeaveContext(player, rg);
+                RegionLeaveActivator.Context wge = new RegionLeaveActivator.Context(player, rg);
                 activate(wge);
             }
     }
@@ -329,7 +326,7 @@ public final class ContextManager {
         String rg = "rg-" + region;
         if (!isTimeToRaiseEvent(player, rg, Cfg.worldguardRecheck, repeat)) return;
 
-        RegionContext wge = new RegionContext(player, region);
+        RegionActivator.Context wge = new RegionActivator.Context(player, region);
         activate(wge);
 
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureRegionCheck(playerName, region, true), 20L * Cfg.worldguardRecheck);
@@ -349,7 +346,7 @@ public final class ContextManager {
         for (Activator act : ReActions.getActivatorTypes().get(MessageActivator.class).getActivators()) {
             MessageActivator a = (MessageActivator) act;
             if (a.filterMessage(source, message)) {
-                MessageContext me = new MessageContext(player, a, message);
+                MessageActivator.Context me = new MessageActivator.Context(player, a, message);
                 activate(me);
                 return me.getVariables();
             }
@@ -361,18 +358,18 @@ public final class ContextManager {
         if (newValue.equalsIgnoreCase(prevValue)) return;
         Player player = Bukkit.getPlayerExact(playerName);
         if (!playerName.isEmpty() && player == null) return;
-        VariableContext ve = new VariableContext(player, var, newValue, prevValue);
+        VariableActivator.Context ve = new VariableActivator.Context(player, var, newValue, prevValue);
         activate(ve);
     }
 
     public static @NotNull Optional<Variables> triggerMobDamage(Player damager, LivingEntity entity, double damage, double finalDamage, EntityDamageEvent.DamageCause cause) {
-        MobDamageContext mde = new MobDamageContext(entity, damager, cause, damage, finalDamage);
+        MobDamageActivator.MobDamageContext mde = new MobDamageActivator.MobDamageContext(entity, damager, cause, damage, finalDamage);
         activate(mde);
         return mde.getVariables();
     }
 
     public static @NotNull Optional<Variables> triggerQuit(PlayerQuitEvent event) {
-        QuitContext qu = new QuitContext(event.getPlayer(), event.getQuitMessage());
+        QuitActivator.Context qu = new QuitActivator.Context(event.getPlayer(), event.getQuitMessage());
         activate(qu);
         return qu.getVariables();
     }
@@ -392,13 +389,13 @@ public final class ContextManager {
             default:
                 return false;
         }
-        BlockClickContext e = new BlockClickContext(event.getPlayer(), block, leftClick);
+        BlockClickActivator.Context e = new BlockClickActivator.Context(event.getPlayer(), block, leftClick);
         activate(e);
         return e.isCancelled();
     }
 
     public static @NotNull Optional<Variables> triggerInventoryClick(InventoryClickEvent event) {
-        InventoryClickContext e = new InventoryClickContext((Player) event.getWhoClicked(), event.getAction(),
+        InventoryClickActivator.Context e = new InventoryClickActivator.Context((Player) event.getWhoClicked(), event.getAction(),
                 event.getClick(), event.getInventory(), event.getSlotType(),
                 event.getCurrentItem(), event.getHotbarButton(),
                 event.getView(), event.getSlot());
@@ -407,49 +404,49 @@ public final class ContextManager {
     }
 
     public static @NotNull Optional<Variables> triggerDrop(Player player, Item item, int pickupDelay) {
-        DropContext e = new DropContext(player, item, pickupDelay);
+        DropActivator.Context e = new DropActivator.Context(player, item, pickupDelay);
         activate(e);
         return e.getVariables();
     }
 
     public static boolean triggerFlight(Player player, boolean flying) {
-        FlightContext e = new FlightContext(player, flying);
+        FlightActivator.Context e = new FlightActivator.Context(player, flying);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerEntityClick(Player player, Entity rightClicked) {
-        EntityClickContext e = new EntityClickContext(player, rightClicked);
+        EntityClickActivator.Context e = new EntityClickActivator.Context(player, rightClicked);
         activate(e);
         return e.isCancelled();
     }
 
     public static @NotNull Optional<Variables> triggerBlockBreak(Player player, Block block, boolean dropItems) {
-        BlockBreakContext e = new BlockBreakContext(player, block, dropItems);
+        BlockBreakActivator.Context e = new BlockBreakActivator.Context(player, block, dropItems);
         activate(e);
         return e.getVariables();
     }
 
     public static void triggerSneak(PlayerToggleSneakEvent event) {
-        SneakContext e = new SneakContext(event.getPlayer(), event.isSneaking());
+        SneakActivator.Context e = new SneakActivator.Context(event.getPlayer(), event.isSneaking());
         activate(e);
     }
 
     public static @NotNull Optional<Variables> triggerDamageByMob(EntityDamageByEntityEvent event) {
-        DamageByMobContext dm = new DamageByMobContext((Player) event.getEntity(), event.getDamager(), event.getCause(), event.getDamage(), event.getDamage());
+        DamageByMobActivator.Context dm = new DamageByMobActivator.Context((Player) event.getEntity(), event.getDamager(), event.getCause(), event.getDamage(), event.getDamage());
         activate(dm);
         return dm.getVariables();
     }
 
     public static @NotNull Optional<Variables> triggerDamageByBlock(EntityDamageByBlockEvent event, Block blockDamager) {
         double damage = event.getDamage();
-        DamageByBlockContext db = new DamageByBlockContext((Player) event.getEntity(), blockDamager, event.getCause(), damage, event.getFinalDamage());
+        DamageByBlockActivator.Context db = new DamageByBlockActivator.Context((Player) event.getEntity(), blockDamager, event.getCause(), damage, event.getFinalDamage());
         activate(db);
         return db.getVariables();
     }
 
     public static @NotNull Optional<Variables> triggerDamage(EntityDamageEvent event, String source) {
-        DamageContext de = new DamageContext(
+        DamageActivator.Context de = new DamageActivator.Context(
                 (Player) event.getEntity(), 
                 event.getCause(), 
                 source, 
@@ -461,31 +458,31 @@ public final class ContextManager {
     }
 
     public static @NotNull Optional<Variables> triggerPickupItem(Player player, Item item, int pickupDelay) {
-        PickupItemContext e = new PickupItemContext(player, item, pickupDelay);
+        PickupItemActivator.Context e = new PickupItemActivator.Context(player, item, pickupDelay);
         activate(e);
         return e.getVariables();
     }
 
     public static boolean triggerGamemode(Player player, GameMode gameMode) {
-        GameModeContext e = new GameModeContext(player, gameMode);
+        GameModeActivator.Context e = new GameModeActivator.Context(player, gameMode);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerGod(Player player, boolean god) {
-        GodContext e = new GodContext(player, god);
+        GodActivator.Context e = new GodActivator.Context(player, god);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerItemHeld(Player player, int newSlot, int previousSlot) {
-        ItemHeldContext e = new ItemHeldContext(player, newSlot, previousSlot);
+        ItemHeldActivator.Context e = new ItemHeldActivator.Context(player, newSlot, previousSlot);
         activate(e);
         return e.isCancelled();
     }
 
     public static boolean triggerWeatherChange(String world, boolean raining) {
-        WeatherChangeContext context = new WeatherChangeContext(world, raining);
+        WeatherChangeActivator.Context context = new WeatherChangeActivator.Context(world, raining);
         activate(context);
         return context.isCancelled();
     }

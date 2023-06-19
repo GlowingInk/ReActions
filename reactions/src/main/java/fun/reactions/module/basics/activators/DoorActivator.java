@@ -27,18 +27,21 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.DoorContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.Utils;
+import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Map;
 
 // TODO Use custom enum or TriBoolean
 public class DoorActivator extends Activator implements Locatable {
@@ -84,8 +87,8 @@ public class DoorActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        DoorContext de = (DoorContext) context;
-        if (de.getDoorBlock() == null) return false;
+        Context de = (Context) context;
+        if (de.doorBlock == null) return false;
         if (!isLocatedAt(de.getDoorLocation())) return false;
         if (this.state.equalsIgnoreCase("open") && de.isDoorOpened()) return false;
         return !this.state.equalsIgnoreCase("close") || (de.isDoorOpened());
@@ -128,5 +131,37 @@ public class DoorActivator extends Activator implements Locatable {
                 "; state:" + this.state.toUpperCase(Locale.ROOT) +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+        public static final String DOOR_LOCATION = "door_loc";
+
+        private final Block doorBlock;
+
+        public Context(Player p, Block block) {
+            super(p);
+            this.doorBlock = block;
+        }
+
+        public boolean isDoorOpened() {
+            return BlockUtils.isOpen(doorBlock);
+        }
+
+        public Location getDoorLocation() {
+            return doorBlock.getLocation();
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return DoorActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    DOOR_LOCATION, Variable.simple(LocationUtils.locationToString(doorBlock))
+            );
+        }
     }
 }

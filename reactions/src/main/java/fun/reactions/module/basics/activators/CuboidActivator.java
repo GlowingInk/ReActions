@@ -107,4 +107,15 @@ public class CuboidActivator extends Activator implements Locatable {
             };
         }
     }
+
+    public static class Context extends ActivationContext {
+        public Context(Player player) {
+            super(player);
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return CuboidActivator.class;
+        }
+    }
 }

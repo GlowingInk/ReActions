@@ -26,7 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.BlockClickContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.item.ItemUtils;
@@ -37,7 +37,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 // TODO Add Hand
 public class BlockClickActivator extends Activator implements Locatable {
@@ -68,10 +73,10 @@ public class BlockClickActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        BlockClickContext bce = (BlockClickContext) context;
-        if (bce.getBlock() == null) return false;
-        if (!isActivatorBlock(bce.getBlock())) return false;
-        return click.checkRight(!bce.isLeftClick());
+        Context bce = (Context) context;
+        if (bce.block == null) return false;
+        if (!isActivatorBlock(bce.block)) return false;
+        return click.checkRight(!bce.leftClick);
     }
 
     private boolean isActivatorBlock(Block block) {
@@ -121,4 +126,30 @@ public class BlockClickActivator extends Activator implements Locatable {
         return (this.blockType == null || this.blockType.isEmpty()) && (this.blockLocation == null || this.blockLocation.isEmpty());
     }
     */
+
+    public static class Context extends ActivationContext {
+        private final Block block;
+        private final boolean leftClick;
+
+        public Context(Player p, Block block, boolean leftClick) {
+            super(p);
+            this.block = block;
+            this.leftClick = leftClick;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return BlockClickActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
+                    "blocktype", Variable.simple(block.getType()),
+                    "block", Variable.simple(block.getType()) // FIXME Why there is a copy?
+            );
+        }
+    }
 }

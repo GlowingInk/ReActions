@@ -25,12 +25,19 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.ItemClickContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.enums.HandType;
+import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemClickActivator extends Activator {
     private final VirtualItem item;
@@ -56,8 +63,8 @@ public class ItemClickActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        ItemClickContext ie = (ItemClickContext) context;
-        return hand.isValidFor(ie.getHand()) && item.isSimilar(ie.getItem());
+        Context ie = (Context) context;
+        return hand.isValidFor(ie.hand) && item.isSimilar(ie.item);
     }
 
     @Override
@@ -72,5 +79,33 @@ public class ItemClickActivator extends Activator {
                 this.item +
                 "; hand:" + hand +
                 ")";
+    }
+
+    public static class Context extends ActivationContext {
+        private final EquipmentSlot hand;
+        private final ItemStack item;
+
+        public Context(Player p, ItemStack item, EquipmentSlot hand) {
+            super(p);
+            this.item = item;
+            this.hand = hand;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return ItemClickActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
+            if (item != null) {
+                vars.put("item", Variable.lazy(() -> VirtualItem.asString(item)));
+                vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
+            }
+            return vars;
+        }
     }
 }

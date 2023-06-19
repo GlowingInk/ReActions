@@ -26,17 +26,22 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.CommandContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Aliased.Names("CMD")
@@ -97,22 +102,22 @@ public class CommandActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        CommandContext cs = (CommandContext) context;
-        if (!consoleAllowed && cs.getSender() instanceof ConsoleCommandSender) return false;
+        Context cs = (Context) context;
+        if (!consoleAllowed && cs.sender instanceof ConsoleCommandSender) return false;
         if (checkExact) {
             if (useRegex) {
-                return pattern.matcher(cs.getCommand()).matches();
+                return pattern.matcher(cs.command).matches();
             } else
                 return starts ?
-                        cs.getCommand().toLowerCase(Locale.ROOT).startsWith(command) :
-                        command.equalsIgnoreCase(cs.getCommand());
+                        cs.command.toLowerCase(Locale.ROOT).startsWith(command) :
+                        command.equalsIgnoreCase(cs.command);
         } else {
-            if (args.size() != cs.getArgs().size() + 1) return false;
-            if (!args.get(0).equalsIgnoreCase(cs.getLabel())) return false;
-            for (int i = 1; i <= cs.getArgs().size(); i++) {
+            if (args.size() != cs.args.size() + 1) return false;
+            if (!args.get(0).equalsIgnoreCase(cs.label)) return false;
+            for (int i = 1; i <= cs.args.size(); i++) {
                 String arg = args.get(i);
                 if (arg.equals("*")) continue;
-                if (!arg.equalsIgnoreCase(cs.getArgs().get(i - 1))) return false;
+                if (!arg.equalsIgnoreCase(cs.args.get(i - 1))) return false;
             }
             return true;
         }
@@ -138,5 +143,68 @@ public class CommandActivator extends Activator {
                 "; console:" + this.consoleAllowed +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+
+        private final String label, command;
+        private final List<String> args;
+        private final CommandSender sender;
+
+        public Context(Player p, CommandSender sender, String command) {
+            super(p);
+            this.sender = sender;
+            this.command = command;
+            String[] split = command.split("\\s");
+            this.label = split[0];
+            this.args = Arrays.asList(Arrays.copyOfRange(split, 1, split.length));
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return CommandActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put(CANCEL_EVENT, Variable.property(false));
+            String[] start = label.split(":", 2);
+            if (start.length == 1) {
+                vars.put("prefix", Variable.simple(start[0]));
+                vars.put("label", Variable.simple(start[0]));
+            } else {
+                vars.put("prefix", Variable.simple(start[0]));
+                vars.put("label", Variable.simple(start[1]));
+            }
+            vars.put("args", Variable.lazy(() -> String.join(" ", args)));
+            vars.put("args0", Variable.lazy(() -> String.join(" ", args)));
+            vars.put("command", Variable.simple(command));
+            vars.put("argscount", Variable.simple(args.size()));
+            vars.put("arg0", Variable.simple(label));
+            for (int i = 0; i < args.size(); i++) {
+                int j = i + 1;
+                vars.put("arg" + j, Variable.simple(args.get(i)));
+                int index = i;
+                vars.put("args" + j, Variable.lazy(() -> String.join(" ", args.subList(index, args.size()))));
+            }
+            return vars;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getCommand() {
+            return command;
+        }
+
+        public CommandSender getSender() {
+            return sender;
+        }
+
+        public List<String> getArgs() {
+            return args;
+        }
     }
 }

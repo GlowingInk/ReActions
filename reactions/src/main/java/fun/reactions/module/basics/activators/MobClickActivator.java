@@ -26,7 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.module.basics.contexts.MobClickContext;
+import fun.reactions.model.environment.Variable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
@@ -36,9 +36,13 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Map;
+
+import static fun.reactions.model.environment.Variable.simple;
 
 public class MobClickActivator extends Activator implements Locatable {
     // TODO: EntityType
@@ -77,10 +81,10 @@ public class MobClickActivator extends Activator implements Locatable {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        MobClickContext me = (MobClickContext) context;
+        Context me = (Context) context;
         if (mobType.isEmpty()) return false;
-        if (me.getEntity() == null) return false;
-        return isActivatorMob(me.getEntity());
+        if (me.entity == null) return false;
+        return isActivatorMob(me.entity);
     }
 
     private boolean checkLocations(LivingEntity mob) {
@@ -132,5 +136,29 @@ public class MobClickActivator extends Activator implements Locatable {
                 " loc:" + (mobLocation.isEmpty() ? "-" : mobLocation) +
                 ")";
         return sb;
+    }
+
+    public static class Context extends ActivationContext {
+        private final LivingEntity entity;
+
+        public Context(Player p, LivingEntity entity) {
+            super(p);
+            this.entity = entity;
+        }
+
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return MobClickActivator.class;
+        }
+
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
+                    "mobtype", Variable.simple(entity.getType()),
+                    "mobname", simple(EntityUtils.getEntityDisplayName(entity))
+            );
+        }
     }
 }

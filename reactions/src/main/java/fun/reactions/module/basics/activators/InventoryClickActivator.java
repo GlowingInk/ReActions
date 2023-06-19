@@ -3,21 +3,31 @@ package fun.reactions.module.basics.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.module.basics.contexts.InventoryClickContext;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.util.Utils;
+import fun.reactions.util.enums.SafeEnum;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class InventoryClickActivator extends Activator {
     // That's pretty freaky stuff
     private final String inventoryName;
-    private final ClickType click;
-    private final InventoryAction action;
-    private final InventoryType inventory;
-    private final SlotType slotType;
+    private final SafeEnum<ClickType> click;
+    private final SafeEnum<InventoryAction> action;
+    private final SafeEnum<InventoryType> inventory;
+    private final SafeEnum<SlotType> slotType;
     private final String numberKey;
     private final String slotStr;
     private final VirtualItem item;
@@ -26,13 +36,26 @@ public class InventoryClickActivator extends Activator {
                                     InventoryType inventory, SlotType slotType, String numberKey, String slotStr, String itemStr) {
         super(base);
         this.inventoryName = inventoryName;
-        this.click = click;
-        this.action = action;
-        this.inventory = inventory;
-        this.slotType = slotType;
+        this.click = new SafeEnum<>(click);
+        this.action = new SafeEnum<>(action);
+        this.inventory = new SafeEnum<>(inventory);
+        this.slotType = new SafeEnum<>(slotType);
         this.numberKey = numberKey;
         this.slotStr = slotStr;
         this.item = VirtualItem.fromString(itemStr);
+    }
+
+    @Override
+    public boolean checkContext(@NotNull ActivationContext context) {
+        Context pice = (Context) context;
+        return (inventoryName.isEmpty() || pice.inventoryName.equalsIgnoreCase(inventoryName)) &&
+                click.isValidFor(pice.clickType) &&
+                action.isValidFor(pice.action) &&
+                inventory.isValidFor(pice.inventoryType) &&
+                slotType.isValidFor(pice.slotType) &&
+                checkItem(pice.item, pice.numberKey, pice.getBottomInventory()) &&
+                checkNumberKey(pice.numberKey) &&
+                checkSlot(pice.slot);
     }
 
     private static String getNumberKeyByName(String keyStr) {
@@ -58,10 +81,10 @@ public class InventoryClickActivator extends Activator {
 
     public static InventoryClickActivator create(Logic base, Parameters param) {
         String inventoryName = param.getString("name", "");
-        ClickType click = ClickType.getByName(param.getString("click", "ANY"));
-        InventoryAction action = InventoryAction.getByName(param.getString("action", "ANY"));
-        InventoryType inventory = InventoryType.getByName(param.getString("inventory", "ANY"));
-        SlotType slotType = SlotType.getByName(param.getString("slotType", "ANY"));
+        ClickType click = param.getEnum("click", ClickType.class);
+        InventoryAction action = param.getEnum("action", InventoryAction.class);
+        InventoryType inventory = param.getEnum("inventory", InventoryType.class);
+        SlotType slotType = param.getEnum("slotType", SlotType.class);
         String numberKey = getNumberKeyByName(param.getString("key", "ANY"));
         String slotStr = getSlotByName(param.getString("slot", "ANY"));
         String itemStr = param.getString("item");
@@ -70,29 +93,14 @@ public class InventoryClickActivator extends Activator {
 
     public static InventoryClickActivator load(Logic base, ConfigurationSection cfg) {
         String inventoryName = cfg.getString("name", "");
-        ClickType click = ClickType.getByName(cfg.getString("click-type", "ANY"));
-        InventoryAction action = InventoryAction.getByName(cfg.getString("action-type", "ANY"));
-        InventoryType inventory = InventoryType.getByName(cfg.getString("inventory-type", "ANY"));
-        SlotType slotType = SlotType.getByName(cfg.getString("slot-type", "ANY"));
+        ClickType click = Utils.getEnum(ClickType.class, cfg.getString("click-type", ""));
+        InventoryAction action = Utils.getEnum(InventoryAction.class, cfg.getString("action-type", ""));
+        InventoryType inventory = Utils.getEnum(InventoryType.class, cfg.getString("inventory-type", ""));
+        SlotType slotType = Utils.getEnum(SlotType.class, cfg.getString("slot-type", ""));
         String numberKey = cfg.getString("key", "");
         String slotStr = cfg.getString("slot", "");
         String itemStr = cfg.getString("item", "");
         return new InventoryClickActivator(base, inventoryName, click, action, inventory, slotType, numberKey, slotStr, itemStr);
-    }
-
-    @Override
-    public boolean checkContext(@NotNull ActivationContext context) {
-        InventoryClickContext pice = (InventoryClickContext) context;
-        if (!inventoryName.isEmpty() && !pice.getInventoryName().equalsIgnoreCase(inventoryName)) return false;
-        if (pice.getClickType() == null) return false;
-        if (!clickCheck(pice.getClickType())) return false;
-        if (!actionCheck(pice.getAction())) return false;
-        if (!inventoryCheck(pice.getInventoryType())) return false;
-        if (!slotTypeCheck(pice.getSlotType())) return false;
-        int key = pice.getNumberKey();
-        if (!checkItem(pice.getItem(), key, pice.getBottomInventory())) return false;
-        if (!checkNumberKey(key)) return false;
-        return checkSlot(pice.getSlot());
     }
 
     @Override
@@ -105,26 +113,6 @@ public class InventoryClickActivator extends Activator {
         cfg.set("key", numberKey);
         cfg.set("slot", slotStr);
         cfg.set("item", item.toString());
-    }
-
-    private boolean clickCheck(org.bukkit.event.inventory.ClickType ct) {
-        if (click.name().equals("ANY")) return true;
-        return ct.name().equals(click.name());
-    }
-
-    private boolean actionCheck(org.bukkit.event.inventory.InventoryAction act) {
-        if (action.name().equals("ANY")) return true;
-        return act.name().equals(action.name());
-    }
-
-    private boolean inventoryCheck(org.bukkit.event.inventory.InventoryType it) {
-        if (inventory.name().equals("ANY")) return true;
-        return it.name().equals(inventory.name());
-    }
-
-    private boolean slotTypeCheck(org.bukkit.event.inventory.InventoryType.SlotType sl) {
-        if (slotType.name().equals("ANY")) return true;
-        return sl.name().equals(slotType.name());
     }
 
     private boolean checkItem(ItemStack item, int key, Inventory bottomInventory) {
@@ -157,117 +145,56 @@ public class InventoryClickActivator extends Activator {
         return sb;
     }
 
-    enum ClickType {
-        ANY,
-        CONTROL_DROP,
-        CREATIVE,
-        DROP,
-        DOUBLE_CLICK,
-        LEFT,
-        MIDDLE,
-        NUMBER_KEY,
-        RIGHT,
-        SHIFT_LEFT,
-        SHIFT_RIGHT,
-        UNKNOWN,
-        WINDOW_BORDER_LEFT,
-        WINDOW_BORDER_RIGHT;
+    public static class Context extends ActivationContext {
+        public static final String ITEM = "item";
 
-        public static ClickType getByName(String clickStr) {
-            if (clickStr != null) {
-                for (ClickType clickType : values()) {
-                    if (clickStr.equalsIgnoreCase(clickType.name())) {
-                        return clickType;
-                    }
-                }
-            }
-            return ClickType.ANY;
+        private final ItemStack item;
+        private final InventoryAction action;
+        private final ClickType clickType;
+        private final SlotType slotType;
+        private final InventoryType inventoryType;
+        private final int numberKey;
+        private final int slot;
+        private final String inventoryName;
+        private final InventoryView inventoryView;
+
+        public Context(Player p, InventoryAction action, ClickType clickType, Inventory inventory, SlotType slotType,
+                       ItemStack item, int numberKey, InventoryView inventoryView, int slot) {
+            super(p);
+            this.inventoryName = inventoryView.getTitle();
+            this.action = action;
+            this.clickType = clickType;
+            this.inventoryType = inventory.getType();
+            this.slotType = slotType;
+            this.item = item;
+            this.numberKey = numberKey;
+            this.slot = slot;
+            this.inventoryView = inventoryView;
         }
-    }
 
-    enum InventoryAction {
-        ANY,
-        CLONE_STACK,
-        COLLECT_TO_CURSOR,
-        DROP_ALL_CURSOR,
-        DROP_ALL_SLOT,
-        DROP_ONE_CURSOR,
-        DROP_ONE_SLOT,
-        HOTBAR_MOVE_AND_READD,
-        HOTBAR_SWAP,
-        MOVE_TO_OTHER_INVENTORY,
-        NOTHING,
-        PICKUP_ALL,
-        PICKUP_HALF,
-        PICKUP_ONE,
-        PICKUP_SOME,
-        PLACE_ALL,
-        PLACE_ONE,
-        PLACE_SOME,
-        SWAP_WITH_CURSOR,
-        UNKNOWN;
-
-        public static InventoryAction getByName(String actionStr) {
-            if (actionStr != null) {
-                for (InventoryAction action : values()) {
-                    if (actionStr.equalsIgnoreCase(action.name())) {
-                        return action;
-                    }
-                }
-            }
-            return InventoryAction.ANY;
+        @Override
+        public @NotNull Class<? extends Activator> getType() {
+            return InventoryClickActivator.class;
         }
-    }
 
-    enum InventoryType {
-        ANY,
-        ANVIL,
-        BEACON,
-        BREWING,
-        CHEST,
-        CRAFTING,
-        CREATIVE,
-        DISPENSER,
-        DROPPER,
-        ENCHANTING,
-        ENDER_CHEST,
-        HOPPER,
-        MERCHANT,
-        PLAYER,
-        SHULKER_BOX,
-        WORKBENCH;
-
-        public static InventoryType getByName(String inventoryStr) {
-            if (inventoryStr != null) {
-                for (InventoryType inventoryType : values()) {
-                    if (inventoryStr.equalsIgnoreCase(inventoryType.name())) {
-                        return inventoryType;
-                    }
-                }
-            }
-            return InventoryType.ANY;
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            return Map.of(
+                    CANCEL_EVENT, Variable.property(false),
+                    ITEM, Variable.lazy(() -> VirtualItem.asString(item)),
+                    "name", Variable.simple(inventoryName),
+                    "click", Variable.simple(clickType),
+                    "action", Variable.simple(action),
+                    "slottype", Variable.simple(slotType),
+                    "inventory", Variable.simple(inventoryType),
+                    "key", Variable.simple(numberKey + 1),
+                    "itemkey", numberKey > -1 ? Variable.lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : Variable.simple(""),
+                    "slot", Variable.simple(slot)
+            );
         }
-    }
 
-    enum SlotType {
-        ANY,
-        ARMOR,
-        CONTAINER,
-        CRAFTING,
-        FUEL,
-        OUTSIDE,
-        QUICKBAR,
-        RESULT;
-
-        public static SlotType getByName(String slotStr) {
-            if (slotStr != null) {
-                for (SlotType slotType : values()) {
-                    if (slotStr.equalsIgnoreCase(slotType.name())) {
-                        return slotType;
-                    }
-                }
-            }
-            return SlotType.ANY;
+        public Inventory getBottomInventory() {
+            return this.inventoryView.getBottomInventory();
         }
     }
 }
