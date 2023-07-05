@@ -24,6 +24,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
     private final boolean consoleAllowed;
     private final boolean ignoreAfter;
     private final int priority;
+    private final boolean tab;
 
     public ArgumentsChain(String chain, ConfigurationSection argSection) {
         execs = new EnumMap<>(ExecType.class);
@@ -39,6 +40,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
             arguments.add(argument);
         }
         this.priority = priority;
+        this.tab = argSection.getBoolean("tab", true);
     }
 
     private void loadExecs(ConfigurationSection argSection) {
@@ -61,7 +63,7 @@ public class ArgumentsChain implements Comparable<ArgumentsChain> {
      * @param args     Current arguments
      */
     public void tabComplete(List<String> complete, CommandSender sender, String[] args) {
-        if (args.length > arguments.size()) return;
+        if (!tab || args.length > arguments.size()) return;
 
         if (sender instanceof ConsoleCommandSender) {
             if (!consoleAllowed) return;

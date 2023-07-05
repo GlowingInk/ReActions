@@ -42,7 +42,6 @@ public class MoneyTakeAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         if (!RaVault.isEconomyConnected()) return false;
-        if (params.size() == 0) return false;
         if (params.size() <= 2) params = parseOldFormat(player, params.origin());
         String amountStr = params.getString("amount");
         if (amountStr.isEmpty()) return false;

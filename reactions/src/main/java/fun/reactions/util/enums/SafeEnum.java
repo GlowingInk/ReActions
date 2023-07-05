@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public record SafeEnum<E extends Enum<E>>(@Nullable E instance) {
-    public boolean isValidFor(E other) {
+    public boolean isValidFor(@Nullable E other) {
         return instance == null || instance == other;
     }
 
