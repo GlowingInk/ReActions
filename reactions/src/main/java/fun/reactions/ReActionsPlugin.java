@@ -52,6 +52,7 @@ import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -136,7 +137,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         pluginManager.registerEvents(userCommandsManager, this);
         MoveListener.init();
         GodModeListener.init();
-        new Metrics(this, 1894);
+        Metrics metrics = new Metrics(this, 19363);
+        metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);
@@ -146,6 +148,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public void onDisable() {
         getServer().getLogger().removeHandler(logHandler);
+        savingManager.saveSync();
     }
 
     @Override

@@ -4,15 +4,13 @@ import fun.reactions.ReActions;
 import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.WorldSaveEvent;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class SavingManager implements Listener {
+public class SavingManager implements Listener, Saveable {
     private final Set<Saveable> saveables;
     private final Server server;
 
@@ -34,12 +32,8 @@ public class SavingManager implements Listener {
         }
     }
 
-    @EventHandler
-    public void onDisable(PluginDisableEvent event) {
-        Plugin plugin = event.getPlugin();
-        if (plugin.getName().equals("ReActions")) {
-            plugin.getSLF4JLogger().info("Saving data...");
-            saveables.forEach(Saveable::saveSync);
-        }
+    @Override
+    public void saveSync() {
+        saveables.forEach(Saveable::saveSync);
     }
 }
