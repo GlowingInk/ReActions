@@ -69,6 +69,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
 
+    private LogHandler logHandler; // TODO Move to ContextManager
+
     @Override
     public void onLoad() {
         Cfg.load(getConfig());
@@ -126,7 +128,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         LocationHolder.loadLocs();
         SQLManager.init();
         InventoryMenu.init(this);
-        getServer().getLogger().addHandler(new LogHandler());
+        getServer().getLogger().addHandler(logHandler = new LogHandler());
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
         pluginManager.registerEvents(new BukkitListener(), this);
@@ -139,6 +141,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);
         });
+    }
+
+    @Override
+    public void onDisable() {
+        getServer().getLogger().removeHandler(logHandler);
     }
 
     @Override
