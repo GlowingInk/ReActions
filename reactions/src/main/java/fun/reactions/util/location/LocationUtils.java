@@ -40,12 +40,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class LocationUtils { // TODO: Requires refactoring
-    public static final Location ZERO_LOCATION = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
     public static final int CHUNK_BITS = 4;
 
     private LocationUtils() {}
@@ -277,8 +274,8 @@ public final class LocationUtils { // TODO: Requires refactoring
         return locs;
     }
 
-    public static boolean equals(Location loc1, Location loc2) {
-        return loc1.getWorld().equals(loc2.getWorld()) &&
+    public static boolean equalsPositionally(Location loc1, Location loc2) {
+        return loc1.getWorld() == loc2.getWorld() &&
                 loc1.getX() == loc2.getX() &&
                 loc1.getZ() == loc2.getZ() &&
                 loc1.getY() == loc2.getY();
@@ -286,27 +283,16 @@ public final class LocationUtils { // TODO: Requires refactoring
 
     public static String parsePlaceholders(Player p, String param) {
         if (p == null) return param;
-        Location targetBlock = null;
-        try {
-            targetBlock = p.getTargetBlock(null, 100).getLocation();
-        } catch (NullPointerException ignored) {
-        }
-        Map<String, Location> locs = new HashMap<>();
-        locs.put("%here%", p.getLocation());
-        locs.put("%eye%", p.getEyeLocation());
-        locs.put("%head%", p.getEyeLocation());
-        locs.put("%viewpoint%", targetBlock);
-        locs.put("%view%", targetBlock);
-        locs.put("%selection%", LocationHolder.getHeld(p));
-        locs.put("%select%", LocationHolder.getHeld(p));
-        locs.put("%sel%", LocationHolder.getHeld(p));
-        String newparam = param;
-        for (String key : locs.keySet()) {
-            Location l = locs.get(key);
-            if (l == null) continue;
-            newparam = newparam.replace(key, locationToString(l));
-        }
-        return newparam;
+        Location targetLoc = p.getTargetBlock(null, 100).getLocation();
+        return param
+                .replace("%here%", locationToString(p.getLocation()))
+                .replace("%eye%", locationToString(p.getEyeLocation()))
+                .replace("%head%", locationToString(p.getEyeLocation()))
+                .replace("%viewpoint%", locationToString(targetLoc))
+                .replace("%view%", locationToString(targetLoc))
+                .replace("%selection%", locationToString(LocationHolder.getHeld(p)))
+                .replace("%select%", locationToString(LocationHolder.getHeld(p)))
+                .replace("%sel%", locationToString(LocationHolder.getHeld(p)));
     }
 
     public static Vector calculateVelocity(Location locFrom, Location locTo, int heightGain) {

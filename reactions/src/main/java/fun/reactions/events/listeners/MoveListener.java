@@ -59,7 +59,7 @@ public class MoveListener implements Listener {
 
     private static void processMove(Player player, Location from, Location to) {
         PushBack.rememberLocations(player, from, to);
-        PlayerEvent event = LocationUtils.equals(from, to) ?
+        PlayerEvent event = LocationUtils.equalsPositionally(from, to) ?
                 new PlayerStayEvent(player, to) : new PlayerMoveByBlockEvent(player, to, from);
         Bukkit.getPluginManager().callEvent(event);
     }

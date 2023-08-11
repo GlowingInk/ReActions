@@ -40,6 +40,10 @@ public final class Environment {
         return this.player;
     }
 
+    public boolean hasPlayer() {
+        return this.player != null;
+    }
+
     public @NotNull Variables getVariables() {
         return variables;
     }

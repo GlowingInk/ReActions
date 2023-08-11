@@ -22,13 +22,12 @@
 
 package fun.reactions.module.basics.actions;
 
-import fun.reactions.ReActions;
+import fun.reactions.PersistentVariablesManager;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -47,37 +46,43 @@ public class PersistentVarActions implements Action, Aliased {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
         Parameters params = Parameters.fromString(paramsStr);
-        Player p = env.getPlayer();
+        String playerName = (env.getPlayer() != null && this.personal) ? env.getPlayer().getName() : "";
 
-        String player = (p != null && this.personal) ? p.getName() : "";
-
-        String var;
-        String value;
+        String varName;
+        String change;
 
         if (params.contains("id")) {
-            var = params.getString("id");
-            value = params.getString("value");
-            player = params.getString("player", player);
-            if (var.isEmpty()) return false;
+            varName = params.getString("id");
+            change = params.getString("value");
+            playerName = params.getString("player", playerName);
+            if (varName.isEmpty()) return false;
         } else {
             String[] ln = params.origin().split("/", 2);
             if (ln.length == 0) return false;
-            var = ln[0];
-            value = (ln.length > 1) ? ln[1] : "";
+            varName = ln[0];
+            change = (ln.length > 1) ? ln[1] : "";
         }
 
-        if (this.personal && player.isEmpty()) return false;
+        if (this.personal && playerName.isEmpty()) return false;
 
+        PersistentVariablesManager varsManager = env.getPlatform().getVariables();
         switch (this.actType) {
-            case SET -> ReActions.getVariables().setVariable(player, var, value);
-            case CLEAR -> ReActions.getVariables().removeVariable(player, var);
+            case SET -> varsManager.setVariable(playerName, varName, change);
+            case CLEAR -> varsManager.removeVariable(playerName, varName);
             case INCREASE, DECREASE -> {
-                String variable = ReActions.getVariables().getVariable(player, var);
-                if (variable == null || !NumberUtils.isNumber(variable)) return false;
-                double variableValue = Double.parseDouble(variable);
-                double mod = value.isEmpty() || !(NumberUtils.isNumber(value)) ? 1 : Double.parseDouble(value);
-                variableValue += actType == Type.INCREASE ? mod : -mod;
-                ReActions.getVariables().setVariable(player, var, NumberUtils.format(variableValue));
+                String varValue = varsManager.getVariable(playerName, varName);
+                double varNumberValue;
+                if (varValue == null) {
+                    varNumberValue = 0;
+                } else if (NumberUtils.isNumber(varValue)) {
+                    varNumberValue = Double.parseDouble(varValue);
+                } else {
+                    return false;
+                }
+                double mod = change.isEmpty() || !(NumberUtils.isNumber(change)) ? 1 : Double.parseDouble(change);
+                varNumberValue += actType == Type.INCREASE ? mod : -mod;
+                varsManager.setVariable(playerName, varName, NumberUtils.format(varNumberValue));
+
             }
         }
         return true;
