@@ -8,8 +8,8 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
-@Aliased.Names({"NEARBY", "NEAR_TO", "IS_NEAR"})
-public class NearFlag implements Flag {
+@Aliased.Names({"NEARBY", "NEAR_TO", "IS_NEAR", "NEAR"})
+public class DistanceFlag implements Flag {
     @Override
     public boolean requiresPlayer() {
         return false;
@@ -26,9 +26,9 @@ public class NearFlag implements Flag {
                 return false;
             }
         }
-        Location center = params.get("center", LocationUtils::parseLocation);
+        Location center = params.get("target", LocationUtils::parseLocation);
         if (center == null) return false;
-        double distance = params.getDouble("distance");
+        double distance = params.getDouble("blocks");
         return distance <= 0
                 ? LocationUtils.equalsPositionally(center, loc)
                 : center.getWorld() == loc.getWorld() && center.distanceSquared(loc) <= distance*distance;
@@ -36,6 +36,6 @@ public class NearFlag implements Flag {
 
     @Override
     public @NotNull String getName() {
-        return "NEAR";
+        return "DISTANCE";
     }
 }

@@ -216,7 +216,7 @@ public class ReActionsModule implements Module {
                 new CheckOnlineFlag(),
                 new RegexFlag(),
                 new HeldSlotFlag(),
-                new NearFlag()
+                new DistanceFlag()
         );
     }
 
