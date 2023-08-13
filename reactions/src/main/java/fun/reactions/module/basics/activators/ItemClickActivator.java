@@ -51,7 +51,7 @@ public class ItemClickActivator extends Activator {
 
     public static ItemClickActivator create(Logic base, Parameters param) {
         String item = param.getString("item", param.origin());
-        HandType hand = HandType.getByName(param.getString("hand", "ANY"));
+        HandType hand = param.get("hand", HandType::getByName);
         return new ItemClickActivator(base, item, hand);
     }
 
@@ -100,7 +100,7 @@ public class ItemClickActivator extends Activator {
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
             vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "OFF"));
+            vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
             if (item != null) {
                 vars.put("item", Variable.lazy(() -> VirtualItem.asString(item)));
                 vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));

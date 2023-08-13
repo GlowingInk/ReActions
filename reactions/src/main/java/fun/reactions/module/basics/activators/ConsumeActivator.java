@@ -26,36 +26,41 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.util.enums.HandType;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Aliased.Names({"CONSUME", "EAT"})
-public class ItemConsumeActivator extends Activator {
+@Aliased.Names({"ITEM_CONSUME", "EAT"})
+public class ConsumeActivator extends Activator {
     private final VirtualItem item;
-    // TODO: Hand option
+    private final HandType hand;
 
-    private ItemConsumeActivator(Logic base, String item) {
+    private ConsumeActivator(Logic base, String item, HandType hand) {
         super(base);
         this.item = VirtualItem.fromString(item);
+        this.hand = hand;
     }
 
-    public static ItemConsumeActivator create(Logic base, Parameters param) {
+    public static ConsumeActivator create(Logic base, Parameters param) {
         String item = param.getString("item", param.origin());
-        return new ItemConsumeActivator(base, item);
+        HandType hand = param.get("hand", HandType::getByName);
+        return new ConsumeActivator(base, item, hand);
     }
 
-    public static ItemConsumeActivator load(Logic base, ConfigurationSection cfg) {
+    public static ConsumeActivator load(Logic base, ConfigurationSection cfg) {
         String item = cfg.getString("item", "");
-        return new ItemConsumeActivator(base, item);
+        HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
+        return new ConsumeActivator(base, item, hand);
     }
 
     public boolean checkContext(@NotNull ActivationContext context) {
@@ -65,35 +70,35 @@ public class ItemConsumeActivator extends Activator {
 
     public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("item", item.toString());
+        cfg.set("hand", hand.name());
     }
 
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 this.item +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {
         private final ItemStack item;
-        private final boolean mainHand;
+        private final EquipmentSlot hand;
 
-        public Context(Player p, ItemStack item, boolean mainHand) {
+        public Context(Player p, ItemStack item, EquipmentSlot hand) {
             super(p);
             this.item = item;
-            this.mainHand = mainHand;
+            this.hand = hand;
         }
 
         @Override
         public @NotNull Class<? extends Activator> getType() {
-            return ItemConsumeActivator.class;
+            return ConsumeActivator.class;
         }
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
             vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put("hand", Variable.simple(mainHand ? "MAIN" : "OFF"));
+            vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
             if (item != null) {
                 vars.put("item", Variable.lazy(() -> VirtualItem.asString(item)));
                 vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));

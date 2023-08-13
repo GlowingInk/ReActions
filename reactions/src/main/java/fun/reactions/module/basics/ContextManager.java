@@ -113,7 +113,7 @@ public final class ContextManager {
     }
 
     public static boolean triggerItemConsume(PlayerItemConsumeEvent event) {
-        ItemConsumeActivator.Context ce = new ItemConsumeActivator.Context(event.getPlayer(), event.getItem(), event.getPlayer().getInventory().getItemInMainHand().isSimilar(event.getItem()));
+        ConsumeActivator.Context ce = new ConsumeActivator.Context(event.getPlayer(), event.getItem(), event.getHand());
         activate(ce);
         return ce.isCancelled();
     }
