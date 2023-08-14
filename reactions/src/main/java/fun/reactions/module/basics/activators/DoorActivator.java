@@ -20,7 +20,6 @@
  *
  */
 
-
 package fun.reactions.module.basics.activators;
 
 import fun.reactions.model.Logic;
@@ -29,108 +28,85 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.util.BlockUtils;
-import fun.reactions.util.Utils;
+import fun.reactions.util.enums.TriBoolean;
+import fun.reactions.util.location.ImplicitPosition;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Map;
 
-// TODO Use custom enum or TriBoolean
 public class DoorActivator extends Activator implements Locatable {
-    private final String state; //open, close
-    //координаты нижнего блока двери
-    private final String world;
-    private final int x;
-    private final int y;
-    private final int z;
+    private static final TriBoolean.Mapper STATE_MAPPER = new TriBoolean.Mapper.Builder()
+            .trueMain("OPEN").addTrueVariants("OPENED")
+            .falseMain("CLOSE").addFalseVariants("CLOSED")
+            .build();
 
-    private DoorActivator(Logic base, String state, String world, int x, int y, int z) {
+    private final TriBoolean state;
+    private final ImplicitPosition lowerPos;
+
+    private DoorActivator(Logic base, TriBoolean state, ImplicitPosition lowerPos) {
         super(base);
         this.state = state;
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.lowerPos = lowerPos;
     }
 
-    public static DoorActivator create(Logic base, Parameters p) {
-        if (!(p instanceof BlockParameters param)) return null;
-        Block targetBlock = param.getBlock();
-        if (targetBlock == null || BlockUtils.isOpenable(targetBlock)) {
-            String state = param.getString("state", "ANY");
-            if (!(state.equalsIgnoreCase("open") || state.equalsIgnoreCase("close"))) state = "ANY";
-            String world = targetBlock.getWorld().getName();
-            int x = targetBlock.getX();
-            int y = targetBlock.getY();
-            int z = targetBlock.getZ();
-            return new DoorActivator(base, state, world, x, y, z);
-        } else return null;
+    public static DoorActivator create(Logic base, Parameters params) {
+        Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
+        TriBoolean state = params.get(params.findKey(Parameters.ORIGIN, "state"), STATE_MAPPER::byString);
+        if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
+            return new DoorActivator(base, state, ImplicitPosition.byLocation(targetBlock.getLocation()));
+        } else {
+            return new DoorActivator(base, state, params.getSafe("location", ImplicitPosition::byString));
+        }
     }
 
     public static DoorActivator load(Logic base, ConfigurationSection cfg) {
-        String state = cfg.getString("state", "ANY");
-        if (!(state.equalsIgnoreCase("open") || state.equalsIgnoreCase("close"))) state = "ANY";
-        String world = cfg.getString("world");
-        int x = cfg.getInt("x");
-        int y = cfg.getInt("y");
-        int z = cfg.getInt("z");
-        return new DoorActivator(base, state, world, x, y, z);
+        ImplicitPosition pos;
+        if (cfg.isString("location")) {
+            pos = ImplicitPosition.byString(cfg.getString("location"));
+        } else {
+            pos = ImplicitPosition.of(
+                    cfg.getString("world"),
+                    cfg.getInt("x"),
+                    cfg.getInt("y"),
+                    cfg.getInt("z")
+            );
+        }
+        TriBoolean state = STATE_MAPPER.byString(cfg.getString("state"));
+        return new DoorActivator(base, state, pos);
     }
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context de = (Context) context;
-        if (de.doorBlock == null) return false;
-        if (!isLocatedAt(de.getDoorLocation())) return false;
-        if (this.state.equalsIgnoreCase("open") && de.isDoorOpened()) return false;
-        return !this.state.equalsIgnoreCase("close") || (de.isDoorOpened());
-    }
-
-    public boolean isLocatedAt(Location l) {
-        if (l == null) return false;
-        if (!world.equals(l.getWorld().getName())) return false;
-        if (x != l.getBlockX()) return false;
-        if (y != l.getBlockY()) return false;
-        return (z == l.getBlockZ());
+        return state.isValidFor(de.isDoorOpened()) && lowerPos.isValidAt(de.getDoorLocation());
     }
 
     @Override
     public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
-        return this.world.equals(world.getName()) &&
-                this.x == x &&
-                this.y == y &&
-                this.z == z;
+        return lowerPos.isValidAt(world.getName(), x, y, z);
     }
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("world", this.world);
-        cfg.set("x", x);
-        cfg.set("y", y);
-        cfg.set("z", z);
-        cfg.set("state", state);
-    }
-
-    @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(world);
+        cfg.set("location", lowerPos.toString());
+        cfg.set("state", STATE_MAPPER.toString(state));
     }
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
-                world + ", " + x + ", " + y + ", " + z +
-                "; state:" + this.state.toUpperCase(Locale.ROOT) +
+        return super.toString() + " (" +
+                lowerPos + "; " +
+                "state:" + STATE_MAPPER.toString(state) +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

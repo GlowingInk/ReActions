@@ -18,7 +18,7 @@ public class RealPositionTest {
     @Test(dataProvider = "ofData")
     public void ofTest(String full, RealPosition expected) {
         assertEquals(
-                RealPosition.of(full),
+                RealPosition.byString(full),
                 expected
         );
     }

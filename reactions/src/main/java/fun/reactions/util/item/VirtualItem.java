@@ -171,6 +171,7 @@ public final class VirtualItem implements Parameterizable {
         );
     }
 
+    @Contract("-> new")
     public @Nullable ItemStack asItemStack() {
         return asItemStack(true);
     }

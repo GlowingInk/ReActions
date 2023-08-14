@@ -6,13 +6,11 @@ import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.math.BlockPosition;
 import io.papermc.paper.math.Position;
 import org.bukkit.Axis;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,8 +21,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import static fun.reactions.util.NumberUtils.asDouble;
-
-// TODO: Use it in activators
+import static org.bukkit.util.NumberConversions.floor;
 
 /**
  * Position class, where all the coordinates can be null
@@ -50,20 +47,20 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         return new ImplicitPosition(worldName, x, y, z);
     }
 
-    public static @NotNull ImplicitPosition of(@Nullable String loc) {
+    public static @NotNull ImplicitPosition byString(@Nullable String loc) {
         if (Utils.isStringEmpty(loc)) return EVERYWHERE;
         String[] split = loc.split(",");
         if (split.length < 4) {
             return EVERYWHERE;
         }
         String worldName = split[0].equals("*") ? null : split[0];
-        Integer x = split[1].equals("*") ? null : NumberConversions.floor(asDouble(split[1]));
-        Integer y = split[2].equals("*") ? null : NumberConversions.floor(asDouble(split[2]));
-        Integer z = split[3].equals("*") ? null : NumberConversions.floor(asDouble(split[3]));
+        Integer x = split[1].equals("*") ? null : floor(asDouble(split[1]));
+        Integer y = split[2].equals("*") ? null : floor(asDouble(split[2]));
+        Integer z = split[3].equals("*") ? null : floor(asDouble(split[3]));
         return new ImplicitPosition(worldName, x, y, z);
     }
 
-    public static @NotNull ImplicitPosition of(@Nullable Location loc) {
+    public static @NotNull ImplicitPosition byLocation(@Nullable Location loc) {
         if (loc == null) return EVERYWHERE;
         return new ImplicitPosition(
                 loc.getWorld().getName(),
@@ -90,9 +87,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         String z = params.getString("z", "*");
         return new ImplicitPosition(
                 worldName.equals("*") ? null : worldName,
-                x.equals("*") ? null : NumberConversions.floor(params.getDouble("x")),
-                y.equals("*") ? null : NumberConversions.floor(params.getDouble("y")),
-                z.equals("*") ? null : NumberConversions.floor(params.getDouble("z"))
+                x.equals("*") ? null : floor(params.getDouble("x")),
+                y.equals("*") ? null : floor(params.getDouble("y")),
+                z.equals("*") ? null : floor(params.getDouble("z"))
         );
     }
 
@@ -177,9 +174,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     public @NotNull ImplicitPosition offset(int x, int y, int z) {
         return new ImplicitPosition(
                 worldName,
-                x == 0 ? this.x : Integer.valueOf(blockX(x)),
-                y == 0 ? this.y : Integer.valueOf(blockY(y)),
-                z == 0 ? this.z : Integer.valueOf(blockZ(z))
+                x == 0 ? this.x : Integer.valueOf(blockX() + x),
+                y == 0 ? this.y : Integer.valueOf(blockY() + y),
+                z == 0 ? this.z : Integer.valueOf(blockZ() + z)
         );
     }
 
@@ -187,9 +184,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     @Contract(pure = true)
     public @NotNull ImplicitPosition offset(@NotNull Axis axis, int amount) {
         return amount == 0 ? this : switch (axis) {
-            case X -> new ImplicitPosition(worldName, blockX(amount), y, z);
-            case Y -> new ImplicitPosition(worldName, x, blockY(amount), z);
-            case Z -> new ImplicitPosition(worldName, x, y, blockZ(amount));
+            case X -> new ImplicitPosition(worldName, blockX() + amount, y, z);
+            case Y -> new ImplicitPosition(worldName, x, blockY() + amount, z);
+            case Z -> new ImplicitPosition(worldName, x, y, blockZ() + amount);
         };
     }
 
@@ -207,11 +204,6 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     @Contract(pure = true)
     public @NotNull BlockPosition toBlock() {
         return Position.block(blockX(), blockY(), blockZ()); // We want to discard all the custom logic at this point
-    }
-
-    @Contract(pure = true)
-    public @NotNull Location toLocation() {
-        return toLocation(Bukkit.getServer());
     }
 
     @Contract(pure = true)

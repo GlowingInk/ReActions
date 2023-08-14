@@ -50,7 +50,7 @@ public class ButtonActivator extends Activator implements Locatable {
 
     public static ButtonActivator create(Logic base, Parameters p) {
         if (!(p instanceof BlockParameters param)) return null;
-        return new ButtonActivator(base, ImplicitPosition.of(param.getBlock().getLocation()));
+        return new ButtonActivator(base, ImplicitPosition.byLocation(param.getBlock().getLocation()));
     }
 
     public static ButtonActivator load(Logic base, ConfigurationSection cfg) {

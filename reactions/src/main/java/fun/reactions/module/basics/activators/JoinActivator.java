@@ -44,7 +44,7 @@ public class JoinActivator extends Activator {
     }
 
     public static JoinActivator load(Logic base, ConfigurationSection cfg) {
-        return new JoinActivator(base, TriBoolean.of(cfg.getString("first-join")));
+        return new JoinActivator(base, TriBoolean.byString(cfg.getString("first-join")));
     }
 
     @Override

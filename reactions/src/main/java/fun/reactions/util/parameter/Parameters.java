@@ -352,7 +352,7 @@ public class Parameters implements Parameterizable {
     }
 
     public @NotNull TriBoolean getTriBoolean(@NotNull String key) {
-        return getSafe(key, TriBoolean::of);
+        return getSafe(key, TriBoolean::byString);
     }
 
     public long getTime(@NotNull String key) {

@@ -34,6 +34,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("JUMP")
+@Deprecated
 public class VelocityJumpAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
@@ -45,7 +46,7 @@ public class VelocityJumpAction implements Action {
         Location loc = LocationUtils.parseCoordinates(locStr);
         if (loc == null) return false;
         int jumpHeight = params.getInteger("jump", 5);
-        Vector velocity = LocationUtils.calculateVelocity(player.getLocation(), loc, jumpHeight);
+        Vector velocity = calculateVelocity(player.getLocation(), loc, jumpHeight);
         player.setVelocity(velocity);
         return false;
     }
@@ -59,4 +60,48 @@ public class VelocityJumpAction implements Action {
     public boolean requiresPlayer() {
         return true;
     }
+
+    private static Vector calculateVelocity(Location locFrom, Location locTo, int heightGain) {
+        if (!locFrom.getWorld().equals(locTo.getWorld())) return new Vector(0, 0, 0);
+        // Gravity of a potion
+        double gravity = 0.18; //0.115;
+        Vector from = locFrom.toVector();
+        Vector to = locTo.toVector();
+
+
+        // Block locations
+        int endGain = to.getBlockY() - from.getBlockY();
+        double horizDist = from.distance(to);
+
+        // Height gain
+
+        //double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
+        double maxGain = Math.max(heightGain, endGain + heightGain);
+
+        // Solve quadratic equation for velocity
+        double a = -horizDist * horizDist / (4 * maxGain);
+        double c = -endGain;
+
+        double slope = -horizDist / (2 * a) - Math.sqrt(horizDist * horizDist - 4 * a * c) / (2 * a);
+
+        // Vertical velocity
+        double vy = Math.sqrt(maxGain * gravity);
+
+        // Horizontal velocity
+        double vh = vy / slope;
+
+        // Calculate horizontal direction
+        int dx = to.getBlockX() - from.getBlockX();
+        int dz = to.getBlockZ() - from.getBlockZ();
+        double mag = Math.sqrt(dx * dx + dz * dz);
+        double dirx = dx / mag;
+        double dirz = dz / mag;
+
+        // Horizontal velocity components
+        double vx = vh * dirx;
+        double vz = vh * dirz;
+
+        return new Vector(vx, vy, vz);
+    }
+
 }

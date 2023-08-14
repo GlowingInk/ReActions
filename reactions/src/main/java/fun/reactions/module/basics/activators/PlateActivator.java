@@ -28,7 +28,7 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.util.BlockUtils;
-import fun.reactions.util.Utils;
+import fun.reactions.util.location.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
@@ -41,82 +41,60 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class PlateActivator extends Activator implements Locatable {
-    // TODO: Use ImplicitPosition
-    private final String world;
-    private final int x;
-    private final int y;
-    private final int z;
+    private final ImplicitPosition pos;
 
-    private PlateActivator(Logic base, String world, int x, int y, int z) {
+    private PlateActivator(Logic base, ImplicitPosition pos) {
         super(base);
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
     }
 
-    public static PlateActivator create(Logic base, Parameters p) {
-        if (!(p instanceof BlockParameters param)) return null;
-        Block targetBlock = param.getBlock();
+    public static PlateActivator create(Logic base, Parameters params) {
+        Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
         if (targetBlock != null && BlockUtils.isPlate(targetBlock)) {
-            String world = targetBlock.getWorld().getName();
-            int x = targetBlock.getX();
-            int y = targetBlock.getY();
-            int z = targetBlock.getZ();
-            return new PlateActivator(base, world, x, y, z);
+            return new PlateActivator(base, ImplicitPosition.byLocation(targetBlock.getLocation()));
+        } else {
+            return new PlateActivator(base, params.getSafe("location", ImplicitPosition::byString));
         }
-        return null;
     }
 
     public static PlateActivator load(Logic base, ConfigurationSection cfg) {
-        String world = cfg.getString("world");
-        int x = cfg.getInt("x");
-        int y = cfg.getInt("y");
-        int z = cfg.getInt("z");
-        return new PlateActivator(base, world, x, y, z);
+        ImplicitPosition pos;
+        if (cfg.isString("location")) {
+            pos = ImplicitPosition.byString(cfg.getString("location"));
+        } else {
+            pos = ImplicitPosition.of(
+                    cfg.getString("world"),
+                    cfg.getInt("x"),
+                    cfg.getInt("y"),
+                    cfg.getInt("z")
+            );
+        }
+        return new PlateActivator(base, pos);
     }
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         PlateContext be = (PlateContext) context;
-        return isLocatedAt(be.getLocation());
-    }
-
-    public boolean isLocatedAt(Location l) {
-        if (l == null) return false;
-        if (!world.equals(l.getWorld().getName())) return false;
-        if (x != l.getBlockX()) return false;
-        if (y != l.getBlockY()) return false;
-        return (z == l.getBlockZ());
+        return pos.isValidAt(be.getLocation());
     }
 
     @Override
     public boolean isLocatedAt(@NotNull World world, int x, int y, int z) {
-        return this.world.equals(world.getName()) &&
-                this.x == x &&
-                this.y == y &&
-                this.z == z;
+        return pos.isValidAt(world.getName(), x, y, z);
     }
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("world", world);
-        cfg.set("x", x);
-        cfg.set("y", y);
-        cfg.set("z", z);
-    }
-
-    @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(world);
+        cfg.set("location", pos.toString());
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (" + world + ", " + x + ", " + y + ", " + z + ")";
+        return super.toString() + " (" + pos + ")";
     }
 
     public static class PlateContext extends ActivationContext {
+        // TODO Is "fresh" press
 
         private final Location location;
 

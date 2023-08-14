@@ -42,7 +42,7 @@ import java.util.Objects;
 import static fun.reactions.util.NumberUtils.asDouble;
 
 @SuppressWarnings("UnstableApiUsage")
-public class RealPosition implements FinePosition, Parameterizable { // TODO Many similarities with ImplicitPosition
+public class RealPosition implements FinePosition, Parameterizable {
     private static final DecimalFormat FORMAT = new DecimalFormat("#.####");
 
     private final String worldName;
@@ -65,10 +65,10 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
         return new RealPosition(worldName, x, y, z, yaw, pitch);
     }
 
-    public static @NotNull RealPosition of(@NotNull String loc) {
+    public static @NotNull RealPosition byString(@NotNull String loc) {
         String[] split = loc.split(",");
         if (split.length < 4) {
-            return of(getDefaultWorld().getSpawnLocation());
+            return byLocation(getDefaultWorld(Bukkit.getServer()).getSpawnLocation());
         }
         String worldName = split[0];
         double x = asDouble(split[1]);
@@ -81,7 +81,7 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
         }
     }
 
-    public static @NotNull RealPosition of(@NotNull Location loc) {
+    public static @NotNull RealPosition byLocation(@NotNull Location loc) {
         return new RealPosition(
                 loc.getWorld().getName(),
                 loc.x(),
@@ -249,10 +249,6 @@ public class RealPosition implements FinePosition, Parameterizable { // TODO Man
 
     private static @NotNull String format(double d) {
         return FORMAT.format(d);
-    }
-
-    private static @NotNull World getDefaultWorld() {
-        return getDefaultWorld(Bukkit.getServer());
     }
 
     private static @NotNull World getDefaultWorld(@NotNull Server server) {

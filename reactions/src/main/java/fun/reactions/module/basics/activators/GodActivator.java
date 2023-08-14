@@ -28,7 +28,7 @@ public class GodActivator extends Activator {
     }
 
     public static GodActivator load(Logic base, ConfigurationSection cfg) {
-        return new GodActivator(base, TriBoolean.of(cfg.getString("god")));
+        return new GodActivator(base, TriBoolean.byString(cfg.getString("god")));
     }
 
     @Override

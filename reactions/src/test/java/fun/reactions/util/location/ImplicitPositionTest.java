@@ -20,7 +20,7 @@ public class ImplicitPositionTest {
     @Test(dataProvider = "ofData")
     public void ofTest(String full, ImplicitPosition expected) {
         assertEquals(
-                ImplicitPosition.of(full),
+                ImplicitPosition.byString(full),
                 expected
         );
     }
@@ -46,13 +46,13 @@ public class ImplicitPositionTest {
     @DataProvider
     public Object[][] isValidAtData() {
         return new Object[][] {
-                {true, ImplicitPosition.of("world,1,2,3"), "world", 1, 2, 3},
-                {true, ImplicitPosition.of("*,1,2,3"), "another", 1, 2, 3},
+                {true, ImplicitPosition.byString("world,1,2,3"), "world", 1, 2, 3},
+                {true, ImplicitPosition.byString("*,1,2,3"), "another", 1, 2, 3},
                 {true, ImplicitPosition.EVERYWHERE, "world", 1, 2, 3},
-                {true, ImplicitPosition.of("world,1,*,*"), "world", 1, 3, 2},
-                {false, ImplicitPosition.of("world,*,*,*"), "another", 1, 2, 3},
-                {false, ImplicitPosition.of("world,1,*,*"), "world", 2, 1, 3},
-                {false, ImplicitPosition.of("*,1,2,3"), "another", 3, 1, 2}
+                {true, ImplicitPosition.byString("world,1,*,*"), "world", 1, 3, 2},
+                {false, ImplicitPosition.byString("world,*,*,*"), "another", 1, 2, 3},
+                {false, ImplicitPosition.byString("world,1,*,*"), "world", 2, 1, 3},
+                {false, ImplicitPosition.byString("*,1,2,3"), "another", 3, 1, 2}
         };
     }
 

@@ -426,9 +426,7 @@ public class BukkitListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         TemporaryOp.removeOp(event.getPlayer());
         Optional<Variables> optVars = triggerQuit(event);
-        if (optVars.isPresent()){
-            optVars.get().getChanged(QuitActivator.Context.QUIT_MESSAGE).ifPresent(event::setQuitMessage);
-        }
+        optVars.flatMap(variables -> variables.getChanged(QuitActivator.Context.QUIT_MESSAGE)).ifPresent(event::setQuitMessage);
         MoveListener.removeLocation(event.getPlayer());
     }
 
