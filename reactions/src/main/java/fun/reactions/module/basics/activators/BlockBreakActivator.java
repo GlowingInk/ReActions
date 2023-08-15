@@ -36,14 +36,21 @@ public class BlockBreakActivator extends Activator implements Locatable {
     }
 
     public static BlockBreakActivator create(Logic base, Parameters param) {
-        Material block = ItemUtils.getMaterial(param.getString("block"));
+        Material block = param.get("block", ItemUtils::getMaterial);
         ImplicitPosition pos = param.get("loc", ImplicitPosition::byString);
         return new BlockBreakActivator(base, block, pos);
     }
 
     public static BlockBreakActivator load(Logic base, ConfigurationSection cfg) {
         Material block = ItemUtils.getMaterial(cfg.getString("block", ""));
-        ImplicitPosition pos = ImplicitPosition.byString(cfg.getString("loc"));
+        ImplicitPosition pos;
+        if (cfg.isString("location")) {
+            pos = ImplicitPosition.byString(cfg.getString("location"));
+        } else if (cfg.isString("loc")) {
+            pos = ImplicitPosition.byString(cfg.getString("loc"));
+        } else {
+            pos = ImplicitPosition.fromConfiguration(cfg);
+        }
         return new BlockBreakActivator(base, block, pos);
     }
 
@@ -68,7 +75,7 @@ public class BlockBreakActivator extends Activator implements Locatable {
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("block", blockType == null ? null : blockType.name());
-        cfg.set("location", pos == ImplicitPosition.EVERYWHERE ? null : pos);
+        pos.intoConfiguration(cfg);
     }
 
     @Override

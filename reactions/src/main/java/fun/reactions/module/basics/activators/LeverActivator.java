@@ -66,12 +66,7 @@ public class LeverActivator extends Activator implements Locatable {
         if (cfg.isString("location")) {
             pos = ImplicitPosition.byString(cfg.getString("location"));
         } else {
-            pos = ImplicitPosition.of(
-                    cfg.getString("world"),
-                    cfg.getInt("x"),
-                    cfg.getInt("y"),
-                    cfg.getInt("z")
-            );
+            pos = ImplicitPosition.fromConfiguration(cfg);
         }
         TriBoolean state = TriBoolean.byString(cfg.getString("lever-state", "ANY"));
         return new LeverActivator(base, state, pos);
@@ -92,7 +87,7 @@ public class LeverActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("location", pos.toString());
+        pos.intoConfiguration(cfg);
         cfg.set("lever-state", state.name());
     }
 

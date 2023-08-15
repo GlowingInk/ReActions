@@ -19,34 +19,35 @@ import java.util.Map;
  * Created by MaxDikiy on 2017-11-11.
  */
 public class ItemHeldActivator extends Activator {
-    private final int previousSlot;
-    private final int newSlot;
-    // TODO: Store VirtualItem
-    private final String itemNewStr;
-    private final String itemPrevStr;
+    private final int slotPrev;
+    private final int slotNew;
+    private final VirtualItem virtualItemNew;
+    private final VirtualItem virtualItemPrev;
 
-    private ItemHeldActivator(Logic base, String itemPrevStr, String itemNewStr, int previousSlot, int newSlot) {
+    private ItemHeldActivator(Logic base, VirtualItem virtualItemPrev, VirtualItem virtualItemNew, int slotPrev, int slotNew) {
         super(base);
-        this.itemNewStr = itemNewStr;
-        this.itemPrevStr = itemPrevStr;
-        this.previousSlot = previousSlot;
-        this.newSlot = newSlot;
+        this.virtualItemNew = virtualItemNew;
+        this.virtualItemPrev = virtualItemPrev;
+        this.slotPrev = slotPrev;
+        this.slotNew = slotNew;
     }
 
     public static ItemHeldActivator create(Logic base, Parameters param) {
-        String itemNewStr = param.getString("itemnew", "");
-        String itemPrevStr = param.getString("itemprev", "");
-        int newSlot = param.getInteger("slotnew", 1);
-        int previousSlot = param.getInteger("slotprev", 1);
-        return new ItemHeldActivator(base, itemPrevStr, itemNewStr, --newSlot, --previousSlot);
+        return new ItemHeldActivator(base,
+                param.getSafe("itemprev", VirtualItem::fromString),
+                param.getSafe("itemnew", VirtualItem::fromString),
+                param.getInteger("slotprev", 1) - 1,
+                param.getInteger("slotnew", 1) - 1
+        );
     }
 
     public static ItemHeldActivator load(Logic base, ConfigurationSection cfg) {
-        String itemNewStr = cfg.getString("item-new");
-        String itemPrevStr = cfg.getString("item-prev");
-        int newSlot = cfg.getInt("slot-new", 1);
-        int previousSlot = cfg.getInt("slot-prev", 1);
-        return new ItemHeldActivator(base, itemPrevStr, itemNewStr, --newSlot, --previousSlot);
+        return new ItemHeldActivator(base,
+                VirtualItem.fromString(cfg.getString("item-prev", "")),
+                VirtualItem.fromString(cfg.getString("item-new", "")),
+                cfg.getInt("slot-prev", 1) - 1,
+                cfg.getInt("slot-new", 1) - 1
+        );
     }
 
     @Override
@@ -54,29 +55,28 @@ public class ItemHeldActivator extends Activator {
         Context ihe = (Context) context;
         ItemStack itemNew = ihe.newItem;
         ItemStack itemPrev = ihe.previousItem;
-        if (!this.itemNewStr.isEmpty() && (!VirtualItem.isSimilar(this.itemNewStr, itemNew)))
+        if (!virtualItemNew.isSimilar(itemNew) || !virtualItemPrev.isSimilar(itemPrev)) {
             return false;
-        if (!this.itemPrevStr.isEmpty() && (!VirtualItem.isSimilar(this.itemPrevStr, itemPrev)))
-            return false;
-        if (newSlot > -1 && newSlot != ihe.newSlot) return false;
-        return previousSlot <= -1 || previousSlot == ihe.previousSlot;
+        }
+        return (slotNew < 0 || slotNew == ihe.newSlot) &&
+                (slotPrev < 0 || slotPrev == ihe.previousSlot);
     }
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("item-new", itemNewStr);
-        cfg.set("item-prev", itemPrevStr);
-        cfg.set("slot-new", newSlot + 1);
-        cfg.set("slot-prev", previousSlot + 1);
+        cfg.set("item-new", virtualItemNew.asString());
+        cfg.set("item-prev", virtualItemPrev.asString());
+        cfg.set("slot-new", slotNew + 1);
+        cfg.set("slot-prev", slotPrev + 1);
     }
 
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                "itemnew:" + (itemNewStr.isEmpty() ? "-" : itemNewStr) +
-                " itemprev:" + (itemPrevStr.isEmpty() ? "-" : itemPrevStr) +
-                " slotnew:" + (newSlot + 1) +
-                " slotprev:" + (previousSlot + 1) +
+                "itemnew:" + (virtualItemNew == VirtualItem.EMPTY ? "-" : virtualItemNew) +
+                " itemprev:" + (virtualItemPrev == VirtualItem.EMPTY ? "-" : virtualItemPrev) +
+                " slotnew:" + (slotNew + 1) +
+                " slotprev:" + (slotPrev + 1) +
                 ")";
         return sb;
     }

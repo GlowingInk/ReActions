@@ -36,6 +36,8 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     private final Integer y;
     private final Integer z;
 
+    private Parameters params;
+
     private ImplicitPosition(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
         this.worldName = worldName;
         this.x = x;
@@ -102,12 +104,15 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
 
     @Override
     public @NotNull Parameters asParameters() {
-        return Parameters.fromMap(Map.of(
+        if (params == null) {
+             params = Parameters.fromMap(Map.of(
                 "world", format(worldName),
                 "x", format(x),
                 "y", format(y),
                 "z", format(z)
-        ));
+            ));
+        }
+        return params;
     }
 
     public @Nullable String worldName() {

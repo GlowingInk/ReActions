@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+// TODO Use TriBoolean (when pressing on disabled plate)
 public class PlateActivator extends Activator implements Locatable {
     private final ImplicitPosition pos;
 
@@ -62,12 +63,7 @@ public class PlateActivator extends Activator implements Locatable {
         if (cfg.isString("location")) {
             pos = ImplicitPosition.byString(cfg.getString("location"));
         } else {
-            pos = ImplicitPosition.of(
-                    cfg.getString("world"),
-                    cfg.getInt("x"),
-                    cfg.getInt("y"),
-                    cfg.getInt("z")
-            );
+            pos = ImplicitPosition.fromConfiguration(cfg);
         }
         return new PlateActivator(base, pos);
     }
@@ -85,7 +81,7 @@ public class PlateActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("location", pos.toString());
+        pos.intoConfiguration(cfg);
     }
 
     @Override
@@ -94,8 +90,6 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     public static class PlateContext extends ActivationContext {
-        // TODO Is "fresh" press
-
         private final Location location;
 
         public PlateContext(Player p, Location loc) {

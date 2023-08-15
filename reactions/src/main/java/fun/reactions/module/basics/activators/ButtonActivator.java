@@ -20,7 +20,6 @@
  *
  */
 
-
 package fun.reactions.module.basics.activators;
 
 import fun.reactions.model.Logic;

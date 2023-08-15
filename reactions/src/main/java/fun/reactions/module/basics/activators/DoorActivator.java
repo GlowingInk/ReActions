@@ -73,12 +73,7 @@ public class DoorActivator extends Activator implements Locatable {
         if (cfg.isString("location")) {
             pos = ImplicitPosition.byString(cfg.getString("location"));
         } else {
-            pos = ImplicitPosition.of(
-                    cfg.getString("world"),
-                    cfg.getInt("x"),
-                    cfg.getInt("y"),
-                    cfg.getInt("z")
-            );
+            pos = ImplicitPosition.fromConfiguration(cfg);
         }
         TriBoolean state = STATE_MAPPER.byString(cfg.getString("state"));
         return new DoorActivator(base, state, pos);
@@ -97,7 +92,7 @@ public class DoorActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("location", lowerPos.toString());
+        lowerPos.intoConfiguration(cfg);
         cfg.set("state", STATE_MAPPER.toString(state));
     }
 
