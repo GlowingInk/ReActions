@@ -89,7 +89,7 @@ public final class VirtualItem implements Parameterizable {
 
     private final Material type;
     private final int amount;
-    private final List<MetaAspect.Instance> aspects;
+    private final List<MetaAspect.Instance> aspects; // TODO Probably would be better to just have a Map<String, MA.Instance>
 
     private boolean itemGenerated;
     private ItemStack itemValue;
@@ -126,6 +126,10 @@ public final class VirtualItem implements Parameterizable {
 
     public int getAmount() {
         return amount;
+    }
+
+    public @Nullable String getAspect(@NotNull String aspectName) {
+        return asParameters().getString(aspectName, null);
     }
 
     @Contract(pure = true)
@@ -165,13 +169,12 @@ public final class VirtualItem implements Parameterizable {
         this.aspects.forEach(a -> aspectsMap.put(a.getName(), a));
         return new VirtualItem(
                 type == null ? other.getType() : type,
-                amount < 1 ? other.getAmount() : amount,
+                amount < 0 ? other.getAmount() : amount,
                 new ArrayList<>(aspectsMap.values()),
                 other.asParameters().with(asParameters())
         );
     }
 
-    @Contract("-> new")
     public @Nullable ItemStack asItemStack() {
         return asItemStack(true);
     }
@@ -219,26 +222,44 @@ public final class VirtualItem implements Parameterizable {
     }
 
     /**
+     * Compare this item with a real one.
+     * If compared item is null or its type is AIR, expecting this item's type to be AIR.
+     * If this item's type is specified, expecting compared item's type to be the same.
+     * Skips amount check.
+     * @param compared item to compare
+     * @return is compared item conforms this item's type and aspects
+     * @see VirtualItem#isSimilar(ItemStack, AmountCheck)
+     */
+    public boolean isSimilar(@Nullable ItemStack compared) {
+        return isSimilar(compared, AmountCheck.SKIP);
+    }
+
+    /**
      * Compare this item with real one.
      * If compared item is null or its type is AIR, expecting this item's type to be AIR.
      * If this item's type is specified, expecting compared item's type to be the same.
      * @param compared item to compare
+     * @param amountCheck type of amount checking
      * @return is compared item conforms this item's type and aspects
      */
-    public boolean isSimilar(@Nullable ItemStack compared) {
+    public boolean isSimilar(@Nullable ItemStack compared, AmountCheck amountCheck) {
         if (compared == null || compared.getType().isEmpty()) {
-            return type != null && type.isEmpty();
+            return amount == 0 || (type != null && type.isEmpty());
         }
-        if (type == null || compared.getType() == type) {
-            if (!aspects.isEmpty()) {
-                ItemMeta meta = compared.getItemMeta();
-                for (MetaAspect.Instance aspect : aspects) {
-                    if (!aspect.isSimilar(meta)) return false;
-                }
+        if (type != null && compared.getType() != type) {
+            return false;
+        }
+        if (!aspects.isEmpty()) {
+            ItemMeta meta = compared.getItemMeta();
+            for (MetaAspect.Instance aspect : aspects) {
+                if (!aspect.isSimilar(meta)) return false;
             }
-            return true;
         }
-        return false;
+        return switch (amountCheck) {
+            case SKIP -> true;
+            case EQUAL -> amount == compared.getAmount();
+            case SATISFIES -> amount <= compared.getAmount();
+        };
     }
 
     /**
@@ -248,8 +269,15 @@ public final class VirtualItem implements Parameterizable {
      * @return generated VirtualItem
      */
     public static @NotNull VirtualItem fromItemStack(@Nullable ItemStack item) {
+        return fromItemStack(item, true);
+    }
+
+    private static @NotNull VirtualItem fromItemStack(@Nullable ItemStack item, boolean clone) {
         if (item == null || item.getType().isEmpty()) {
             return VirtualItem.AIR;
+        }
+        if (clone) {
+            item = item.clone();
         }
         List<MetaAspect.Instance> aspects;
         if (!item.hasItemMeta()) {
@@ -289,6 +317,15 @@ public final class VirtualItem implements Parameterizable {
             key = key.toLowerCase(Locale.ROOT);
             String value = params.getString(key);
             switch (key) {
+                case Parameters.ORIGIN: {
+                    continue;
+                }
+                case "invalid": {
+                    if (params.getBoolean(key)) {
+                        return INVALID;
+                    }
+                    break;
+                }
                 case "item": {
                     Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
                     if (!matcher.matches()) break;
@@ -307,7 +344,10 @@ public final class VirtualItem implements Parameterizable {
                     if (type == null) return VirtualItem.INVALID;
                     break;
                 }
-                case "amount": amount = params.getInteger(key); break;
+                case "amount": {
+                    amount = params.getInteger(key);
+                    break;
+                }
                 case "name": case "lore":
                     if (regex) key += "-regex";
                 default:
@@ -325,6 +365,18 @@ public final class VirtualItem implements Parameterizable {
         );
     }
 
+    @Contract("null -> null")
+    public static @Nullable ItemStack asCleanItemStack(@Nullable ItemStack item) {
+        if (item == null) return null;
+        VirtualItem virtual = fromItemStack(item, false);
+        return new VirtualItem(
+                virtual.type,
+                virtual.amount,
+                virtual.aspects,
+                virtual.paramsValue
+        ).asItemStack(false);
+    }
+
     public static @Nullable ItemStack asItemStack(@NotNull String itemStr) {
         return fromString(itemStr).asItemStack(false);
     }
@@ -334,11 +386,11 @@ public final class VirtualItem implements Parameterizable {
     }
 
     public static @NotNull String asString(@Nullable ItemStack item) {
-        return fromItemStack(item).asString();
+        return fromItemStack(item, false).asString();
     }
 
     public static @NotNull Parameters asParameters(@Nullable ItemStack item) {
-        return fromItemStack(item).asParameters();
+        return fromItemStack(item, false).asParameters();
     }
 
     public static boolean isSimilar(@NotNull String itemStr, @Nullable ItemStack compared) {
@@ -352,5 +404,20 @@ public final class VirtualItem implements Parameterizable {
     @Override
     public String toString() {
         return asString();
+    }
+
+    public enum AmountCheck {
+        /**
+         * Skip amount check as a whole
+         */
+        SKIP,
+        /**
+         * Checks if amounts are equal
+         */
+        EQUAL,
+        /**
+         * Checks if amount of ItemStack satisfies amount of VirtualItem
+         */
+        SATISFIES
     }
 }

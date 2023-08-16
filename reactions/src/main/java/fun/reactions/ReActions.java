@@ -52,8 +52,8 @@ public final class ReActions {
         return platform.getPlaceholders();
     }
 
-    public static PersistentVariablesManager getVariables() {
-        return platform.getVariables();
+    public static PersistentVariablesManager getPersistentVariables() {
+        return platform.getPersistentVariables();
     }
 
     public static SelectorsManager getSelectors() {
@@ -78,7 +78,7 @@ public final class ReActions {
         @NotNull ActivitiesRegistry getActivities();
         @NotNull UserCommandsManager getCommands();
         @NotNull PlaceholdersManager getPlaceholders();
-        @NotNull PersistentVariablesManager getVariables();
+        @NotNull PersistentVariablesManager getPersistentVariables();
         @NotNull SelectorsManager getSelectors();
         @NotNull WaitingManager getWaiter();
         @NotNull ModulesRegistry getModules();

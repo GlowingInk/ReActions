@@ -65,7 +65,7 @@ public class PersistentVarActions implements Action, Aliased {
 
         if (this.personal && playerName.isEmpty()) return false;
 
-        PersistentVariablesManager varsManager = env.getPlatform().getVariables();
+        PersistentVariablesManager varsManager = env.getPlatform().getPersistentVariables();
         switch (this.actType) {
             case SET -> varsManager.setVariable(playerName, varName, change);
             case CLEAR -> varsManager.removeVariable(playerName, varName);

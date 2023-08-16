@@ -35,7 +35,6 @@ import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -261,9 +260,8 @@ public class ItemActions implements Action {
                 inventory.setItemInMainHand(item);
             }
         }
-        VirtualItem result = VirtualItem.fromItemStack(item);
         if (!item.getType().isEmpty()) {
-            env.getVariables().set("item", result.toString());
+            env.getVariables().set("item", VirtualItem.asString(item));
             env.getVariables().set("item_str", ItemUtils.toDisplayString(item));
         } else {
             env.getVariables().set("item", "");
@@ -285,9 +283,8 @@ public class ItemActions implements Action {
                 inventory.setItemInOffHand(item);
             }
         }
-        VirtualItem result = VirtualItem.fromItemStack(item);
         if (!item.getType().isEmpty()) {
-            env.getVariables().set("item", result.toString());
+            env.getVariables().set("item", VirtualItem.asString(item));
             env.getVariables().set("item_str", ItemUtils.toDisplayString(item));
         } else {
             env.getVariables().set("item", "");
@@ -327,7 +324,6 @@ public class ItemActions implements Action {
         Player player = env.getPlayer();
         int radius = params.getInteger("radius");
         Location loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
-        if (loc == null) loc = player.getLocation();
         boolean scatter = params.getBoolean("scatter", true);
         boolean land = params.getBoolean("land", true);
         List<ItemStack> items = ItemUtils.parseRandomItemsStr(params.getString("item"));
@@ -346,38 +342,38 @@ public class ItemActions implements Action {
     private boolean unwearItem(Environment env, Parameters params) {
         Player player = env.getPlayer();
         int slot = getSlotNum(params.getString("slot"));
-        String itemStr = params.getString("item");
-        String action = params.getString("item-action", "remove");
+        VirtualItem search = params.getSafe("item", VirtualItem::fromString);
+        String action = params.getString("item-action", "remove"); // TODO Use enum
 
-        VirtualItem vi = null;
+        ItemStack found = null;
 
         ItemStack[] armor = player.getInventory().getArmorContents();
 
-        if (slot == -1 && !itemStr.isEmpty()) {
+        if (slot < 0) {
             for (int i = 0; i < armor.length; i++) {
-                if (VirtualItem.isSimilar(itemStr, armor[i])) {
-                    vi = VirtualItem.fromItemStack(armor[i]);
+                if (search.isSimilar(armor[i])) {
+                    found = armor[i];
                     slot = i;
                 }
             }
-        } else if (slot >= 0) {
+        } else {
             ItemStack itemSlot = armor[slot];
-            if (itemStr.isEmpty() || VirtualItem.isSimilar(itemStr, itemSlot))
-                vi = VirtualItem.fromItemStack(itemSlot);
+            if (search.isSimilar(itemSlot)) {
+                found = itemSlot;
+            }
         }
-        if (vi == null || vi.getType() == Material.AIR) return false;
+        if (found == null || found.getType().isEmpty()) return false;
         armor[slot] = null;
         player.getInventory().setArmorContents(armor);
 
-        ItemStack item = vi.asItemStack();
         if (action.equalsIgnoreCase("drop")) {
-            if (item != null) player.getWorld().dropItemNaturally(LocationUtils.getRadiusLocation(player.getLocation().add(0, 2, 0), 2, false), item);
+            player.getWorld().dropItemNaturally(LocationUtils.getRadiusLocation(player.getLocation().add(0, 2, 0), 2, false), found);
         } else if (action.equalsIgnoreCase("undress") || action.equalsIgnoreCase("inventory")) {
-            if (item != null) ItemUtils.giveItemOrDrop(player, item);
+            ItemUtils.giveItemOrDrop(player, found);
         }
 
-        env.getVariables().set("item", vi.toString());
-        env.getVariables().set("item_str", ItemUtils.toDisplayString(vi.asParameters()));
+        env.getVariables().set("item", VirtualItem.asString(found));
+        env.getVariables().set("item_str", ItemUtils.toDisplayString(found));
         return true;
     }
 

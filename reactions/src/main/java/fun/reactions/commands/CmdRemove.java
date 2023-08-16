@@ -77,7 +77,7 @@ public class CmdRemove extends Cmd {
         if (id.isEmpty()) {
             return Msg.MSG_VARNEEDID.print(sender);
         }
-        if (ReActions.getVariables().removeVariable(player, id)) {
+        if (ReActions.getPersistentVariables().removeVariable(player, id)) {
             return Msg.MSG_VARREMOVED.print(sender, id);
         }
         return Msg.MSG_VARREMOVEFAIL.print(sender);

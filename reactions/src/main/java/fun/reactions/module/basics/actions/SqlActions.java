@@ -55,7 +55,7 @@ public class SqlActions implements Action {
                     return false;
                 }
                 if (varName.isEmpty()) return false;
-                ReActions.getVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, env.getVariables().getString("SQL_SET")));
+                ReActions.getPersistentVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, env.getVariables().getString("SQL_SET")));
             }
             case INSERT -> { // INSERT
                 query = params.getString("query", params.origin()).trim();

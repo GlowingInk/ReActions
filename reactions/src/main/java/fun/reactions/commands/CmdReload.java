@@ -39,8 +39,8 @@ public class CmdReload extends Cmd {
             if (check.contains("d"))
                 CooldownManager.load();
             if (check.contains("v")) {
-                if (!Cfg.playerSelfVarFile) ReActions.getVariables().load();
-                else ReActions.getVariables().loadVars();
+                if (!Cfg.playerSelfVarFile) ReActions.getPersistentVariables().load();
+                else ReActions.getPersistentVariables().loadVars();
             }
             if (check.contains("t"))
                 TimersManager.init();
@@ -55,8 +55,8 @@ public class CmdReload extends Cmd {
             ReActions.getPlugin().reloadConfig();
             Cfg.load(ReActions.getPlugin().getConfig());
             CooldownManager.load();
-            if (!Cfg.playerSelfVarFile) ReActions.getVariables().load();
-            else ReActions.getVariables().loadVars();
+            if (!Cfg.playerSelfVarFile) ReActions.getPersistentVariables().load();
+            else ReActions.getPersistentVariables().loadVars();
             TimersManager.init();
             InventoryMenu.load();
             ReActions.getCommands().reload();

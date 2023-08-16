@@ -52,6 +52,8 @@ public class RealPosition implements FinePosition, Parameterizable {
     private final float yaw;
     private final float pitch;
 
+    private Parameters params;
+
     private RealPosition(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
         this.worldName = worldName;
         this.x = x;
@@ -63,6 +65,14 @@ public class RealPosition implements FinePosition, Parameterizable {
 
     public static @NotNull RealPosition of(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
         return new RealPosition(worldName, x, y, z, yaw, pitch);
+    }
+
+    public static @NotNull RealPosition of(@NotNull String worldName, Position pos, float yaw, float pitch) {
+        return of(worldName, pos.x(), pos.y(), pos.z(), yaw, pitch);
+    }
+
+    public static @NotNull RealPosition of(@NotNull String worldName, Position pos) {
+        return of(worldName, pos.x(), pos.y(), pos.z(), 0, 0);
     }
 
     public static @NotNull RealPosition byString(@NotNull String loc) {
@@ -125,14 +135,17 @@ public class RealPosition implements FinePosition, Parameterizable {
 
     @Override
     public @NotNull Parameters asParameters() {
-        return Parameters.fromMap(Map.of(
-                "world", worldName,
-                "x", format(x),
-                "y", format(y),
-                "z", format(z),
-                "yaw", format(yaw),
-                "pitch", format(yaw)
-        ));
+        if (params == null) {
+            params = Parameters.fromMap(Map.of(
+                    "world", worldName,
+                    "x", format(x),
+                    "y", format(y),
+                    "z", format(z),
+                    "yaw", format(yaw),
+                    "pitch", format(pitch)
+            ));
+        }
+        return params;
     }
 
     public @NotNull String worldName() {

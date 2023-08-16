@@ -1,6 +1,6 @@
 package fun.reactions.module.basics.placeholders;
 
-import fun.reactions.ReActions;
+import fun.reactions.PersistentVariablesManager;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.util.naming.Aliased;
@@ -11,18 +11,19 @@ import org.jetbrains.annotations.Nullable;
 public class PersistentVarPlaceholders implements Placeholder.Keyed {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
+        PersistentVariablesManager variablesManager = env.getPlatform().getPersistentVariables();
         switch (key) {
             case "var": case "variable":
                 int index = params.indexOf('.');
                 if (index != -1) {
-                    return ReActions.getVariables().getVariable(params.substring(0, index), params.substring(index + 1));
+                    return variablesManager.getVariable(params.substring(0, index), params.substring(index + 1));
                 } else {
-                    return ReActions.getVariables().getVariable("", params);
+                    return variablesManager.getVariable("", params);
                 }
 
             case "varp": case "varplayer":
                 return env.getPlayer() != null
-                        ? ReActions.getVariables().getVariable(env.getPlayer().getName(), params)
+                        ? variablesManager.getVariable(env.getPlayer().getName(), params)
                         : null;
 
             default:

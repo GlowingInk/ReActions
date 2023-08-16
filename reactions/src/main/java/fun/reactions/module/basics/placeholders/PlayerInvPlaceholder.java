@@ -7,6 +7,7 @@ import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,11 +23,11 @@ public class PlayerInvPlaceholder implements Placeholder.Keyed {
     }
 
     private static String getPlayerInventory(Player player, String value) {
-        VirtualItem vi = null;
+        ItemStack item = null;
         if (NumberUtils.isNumber(value, NATURAL)) {
             int slotNum = Integer.parseInt(value);
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
-            vi = VirtualItem.fromItemStack(player.getInventory().getItem(slotNum));
+            item = player.getInventory().getItem(slotNum);
         } else switch (value.toLowerCase(Locale.ROOT)) {
             case "mainhand":
             case "hand":
@@ -36,22 +37,22 @@ public class PlayerInvPlaceholder implements Placeholder.Keyed {
             case "head":
             case "helm":
             case "helmet":
-                vi = VirtualItem.fromItemStack(player.getInventory().getHelmet());
+                item = player.getInventory().getHelmet();
                 break;
             case "chestplate":
             case "chest":
-                vi = VirtualItem.fromItemStack(player.getInventory().getChestplate());
+                item = player.getInventory().getChestplate();
                 break;
             case "leggings":
             case "legs":
-                vi = VirtualItem.fromItemStack(player.getInventory().getLeggings());
+                item = player.getInventory().getLeggings();
                 break;
             case "boots":
             case "boot":
-                vi = VirtualItem.fromItemStack(player.getInventory().getBoots());
+                item = player.getInventory().getBoots();
                 break;
         }
-        return vi == null ? "" : vi.toString();
+        return item == null ? "" : VirtualItem.asString(item);
     }
 
     @Override

@@ -182,7 +182,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     }
 
     @Override
-    public @NotNull PersistentVariablesManager getVariables() {
+    public @NotNull PersistentVariablesManager getPersistentVariables() {
         return variablesManager;
     }
 

@@ -35,7 +35,7 @@ public class RaPapiExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String param) {
-        PersistentVariablesManager variables = ReActions.getVariables();
+        PersistentVariablesManager variables = ReActions.getPersistentVariables();
 
         if (StringUtil.startsWithIgnoreCase(param, "varp:")) {
             return player == null || player.getName() == null

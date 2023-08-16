@@ -46,7 +46,7 @@ public class CmdList extends Cmd {
                 case "timer", "timers" -> TimersManager.listTimers(sender, page);
                 case "delay", "delays" -> CooldownManager.printCooldownList(sender, page, lpp);
                 case "loc", "location" -> LocationHolder.printLocList(sender, page, lpp);
-                case "var", "variables", "variable" -> ReActions.getVariables().printList(sender, page, mask);
+                case "var", "variables", "variable" -> ReActions.getPersistentVariables().printList(sender, page, mask);
                 case "menu", "menus" -> InventoryMenu.printMenuList(sender, page, mask);
                 case "cmd", "commands" -> ReActions.getCommands().list().forEach(sender::sendMessage);
                 default -> printAct(sender, page, lpp);

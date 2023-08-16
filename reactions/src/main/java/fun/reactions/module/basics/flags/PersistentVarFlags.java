@@ -92,7 +92,7 @@ public class PersistentVarFlags implements Flag, Aliased {
         }
         if (playerName.isEmpty() && this.personal) return false;
 
-        String variable = ReActions.getVariables().getVariable(playerName, variableId);
+        String variable = ReActions.getPersistentVariables().getVariable(playerName, variableId);
         if (variable == null) {
             return false;
         }

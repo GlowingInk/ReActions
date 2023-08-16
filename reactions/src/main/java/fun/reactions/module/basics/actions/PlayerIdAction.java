@@ -33,10 +33,10 @@ public class PlayerIdAction implements Action {
 
             String varID = params.getString("varid");
             if (!Utils.isStringEmpty(varID))
-                env.getPlatform().getVariables().setVariable(playerParam, varID, uuid);
+                env.getPlatform().getPersistentVariables().setVariable(playerParam, varID, uuid);
             String varName = params.getString("varname");
             if (!Utils.isStringEmpty(varName))
-                env.getPlatform().getVariables().setVariable(playerParam, varName, pName);
+                env.getPlatform().getPersistentVariables().setVariable(playerParam, varName, pName);
         }
 
         env.getVariables().set("playerid", uuid);
