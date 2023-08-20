@@ -36,7 +36,7 @@ public class WeChangeActivator extends Activator {
     }
 
     public static WeChangeActivator create(Logic base, Parameters param) {
-        Material blockType = ItemUtils.getMaterial(param.getString("blocktype"));
+        Material blockType = param.get("blocktype", ItemUtils::getMaterial);
         String region = param.getString("region", "");
         return new WeChangeActivator(base, blockType, region);
     }
@@ -66,11 +66,10 @@ public class WeChangeActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "block-type:" + (blockType != null ? blockType : "ANY") +
                 " region:" + (region.isEmpty() ? "-" : region.toUpperCase(Locale.ROOT)) +
                 ")";
-        return sb;
     }
 
     /**

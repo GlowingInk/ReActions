@@ -58,8 +58,8 @@ public class BlockClickActivator extends Activator implements Locatable {
     }
 
     public static BlockClickActivator create(Logic base, Parameters param) {
-        Material block = ItemUtils.getMaterial(param.getString("block-type"));
-        ClickType click = ClickType.getByName(param.getString("click-type"));
+        Material block = param.get("block-type", ItemUtils::getMaterial);
+        ClickType click = param.getSafe("click-type", ClickType::getByName);
         String loc = param.getString("location");
         return new BlockClickActivator(base, block, loc, click);
     }
