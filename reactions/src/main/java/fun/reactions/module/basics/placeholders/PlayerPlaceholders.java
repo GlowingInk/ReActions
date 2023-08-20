@@ -3,7 +3,7 @@ package fun.reactions.module.basics.placeholders;
 import fun.reactions.holders.PlayerRespawner;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
-import fun.reactions.util.item.ItemUtils;
+import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.Location;
@@ -47,8 +47,8 @@ public class PlayerPlaceholders implements Placeholder.Keyed {
         return switch (key) {
             case "player", "player_name" -> player.getName();
             case "player_health", "health" -> Double.toString(player.getHealth());
-            case "player_item_hand", "itemplayer" -> ItemUtils.getItemInHand(player, false);
-            case "player_item_offhand", "offitemplayer" -> ItemUtils.getItemInHand(player, true);
+            case "player_item_hand", "itemplayer" -> VirtualItem.asString(player.getInventory().getItemInMainHand());
+            case "player_item_offhand", "offitemplayer" -> VirtualItem.asString(player.getInventory().getItemInOffHand());
             case "player_display", "dplayer" -> player.getDisplayName();
             case "player_loc" -> LocationUtils.locationToString(player.getLocation());
             case "player_loc_death", "deathpoint" -> LocationUtils.locationToString(Optional.of(PlayerRespawner.getLastDeathPoint(player)).orElse(player.getLocation()));

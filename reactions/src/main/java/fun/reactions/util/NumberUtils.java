@@ -1,10 +1,10 @@
 package fun.reactions.util;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -56,19 +56,23 @@ public final class NumberUtils {
                 : Double.toString(d);
     }
 
+    @Contract("null -> false")
     public static boolean isNumber(@Nullable String str) {
         return str != null && FLOAT.matcher(str).matches();
     }
 
+    @Contract("null, _ -> false")
     public static boolean isNumber(@Nullable String str, @NotNull Predicate<String> flag) {
         return isNumber(str) && flag.test(str);
     }
 
     @SafeVarargs
+    @Contract("null, _ -> false")
     public static boolean isNumber(@Nullable String str, @NotNull Predicate<String> @NotNull ... flags) {
         return isNumber(str, Arrays.asList(flags));
     }
 
+    @Contract("null, _ -> false")
     public static boolean isNumber(@Nullable String str, @NotNull Iterable<? extends @NotNull Predicate<String>> flags) {
         if (!isNumber(str)) return false;
         for (Predicate<String> flag : flags) {
@@ -78,10 +82,9 @@ public final class NumberUtils {
     }
 
     public static final class Is {
-        private static final Set<String> ZEROS = Set.of("0", "0.0", "-0", "-0.0");
         private Is() {}
 
-        public static final Predicate<String> NON_ZERO = (s) -> !ZEROS.contains(s);
+        public static final Predicate<String> NON_ZERO = Pattern.compile("-?0+(?:\\.0+)?").asMatchPredicate().negate();
         public static final Predicate<String> POSITIVE = (s) -> !s.startsWith("-");
         public static final Predicate<String> INTEGER = (s) -> s.indexOf('.') == -1;
 

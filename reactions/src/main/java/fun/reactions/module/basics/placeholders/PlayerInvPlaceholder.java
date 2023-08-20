@@ -3,11 +3,9 @@ package fun.reactions.module.basics.placeholders;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.util.NumberUtils;
-import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,40 +17,30 @@ import static fun.reactions.util.NumberUtils.Is.NATURAL;
 public class PlayerInvPlaceholder implements Placeholder.Keyed {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String text) {
-        return getPlayerInventory(env.getPlayer(), text);
-    }
-
-    private static String getPlayerInventory(Player player, String value) {
-        ItemStack item = null;
-        if (NumberUtils.isNumber(value, NATURAL)) {
-            int slotNum = Integer.parseInt(value);
-            if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return "";
-            item = player.getInventory().getItem(slotNum);
-        } else switch (value.toLowerCase(Locale.ROOT)) {
-            case "mainhand":
-            case "hand":
-                return ItemUtils.getItemInHand(player, false);
-            case "offhand":
-                return ItemUtils.getItemInHand(player, true);
-            case "head":
-            case "helm":
-            case "helmet":
-                item = player.getInventory().getHelmet();
-                break;
-            case "chestplate":
-            case "chest":
-                item = player.getInventory().getChestplate();
-                break;
-            case "leggings":
-            case "legs":
-                item = player.getInventory().getLeggings();
-                break;
-            case "boots":
-            case "boot":
-                item = player.getInventory().getBoots();
-                break;
+        Player player = env.getPlayer();
+        if (player == null) {
+            return null;
         }
-        return item == null ? "" : VirtualItem.asString(item);
+        if (NumberUtils.isNumber(text, NATURAL)) {
+            int slotNum = Integer.parseInt(text);
+            if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return VirtualItem.AIR.asString();
+            return VirtualItem.asString(player.getInventory().getItem(slotNum));
+        } else {
+            return VirtualItem.asString(switch (text.toLowerCase(Locale.ROOT)) {
+                case "mainhand", "main-hand", "main_hand", "hand" ->
+                        player.getInventory().getItemInMainHand();
+                case "offhand", "off-hand", "off_hand", "secondhand", "second-hand", "second_hand" ->
+                        player.getInventory().getItemInOffHand();
+                case "helmet", "helm", "head" ->
+                        player.getInventory().getHelmet();
+                case "chestplate", "chest", "body" ->
+                        player.getInventory().getChestplate();
+                case "leggings", "legs", "pants" ->
+                        player.getInventory().getLeggings();
+                case "boots", "boot", "foot", "feet" ->
+                        player.getInventory().getBoots();
+            });
+        }
     }
 
     @Override

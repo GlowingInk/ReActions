@@ -299,7 +299,7 @@ public class ItemActions implements Action {
         if (items.isEmpty()) return false;
         String actionItems = toDisplayString(items);
         env.getVariables().set("item_str", actionItems);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(ReActions.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             for (ItemStack i : items)
                 ItemUtils.giveItemOrDrop(player, i);
             ItemContextManager.triggerItemHold(player);

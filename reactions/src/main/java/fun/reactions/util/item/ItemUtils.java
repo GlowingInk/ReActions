@@ -138,17 +138,4 @@ public final class ItemUtils {
     public static boolean isExist(@Nullable ItemStack item) {
         return item != null && !item.getType().isEmpty();
     }
-
-    /**
-     * Get item in hand
-     * @param player Player to use
-     * @param offhand Check offhand or not
-     * @return Item string
-     */
-    public static @NotNull String getItemInHand(@NotNull Player player, boolean offhand) {
-        return VirtualItem.asString(offhand
-                ? player.getInventory().getItemInOffHand()
-                : player.getInventory().getItemInMainHand()
-        );
-    }
 }
