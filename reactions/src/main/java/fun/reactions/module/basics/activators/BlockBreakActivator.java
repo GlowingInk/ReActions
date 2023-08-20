@@ -22,7 +22,8 @@ import static fun.reactions.model.environment.Variable.property;
 import static fun.reactions.model.environment.Variable.simple;
 
 /**
- * Created by MaxDikiy on 2017-05-14.
+ * @author MaxDikiy
+ * @since 14/05/2017
  */
 public class BlockBreakActivator extends Activator implements Locatable {
 
@@ -88,7 +89,8 @@ public class BlockBreakActivator extends Activator implements Locatable {
     }
 
     /**
-     * Created by MaxDikiy on 2017-05-14.
+     * @author MaxDikiy
+     * @since 14/05/2017
      */
     public static class Context extends ActivationContext {
         public static final String DO_DROP = "is_drop";

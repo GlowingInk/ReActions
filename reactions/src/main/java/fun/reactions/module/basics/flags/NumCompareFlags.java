@@ -6,7 +6,8 @@ import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 10/1/2017.
+ * @author MaxDikiy
+ * @since 10/01/2017
  */
 public class NumCompareFlags implements Flag {
     private final boolean greater;

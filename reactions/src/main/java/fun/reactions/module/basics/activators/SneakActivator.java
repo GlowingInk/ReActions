@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 2017-05-16.
+ * @author MaxDikiy
+ * @since 16/05/2017
  */
 public class SneakActivator extends Activator {
     private final TriBoolean sneak;
@@ -50,7 +51,8 @@ public class SneakActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-05-16.
+     * @author MaxDikiy
+     * @since 16/05/2017
      */
     public static class Context extends ActivationContext {
         private final boolean sneaking;

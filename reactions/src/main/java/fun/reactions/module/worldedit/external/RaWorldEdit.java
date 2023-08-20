@@ -18,7 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**
- * Created by MaxDikiy on 9/10/2017.
+ * @author MaxDikiy
+ * @since 09/10/2017
  */
 
 @Deprecated

@@ -19,7 +19,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 2017-06-25.
+ * @author MaxDikiy
+ * @since 25/06/2017
  */
 // TODO: Assemble to one activator
 public class DamageByMobActivator extends Activator {
@@ -130,7 +131,8 @@ public class DamageByMobActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-06-25.
+     * @author MaxDikiy
+     * @since 25/06/2017
      */
     public static class Context extends DamageActivator.Context {
 

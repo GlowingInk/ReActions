@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 2017-10-28.
+ * @author MaxDikiy
+ * @since 28/10/2017
  */
 public class GodActivator extends Activator {
     private final TriBoolean god;
@@ -50,7 +51,8 @@ public class GodActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-10-27.
+     * @author MaxDikiy
+     * @since 27/10/2017
      */
     public static class Context extends ActivationContext {
         private final boolean god;

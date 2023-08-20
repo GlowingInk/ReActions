@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 // TODO: WorldEdit module
 /**
- * Created by MaxDikiy on 11/10/2017.
+ * @author MaxDikiy
+ * @since 11/10/2017
  */
 public class WeToolControlFlag implements Flag {
     @Override

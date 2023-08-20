@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 2017-05-16.
+ * @author MaxDikiy
+ * @since 16/05/2017
  */
 @Aliased.Names("FLIGHT_SPEED")
 public class FlySpeedAction implements Action {
@@ -18,8 +19,9 @@ public class FlySpeedAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         double speed = params.getInteger("speed", () -> params.getInteger(Parameters.ORIGIN));
-        if (params.contains("player"))
-            player = Bukkit.getPlayerExact(params.getString("player"));
+        if (params.contains("player")) {
+            player = params.get("player", Bukkit::getPlayerExact);
+        }
         return flySpeedPlayer(player, speed / 10);
     }
 
@@ -35,8 +37,11 @@ public class FlySpeedAction implements Action {
 
     private boolean flySpeedPlayer(Player player, double speed) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
-        if (speed > 1) speed = 1;
-        if (speed < 0) speed = 0;
+        if (speed > 1) {
+            speed = 1;
+        } else if (speed < 0) {
+            speed = 0;
+        }
         player.setFlySpeed((float) speed);
         return true;
     }

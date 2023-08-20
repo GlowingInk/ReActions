@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by MaxDikiy on 20/10/2017.
+ * @author MaxDikiy
+ * @since 20/10/2017
  */
 @Aliased.Names("CLEAR_RADIUS")
 public class ClearRadiusAction implements Action {

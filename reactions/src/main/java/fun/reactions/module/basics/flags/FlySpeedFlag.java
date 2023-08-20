@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 5/4/2017.
+ * @author MaxDikiy
+ * @since 05/04/2017
  */
 public class FlySpeedFlag implements Flag {
     @Override

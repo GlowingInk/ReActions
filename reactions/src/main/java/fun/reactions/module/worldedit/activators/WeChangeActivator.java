@@ -1,6 +1,3 @@
-/*
-  Created by MaxDikiy on 17/10/2017.
- */
 package fun.reactions.module.worldedit.activators;
 
 import fun.reactions.model.Logic;
@@ -23,6 +20,10 @@ import java.util.Map;
 
 import static fun.reactions.model.environment.Variable.simple;
 
+/**
+ * @author MaxDikiy
+ * @since 17/10/2017
+ */
 @Aliased.Names("WECHANGE")
 public class WeChangeActivator extends Activator {
 
@@ -73,7 +74,8 @@ public class WeChangeActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 17/10/2017.
+     * @author MaxDikiy
+     * @since 17/10/2017
      */
     public static class Context extends ActivationContext {
 

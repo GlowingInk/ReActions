@@ -9,7 +9,8 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 5/6/2017.
+ * @author MaxDikiy
+ * @since 05/06/2017
  */
 public class PlayerIdAction implements Action {
 

@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 18/10/2017.
+ * @author MaxDikiy
+ * @since 18/10/2017
  */
 public class WeSuperPickaxeAction implements Action {
     @Override

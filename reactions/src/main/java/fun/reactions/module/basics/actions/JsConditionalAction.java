@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 2017-05-17.
+ * @author MaxDikiy
+ * @since 17/05/2017
  */
 @Aliased.Names({"IF_ELSE", "JS_CONDITION"})
 @Deprecated

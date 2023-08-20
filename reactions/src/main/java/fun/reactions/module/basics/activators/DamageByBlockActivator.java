@@ -23,7 +23,8 @@ import java.util.Map;
 import static fun.reactions.model.environment.Variable.simple;
 
 /**
- * Created by MaxDikiy on 2017-07-23.
+ * @author MaxDikiy
+ * @since 23/07/2017
  */
 // TODO: Assemble to one activator
 public class DamageByBlockActivator extends Activator implements Locatable {
@@ -111,7 +112,8 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     /**
-     * Created by MaxDikiy on 2017-07-23.
+     * @author MaxDikiy
+     * @since 23/07/2017
      */
     public static class Context extends DamageActivator.Context {
 

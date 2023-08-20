@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 5/2/2017.
+ * @author MaxDikiy
+ * @since 05/02/2017
  */
 public class FlightActivator extends Activator {
     private final TriBoolean flight;
@@ -50,7 +51,8 @@ public class FlightActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 5/2/2017.
+     * @author MaxDikiy
+     * @since 05/02/2017
      */
     public static class Context extends ActivationContext {
         private final boolean flying;

@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 2017-07-23.
+ * @author MaxDikiy
+ * @since 23/07/2017
  */
 // TODO: Assemble to one activator
 public class DamageActivator extends Activator {
@@ -73,7 +74,8 @@ public class DamageActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-07-23.
+     * @author MaxDikiy
+     * @since 23/07/2017
      */
     public static class Context extends ActivationContext {
         public static final String DAMAGE = "damage";

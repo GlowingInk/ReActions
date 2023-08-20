@@ -11,7 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 /**
- * Created by MaxDikiy on 5/7/2017.
+ * @author MaxDikiy
+ * @since 05/07/2017
  */
 public class FileAction implements Action {
     private static final String dir = new File("").getAbsolutePath();

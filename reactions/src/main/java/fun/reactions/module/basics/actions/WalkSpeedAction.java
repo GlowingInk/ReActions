@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 2017-05-16.
+ * @author MaxDikiy
+ * @since 16/05/2017
  */
 public class WalkSpeedAction implements Action {
     @Override

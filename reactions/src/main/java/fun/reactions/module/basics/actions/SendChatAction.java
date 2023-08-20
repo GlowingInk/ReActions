@@ -6,7 +6,8 @@ import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 2017-10-04.
+ * @author MaxDikiy
+ * @since 04/10/2017
  */
 @Aliased.Names({"CHAT", "CHAT_MESSAGE"})
 public class SendChatAction implements Action {

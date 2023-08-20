@@ -18,7 +18,8 @@ import java.util.Map;
 import static fun.reactions.model.environment.Variable.simple;
 
 /**
- * Created by MaxDikiy on 2017-05-14.
+ * @author MaxDikiy
+ * @since 14/05/2017
  */
 public class EntityClickActivator extends Activator {
     private final EntityType entityType;
@@ -63,7 +64,8 @@ public class EntityClickActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-05-14.
+     * @author MaxDikiy
+     * @since 14/05/2017
      */
     public static class Context extends ActivationContext {
 

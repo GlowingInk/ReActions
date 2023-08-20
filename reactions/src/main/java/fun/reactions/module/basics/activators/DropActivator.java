@@ -18,7 +18,8 @@ import java.util.Map;
 import static fun.reactions.model.environment.Variable.simple;
 
 /**
- * Created by MaxDikiy on 2017-05-01.
+ * @author MaxDikiy
+ * @since 01/05/2017
  */
 public class DropActivator extends Activator {
 
@@ -51,7 +52,8 @@ public class DropActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-05-01.
+     * @author MaxDikiy
+     * @since 01/05/2017
      */
     public static class Context extends ActivationContext {
         public static final String PICKUP_DELAY = "pickupdelay";

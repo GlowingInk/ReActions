@@ -9,7 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by MaxDikiy on 2017-04-29.
+ * @author MaxDikiy
+ * @since 29/04/2017
  */
 public class RegexAction implements Action {
 

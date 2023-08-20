@@ -19,7 +19,8 @@ import java.util.Map;
 import static fun.reactions.model.environment.Variable.simple;
 
 /**
- * Created by MaxDikiy on 2017-09-04.
+ * @author MaxDikiy
+ * @since 04/09/2017
  */
 public class PickupItemActivator extends Activator {
     private final VirtualItem item;
@@ -59,7 +60,8 @@ public class PickupItemActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-09-04.
+     * @author MaxDikiy
+     * @since 04/09/2017
      */
     public static class Context extends ActivationContext {
         public static final String PICKUP_DELAY = "pickupdelay";

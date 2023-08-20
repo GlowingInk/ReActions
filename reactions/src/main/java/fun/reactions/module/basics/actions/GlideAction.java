@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by MaxDikiy on 5/8/2017.
+ * @author MaxDikiy
+ * @since 05/08/2017
  */
 public class GlideAction implements Action {
     @Override

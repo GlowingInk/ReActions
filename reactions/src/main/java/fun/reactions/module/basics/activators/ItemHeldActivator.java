@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by MaxDikiy on 2017-11-11.
+ * @author MaxDikiy
+ * @since 11/11/2017
  */
 public class ItemHeldActivator extends Activator {
     private final int slotPrev;
@@ -82,7 +83,8 @@ public class ItemHeldActivator extends Activator {
     }
 
     /**
-     * Created by MaxDikiy on 2017-11-11.
+     * @author MaxDikiy
+     * @since 11/11/2017
      */
     public static class Context extends ActivationContext {
         private final int newSlot;
