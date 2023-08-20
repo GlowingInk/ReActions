@@ -28,8 +28,6 @@ import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +37,7 @@ import java.util.Locale;
 import java.util.Set;
 
 @Aliased.Names("MSG")
+@Deprecated
 public class MessageAction implements Action {
 
     @Override
@@ -61,26 +60,27 @@ public class MessageAction implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = params.getStringSafe("text", () -> hideSelectors(env, params.origin()));
-        if (message.isEmpty()) return;
+        String message = Msg.colorize(params.getStringSafe("text", () -> hideSelectors(env, params.origin())));
         String annoymentTime = params.getString("hide");
-        for (Player p : players) {
-            if (showMessage(env, p, message, annoymentTime)) {
+        for (Player receiver : players) {
+            if (showMessage(env, receiver, message, annoymentTime)) {
                 switch (type.toLowerCase(Locale.ROOT)) {
-                    case "title" -> p.sendTitle(Msg.colorize(message),
-                            params.getString("subtitle", null),
-                            params.getInteger("fadein", 10),
-                            params.getInteger("stay", 70),
-                            params.getInteger("fadeout", 20)
-                    );
-                    case "subtitle" -> p.sendTitle(null,
+                    case "title" -> receiver.sendTitle(
+                            message,
                             Msg.colorize(params.getString("subtitle", null)),
                             params.getInteger("fadein", 10),
                             params.getInteger("stay", 70),
                             params.getInteger("fadeout", 20)
                     );
-                    case "actionbar" -> p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Msg.colorize(message)));
-                    default -> p.sendMessage(Msg.colorize(message));
+                    case "subtitle" -> receiver.sendTitle(
+                            null,
+                            message,
+                            params.getInteger("fadein", 10),
+                            params.getInteger("stay", 70),
+                            params.getInteger("fadeout", 20)
+                    );
+                    case "actionbar" -> receiver.sendActionBar(message);
+                    default -> receiver.sendMessage(message);
                 }
             }
         }

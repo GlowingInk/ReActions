@@ -7,7 +7,7 @@ import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-@Aliased.Names("MENU_ITEM")
+@Aliased.Names({"MENU_ITEM", "MENU"})
 public class OpenMenuAction implements Action {
 
     @Override
