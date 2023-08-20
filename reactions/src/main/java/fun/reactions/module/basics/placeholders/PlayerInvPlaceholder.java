@@ -39,6 +39,7 @@ public class PlayerInvPlaceholder implements Placeholder.Keyed {
                         player.getInventory().getLeggings();
                 case "boots", "boot", "foot", "feet" ->
                         player.getInventory().getBoots();
+                default -> null;
             });
         }
     }
