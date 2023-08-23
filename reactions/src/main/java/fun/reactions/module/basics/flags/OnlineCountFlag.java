@@ -43,8 +43,4 @@ public class OnlineCountFlag implements Flag {
         return "ONLINE_COUNT";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

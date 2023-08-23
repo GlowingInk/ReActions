@@ -43,9 +43,4 @@ public class BroadcastAction implements Action {
     public @NotNull String getName() {
         return "BROADCAST";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

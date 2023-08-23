@@ -46,11 +46,6 @@ public class RegexAction implements Action {
         return "REGEX";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     // TODO: Remove it somehow
     private String removeParams(Environment env, String message) {
         String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) +

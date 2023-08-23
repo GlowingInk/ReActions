@@ -49,9 +49,4 @@ public class TimerActions implements Action {
         return pauseTimer ? "TIMER_STOP" : "TIMER_RESUME";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
 }

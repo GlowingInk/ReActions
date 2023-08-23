@@ -55,8 +55,4 @@ public class EqualsFlag implements Flag { // TODO Rewrite the check
         return "EQUALS";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

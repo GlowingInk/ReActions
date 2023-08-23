@@ -102,11 +102,6 @@ public class SqlActions implements Action {
         return "SQL_" + sqlType.name();
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     public enum Type {
         SELECT, INSERT, UPDATE, DELETE, SET
     }

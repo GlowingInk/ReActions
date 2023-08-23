@@ -99,11 +99,6 @@ public class PersistentVarActions implements Action, Aliased {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
     public @NotNull Collection<@NotNull String> getAliases() {
         return switch (actType) {
             case SET -> personal ? List.of("VAR_PLAYER_SET", "PLAYER_VAR_SET") : List.of("VAR_SET", "GLOBAL_VAR_SET");

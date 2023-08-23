@@ -69,9 +69,4 @@ public class CooldownFlags implements Flag, Aliased {
     public @NotNull Collection<@NotNull String> getAliases() {
         return List.of(global ? "DELAY" : "DELAY_PLAYER");
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return !global;
-    }
 }

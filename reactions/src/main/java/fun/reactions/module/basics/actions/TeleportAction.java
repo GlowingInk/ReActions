@@ -24,6 +24,7 @@ package fun.reactions.module.basics.actions;
 
 import fun.reactions.Cfg;
 import fun.reactions.holders.Teleporter;
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.location.LocationUtils;
@@ -34,19 +35,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("TP")
-public class TeleportAction implements Action {
-
+public class TeleportAction implements Action, Activity.Personal { // TODO Player selector
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return teleportPlayer(env, params) != null;
-    }
-
-    private Location teleportPlayer(Environment env, Parameters params) {
-        Player player = env.getPlayer();
         Location loc;
         int radius = 0;
-        if (params.isEmpty()) return null;
+        if (params.isEmpty()) return false;
         if (params.contains("loc")) {
             loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
             radius = params.getInteger("radius");
@@ -55,30 +50,23 @@ public class TeleportAction implements Action {
         }
         boolean land = params.getBoolean("land", true);
 
-        if (loc != null) {
-            if (radius > 0) loc = LocationUtils.getRadiusLocation(loc, radius, land);
-            if (Cfg.centerTpCoords) {
-                loc.setX(loc.getBlockX() + 0.5);
-                loc.setZ(loc.getBlockZ() + 0.5);
-            }
-            if (!loc.getChunk().isLoaded()) loc.getChunk().load();
-
-            env.getVariables().set("loc-from", LocationUtils.locationToString(player.getLocation()));
-            env.getVariables().set("loc-from-str", LocationUtils.locationToStringFormatted(player.getLocation()));
-            env.getVariables().set("loc-to", LocationUtils.locationToString(loc));
-            env.getVariables().set("loc-to-str", LocationUtils.locationToStringFormatted(loc));
-            Teleporter.teleport(player, loc);
+        if (radius > 0) loc = LocationUtils.getRadiusLocation(loc, radius, land);
+        if (Cfg.centerTpCoords) {
+            loc.setX(loc.getBlockX() + 0.5);
+            loc.setZ(loc.getBlockZ() + 0.5);
         }
-        return loc;
+        if (!loc.getChunk().isLoaded()) loc.getChunk().load();
+
+        env.getVariables().set("loc-from", LocationUtils.locationToString(player.getLocation()));
+        env.getVariables().set("loc-from-str", LocationUtils.locationToStringFormatted(player.getLocation()));
+        env.getVariables().set("loc-to", LocationUtils.locationToString(loc));
+        env.getVariables().set("loc-to-str", LocationUtils.locationToStringFormatted(loc));
+        Teleporter.teleport(player, loc);
+        return true;
     }
 
     @Override
     public @NotNull String getName() {
         return "TELEPORT";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

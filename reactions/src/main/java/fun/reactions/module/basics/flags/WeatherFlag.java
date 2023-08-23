@@ -41,8 +41,4 @@ public class WeatherFlag implements Flag {
         return "WEATHER";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

@@ -60,7 +60,7 @@ public final class Utils {
      * @param params Parameters of sound
      * @return Name of played sound
      */
-    public static String soundPlay(@NotNull Location loc, @NotNull Parameters params) {
+    public static String soundPlay(@Nullable Location loc, @NotNull Parameters params) {
         if (params.isEmpty()) return "";
         Location soundLoc = loc;
         String sndstr = "";
@@ -88,7 +88,7 @@ public final class Utils {
             pitch = (float) params.getDouble("pitch", 1.0f);
             volume = (float) params.getDouble("volume", 1.0f);
         }
-        Sound sound = getEnum(Sound.class, sndstr, Sound.UI_BUTTON_CLICK);
+        Sound sound = getEnum(Sound.class, sndstr, Sound.UI_BUTTON_CLICK); // TODO Custom sounds support
         if (soundLoc != null) soundLoc.getWorld().playSound(soundLoc, sound, volume, pitch);
         return sound.name();
     }

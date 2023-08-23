@@ -38,9 +38,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-@Aliased.Names("POTION_EFFECT")
-public class PotionAction implements Action {
-
+@Aliased.Names("POTION")
+public class PotionEffectAction implements Action {// TODO Allow to use player selectors
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -50,12 +49,7 @@ public class PotionAction implements Action {
 
     @Override
     public @NotNull String getName() {
-        return "POTION";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true; // TODO Allow to use player selectors
+        return "POTION_EFFECT";
     }
 
     private String potionEffect(Player p, Parameters params) {

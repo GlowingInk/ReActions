@@ -12,10 +12,6 @@ public final class InvalidFlag implements Flag {
         this.name = name.toUpperCase(Locale.ROOT);
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {

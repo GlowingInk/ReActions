@@ -51,11 +51,6 @@ public class DamageAction implements Action {
         return "DAMAGE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private boolean damagePlayer(Player player, double damage) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
         if (damage > 0) {

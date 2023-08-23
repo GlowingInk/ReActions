@@ -23,6 +23,7 @@
 package fun.reactions.module.basics.actions;
 
 import fun.reactions.ReActions;
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.basics.ItemContextManager;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 
 // TODO: Remake from scratch
-public class ItemActions implements Action {
+public class ItemActions implements Action, Activity.Personal {
     private final Type actionType;
 
     public ItemActions(Type actionType) {
@@ -53,7 +54,7 @@ public class ItemActions implements Action {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
             case GIVE_ITEM -> giveItemPlayer(env, params.origin());
@@ -83,11 +84,6 @@ public class ItemActions implements Action {
             case GET_INVENTORY -> "ITEM_SLOT_VIEW";
             case UNWEAR_ITEM -> "ITEM_UNWEAR";
         };
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 
     private boolean setInventorySlot(Environment env, Parameters params) {

@@ -23,26 +23,22 @@
 package fun.reactions.module.basics.actions;
 
 import fun.reactions.holders.PushBack;
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class BackAction implements Action {
-
+public class BackAction implements Activity.Personal, Action {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return PushBack.teleportToPrev(env.getPlayer(), params.getInteger(Parameters.ORIGIN, 1));
+        return PushBack.teleportToPrev(player, params.getInteger(Parameters.ORIGIN, 1));
     }
 
     @Override
     public @NotNull String getName() {
         return "BACK";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

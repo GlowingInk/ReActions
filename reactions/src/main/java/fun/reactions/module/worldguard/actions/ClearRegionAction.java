@@ -68,11 +68,6 @@ public class ClearRegionAction implements Action {
         return "REGION_CLEAR";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
 
     private boolean isEntityIsTypeOf(Entity e, String type) {
         if (e == null) return false;

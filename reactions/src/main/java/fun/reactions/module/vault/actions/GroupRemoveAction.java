@@ -22,6 +22,7 @@
 
 package fun.reactions.module.vault.actions;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.vault.external.RaVault;
@@ -30,11 +31,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("GRPRMV")
-public class GroupRemoveAction implements Action {
-
+public class GroupRemoveAction implements Action, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         if (RaVault.playerInGroup(player, paramsStr))
             return RaVault.playerRemoveGroup(player, paramsStr);
         return true;
@@ -43,10 +42,5 @@ public class GroupRemoveAction implements Action {
     @Override
     public @NotNull String getName() {
         return "GROUP_REMOVE";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

@@ -39,11 +39,6 @@ public class MoneyFlag implements Flag {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         if (!RaVault.isEconomyConnected()) return false;
         Parameters params = Parameters.fromString(paramsStr);

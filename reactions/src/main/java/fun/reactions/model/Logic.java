@@ -96,37 +96,29 @@ public final class Logic {
     }
 
     public void execute(@NotNull Environment env) {
-        boolean noPlayer = env.getPlayer() == null;
         PlaceholdersManager placeholders = env.getPlatform().getPlaceholders();
         for (Flag.Stored flag : flags) {
-            if (flag.getActivity().requiresPlayer() && noPlayer) {
-                executeActions(env, reactions, false);
-                return;
-            }
             String params = flag.hasPlaceholders()
                     ? placeholders.parse(env, flag.getContent())
                     : flag.getContent();
             if (!flag.getActivity().proceed(env, params)) {
-                executeActions(env, reactions, !noPlayer);
+                executeActions(env, reactions);
                 return;
             }
         }
-        executeActions(env, actions, !noPlayer);
+        executeActions(env, actions);
     }
 
-    public static void executeActions(Environment env, List<Action.Stored> actions, boolean hasPlayer) {
+    public static void executeActions(Environment env, List<Action.Stored> actions) {
         PlaceholdersManager placeholders = env.getPlatform().getPlaceholders();
         for (int i = 0; i < actions.size(); i++) {
             Action.Stored action = actions.get(i);
-            // TODO: Microoptimization - check if hasPlayer and separate iteration
-            if (hasPlayer || !action.getActivity().requiresPlayer()) {
-                String params = action.hasPlaceholders()
-                        ? placeholders.parse(env, action.getContent())
-                        : action.getContent();
-                if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Interrupting stopAction) {
-                    stopAction.stop(env, action.getContent(), new ArrayList<>(actions.subList(i + 1, actions.size())));
-                    break;
-                }
+            String params = action.hasPlaceholders()
+                    ? placeholders.parse(env, action.getContent())
+                    : action.getContent();
+            if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Interrupting stopAction) {
+                stopAction.stop(env, action.getContent(), new ArrayList<>(actions.subList(i + 1, actions.size())));
+                break;
             }
         }
     }

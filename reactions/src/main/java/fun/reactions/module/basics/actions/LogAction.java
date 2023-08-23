@@ -103,11 +103,6 @@ public class LogAction implements Action {
         return "LOG";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private String removeParams(Environment env, String message) {
         String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) +
                 "|hide|prefix|color|file):(\\{.*\\}|\\S+)\\s{0,1}";

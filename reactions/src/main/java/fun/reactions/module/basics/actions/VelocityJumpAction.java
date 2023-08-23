@@ -22,6 +22,7 @@
 
 package fun.reactions.module.basics.actions;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.location.LocationUtils;
@@ -35,11 +36,10 @@ import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("JUMP")
 @Deprecated
-public class VelocityJumpAction implements Action {
+public class VelocityJumpAction implements Action, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = env.getPlayer();
         Msg.logOnce("velocity-jump-warning", "&cWarning! VELOCITY_JUMP action is under development. In next version of plugin it could be changed, renamed or removed!");
         String locStr = params.getString("loc");
         if (locStr.isEmpty()) return false;
@@ -54,11 +54,6 @@ public class VelocityJumpAction implements Action {
     @Override
     public @NotNull String getName() {
         return "VELOCITY_JUMP";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 
     private static Vector calculateVelocity(Location locFrom, Location locTo, int heightGain) {
@@ -103,5 +98,4 @@ public class VelocityJumpAction implements Action {
 
         return new Vector(vx, vy, vz);
     }
-
 }

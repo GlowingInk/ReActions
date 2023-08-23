@@ -25,11 +25,6 @@ public class WaitAction implements Action, Interrupting {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
     public void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Stored> actions) {
         env.getPlatform().getWaiter().schedule(new WaitTask(
                 env.getVariables().fork(),

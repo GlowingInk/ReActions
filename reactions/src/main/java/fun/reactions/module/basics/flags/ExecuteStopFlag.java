@@ -46,8 +46,4 @@ public class ExecuteStopFlag implements Flag {
         return "EXECUTE_STOP";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

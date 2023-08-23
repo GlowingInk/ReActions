@@ -55,9 +55,4 @@ public class HealAction implements Action {
     public @NotNull String getName() {
         return "HEAL";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

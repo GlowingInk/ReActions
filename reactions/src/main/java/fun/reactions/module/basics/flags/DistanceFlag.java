@@ -10,10 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"NEARBY", "NEAR_TO", "IS_NEAR", "NEAR"})
 public class DistanceFlag implements Flag {
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {

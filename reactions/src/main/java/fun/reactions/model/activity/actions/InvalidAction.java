@@ -13,11 +13,6 @@ public final class InvalidAction implements Action {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         return false;
     }

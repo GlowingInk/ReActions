@@ -38,8 +38,4 @@ public class TimerActiveFlag implements Flag {
         return "TIMER_ACTIVE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

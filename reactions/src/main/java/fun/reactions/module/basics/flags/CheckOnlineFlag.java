@@ -22,8 +22,4 @@ public class CheckOnlineFlag implements Flag {
         return "CHECK_ONLINE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

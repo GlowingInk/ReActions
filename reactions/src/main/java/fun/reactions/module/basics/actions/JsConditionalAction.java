@@ -101,11 +101,6 @@ public class JsConditionalAction implements Action {
         return "JS_CONDITIONAL";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private boolean executeActions(Environment env, String paramStr) {
         Parameters params = Parameters.fromString(paramStr);
         if (!params.contains("run")) return false;

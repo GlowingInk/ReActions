@@ -81,9 +81,4 @@ public class SignSetAction implements Action {
         return "SIGN_SET_LINE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
 }

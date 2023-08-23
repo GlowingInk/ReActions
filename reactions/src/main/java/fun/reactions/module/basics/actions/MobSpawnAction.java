@@ -44,9 +44,4 @@ public class MobSpawnAction implements Action {
         return "MOB_SPAWN";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
 }

@@ -22,13 +22,15 @@
 
 package fun.reactions.module.basics.actions;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.Shoot;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ShootAction implements Action {
+public class ShootAction implements Action, Activity.Personal {
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
@@ -38,13 +40,13 @@ public class ShootAction implements Action {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "SHOOT";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
+        Shoot.shoot(player, Parameters.fromString(paramsStr));
         return true;
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "SHOOT";
+    }
 }

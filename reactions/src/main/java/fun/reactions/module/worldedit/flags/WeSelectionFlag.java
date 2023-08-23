@@ -22,6 +22,7 @@
 
 package fun.reactions.module.worldedit.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.worldedit.external.RaWorldEdit;
@@ -32,12 +33,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-// TODO: WorldEdit module
 @Aliased.Names("WE_SEL_BLOCKS")
-public class WeSelectionFlag implements Flag {
+public class WeSelectionFlag implements Flag, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         int selectionBlocks = RaWorldEdit.getArea(player);
         Vector minPoint = RaWorldEdit.getMinimumPoint(player);
         Vector maxPoint = RaWorldEdit.getMaximumPoint(player);
@@ -56,10 +55,5 @@ public class WeSelectionFlag implements Flag {
     @Override
     public @NotNull String getName() {
         return "WE_SELECTION";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

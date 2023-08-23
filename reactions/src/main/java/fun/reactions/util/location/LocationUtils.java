@@ -265,15 +265,6 @@ public final class LocationUtils { // TODO: Requires refactoring
                 (float) NumberUtils.trimDouble(loc.getPitch());
     }
 
-    public static List<Location> getMinMaxRadiusLocations(Player p, int radius) {
-        List<Location> locs = new ArrayList<>();
-        Location loc = p.getLocation();
-        World world = p.getWorld();
-        locs.add(new Location(world, loc.getBlockX() + radius, loc.getBlockY() + radius, loc.getBlockZ() + radius));
-        locs.add(new Location(world, loc.getBlockX() - radius, loc.getBlockY() - radius, loc.getBlockZ() - radius));
-        return locs;
-    }
-
     public static boolean equalsPositionally(Location loc1, Location loc2) {
         return loc1.getWorld() == loc2.getWorld() &&
                 loc1.getX() == loc2.getX() &&

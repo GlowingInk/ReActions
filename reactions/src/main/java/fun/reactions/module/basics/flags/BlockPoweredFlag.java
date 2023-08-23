@@ -54,8 +54,4 @@ public class BlockPoweredFlag implements Flag {
         return "BLOCK_POWERED";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

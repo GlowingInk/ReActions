@@ -54,11 +54,6 @@ public class PowerSetAction implements Action {
         return "POWER_SET";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
 
     private boolean getPower(Block b, String state) {
         boolean power = state.equalsIgnoreCase("on") || state.equalsIgnoreCase("true");

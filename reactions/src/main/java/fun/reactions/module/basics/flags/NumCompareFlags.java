@@ -35,8 +35,4 @@ public class NumCompareFlags implements Flag {
         return greater ? "GREATER" : "LOWER";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

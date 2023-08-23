@@ -22,6 +22,7 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.TimeUtils;
@@ -29,12 +30,10 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class PvpFlag implements Flag { // TODO: Requires rework
-
+public class PvpFlag implements Flag, Activity.Personal { // TODO: Requires rework
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = env.getPlayer();
         if (!player.hasMetadata("reactions-pvp-time")) return false;
         String timeStr = params.getString("time", params.origin());
         long delay = TimeUtils.parseTime(timeStr);
@@ -45,10 +44,5 @@ public class PvpFlag implements Flag { // TODO: Requires rework
     @Override
     public @NotNull String getName() {
         return "PVP";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

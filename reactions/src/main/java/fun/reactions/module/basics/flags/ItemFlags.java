@@ -108,10 +108,6 @@ public class ItemFlags implements Flag {
         };
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 
     private static int countItemsInInventory(Inventory inventory, String itemStr) {
         VirtualItem virtualItem = VirtualItem.fromString(itemStr);

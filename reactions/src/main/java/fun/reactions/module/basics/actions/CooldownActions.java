@@ -83,11 +83,6 @@ public class CooldownActions implements Action, Aliased {
         return List.of(global ? "DELAY" : "DELAY_PLAYER");
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return !global;
-    }
-
     private void setCooldown(String playerName, String variableId, long cdTime, boolean add) {
         if (playerName.isEmpty()) CooldownManager.setCooldown(variableId, cdTime, add);
         else CooldownManager.setPersonalCooldown(playerName, variableId, cdTime, add);

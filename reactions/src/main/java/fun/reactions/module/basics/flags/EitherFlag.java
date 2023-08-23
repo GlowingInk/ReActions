@@ -36,7 +36,6 @@ public class EitherFlag implements Flag {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         List<String> split = ParametersUtils.splitSafely(paramsStr, ' ');
-        boolean hasPlayer = env.getPlayer() != null;
         ActivitiesRegistry activities = env.getPlatform().getActivities();
         for (String flagFullStr : split) {
             String[] flagSplit = flagFullStr.split(":", 2);
@@ -48,7 +47,7 @@ public class EitherFlag implements Flag {
             }
             boolean invert = flagSplit[0].startsWith("!");
             Flag flag = activities.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);
-            if (flag != null && (!flag.requiresPlayer() || hasPlayer) && invert != flag.proceed(env, flagSplit[1])) {
+            if (flag != null && invert != flag.proceed(env, flagSplit[1])) {
                 return true;
             }
         }
@@ -60,8 +59,4 @@ public class EitherFlag implements Flag {
         return "EITHER";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

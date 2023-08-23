@@ -27,11 +27,6 @@ public class GlideAction implements Action {
         return "GLIDE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private boolean glidePlayer(Player player, boolean isGlide) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
         player.setGliding(isGlide);

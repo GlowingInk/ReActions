@@ -61,9 +61,4 @@ public class SqlFlags implements Flag {
     public @NotNull String getName() {
         return check ? "SQL_CHECK" : "SQL_RESULT";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

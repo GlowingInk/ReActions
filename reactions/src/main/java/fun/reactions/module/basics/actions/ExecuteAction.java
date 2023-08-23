@@ -82,9 +82,4 @@ public class ExecuteAction implements Action {
     public @NotNull String getName() {
         return "EXECUTE";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

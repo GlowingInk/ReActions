@@ -67,9 +67,4 @@ public class FileAction implements Action {
     public @NotNull String getName() {
         return "FILE";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

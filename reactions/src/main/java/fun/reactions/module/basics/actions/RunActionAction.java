@@ -44,9 +44,7 @@ public class RunActionAction implements Action {
         }
 
         if (delayMs <= 0) {
-            if (!action.requiresPlayer() || env.getPlayer() != null) {
-                action.proceed(env, actionParamsStr);
-            }
+            action.proceed(env, actionParamsStr);
         } else {
             env.getPlatform().getWaiter().schedule(new WaitTask(
                     env.getVariables(),
@@ -61,10 +59,5 @@ public class RunActionAction implements Action {
     @Override
     public @NotNull String getName() {
         return "RUN_ACTION";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
     }
 }

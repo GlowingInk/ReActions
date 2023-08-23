@@ -31,7 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("RMVPOT")
-public class PotionRemoveAction implements Action {
+public class PotionRemoveAction implements Action { // TODO Allow to use player selectors
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         String str = removePotionEffect(env.getPlayer(), paramsStr);
@@ -43,23 +43,18 @@ public class PotionRemoveAction implements Action {
         return "POTION_REMOVE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return true; // TODO Allow to use player selectors
-    }
-
-    private String removePotionEffect(Player p, String param) {
+    private String removePotionEffect(Player player, String param) {
         String str = "";
         if (param.equalsIgnoreCase("all") || param.equalsIgnoreCase("*"))
-            for (PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
+            for (PotionEffect pe : player.getActivePotionEffects()) player.removePotionEffect(pe.getType());
         else {
             String[] pefs = param.split(",");
             if (pefs.length > 0) {
                 for (String pefStr : pefs) {
                     PotionEffectType pef = PotionEffectType.getByName(pefStr);
                     if (pef == null) continue;
-                    if (p.hasPotionEffect(pef)) {
-                        p.removePotionEffect(pef);
+                    if (player.hasPotionEffect(pef)) {
+                        player.removePotionEffect(pef);
                         str = str.isEmpty() ? pef.getName() : str + ", " + pef.getName();
                     }
                 }

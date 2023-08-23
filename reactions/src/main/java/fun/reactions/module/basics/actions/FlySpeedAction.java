@@ -30,11 +30,6 @@ public class FlySpeedAction implements Action {
         return "FLY_SPEED";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private boolean flySpeedPlayer(Player player, double speed) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
         if (speed > 1) {

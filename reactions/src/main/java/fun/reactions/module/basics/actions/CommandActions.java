@@ -82,11 +82,6 @@ public class CommandActions implements Action, Aliased {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
     public @NotNull Collection<@NotNull String> getAliases() {
         return List.of(switch (commandAs) {
             case NORMAL -> "CMD";

@@ -22,6 +22,7 @@
 
 package fun.reactions.module.worldguard.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
@@ -29,8 +30,7 @@ import fun.reactions.util.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-// TODO: WorldGuard module
-public class RegionFlags implements Flag {
+public class RegionFlags implements Flag, Activity.Personal {
     private final Type flagType;
 
     public RegionFlags(Type flagType) {
@@ -41,12 +41,17 @@ public class RegionFlags implements Flag {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
         return switch (flagType) {
-            case REGION -> RaWorldGuard.isPlayerInRegion(player, paramsStr);
+            case REGION -> Activity.Personal.super.proceed(env, paramsStr);
             case REGION_PLAYERS -> playersInRegion(paramsStr);
             case REGION_MEMBER -> RaWorldGuard.isMember(player, paramsStr);
             case REGION_OWNER -> RaWorldGuard.isOwner(player, paramsStr);
             case REGION_STATE -> RaWorldGuard.isFlagInRegion(player, paramsStr);
         };
+    }
+
+    @Override
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
+        return RaWorldGuard.isPlayerInRegion(player, paramsStr);
     }
 
     private boolean playersInRegion(String param) {
@@ -58,11 +63,6 @@ public class RegionFlags implements Flag {
     @Override
     public @NotNull String getName() {
         return flagType.name();
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return flagType == Type.REGION;
     }
 
     public enum Type {

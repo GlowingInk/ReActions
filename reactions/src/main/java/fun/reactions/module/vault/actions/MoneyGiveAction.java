@@ -59,11 +59,6 @@ public class MoneyGiveAction implements Action {
         return "MONEY_GIVE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private Parameters parseOldFormat(Player p, String mstr) {
         Map<String, String> newParams = new HashMap<>();
         if (p != null) newParams.put("target", p.getName());

@@ -22,24 +22,24 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class DirectionFlag implements Flag {
-
+public class DirectionFlag implements Flag, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Direction d1 = Direction.getByName(paramsStr);
         if (d1 == null) return false;
-        Direction d2 = Direction.getByYaw(player);
+        Direction d2 = Direction.getByYaw(player.getLocation());
         if (d2 == null) return false;
         return (d1 == d2);
     }
@@ -49,38 +49,49 @@ public class DirectionFlag implements Flag {
         return "DIRECTION";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return true;
-    }
-
     private enum Direction {
         SOUTH,
-        SOUTHWEST,
+        SOUTH_WEST,
         WEST,
-        NORTHWEST,
+        NORTH_WEST,
         NORTH,
-        NORTHEAST,
+        NORTH_EAST,
         EAST,
-        SOUTHEAST;
+        SOUTH_EAST;
 
-        private static final Map<String, Direction> BY_NAME = Stream.of(values()).collect(Collectors.toMap(Enum::name, d -> d));
+        private static final Map<String, Direction> BY_NAME;
+        static {
+            Map<String, Direction> byName = new HashMap<>();
+            for (Direction dir : values()) {
+                String dirName = dir.name();
+                byName.put(dirName, dir);
+                int index = dirName.indexOf('_');
+                if (index == -1) {
+                    byName.put(Character.toString(dirName.charAt(0)), dir);
+                } else {
+                    byName.put(Character.toString(dirName.charAt(0)) + dirName.charAt(index + 1), dir);
+                    byName.put(dirName.replace("_", ""), dir);
+                    byName.put(dirName.replace('_', '-'), dir);
+                }
+            }
+            BY_NAME = Collections.unmodifiableMap(byName);
+        }
 
         public static Direction getByName(String dirstr) {
             return BY_NAME.get(dirstr.toUpperCase(Locale.ROOT));
         }
 
-        public static Direction getByYaw(Player p) {
-            double angle = (p.getLocation().getYaw() < 0) ? (360 + p.getLocation().getYaw()) : p.getLocation().getYaw();
+        public static Direction getByYaw(Location loc) {
+            double angle = (loc.getYaw() < 0) ? (360 + loc.getYaw()) : loc.getYaw();
             int sector = (int) (angle - ((angle + 22.5) % 45.0) + 22.5);
             return switch (sector) {
-                case 45 -> SOUTHWEST;
+                case 45 -> SOUTH_WEST;
                 case 90 -> WEST;
-                case 135 -> NORTHWEST;
+                case 135 -> NORTH_WEST;
                 case 180 -> NORTH;
-                case 225 -> NORTHEAST;
+                case 225 -> NORTH_EAST;
                 case 270 -> EAST;
-                case 315 -> SOUTHEAST;
+                case 315 -> SOUTH_EAST;
                 default -> SOUTH;
             };
         }

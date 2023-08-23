@@ -39,10 +39,6 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
         return "WORLD_TIME";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {

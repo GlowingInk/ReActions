@@ -27,11 +27,6 @@ public class WalkSpeedAction implements Action {
         return "WALK_SPEED";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private boolean walkSpeedPlayer(Player player, double speed) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
         if (speed > 1) speed = 1;

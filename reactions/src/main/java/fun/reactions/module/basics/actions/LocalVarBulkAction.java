@@ -20,9 +20,4 @@ public class LocalVarBulkAction implements Action {
     public @NotNull String getName() {
         return "LOCAL_VAR_BULK";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

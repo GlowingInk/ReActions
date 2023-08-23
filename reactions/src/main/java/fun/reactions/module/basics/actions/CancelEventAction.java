@@ -41,9 +41,4 @@ public class CancelEventAction implements Action {
     public @NotNull String getName() {
         return "CANCEL_EVENT";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

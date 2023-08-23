@@ -35,11 +35,6 @@ public class FlyAction implements Action {
         return "FLY";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private boolean flyPlayer(Player player, AllowFly allow, AllowFly fly) {
         if (player == null || player.isDead() || !player.isOnline()) return false;
 

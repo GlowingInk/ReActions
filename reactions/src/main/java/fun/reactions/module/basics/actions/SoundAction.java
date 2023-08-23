@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("PLAY_SOUND")
-public class SoundAction implements Action {
+public class SoundAction implements Action { // TODO Refactor
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -43,10 +43,5 @@ public class SoundAction implements Action {
     @Override
     public @NotNull String getName() {
         return "SOUND";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
     }
 }

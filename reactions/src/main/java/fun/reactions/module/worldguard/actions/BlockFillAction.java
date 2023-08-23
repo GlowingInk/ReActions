@@ -78,11 +78,6 @@ public class BlockFillAction implements Action {
         return "FILL_BLOCKS";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private void fillArea(Material type, Location loc1, Location loc2, int chance, boolean phys, boolean drop) {
         World world = loc1.getWorld();
         DoublePredicate check = chance >= 100 ? (d) -> true : Rng::percentChance;

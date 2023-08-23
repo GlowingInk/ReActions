@@ -23,6 +23,7 @@
 package fun.reactions.module.basics.flags;
 
 import fun.reactions.events.listeners.GodModeListener;
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Aliased;
@@ -35,11 +36,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Aliased.Names("STATE")
-public class PlayerStateFlag implements Flag {
-
+public class PlayerStateFlag implements Flag, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Posture pt = Posture.getByName(paramsStr);
         if (pt == null) return false;
         switch (pt) {
@@ -81,11 +80,6 @@ public class PlayerStateFlag implements Flag {
         return "PLAYER_STATE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return true;
-    }
-
     private enum Posture {
         SNEAK,
         SPRINT,
@@ -103,8 +97,9 @@ public class PlayerStateFlag implements Flag {
 
         public static Posture getByName(String name) {
             name = name.toUpperCase(Locale.ROOT);
-            if (name.startsWith("VEHICLE_"))
+            if (name.startsWith("VEHICLE_")) {
                 return VEHICLE_TYPED;
+            }
             return BY_NAME.get(name);
         }
     }

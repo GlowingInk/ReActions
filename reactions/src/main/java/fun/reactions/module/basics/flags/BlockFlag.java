@@ -18,10 +18,6 @@ public class BlockFlag implements Flag {
         return "BLOCK";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {

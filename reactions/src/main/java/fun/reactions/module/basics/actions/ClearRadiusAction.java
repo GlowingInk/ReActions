@@ -8,11 +8,13 @@ import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -31,17 +33,19 @@ public class ClearRadiusAction implements Action {
         int radius = params.getInteger("radius");
         String type = params.getString("type", "all");
         if (radius == 0) return false;
-        List<Location> locs = LocationUtils.getMinMaxRadiusLocations(env.getPlayer(), radius);
+
+        List<Location> locs = getMinMaxRadiusLocations(
+                params.getOr("center", LocationUtils::parseLocation, () -> env.getPlayer() == null ? null : env.getPlayer().getLocation()),
+                radius
+        );
+        if (locs.isEmpty()) return false;
         env.getVariables().set("loc1", LocationUtils.locationToString(locs.get(0)));
         env.getVariables().set("loc2", LocationUtils.locationToString(locs.get(1)));
-        if (locs.size() != 2) return false;
         Collection<Entity> en = EntityUtils.getEntities(locs.get(0), locs.get(1));
-        int count = 0;
         for (Entity e : en) {
             if (e.getType() == EntityType.PLAYER) continue;
             if (isEntityIsTypeOf(e, type)) {
                 e.remove();
-                count++;
             }
         }
         return true;
@@ -50,11 +54,6 @@ public class ClearRadiusAction implements Action {
     @Override
     public @NotNull String getName() {
         return "RADIUS_CLEAR";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 
     private boolean isEntityIsTypeOf(Entity e, String type) {
@@ -69,4 +68,12 @@ public class ClearRadiusAction implements Action {
         return (Utils.containsWord(e.getType().name().toLowerCase(Locale.ROOT), type.toLowerCase(Locale.ROOT)));
     }
 
+    public static List<Location> getMinMaxRadiusLocations(Location loc, int radius) {
+        if (loc == null) return List.of();
+        List<Location> locs = new ArrayList<>();
+        World world = loc.getWorld();
+        locs.add(new Location(world, loc.getBlockX() + radius, loc.getBlockY() + radius, loc.getBlockZ() + radius));
+        locs.add(new Location(world, loc.getBlockX() - radius, loc.getBlockY() - radius, loc.getBlockZ() - radius));
+        return locs;
+    }
 }

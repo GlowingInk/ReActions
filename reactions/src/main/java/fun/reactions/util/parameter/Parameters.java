@@ -22,6 +22,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Parameters implements Parameterizable {
@@ -268,13 +269,18 @@ public class Parameters implements Parameterizable {
         return value == null ? def : value;
     }
 
-    public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull SafeSupplier<R> def) {
+    public <R> @Nullable R getOr(@NotNull String key, @NotNull Function<String, R> converter, @NotNull Supplier<R> def) {
         R value = get(key, converter);
         return value == null ? def.get() : value;
     }
 
     public <R> @NotNull R getSafe(@NotNull String key, @NotNull SafeFunction<String, R> converter) {
         return converter.apply(getString(key));
+    }
+
+    public <R> @NotNull R getSafe(@NotNull String key, @NotNull Function<String, R> converter, @NotNull SafeSupplier<R> def) {
+        R value = get(key, converter);
+        return value == null ? def.get() : value;
     }
 
     public <R extends Enum<R>> @NotNull R getEnum(@NotNull String key, @NotNull R def) {
@@ -293,6 +299,10 @@ public class Parameters implements Parameterizable {
         return get(key, (value) -> Utils.getEnum(clazz, value, def));
     }
 
+    public <R extends Enum<R>> @Nullable R getEnumOr(@NotNull String key, @NotNull Class<R> clazz, @NotNull Supplier<R> def) {
+        return getOr(key, (value) -> Utils.getEnum(clazz, value), def);
+    }
+
     public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull SafeSupplier<R> def) {
         return getSafe(key, (value) -> Utils.getEnum(clazz, value), def);
     }
@@ -304,6 +314,11 @@ public class Parameters implements Parameterizable {
     @Contract("_, !null -> !null")
     public @Nullable String getString(@NotNull String key, @Nullable String def) {
         return params.getOrDefault(key, def);
+    }
+
+    public @Nullable String getStringOr(@NotNull String key, @NotNull Supplier<String> def) {
+        String value = params.get(key);
+        return value == null ? def.get() : value;
     }
 
     public @NotNull String getStringSafe(@NotNull String key, @NotNull SafeSupplier<String> def) {

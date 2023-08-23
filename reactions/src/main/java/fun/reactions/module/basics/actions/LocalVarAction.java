@@ -22,9 +22,4 @@ public class LocalVarAction implements Action {
     public @NotNull String getName() {
         return "LOCAL_VAR";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

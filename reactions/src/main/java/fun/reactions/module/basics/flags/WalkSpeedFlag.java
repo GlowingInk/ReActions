@@ -28,8 +28,4 @@ public class WalkSpeedFlag implements Flag {
         return "WALK_SPEED";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

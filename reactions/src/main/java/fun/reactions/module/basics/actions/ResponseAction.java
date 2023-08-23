@@ -22,9 +22,4 @@ public class ResponseAction implements Action {
     public @NotNull String getName() {
         return "RESPONSE";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

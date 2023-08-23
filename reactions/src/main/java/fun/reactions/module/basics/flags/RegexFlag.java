@@ -21,8 +21,4 @@ public class RegexFlag implements Flag {
         return "REGEX";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

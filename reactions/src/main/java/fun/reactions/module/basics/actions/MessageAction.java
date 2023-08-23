@@ -104,12 +104,6 @@ public class MessageAction implements Action {
         return "MESSAGE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    // TODO: Remove it somehow
     private static String hideSelectors(Environment env, String message) {
         String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
         return message.replaceAll(sb, "");

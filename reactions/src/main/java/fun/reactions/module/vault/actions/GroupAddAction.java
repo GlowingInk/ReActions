@@ -22,27 +22,23 @@
 
 package fun.reactions.module.vault.actions;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.vault.external.RaVault;
 import fun.reactions.util.naming.Aliased;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("GRPADD")
-public class GroupAddAction implements Action {
-
+public class GroupAddAction implements Action, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        return RaVault.playerAddGroup(env.getPlayer(), paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
+        return RaVault.playerAddGroup(player, paramsStr);
     }
 
     @Override
     public @NotNull String getName() {
         return "GROUP_ADD";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

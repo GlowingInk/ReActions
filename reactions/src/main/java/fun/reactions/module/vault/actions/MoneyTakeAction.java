@@ -58,11 +58,6 @@ public class MoneyTakeAction implements Action {
         return "MONEY_TAKE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
     private Parameters parseOldFormat(Player p, String mstr) {
         Map<String, String> newParams = new HashMap<>();
         if (p != null) newParams.put("source", p.getName());

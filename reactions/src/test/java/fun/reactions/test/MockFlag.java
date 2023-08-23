@@ -16,11 +16,6 @@ public class MockFlag implements Flag {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return player;
-    }
-
-    @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         return result;
     }

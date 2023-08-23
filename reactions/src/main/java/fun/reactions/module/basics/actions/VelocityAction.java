@@ -22,6 +22,7 @@
 
 package fun.reactions.module.basics.actions;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.NumberUtils;
@@ -32,16 +33,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("VECTOR")
-public class VelocityAction implements Action {
-
+public class VelocityAction implements Action, Activity.Personal { // TODO Player selector
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Vector v = setPlayerVelocity(env.getPlayer(), params);
-        return v != null;
-    }
-
-    private Vector setPlayerVelocity(Player p, Parameters params) {
         String velstr;
         boolean kick = false;
         if (params.contains("param")) {
@@ -52,12 +47,12 @@ public class VelocityAction implements Action {
             kick = params.getBoolean("kick", false);
         }
 
-        if (velstr.isEmpty()) return null;
-        Vector v = p.getVelocity();
+        if (velstr.isEmpty()) return false;
+        Vector velocity = player.getVelocity();
         String[] ln = velstr.split(",");
         if ((ln.length == 1) && (NumberUtils.FLOAT.matcher(velstr).matches())) {
             double power = Double.parseDouble(velstr);
-            v.setY(Math.min(10, kick ? power * p.getVelocity().getY() : power));
+            velocity.setY(Math.min(10, kick ? power * player.getVelocity().getY() : power));
         } else if ((ln.length == 3) &&
                 NumberUtils.FLOAT.matcher(ln[0]).matches() &&
                 NumberUtils.FLOAT.matcher(ln[1]).matches() &&
@@ -66,23 +61,18 @@ public class VelocityAction implements Action {
             double powery = Double.parseDouble(ln[1]);
             double powerz = Double.parseDouble(ln[2]);
             if (kick) {
-                v = p.getLocation().getDirection();
-                v = v.normalize();
-                v = v.multiply(new Vector(powerx, powery, powerz));
-                p.setFallDistance(0);
-            } else v = new Vector(Math.min(10, powerx), Math.min(10, powery), Math.min(10, powerz));
+                velocity = player.getLocation().getDirection();
+                velocity = velocity.normalize();
+                velocity = velocity.multiply(new Vector(powerx, powery, powerz));
+                player.setFallDistance(0);
+            } else velocity = new Vector(Math.min(10, powerx), Math.min(10, powery), Math.min(10, powerz));
         }
-        p.setVelocity(v);
-        return v;
+        player.setVelocity(velocity);
+        return true;
     }
 
     @Override
     public @NotNull String getName() {
         return "VELOCITY";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

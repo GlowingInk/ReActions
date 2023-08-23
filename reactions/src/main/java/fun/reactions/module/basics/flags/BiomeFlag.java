@@ -22,26 +22,22 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.Utils;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class BiomeFlag implements Flag {
-
+public class BiomeFlag implements Flag, Activity.Personal {
     @Override
     public @NotNull String getName() {
         return "BIOME";
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return true;
-    }
-
-    @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        return env.getPlayer().getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
+        return player.getLocation().getBlock().getBiome() == Utils.getEnum(Biome.class, paramsStr);
     }
 }

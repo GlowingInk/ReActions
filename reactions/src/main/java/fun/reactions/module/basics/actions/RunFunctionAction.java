@@ -48,11 +48,6 @@ public class RunFunctionAction implements Action {
     }
 
     @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
-    @Override
     public @NotNull String getName() {
         return "RUN_FUNCTION";
     }

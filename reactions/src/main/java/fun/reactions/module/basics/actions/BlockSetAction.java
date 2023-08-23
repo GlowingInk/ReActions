@@ -58,10 +58,4 @@ public class BlockSetAction implements Action {
     public @NotNull String getName() {
         return "BLOCK_SET";
     }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
-
 }

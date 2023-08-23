@@ -22,27 +22,24 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names({"GM", "GAME_MODE"})
-public class GamemodeFlag implements Flag {
+public class GamemodeFlag implements Flag, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        return env.getPlayer().getGameMode() == Utils.getEnum(GameMode.class, paramsStr);
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
+        return player.getGameMode() == Utils.getEnum(GameMode.class, paramsStr);
     }
 
     @Override
     public @NotNull String getName() {
         return "GAMEMODE";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }

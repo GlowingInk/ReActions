@@ -3,16 +3,25 @@ package fun.reactions.model.activity;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Named;
 import fun.reactions.util.parameter.Parameterizable;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface Activity extends Named {
     boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
-    boolean requiresPlayer();
-
     // TODO
     default boolean isAsync() {
         return true;
+    }
+
+    interface Personal extends Activity {
+        @Override
+        default boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+            Player player = env.getPlayer();
+            return player != null && proceed(env, player, paramsStr);
+        }
+
+        boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr);
     }
 
     abstract class Stored<A extends Activity> implements Parameterizable {

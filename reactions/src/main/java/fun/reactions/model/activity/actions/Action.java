@@ -2,22 +2,12 @@ package fun.reactions.model.activity.actions;
 
 import com.google.common.base.Objects;
 import fun.reactions.model.activity.Activity;
-import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public interface Action extends Activity {
-    /**
-     * Execute an action
-     * @param env context of activation
-     * @param paramsStr parameters of action
-     * @return is action executed successfully
-     */
-    @Override
-    boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
-
     final class Stored extends Activity.Stored<Action> {
         public Stored(@NotNull Action action, @NotNull String content) {
             super(action, content);

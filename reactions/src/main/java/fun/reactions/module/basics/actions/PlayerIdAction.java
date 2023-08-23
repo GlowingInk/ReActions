@@ -6,6 +6,7 @@ import fun.reactions.util.Utils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -23,8 +24,10 @@ public class PlayerIdAction implements Action {
         String playerParam = params.getString("player");
 
         if (Utils.isStringEmpty(playerParam)) {
-            uuid = env.getPlayer().getUniqueId().toString();
-            pName = env.getPlayer().getName();
+            Player player = env.getPlayer();
+            if (player == null) return false;
+            uuid = player.getUniqueId().toString();
+            pName = player.getName();
         } else {
             OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(playerParam);
             uuid = offPlayer.getUniqueId().toString();
@@ -48,11 +51,6 @@ public class PlayerIdAction implements Action {
     @Override
     public @NotNull String getName() {
         return "PLAYER_ID";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return false;
     }
 
 }

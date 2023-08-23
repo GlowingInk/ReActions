@@ -46,8 +46,4 @@ public class ChanceFlag implements Flag {
         return "CHANCE";
     }
 
-    @Override
-    public boolean requiresPlayer() {
-        return false;
-    }
 }

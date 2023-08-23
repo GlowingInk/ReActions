@@ -22,6 +22,7 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.NumberUtils;
@@ -30,20 +31,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("LIGHT")
-public class LightLevelFlag implements Flag {
+public class LightLevelFlag implements Flag, Activity.Personal {
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         return player.getEyeLocation().getBlock().getLightLevel() >= NumberUtils.asInteger(paramsStr, -1);
     }
 
     @Override
     public @NotNull String getName() {
         return "LIGHT_LEVEL";
-    }
-
-    @Override
-    public boolean requiresPlayer() {
-        return true;
     }
 }
