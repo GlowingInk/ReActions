@@ -37,9 +37,7 @@ public class HealAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = env.getPlayer();
-        if (params.contains("player"))
-            player = Bukkit.getPlayerExact(params.getString("player"));
+        Player player = params.get("player", Bukkit::getPlayerExact, env.getPlayer()); // TODO Selectors
         if (player == null) return false;
         double hp = params.getInteger("hp");
         if (params.contains("params")) hp = params.getInteger("params");

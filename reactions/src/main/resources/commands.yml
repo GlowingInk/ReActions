@@ -1,7 +1,6 @@
 example:
   command: example
   alias:
-    - raexample
     - test
   prefix: raexample
   exec: cmd_example

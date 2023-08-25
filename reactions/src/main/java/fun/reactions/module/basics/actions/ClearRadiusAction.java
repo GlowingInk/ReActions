@@ -35,7 +35,7 @@ public class ClearRadiusAction implements Action {
         if (radius == 0) return false;
 
         List<Location> locs = getMinMaxRadiusLocations(
-                params.getOr("center", LocationUtils::parseLocation, () -> env.getPlayer() == null ? null : env.getPlayer().getLocation()),
+                params.getOr("center", LocationUtils::parseLocation, () -> env.hasPlayer() ? env.getPlayer().getLocation() : null),
                 radius
         );
         if (locs.isEmpty()) return false;

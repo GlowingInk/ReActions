@@ -50,10 +50,6 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
 
     private RaProtocolLib() {}
 
-    public static boolean isConnected() {
-        return connected;
-    }
-
     public static void init() {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             connected = true;
@@ -133,7 +129,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
                         Variables vars = optVars.get();
                         vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
                     }
-                });
+        });
     }
 
 

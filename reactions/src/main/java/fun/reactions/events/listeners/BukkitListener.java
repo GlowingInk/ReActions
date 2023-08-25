@@ -153,9 +153,9 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onItemHeld(PlayerItemHeldEvent event) {
-        if (triggerItemHeld(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot()))
+        if (triggerItemHeld(event.getPlayer(), event.getNewSlot(), event.getPreviousSlot())) {
             event.setCancelled(true);
-        else {
+        } else {
             triggerItemHold(event.getPlayer());
             triggerItemWear(event.getPlayer());
         }

@@ -33,16 +33,12 @@ import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("DMG")
 public class DamageAction implements Action {
-
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = env.getPlayer();
+        Player player = params.get("player", Bukkit::getPlayerExact, env.getPlayer()); // TODO Selectors
+        if (player == null) return false;
         double damage = params.getInteger("damage", () -> params.getInteger(Parameters.ORIGIN));
-        if (params.contains("player")) {
-            // TODO: Selector?
-            player = Bukkit.getPlayerExact(params.getString("player"));
-        }
         return damagePlayer(player, damage);
     }
 

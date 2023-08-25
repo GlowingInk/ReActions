@@ -15,10 +15,9 @@ public class WalkSpeedAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Player player = env.getPlayer();
+        Player player = params.get("player", Bukkit::getPlayerExact, env.getPlayer()); // TODO Selectors
+        if (player == null) return false;
         double speed = params.getInteger("speed", () -> params.getInteger(Parameters.ORIGIN));
-        if (params.contains("player"))
-            player = Bukkit.getPlayerExact(params.getString("player"));
         return walkSpeedPlayer(player, speed / 10);
     }
 

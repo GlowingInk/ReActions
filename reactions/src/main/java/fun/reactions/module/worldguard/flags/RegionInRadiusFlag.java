@@ -29,16 +29,7 @@ import fun.reactions.module.worldguard.external.WGBridge;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-// TODO: WG module
 public class RegionInRadiusFlag implements Flag, Activity.Personal {
-    @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
-        int radius = 0;
-        if (!paramsStr.isEmpty()) radius = Integer.parseInt(paramsStr);
-        return WGBridge.checkRegionInRadius(player, radius);
-    }
-
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         int radius = 0;

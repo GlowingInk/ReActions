@@ -95,7 +95,7 @@ public class PlayerStateFlag implements Flag, Activity.Personal {
 
         private static final Map<String, Posture> BY_NAME = Stream.of(values()).collect(Collectors.toMap(Enum::name, d -> d));
 
-        public static Posture getByName(String name) {
+        public static Posture getByName(@NotNull String name) {
             name = name.toUpperCase(Locale.ROOT);
             if (name.startsWith("VEHICLE_")) {
                 return VEHICLE_TYPED;

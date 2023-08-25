@@ -22,15 +22,15 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class WeatherFlag implements Flag {
+public class WeatherFlag implements Flag, Activity.Personal { // TODO World param
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         if (paramsStr.equalsIgnoreCase("rain")) return !player.getWorld().isThundering() && player.getWorld().hasStorm();
         if (paramsStr.equalsIgnoreCase("thunder")) return player.getWorld().isThundering() && player.getWorld().hasStorm();
         return !player.getWorld().hasStorm();

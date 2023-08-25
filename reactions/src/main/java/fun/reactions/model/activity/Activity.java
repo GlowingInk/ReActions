@@ -14,7 +14,7 @@ public interface Activity extends Named {
         return true;
     }
 
-    interface Personal extends Activity {
+    interface Personal extends Activity { // TODO Should eventually be replaced with better selectors API
         @Override
         default boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
             Player player = env.getPlayer();

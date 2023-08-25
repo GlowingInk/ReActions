@@ -22,6 +22,7 @@
 
 package fun.reactions.module.basics.flags;
 
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.NumberUtils;
@@ -35,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 // TODO: Rewrite
-public class ItemFlags implements Flag {
+public class ItemFlags implements Flag, Activity.Personal {
     private final Type flagType;
 
     public ItemFlags(Type flagType) {
@@ -43,15 +44,14 @@ public class ItemFlags implements Flag {
     }
 
     @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Player player = env.getPlayer();
+    public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         switch (flagType) {
             case HAND:
                 ItemStack item = player.getInventory().getItemInMainHand();
                 env.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
                 return VirtualItem.fromString(paramsStr).isSimilar(item);
             case INVENTORY:
-                return hasItemInInventory(env, paramsStr);
+                return hasItemInInventory(env, player, paramsStr);
             case WEAR:
                 return isItemWeared(player, paramsStr);
             case OFFHAND:
@@ -69,8 +69,7 @@ public class ItemFlags implements Flag {
         return false;
     }
 
-    private boolean hasItemInInventory(Environment env, String itemStr) {
-        Player player = env.getPlayer();
+    private boolean hasItemInInventory(Environment env, Player player, String itemStr) {
         Parameters params = Parameters.fromString(itemStr);
 
         if (!params.containsEvery("slot", "item")) {
@@ -107,7 +106,6 @@ public class ItemFlags implements Flag {
             case WEAR -> "ITEM_WEAR";
         };
     }
-
 
     private static int countItemsInInventory(Inventory inventory, String itemStr) {
         VirtualItem virtualItem = VirtualItem.fromString(itemStr);

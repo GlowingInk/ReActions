@@ -31,14 +31,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class ShootAction implements Action, Activity.Personal {
-
-    @Override
-    public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        Parameters params = Parameters.fromString(paramsStr);
-        Shoot.shoot(env.getPlayer(), params);
-        return true;
-    }
-
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Shoot.shoot(player, Parameters.fromString(paramsStr));

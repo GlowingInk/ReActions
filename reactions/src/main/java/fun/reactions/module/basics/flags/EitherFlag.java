@@ -58,5 +58,4 @@ public class EitherFlag implements Flag {
     public @NotNull String getName() {
         return "EITHER";
     }
-
 }
