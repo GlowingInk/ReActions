@@ -1,9 +1,11 @@
 package fun.reactions.util;
 
 import fun.reactions.util.NumberUtils.Is;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.random.RandomGenerator;
 
 public final class Rng {
     private Rng() {}
@@ -13,7 +15,7 @@ public final class Rng {
     }
 
     public static boolean percentChance(double chance) {
-        return Rng.nextDouble(100) < chance;
+        return nextDouble(100) < chance;
     }
 
     public static boolean chance(double chance) {
@@ -21,27 +23,27 @@ public final class Rng {
     }
 
     public static boolean nextBoolean() {
-        return ThreadLocalRandom.current().nextBoolean();
+        return threadRandom().nextBoolean();
     }
 
     public static int nextInt(int max) {
-        return ThreadLocalRandom.current().nextInt(max);
+        return threadRandom().nextInt(max);
     }
 
     public static int nextInt(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max);
+        return threadRandom().nextInt(min, max);
     }
 
     public static double nextDouble() {
-        return ThreadLocalRandom.current().nextDouble();
+        return threadRandom().nextDouble();
     }
 
     public static double nextDouble(double max) {
-        return ThreadLocalRandom.current().nextDouble(max);
+        return threadRandom().nextDouble(max);
     }
 
     public static double nextDouble(double min, double max) {
-        return ThreadLocalRandom.current().nextDouble(min, max);
+        return threadRandom().nextDouble(min, max);
     }
 
     /**
@@ -66,5 +68,9 @@ public final class Rng {
             return max > min ? nextInt(min, max) : min;
         }
         return NumberUtils.asInteger(numsStr);
+    }
+
+    public static @NotNull RandomGenerator threadRandom() {
+        return ThreadLocalRandom.current();
     }
 }
