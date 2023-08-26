@@ -5,12 +5,10 @@ import fun.reactions.model.environment.Environment;
 import org.jetbrains.annotations.NotNull;
 
 public class MockFlag implements Flag {
-    private final boolean player;
     private final boolean result;
     private final String name;
 
-    public MockFlag(boolean player, boolean result, String name) {
-        this.player = player;
+    public MockFlag(boolean result, String name) {
         this.result = result;
         this.name = name;
     }

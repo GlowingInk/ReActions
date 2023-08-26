@@ -2,7 +2,7 @@ package fun.reactions.placeholders;
 
 import fun.reactions.model.environment.Environment;
 import fun.reactions.model.environment.Variables;
-import fun.reactions.module.basics.placeholders.LocalVarPlaceholder;
+import fun.reactions.module.basic.placeholders.LocalVarPlaceholder;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;

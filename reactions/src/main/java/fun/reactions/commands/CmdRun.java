@@ -1,6 +1,6 @@
 package fun.reactions.commands;
 
-import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.message.Msg;
 import org.bukkit.command.CommandSender;
 

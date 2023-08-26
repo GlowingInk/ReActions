@@ -1,6 +1,6 @@
 package fun.reactions.commands;
 
-import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
         subCommands = {}, allowConsole = true,
         shortDescription = "&3/exec <activator> [player:<PlayerSelector>] [delay:<Time>]")
 public class CmdExec extends Cmd {
-
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (args.length == 0) return false;
@@ -20,5 +19,4 @@ public class CmdExec extends Cmd {
         } else Msg.printMSG(sender, "cmd_runplayerfail", 'c', '6', commandLine);
         return true;
     }
-
 }

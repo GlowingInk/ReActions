@@ -35,7 +35,7 @@ import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.module.ModulesRegistry;
-import fun.reactions.module.basics.ReActionsModule;
+import fun.reactions.module.basic.BasicModule;
 import fun.reactions.module.papi.PapiModule;
 import fun.reactions.module.vault.VaultModule;
 import fun.reactions.module.worldedit.WorldEditModule;
@@ -101,7 +101,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.userCommandsManager = new UserCommandsManager(this);
         ReActions.setPlatform(this);
 
-        modulesRegistry.registerModule(new ReActionsModule());
+        modulesRegistry.registerModule(new BasicModule());
         modulesRegistry.registerModule(new VaultModule());
         modulesRegistry.registerModule(new PapiModule());
         modulesRegistry.registerModule(new WorldEditModule());

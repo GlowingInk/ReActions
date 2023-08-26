@@ -8,15 +8,15 @@ import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variables;
-import fun.reactions.module.basics.activators.BlockBreakActivator;
-import fun.reactions.module.basics.activators.DamageActivator;
-import fun.reactions.module.basics.activators.DropActivator;
-import fun.reactions.module.basics.activators.InventoryClickActivator;
-import fun.reactions.module.basics.activators.MessageActivator;
-import fun.reactions.module.basics.activators.MobDamageActivator;
-import fun.reactions.module.basics.activators.QuitActivator;
-import fun.reactions.module.basics.activators.SignActivator;
-import fun.reactions.module.basics.activators.TeleportActivator;
+import fun.reactions.module.basic.activators.BlockBreakActivator;
+import fun.reactions.module.basic.activators.DamageActivator;
+import fun.reactions.module.basic.activators.DropActivator;
+import fun.reactions.module.basic.activators.InventoryClickActivator;
+import fun.reactions.module.basic.activators.MessageActivator;
+import fun.reactions.module.basic.activators.MobDamageActivator;
+import fun.reactions.module.basic.activators.QuitActivator;
+import fun.reactions.module.basic.activators.SignActivator;
+import fun.reactions.module.basic.activators.TeleportActivator;
 import fun.reactions.module.vault.external.RaVault;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.NumberUtils;
@@ -61,9 +61,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.List;
 import java.util.Optional;
 
-import static fun.reactions.module.basics.ContextManager.*;
-import static fun.reactions.module.basics.ItemContextManager.triggerItemHold;
-import static fun.reactions.module.basics.ItemContextManager.triggerItemWear;
+import static fun.reactions.module.basic.ContextManager.*;
+import static fun.reactions.module.basic.ItemContextManager.triggerItemHold;
+import static fun.reactions.module.basic.ItemContextManager.triggerItemWear;
 
 public class BukkitListener implements Listener {
     @EventHandler(ignoreCancelled = true)

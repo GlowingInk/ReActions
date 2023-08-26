@@ -23,7 +23,7 @@
 package fun.reactions.holders;
 
 import fun.reactions.ReActions;
-import fun.reactions.module.basics.activators.RespawnActivator;
+import fun.reactions.module.basic.activators.RespawnActivator;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.mob.EntityUtils;
 import org.bukkit.Location;

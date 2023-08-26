@@ -22,7 +22,7 @@
 
 package fun.reactions;
 
-import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.CaseInsensitiveMap;

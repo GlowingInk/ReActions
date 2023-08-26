@@ -23,7 +23,7 @@
 package fun.reactions.time.timers;
 
 import fun.reactions.ReActions;
-import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.collections.CaseInsensitiveMap;

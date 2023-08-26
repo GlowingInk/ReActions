@@ -2,7 +2,7 @@ package fun.reactions.events.listeners;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.module.basics.ContextManager;
+import fun.reactions.module.basic.ContextManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

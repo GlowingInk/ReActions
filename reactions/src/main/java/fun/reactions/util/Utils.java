@@ -88,7 +88,7 @@ public final class Utils {
             pitch = (float) params.getDouble("pitch", 1.0f);
             volume = (float) params.getDouble("volume", 1.0f);
         }
-        Sound sound = getEnum(Sound.class, sndstr, Sound.UI_BUTTON_CLICK); // TODO Custom sounds support
+        Sound sound = getEnum(sndstr, Sound.UI_BUTTON_CLICK); // TODO Custom sounds support
         if (soundLoc != null) soundLoc.getWorld().playSound(soundLoc, sound, volume, pitch);
         return sound.name();
     }
@@ -242,7 +242,6 @@ public final class Utils {
             return def;
         }
     }
-
 
     /**
      * Get any enum by its name or default value if not found

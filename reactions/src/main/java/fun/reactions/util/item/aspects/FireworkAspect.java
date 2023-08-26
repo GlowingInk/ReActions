@@ -83,7 +83,7 @@ public class FireworkAspect implements MetaAspect {
             for (String effectStr : split) {
                 Parameters params = Parameters.fromString(effectStr);
                 FireworkEffect.Builder builder = FireworkEffect.builder();
-                FireworkEffect.Type type = Utils.getEnum(FireworkEffect.Type.class, params.getString("type"), FireworkEffect.Type.BALL); // TODO: Allow search by key
+                FireworkEffect.Type type = Utils.getEnum(params.getString("type"), FireworkEffect.Type.BALL); // TODO: Allow search by key
                 builder.with(type);
                 if (params.getBoolean("flicker")) builder.withFlicker();
                 if (params.getBoolean("trail")) builder.withTrail();

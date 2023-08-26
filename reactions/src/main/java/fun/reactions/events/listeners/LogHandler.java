@@ -22,8 +22,8 @@
 
 package fun.reactions.events.listeners;
 
-import fun.reactions.module.basics.ContextManager;
-import fun.reactions.module.basics.activators.MessageActivator;
+import fun.reactions.module.basic.ContextManager;
+import fun.reactions.module.basic.activators.MessageActivator;
 
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;

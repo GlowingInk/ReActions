@@ -130,7 +130,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
                 mbs = mbs.substring(name.length() + 1);
             }
 
-            EntityType et = Utils.getEnum(EntityType.class, mbs, EntityType.ZOMBIE);
+            EntityType et = Utils.getEnum(mbs, EntityType.ZOMBIE);
 
             Entity e = loc.getWorld().spawnEntity(loc, et);
 
