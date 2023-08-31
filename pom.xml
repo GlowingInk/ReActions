@@ -15,7 +15,7 @@
         <module>reactions</module>
     </modules>
 
-    <description>Simplest scripting engine for Bukkit</description>
+    <description>Simplest scripting engine for Paper</description>
     <properties>
         <build-suffix>-custom</build-suffix>
         <java.version>17</java.version>
@@ -42,19 +42,26 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <resources>
+                        <resource>
+                            <directory>src/main/resources</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
     </build>
 
     <repositories>
@@ -63,7 +70,7 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>sk89q-repo</id>
+            <id>enginehub</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
@@ -71,26 +78,20 @@
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
-            <id>protocollib-repo</id>
+            <id>protocollib</id>
             <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
         <repository>
-            <id>CodeMC</id>
+            <id>codemc</id>
             <url>https://repo.codemc.io/repository/maven-public</url>
         </repository>
         <repository>
-            <id>glowing-ink</id>
+            <id>glowingink</id>
             <url>https://repo.glowing.ink/releases/</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -102,6 +103,19 @@
             <artifactId>paper-api</artifactId>
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.5.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

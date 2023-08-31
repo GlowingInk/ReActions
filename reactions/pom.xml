@@ -14,7 +14,7 @@
 
     <name>ReActions</name>
 
-    <description>Simplest scripting engine for Bukkit</description>
+    <description>The plugin itself</description>
 
     <build>
         <finalName>ReActions</finalName>
@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -89,18 +89,6 @@
             <version>3.21</version>
             <scope>compile</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.7.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.3.1</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -120,14 +108,20 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.2</version>
+            <version>2.11.3</version>
             <scope>provided</scope>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.0.0</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
             <optional>true</optional>
             <exclusions>
@@ -145,7 +139,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.5</version>
+            <version>7.2.9</version>
             <scope>provided</scope>
             <optional>true</optional>
             <exclusions>
@@ -169,22 +163,34 @@
                     <groupId>it.unimi.dsi</groupId>
                     <artifactId>fastutil</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mozilla</groupId>
+                    <artifactId>rhino-runtime</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.4</version>
+            <version>7.0.9</version>
             <scope>provided</scope>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.spigotmc</groupId>
                     <artifactId>spigot-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sk89q.worldedit</groupId>
-                    <artifactId>worldedit-bukkit</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>io.papermc</groupId>
@@ -201,6 +207,10 @@
                 <exclusion>
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
