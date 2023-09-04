@@ -81,7 +81,7 @@ public final class UserCommand extends Command implements PluginIdentifiableComm
                 return getErroredExec(ExecType.CONSOLE_DISALLOWED);
             }
         } else if (Utils.isRestricted(sender, permission)) return getErroredExec(ExecType.NO_PERMISSIONS);
-        if (args.size() == 0) {
+        if (args.isEmpty()) {
             return execs.get(ExecType.DEFAULT);
         }
         ExecResult prioritizedResult = null;

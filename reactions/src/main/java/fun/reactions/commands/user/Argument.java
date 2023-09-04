@@ -22,23 +22,23 @@ public class Argument {
 
     public Argument(String argument) {
         switch (argument) {
-            case "~player":
+            case "~player" -> {
                 this.type = Type.PLAYER;
                 multiple = new HashSet<>();
-                break;
-            case "~int":
+            }
+            case "~int" -> {
                 this.type = Type.INTEGER;
                 multiple = new HashSet<>();
-                break;
-            case "~float":
+            }
+            case "~float" -> {
                 this.type = Type.FLOAT;
                 multiple = new HashSet<>();
-                break;
-            case "*":
+            }
+            case "*" -> {
                 this.type = Type.ANY;
                 multiple = new HashSet<>();
-                break;
-            default:
+            }
+            default -> {
                 if (argument.contains("|") && !argument.contains("\\|")) {
                     this.type = Type.MULTIPLE_TEXT;
                     multiple = Set.of(argument.split("\\|"));
@@ -47,6 +47,7 @@ public class Argument {
                     if (argument.startsWith("\\~") || argument.equals("\\*")) argument = argument.substring(1);
                     multiple = Set.of(argument);
                 }
+            }
         }
         this.argument = argument;
     }

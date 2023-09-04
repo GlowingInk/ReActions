@@ -1,4 +1,5 @@
 name: ReActions
+description: '${project.description}'
 api-version: '1.19'
 main: fun.reactions.ReActionsPlugin
 version: '${project.version}${build-suffix}'
@@ -8,7 +9,6 @@ authors:
   - MaxDikiy
   - imDaniX
 softdepend: [ProtocolLib]
-description: '${project.description}'
 commands:
   reactions:
     aliases: [ra,rea,react]

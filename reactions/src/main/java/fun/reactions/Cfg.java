@@ -76,7 +76,7 @@ public class Cfg {
 
         parseBookPages = config.getBoolean("general.parse-book-pages", false);
 
-        godActivatorEnable = config.getBoolean("reactions.activators.god.enable", true);
+        godActivatorEnable = config.getBoolean("reactions.activators.god.enable", false);
         godActivatorCheckTicks = config.getInt("reactions.activators.god.recheck-ticks", 10);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
         saveEmptySections = config.getBoolean("reactions.save-empty-actions-and-flags-sections", false);
