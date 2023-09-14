@@ -3,11 +3,16 @@ package fun.reactions.util.function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class FunctionalUtils {
     private FunctionalUtils() {}
+
+    public static <T> @NotNull Consumer<T> asConsumer(@NotNull Function<T, ?> function) {
+        return function::apply;
+    }
 
     public static <T> @NotNull Supplier<T> asCaching(@NotNull Supplier<T> getter) {
         return getter instanceof CachingSupplier<T> caching ? caching : new CachingSupplier<>(getter);

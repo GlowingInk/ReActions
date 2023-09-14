@@ -28,7 +28,7 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.util.BlockUtils;
-import fun.reactions.util.location.ImplicitPosition;
+import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;

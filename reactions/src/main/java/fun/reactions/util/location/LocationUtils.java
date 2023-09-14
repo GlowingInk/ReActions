@@ -285,9 +285,4 @@ public final class LocationUtils { // TODO: Requires refactoring
                 .replace("%select%", locationToString(LocationHolder.getHeld(p)))
                 .replace("%sel%", locationToString(LocationHolder.getHeld(p)));
     }
-
-    @FunctionalInterface
-    public interface LocationFunction<R> {
-        R apply(World world, int x, int y, int z);
-    }
 }

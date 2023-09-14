@@ -20,7 +20,7 @@
  *
  */
 
-package fun.reactions.util.location;
+package fun.reactions.util.location.position;
 
 import fun.reactions.util.NumberUtils;
 import fun.reactions.util.parameter.Parameterizable;
@@ -63,18 +63,22 @@ public class RealPosition implements FinePosition, Parameterizable {
         this.pitch = pitch;
     }
 
+    @Contract(pure = true, value = "_, _, _, _, _, _ -> new")
     public static @NotNull RealPosition of(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
         return new RealPosition(worldName, x, y, z, yaw, pitch);
     }
 
+    @Contract(pure = true, value = "_, _, _, _ -> new")
     public static @NotNull RealPosition of(@NotNull String worldName, Position pos, float yaw, float pitch) {
         return of(worldName, pos.x(), pos.y(), pos.z(), yaw, pitch);
     }
 
+    @Contract(pure = true, value = "_, _ -> new")
     public static @NotNull RealPosition of(@NotNull String worldName, Position pos) {
         return of(worldName, pos.x(), pos.y(), pos.z(), 0, 0);
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull RealPosition byString(@NotNull String loc) {
         String[] split = loc.split(",");
         if (split.length < 4) {
@@ -91,6 +95,7 @@ public class RealPosition implements FinePosition, Parameterizable {
         }
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull RealPosition byLocation(@NotNull Location loc) {
         return new RealPosition(
                 loc.getWorld().getName(),
@@ -102,6 +107,7 @@ public class RealPosition implements FinePosition, Parameterizable {
         );
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull RealPosition fromConfiguration(@NotNull ConfigurationSection cfg) {
         return new RealPosition(
                 cfg.getString("world", ""),
@@ -113,6 +119,7 @@ public class RealPosition implements FinePosition, Parameterizable {
         );
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull RealPosition fromParameters(@NotNull Parameters params) {
         return new RealPosition(
                 params.getString("world", ""),
@@ -134,6 +141,7 @@ public class RealPosition implements FinePosition, Parameterizable {
     }
 
     @Override
+    @Contract(pure = true, value = "-> new")
     public @NotNull Parameters asParameters() {
         if (params == null) {
             params = Parameters.fromMap(Map.of(
@@ -148,64 +156,78 @@ public class RealPosition implements FinePosition, Parameterizable {
         return params;
     }
 
+    @Contract(pure = true)
     public @NotNull String worldName() {
         return this.worldName;
     }
 
     @Override
+    @Contract(pure = true)
     public double x() {
         return this.x;
     }
 
     @Override
+    @Contract(pure = true)
     public double y() {
         return this.y;
     }
 
     @Override
+    @Contract(pure = true)
     public double z() {
         return this.z;
     }
 
+    @Contract(pure = true)
     public float yaw() {
         return yaw;
     }
 
+    @Contract(pure = true)
     public float pitch() {
         return pitch;
     }
 
     @Override
+    @Contract(pure = true, value = "_, _, _ -> new")
     public @NotNull RealPosition offset(int x, int y, int z) {
         return offset((double) x, y, z);
     }
 
     @Override
+    @Contract(pure = true, value = "_, _, _ -> new")
     public @NotNull RealPosition offset(double x, double y, double z) {
         return new RealPosition(worldName, x() + x, y() + y, z() + z, yaw, pitch);
     }
 
     @Override
+    @Contract(pure = true, value = "-> new")
     public @NotNull RealPosition toCenter() {
         return new RealPosition(worldName, blockX() + 0.5, blockY() + 0.5, blockZ() + 0.5, yaw, pitch);
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull Location loc) {
         return isValidAt(loc.getWorld().getName(), loc.x(), loc.y(), loc.z(), loc.getYaw(), loc.getPitch());
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull RealPosition pos) {
         return isValidAt(pos.worldName(), pos.x(), pos.y(), pos.z(), pos.yaw(), pos.pitch());
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull String worldName, @NotNull Position pos) {
         return isValidAt(worldName, pos.x(), pos.y(), pos.z());
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull String worldName, double x, double y, double z, float yaw, float pitch) {
         return isValidAt(worldName, x, y, z) && imprecise(yaw(), yaw) && imprecise(pitch(), pitch);
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull String worldName, double x, double y, double z) {
         return this.worldName.equals(worldName) && imprecise(x(), x) && imprecise(y(), y) && imprecise(z(), z);
     }
@@ -225,6 +247,7 @@ public class RealPosition implements FinePosition, Parameterizable {
     }
 
     @Override
+    @Contract(pure = true)
     public @NotNull Location toLocation(@NotNull World world) {
         return new Location(world, x(), y(), z(), yaw(), pitch());
     }

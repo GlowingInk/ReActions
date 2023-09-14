@@ -4,8 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
-import fun.reactions.util.location.Cuboid;
-import fun.reactions.util.location.ImplicitPosition;
+import fun.reactions.util.location.position.ImplicitPosition;
+import fun.reactions.util.location.space.Cuboid;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -84,13 +84,13 @@ public class CuboidActivator extends Activator implements Locatable {
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("mode", mode.name());
-        cfg.set("world", cuboid.getWorld());
-        cfg.set("loc1.x", cuboid.getXMin());
-        cfg.set("loc2.x", cuboid.getXMax());
-        cfg.set("loc1.y", cuboid.getYMin());
-        cfg.set("loc2.y", cuboid.getYMax());
-        cfg.set("loc1.z", cuboid.getZMin());
-        cfg.set("loc2.z", cuboid.getZMax());
+        cfg.set("world", cuboid.world());
+        cfg.set("loc1.x", cuboid.xMin());
+        cfg.set("loc2.x", cuboid.xMax());
+        cfg.set("loc1.y", cuboid.yMin());
+        cfg.set("loc2.y", cuboid.yMax());
+        cfg.set("loc1.z", cuboid.zMin());
+        cfg.set("loc2.z", cuboid.zMax());
     }
 
     // TODO: toString method

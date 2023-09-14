@@ -1,4 +1,4 @@
-package fun.reactions.util.location;
+package fun.reactions.util.location.position;
 
 import fun.reactions.util.Utils;
 import fun.reactions.util.parameter.Parameterizable;
@@ -45,10 +45,12 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         this.z = z;
     }
 
+    @Contract(value = "_, _, _, _ -> new")
     public static @NotNull ImplicitPosition of(@Nullable String worldName, @Nullable Integer x, @Nullable Integer y, @Nullable Integer z) {
         return new ImplicitPosition(worldName, x, y, z);
     }
 
+    @Contract(value = "_ -> new")
     public static @NotNull ImplicitPosition byString(@Nullable String loc) {
         if (Utils.isStringEmpty(loc)) return EVERYWHERE;
         String[] split = loc.split(",");
@@ -62,6 +64,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         return new ImplicitPosition(worldName, x, y, z);
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull ImplicitPosition byLocation(@Nullable Location loc) {
         if (loc == null) return EVERYWHERE;
         return new ImplicitPosition(
@@ -72,6 +75,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         );
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull ImplicitPosition fromConfiguration(@NotNull ConfigurationSection cfg) {
         return new ImplicitPosition(
                 !cfg.getString("world", "*").equals("*") ? cfg.getString("world") : null,
@@ -81,6 +85,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         );
     }
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NotNull ImplicitPosition fromParameters(@NotNull Parameters params) {
         if (params.isEmpty()) return EVERYWHERE;
         String worldName = params.getString("world", "*");
@@ -103,6 +108,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     @Override
+    @Contract(pure = true, value = "-> new")
     public @NotNull Parameters asParameters() {
         if (params == null) {
              params = Parameters.fromMap(Map.of(
@@ -115,67 +121,81 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         return params;
     }
 
+    @Contract(pure = true)
     public @Nullable String worldName() {
         return this.worldName;
     }
 
+    @Contract(pure = true)
     public @Nullable Integer virtualX() {
         return this.x;
     }
 
+    @Contract(pure = true)
     public @Nullable Integer virtualY() {
         return this.y;
     }
 
+    @Contract(pure = true)
     public @Nullable Integer virtualZ() {
         return this.z;
     }
 
+    @Contract(pure = true)
     public @NotNull Optional<String> optionalWorldName() {
         return Optional.ofNullable(worldName);
     }
 
+    @Contract(pure = true)
     public @NotNull OptionalInt optionalX() {
         return x == null ? OptionalInt.empty() : OptionalInt.of(x);
     }
 
+    @Contract(pure = true)
     public @NotNull OptionalInt optionalY() {
         return y == null ? OptionalInt.empty() : OptionalInt.of(y);
     }
 
+    @Contract(pure = true)
     public @NotNull OptionalInt optionalZ() {
         return z == null ? OptionalInt.empty() : OptionalInt.of(z);
     }
 
+    @Contract(pure = true)
     public int blockX(int def) {
         return x == null ? def : x;
     }
 
+    @Contract(pure = true)
     public int blockY(int def) {
         return y == null ? def : y;
     }
 
+    @Contract(pure = true)
     public int blockZ(int def) {
         return z == null ? def : z;
     }
 
     @Override
+    @Contract(pure = true)
     public int blockX() {
         return blockX(0);
     }
 
     @Override
+    @Contract(pure = true)
     public int blockY() {
         return blockY(0);
     }
 
     @Override
+    @Contract(pure = true)
     public int blockZ() {
         return blockZ(0);
     }
 
     @Override
-    @Contract(pure = true)
+    @Contract(pure = true, value = "_, _, _ -> new")
     public @NotNull ImplicitPosition offset(int x, int y, int z) {
         return new ImplicitPosition(
                 worldName,
@@ -186,7 +206,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     @Override
-    @Contract(pure = true)
+    @Contract(pure = true, value = "_, _ -> new")
     public @NotNull ImplicitPosition offset(@NotNull Axis axis, int amount) {
         return amount == 0 ? this : switch (axis) {
             case X -> new ImplicitPosition(worldName, blockX() + amount, y, z);
@@ -196,7 +216,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     @Override
-    @Contract(pure = true)
+    @Contract(pure = true, value = "_, _-> new")
     public @NotNull ImplicitPosition offset(@NotNull BlockFace face, int amount) {
         if (amount == 0 || face == BlockFace.SELF) return this;
         Integer modX = face.getModX() == 0 ? x : Integer.valueOf(face.getModX() * amount + blockX());
@@ -206,12 +226,12 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     @Override
-    @Contract(pure = true)
+    @Contract(pure = true, value = "-> new")
     public @NotNull BlockPosition toBlock() {
         return Position.block(blockX(), blockY(), blockZ()); // We want to discard all the custom logic at this point
     }
 
-    @Contract(pure = true)
+    @Contract(pure = true, value = "_ -> new")
     public @NotNull Location toLocation(@NotNull Server server) {
         World world;
         if (worldName == null || (world = server.getWorld(worldName)) == null) {
@@ -221,23 +241,27 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     }
 
     @Override
-    @Contract(pure = true)
+    @Contract(pure = true, value = "_ -> new")
     public @NotNull Location toLocation(@NotNull World world) {
         return toCenter().offset(0, -0.5, 0).toLocation(world);
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull Location loc) {
         return isValidAt(loc.getWorld().getName(), loc);
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@NotNull ImplicitPosition pos) {
         return isValidAt(pos.worldName, pos) || pos.isValidAt(worldName, this);
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@Nullable String worldName, @NotNull Position pos) {
         return isValidAt(worldName, pos.blockX(), pos.blockY(), pos.blockZ());
     }
 
+    @Contract(pure = true)
     public boolean isValidAt(@Nullable String worldOther, int xOther, int yOther, int zOther) {
         return (x == null || x == xOther) &&
                 (y == null || y == yOther) &&

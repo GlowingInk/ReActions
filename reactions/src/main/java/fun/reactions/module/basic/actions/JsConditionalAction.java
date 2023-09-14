@@ -10,7 +10,6 @@ import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptContext;
@@ -30,42 +29,35 @@ import java.util.Map;
 @Aliased.Names({"IF_ELSE", "JS_CONDITION"})
 @Deprecated
 public class JsConditionalAction implements Action {
-    private static ScriptEngine engine = null;
-    private static boolean checked = false;
+    private static final List<String> POSSIBLE_ENGINES = List.of("graal.js", "rhino", "nashorn", "js", "javascript");
 
-    private static final String[] POSSIBLE_ENGINES = {"graal.js", "rhino", "nashorn", "js", "javascript"};
+    private ScriptEngine engine = null;
+    private boolean checked = false;
 
-    private static boolean engineCheck() {
+    @Override
+    public @NotNull String getName() {
+        return "JS_CONDITIONAL";
+    }
+
+    private boolean engineCheck() {
         if (checked) return engine != null;
         checked = true;
         ScriptEngine search = searchForEngine(new ScriptEngineManager());
         if (search == null) {
-            RegisteredServiceProvider<ScriptEngineManager> registered = Bukkit.getServicesManager().getRegistration(ScriptEngineManager.class);
+            var registered = Bukkit.getServicesManager().getRegistration(ScriptEngineManager.class);
             if (registered == null || (search = searchForEngine(registered.getProvider())) == null) {
-                ReActions.getLogger().warn("Couldn't find JS engine for IF_ELSE action.");
+                ReActions.getLogger().warn("Couldn't find JS engine for JS_CONDITIONAL action.");
             }
         }
         return (engine = search) != null;
     }
 
-    private static ScriptEngine searchForEngine(ScriptEngineManager scriptsManager) {
+    private ScriptEngine searchForEngine(ScriptEngineManager scriptsManager) {
         for (String engineName : POSSIBLE_ENGINES) {
             ScriptEngine engine = scriptsManager.getEngineByName(engineName);
             if (engine != null) return engine;
         }
         return null;
-    }
-
-    private static boolean executeActivator(Player p, String condition, String paramStr) {
-        Parameters param = Parameters.fromString(paramStr);
-        if (!param.contains("run")) return false;
-        param = param.getParameters("run");
-        if (!param.containsAny("activator", "exec")) return false;
-        param = param.with("player", p == null ? "~null" : p.getName());
-        Map<String, Variable> vars = new HashMap<>();
-        vars.put("condition", Variable.simple(condition));
-        ContextManager.triggerFunction(p, param, new Variables(vars));
-        return true;
     }
 
     @Override
@@ -96,9 +88,16 @@ public class JsConditionalAction implements Action {
         return false;
     }
 
-    @Override
-    public @NotNull String getName() {
-        return "JS_CONDITIONAL";
+    private static boolean executeActivator(Player p, String condition, String paramStr) {
+        Parameters param = Parameters.fromString(paramStr);
+        if (!param.contains("run")) return false;
+        param = param.getParameters("run");
+        if (!param.containsAny("activator", "exec")) return false;
+        param = param.with("player", p == null ? "~null" : p.getName());
+        Map<String, Variable> vars = new HashMap<>();
+        vars.put("condition", Variable.simple(condition));
+        ContextManager.triggerFunction(p, param, new Variables(vars));
+        return true;
     }
 
     private boolean executeActions(Environment env, String paramStr) {

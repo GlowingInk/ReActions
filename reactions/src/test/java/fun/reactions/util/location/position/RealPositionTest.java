@@ -1,4 +1,4 @@
-package fun.reactions.util.location;
+package fun.reactions.util.location.position;
 
 import fun.reactions.util.parameter.Parameters;
 import org.testng.annotations.DataProvider;

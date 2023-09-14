@@ -25,7 +25,7 @@ package fun.reactions.holders;
 import fun.reactions.ReActions;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
-import fun.reactions.util.location.RealPosition;
+import fun.reactions.util.location.position.RealPosition;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
