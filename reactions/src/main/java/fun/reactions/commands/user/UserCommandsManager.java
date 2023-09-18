@@ -25,9 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+// TODO Use RaCommand
 public final class UserCommandsManager implements Listener {
     private final ReActions.Platform platform;
-    // TODO: Use Paper's async tab completer
     private final Map<String, UserCommand> commands;
     private final File file;
 

@@ -173,7 +173,7 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
         menu.put(id.toLowerCase(Locale.ROOT), inventory);
     }
 
-    private static boolean containsMenu(String id) {
+    public static boolean containsMenu(String id) {
         return menu.containsKey(id.toLowerCase(Locale.ROOT));
     }
 

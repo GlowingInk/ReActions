@@ -22,7 +22,9 @@
 
 package fun.reactions;
 
-import fun.reactions.commands.Commander;
+import fun.reactions.commands.impl.ActivatorSub;
+import fun.reactions.commands.impl.CreateSub;
+import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.GodModeListener;
@@ -50,13 +52,22 @@ import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
+import me.lucko.commodore.Commodore;
+import me.lucko.commodore.CommodoreProvider;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+import static fun.reactions.commands.nodes.CommandNode.command;
+import static fun.reactions.commands.nodes.LiteralNode.literal;
+import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivitiesRegistry activitiesRegistry;
@@ -121,7 +132,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         getDataFolder().mkdirs();
 
-        Commander.init(this);
         TimersManager.init();
         CooldownManager.load();
         if (!Cfg.playerSelfVarFile) variablesManager.load();
@@ -138,11 +148,42 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         GodModeListener.init();
         Metrics metrics = new Metrics(this, 19363);
+        manageCommands();
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);
         });
+    }
+
+    private void manageCommands() {
+        Commodore commodore = CommodoreProvider.getCommodore(this);
+        PluginCommand reactionsCommand = Objects.requireNonNull(getCommand("reactions"));
+
+        command(commodore, reactionsCommand, (p, s) -> s.sendMessage("help"),
+                new CreateSub(this).asNode(),
+                new ActivatorSub(this).asNode(),
+                literal("location", (p, s) -> s.sendMessage("loc help"),
+                        stringArg("name", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("loc specific help"),
+                                literal("info", (p, s) -> s.sendMessage("loc info")),
+                                literal("delete", (p, s) -> s.sendMessage("loc delete")),
+                                literal("tp", (p, s) -> s.sendMessage("loc tp")),
+                                literal("move", (p, s) -> s.sendMessage("loc move"))
+                        )
+                ),
+                literal("list", (p, s) -> s.sendMessage("list help"),
+                        literal("activators", (p, s) -> s.sendMessage("list activators"),
+                                stringArg("group", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("list activators " + p))
+                        ),
+                        literal("locations", (p, s) -> s.sendMessage("list locations"),
+                                stringArg("world", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("list locations " + p))
+                        ),
+                        literal("menus", (p, s) -> s.sendMessage("list menus"))
+                ),
+                literal("reload", (p, s) -> s.sendMessage("reload all"),
+                        stringArg("options", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("reload specific " + p))
+                )
+        );
     }
 
     @Override

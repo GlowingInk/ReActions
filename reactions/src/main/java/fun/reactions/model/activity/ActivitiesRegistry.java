@@ -7,7 +7,10 @@ import fun.reactions.model.activity.flags.InvalidFlag;
 import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -47,6 +50,14 @@ public class ActivitiesRegistry {
 
     public @Nullable Flag getFlag(@NotNull String name) {
         return flagByName.get(name.toUpperCase(Locale.ROOT));
+    }
+
+    public @NotNull @UnmodifiableView Collection<@NotNull String> getActionsTypesNames() {
+        return Collections.unmodifiableCollection(actionByName.keySet());
+    }
+
+    public @NotNull @UnmodifiableView Collection<@NotNull String> getFlagsTypesNames() {
+        return Collections.unmodifiableCollection(flagByName.keySet());
     }
 
     public @NotNull Action.Stored storedActionOf(@NotNull String str) {

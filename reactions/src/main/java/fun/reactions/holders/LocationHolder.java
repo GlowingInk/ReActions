@@ -87,9 +87,9 @@ public final class LocationHolder {
         return tports.size();
     }
 
-    public static boolean addTpLoc(String id, Location loc) {
+    public static boolean addTpLoc(String id, RealPosition loc) {
         if (Utils.isStringEmpty(id)) return false;
-        tports.put(id, RealPosition.byLocation(loc));
+        tports.put(id, loc);
         return true;
     }
 

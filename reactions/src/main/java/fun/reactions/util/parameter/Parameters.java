@@ -500,6 +500,11 @@ public class Parameters implements Parameterizable {
         return fromMap(updated);
     }
 
+    @Contract
+    public @NotNull Parameters with(@NotNull Parameterizable add) {
+        return with(add.asParameters());
+    }
+
     @Contract(pure = true)
     public @NotNull Parameters with(@NotNull Parameters add) {
         if (isEmpty()) return add;

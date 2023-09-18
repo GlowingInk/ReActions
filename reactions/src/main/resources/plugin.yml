@@ -1,5 +1,5 @@
 name: ReActions
-description: '${project.description}'
+description: '${parent.description}'
 api-version: '1.19'
 main: fun.reactions.ReActionsPlugin
 version: '${project.version}${build-suffix}'

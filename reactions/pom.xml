@@ -37,7 +37,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>org.quartz</pattern>
-                                    <shadedPattern>fun.reactions.external.time</shadedPattern>
+                                    <shadedPattern>fun.reactions.external.quartz</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>ink.glowing.math</pattern>
@@ -48,8 +48,8 @@
                                     <shadedPattern>fun.reactions.external.text</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.spongepowered.configurate</pattern>
-                                    <shadedPattern>fun.reactions.external.config</shadedPattern>
+                                    <pattern>me.lucko.commodore</pattern>
+                                    <shadedPattern>fun.reactions.external.commodore</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -91,6 +91,13 @@
             <groupId>ink.glowing</groupId>
             <artifactId>ezmath</artifactId>
             <version>3.21</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>me.lucko</groupId>
+            <artifactId>commodore</artifactId>
+            <version>2.2</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
