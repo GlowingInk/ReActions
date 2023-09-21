@@ -153,7 +153,7 @@ public final class CreateSub extends RaCommand {
                 sendPrefixed(sender, "Menu &c'" + escape(params.getString("name")) + "'&r already exists");
                 return;
             }
-            InventoryMenu.add(params.getString("menu"), params.getInteger("rows", 3), params.getString("title"));
+            InventoryMenu.add(params.getString("name"), params.getInteger("rows", 3), params.getString("title"));
             sendPrefixed(sender, "Menu &a'" + escape(params.getString("name")) + "'&r was created");
         }
     }

@@ -27,7 +27,7 @@ public abstract class RaCommand {
     }
 
     protected void sendPrefixed(@NotNull CommandSender sender, @NotNull String message) {
-        sender.sendMessage(inky("&6&lReActions> ", message));
+        sender.sendMessage(inky("&6&lReA> ", message));
     }
 
     // subcommand, args, description
