@@ -38,7 +38,7 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
     public static BlockBreakActivator create(Logic base, Parameters param) {
         Material block = param.get("block", ItemUtils::getMaterial);
-        ImplicitPosition pos = param.get("loc", ImplicitPosition::byString);
+        ImplicitPosition pos = param.getSafe("loc", ImplicitPosition::byString);
         return new BlockBreakActivator(base, block, pos);
     }
 

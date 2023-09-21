@@ -12,7 +12,9 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public interface Node {
-    String COMMAND_KEY = "full-command";
+    String COMMAND_KEY = "command";
+    String FULL_COMMAND_KEY = "full-command";
+    String LABEL_KEY = "label";
 
     @Contract(mutates = "param1")
     @Nullable Executor progress(@NotNull Map<String, String> paramsBuilder, @NotNull String remaining);

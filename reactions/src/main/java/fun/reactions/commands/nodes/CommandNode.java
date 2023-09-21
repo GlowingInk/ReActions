@@ -46,7 +46,9 @@ public class CommandNode implements Node, CommandExecutor, TabCompleter {
         try {
             Map<String, String> paramsMap = new HashMap<>();
             String argsJoined = String.join(" ", args);
-            paramsMap.put(COMMAND_KEY, label + " " + argsJoined);
+            paramsMap.put(COMMAND_KEY, cmd.getName());
+            paramsMap.put(LABEL_KEY, label);
+            paramsMap.put(FULL_COMMAND_KEY, label + " " + argsJoined);
             progress(paramsMap, argsJoined).accept(Parameters.fromMap(paramsMap), sender);
         } catch (RaCommandException exception) {
             sender.sendMessage(exception.message());

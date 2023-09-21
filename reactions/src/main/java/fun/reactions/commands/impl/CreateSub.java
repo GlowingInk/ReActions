@@ -33,21 +33,17 @@ public final class CreateSub extends RaCommand {
     public @NotNull Node asNode() {
         return literal("create", this::help,
                 new ActivatorSub(platform).asNode(),
-                literal("location", this::pointLocation,
-                        stringArg("world", StringArgNode.Type.WORD,
-                                doubleArg("x", doubleArg("y", doubleArg("z", this::location, doubleArg("yaw", doubleArg("pitch", this::location)))))
-                        )
-                ),
-                literal("menu",
-                        integerArg("rows", 1, 6, this::menu,
-                                stringArg("title", StringArgNode.Type.GREEDY, this::menu)
-                        )
-                )
+                new LocationSub(platform).asNode(),
+                new MenuSub(platform).asNode()
         );
     }
 
     private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
-        sender.sendMessage("Some help thingy");
+        sendHelp(sender, params, "create",
+                "activator", "&a<name> <type> &e[<parameters...>]", "Create &anamed&r activator with specified &atype&r and &eparameters",
+                "location", "&a<name> &e[<world> <x> <y> <z> &6[<yaw> <pitch>]&e]", "Create &anamed&r location at your position, or with &especified coordinates",
+                "menu", "&a<name> &e[<rows> <title>]", "Create &anamed&r menu with optional &erows&r count and &etitle"
+        );
     }
 
     private static class ActivatorSub extends RaCommand {
@@ -57,9 +53,9 @@ public final class CreateSub extends RaCommand {
 
         @Override
         public @NotNull Node asNode() {
-            return literal("activator", this::help,
-                    stringArg("type", StringArgNode.Type.WORD, () -> platform.getActivatorTypes().getTypeNames(),
-                            stringArg("name", StringArgNode.Type.WORD,
+            return literal("activator",
+                    stringArg("name", StringArgNode.Type.WORD,
+                            stringArg("type", StringArgNode.Type.WORD, () -> platform.getActivatorTypes().getTypeNames(), this::activator,
                                     stringArg(
                                             "parameters",
                                             StringArgNode.Type.OPTIONAL_GREEDY,
@@ -70,21 +66,16 @@ public final class CreateSub extends RaCommand {
             );
         }
 
-        private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
-            // TODO
-            sender.sendMessage(params.getString(Node.COMMAND_KEY));
-        }
-
         private void activator(@NotNull Parameters params, @NotNull CommandSender sender) {
             ActivatorsManager activators = platform.getActivators();
             if (activators.getActivator(params.getString("name")) != null) {
-                sender.sendMessage("Activator " + params.getString("name") + " already exists");
+                sendPrefixed(sender, "Activator &c'" + escape(params.getString("name")) + "'&r already exists");
                 return;
             }
             ActivatorTypesRegistry types = platform.getActivatorTypes();
             ActivatorType type = params.get("type", types::get);
             if (type == null) {
-                sender.sendMessage("Activator type '" + params.getString("type") + "' doesn't exist");
+                sendPrefixed(sender, "Activator type &c'" + escape(params.getString("type")) + "'&f doesn't exist");
                 return;
             }
             Activator activator = type.createActivator(
@@ -92,44 +83,78 @@ public final class CreateSub extends RaCommand {
                     params.getParameters("parameters")
             );
             if (activator == null) {
-                sender.sendMessage("Failed to create activator");
+                sendPrefixed(sender, "Failed to create activator&c!");
                 return;
             }
             activators.addActivator(activator, true);
-            sender.sendMessage("Activator " + activator.getLogic().getName() + " of type " + activator.getLogic().getType() + " was created");
+            sendPrefixed(sender, "Activator &a'" + escape(activator.getLogic().getName()) + "'&r of type &a'" + escape(activator.getLogic().getType()) + "'&r was created");
         }
     }
 
-    private void pointLocation(@NotNull Parameters params, @NotNull CommandSender sender) {
-        Location loc;
-        if (sender instanceof Entity entity) {
-            loc = entity.getLocation();
-        } else if (sender instanceof BlockState block) {
-            loc = block.getLocation();
-        } else {
-            sender.sendMessage("You must be an entity or a command block to perform this command");
-            return;
+    private static class LocationSub extends RaCommand {
+        protected LocationSub(@NotNull ReActions.Platform platform) {
+            super(platform);
         }
 
-        location(params.with(RealPosition.byLocation(loc)), sender);
+        @Override
+        public @NotNull Node asNode() {
+            return literal("location",
+                    stringArg("name", StringArgNode.Type.WORD, this::pointLocation,
+                            stringArg("world", StringArgNode.Type.WORD,
+                                    doubleArg("x", doubleArg("y", doubleArg("z", this::location, doubleArg("yaw", doubleArg("pitch", this::location)))))
+                            )
+                    )
+            );
+        }
+
+        private void pointLocation(@NotNull Parameters params, @NotNull CommandSender sender) {
+            Location loc;
+            if (sender instanceof Entity entity) {
+                loc = entity.getLocation();
+            } else if (sender instanceof BlockState block) {
+                loc = block.getLocation();
+            } else {
+                sendPrefixed(sender, "You must be an entity or a command block to perform this command");
+                return;
+            }
+
+            location(params.with(RealPosition.byLocation(loc)), sender);
+        }
+
+        private void location(@NotNull Parameters params, @NotNull CommandSender sender) {
+            if (params.get("name", LocationHolder::getTpLoc) != null) {
+                sendPrefixed(sender, "Location &c'" + escape(params.getString("name")) + "'&r already exists");
+                return;
+            }
+            RealPosition pos = RealPosition.fromParameters(params);
+            LocationHolder.addTpLoc(params.getString("name"), pos);
+            sendPrefixed(sender, "Location &a'" + escape(params.getString("name")) + "'&r &7(" + pos + ")&r was created");
+        }
     }
 
-    private void location(@NotNull Parameters params, @NotNull CommandSender sender) {
-        if (params.get("name", LocationHolder::getTpLoc) != null) {
-            sender.sendMessage("Location " + params.getString("name") + " already exists");
-            return;
+    private static class MenuSub extends RaCommand {
+        protected MenuSub(@NotNull ReActions.Platform platform) {
+            super(platform);
         }
-        RealPosition pos = RealPosition.fromParameters(params);
-        LocationHolder.addTpLoc(params.getString("name"), pos);
-        sender.sendMessage("Location " + params.getString("name") + " (" + pos + ") was created");
-    }
 
-    private void menu(@NotNull Parameters params, @NotNull CommandSender sender) {
-        if (InventoryMenu.containsMenu(params.getString("name"))) {
-            sender.sendMessage("Menu " + params.getString("name") + " already exists");
-            return;
+        @Override
+        public @NotNull Node asNode() {
+            return literal("menu",
+                    stringArg("name", StringArgNode.Type.WORD, this::menu,
+                            integerArg("rows", 1, 6,
+                                    stringArg("title", StringArgNode.Type.GREEDY)
+                            )
+                    )
+            );
         }
-        InventoryMenu.add(params.getString("menu"), params.getInteger("rows"), params.getString("title"));
-        sender.sendMessage("Menu " + params.getString("name") + " was created");
+
+        private void menu(@NotNull Parameters params, @NotNull CommandSender sender) {
+            if (InventoryMenu.containsMenu(params.getString("name"))) {
+                sendPrefixed(sender, "Menu &c'" + escape(params.getString("name")) + "'&r already exists");
+                return;
+            }
+            InventoryMenu.add(params.getString("menu"), params.getInteger("rows", 3), params.getString("title"));
+            sendPrefixed(sender, "Menu &a'" + escape(params.getString("name")) + "'&r was created");
+        }
     }
 }

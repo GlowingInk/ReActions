@@ -20,6 +20,7 @@ import static fun.reactions.commands.nodes.IntegerArgNode.integerArg;
 import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
+// TODO
 public class ActivatorSub extends RaCommand {
     private final ActivatorsManager activators;
     private final ActivitiesRegistry activities;

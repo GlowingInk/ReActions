@@ -83,13 +83,19 @@ public class StringArgNode implements Node {
                     index = remaining.indexOf(start, 1);
                     if (index == -1) return null;
                     int next = index + 1;
-                    if (remaining.length() == next || remaining.charAt(next) != ' ') return executor;
+                    if (remaining.length() == next || remaining.charAt(next) != ' ') {
+                        paramsBuilder.put(name, remaining.substring(start + 1, index));
+                        return executor;
+                    }
                     break;
                 }
             }
             case WORD: {
                 index = remaining.indexOf(' ');
-                if (index == -1) return executor;
+                if (index == -1) {
+                    paramsBuilder.put(name, remaining);
+                    return executor;
+                }
                 paramsBuilder.put(name, remaining.substring(0, index));
                 break;
             }
