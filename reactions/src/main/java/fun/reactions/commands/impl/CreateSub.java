@@ -72,20 +72,18 @@ public final class CreateSub extends RaCommand {
                 sendPrefixed(sender, "Activator &c'" + escape(params.getString("name")) + "'&r already exists");
                 return;
             }
+
             ActivatorTypesRegistry types = platform.getActivatorTypes();
-            ActivatorType type = params.get("type", types::get);
-            if (type == null) {
-                sendPrefixed(sender, "Activator type &c'" + escape(params.getString("type")) + "'&f doesn't exist");
-                return;
-            }
-            Activator activator = type.createActivator(
+            ActivatorType type = ensurePrefixed(
+                    params.get("type", types::get),
+                    "Activator type &c'" + escape(params.getString("type")) + "'&r doesn't exist"
+            );
+
+            Activator activator = ensurePrefixed(type.createActivator(
                     new Logic(platform, type.getName(), params.getString("name")),
                     params.getParameters("parameters")
-            );
-            if (activator == null) {
-                sendPrefixed(sender, "Failed to create activator&c!");
-                return;
-            }
+            ), "Failed to create activator&c!");
+
             activators.addActivator(activator, true);
             sendPrefixed(sender, "Activator &a'" + escape(activator.getLogic().getName()) + "'&r of type &a'" + escape(activator.getLogic().getType()) + "'&r was created");
         }

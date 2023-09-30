@@ -78,4 +78,9 @@ public class LiteralNode implements Node {
         }
         return builder.build();
     }
+
+    @Override
+    public @NotNull String getName() {
+        return value;
+    }
 }

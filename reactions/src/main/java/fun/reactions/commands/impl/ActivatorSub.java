@@ -2,23 +2,27 @@ package fun.reactions.commands.impl;
 
 import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommand;
-import fun.reactions.commands.RaCommandException;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
+import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activity.ActivitiesRegistry;
+import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
 import static fun.reactions.commands.nodes.IntegerArgNode.integerArg;
 import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
+import static net.kyori.adventure.text.Component.text;
 
 // TODO
 public class ActivatorSub extends RaCommand {
@@ -51,18 +55,59 @@ public class ActivatorSub extends RaCommand {
     }
 
     private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
-        sender.sendMessage("Activators help");
+        Activator activator = getActivator(params);
+        sendHelp(sender, params, "activator " + activator.getLogic().getName(),
+                "info", "", "Get info about an activator",
+                "move", "&a<group>", "Move activator into another group",
+                "delete", "[confirm]", "Delete an activator",
+                "action", "...", "Manage activator actions",
+                "reaction", "...", "Manage activator reactions",
+                "flag", "...", "Manage activator flags"
+        );
     }
 
     private void info(@NotNull Parameters params, @NotNull CommandSender sender) {
         Activator activator = getActivator(params);
-        sender.sendMessage(activator.toString());
+        Logic logic = activator.getLogic();
+        sender.sendMessage(text()
+                .append(inky("&7" + logic.getGroup() + "/&6&l" + logic.getName()))
+                .append(inky("&e (" + logic.getType() + ")")));
+        List<Flag.Stored> flags = logic.getFlags();
+        if (!flags.isEmpty()) {
+            inky(sender, "&aFlags:");
+            for (int i = 0; i < flags.size(); i++) {
+                Flag.Stored flag = flags.get(i);
+                Flag type = flag.getActivity();
+                sender.sendMessage(
+                        inky(" " + (i + 1) + (flag.isInverted() ? "&c&l!&r " : " ") + "&e" + type.getName() + " &7= &r")
+                                .append(text(flag.getContent()))
+                );
+            }
+        }
+        List<Action.Stored> actions = logic.getActions();
+        if (!actions.isEmpty()) {
+            inky(sender, "&aActions:");
+            for (int i = 0; i < actions.size(); i++) {
+                Action.Stored action = actions.get(i);
+                Action type = action.getActivity();
+                sender.sendMessage(inky(" " + (i + 1) + " &e" + type.getName() + " &7= &r").append(text(action.getContent())));
+            }
+        }
+        actions = logic.getReactions();
+        if (!actions.isEmpty()) {
+            inky(sender, "&aReactions:");
+            for (int i = 0; i < actions.size(); i++) {
+                Action.Stored action = actions.get(i);
+                Action type = action.getActivity();
+                sender.sendMessage(inky(" " + (i + 1) + " &e" + type.getName() + " &7= &r").append(text(action.getContent())));
+            }
+        }
     }
 
     private void delete(@NotNull Parameters params, @NotNull CommandSender sender) {
         Activator activator = getActivator(params);
         if (!params.getString("full-command").endsWith(" confirm")) {
-            sender.sendMessage("Add confirm to the end of command");
+            sender.sendMessage("Add confirm to the end of a command");
         } else {
             activators.removeActivator(activator.getLogic().getName());
             sender.sendMessage("Activator removed");
@@ -90,11 +135,8 @@ public class ActivatorSub extends RaCommand {
     }
 
     private @NotNull Activator getActivator(Parameters params) {
-        Activator activator = params.get("name", activators::getActivator);
-        if (activator == null) {
-            throw new RaCommandException("No activators named " + params.getString("name") + " were found");
-        }
-        return activator;
+        String name = params.getString("name");
+        return ensurePrefixed(activators.getActivator(name), "Activator &c'" + escape(name) + "'&r doesn't exist!");
     }
 
     private enum ActivityType {

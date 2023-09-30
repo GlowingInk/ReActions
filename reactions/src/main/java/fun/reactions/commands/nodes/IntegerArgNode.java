@@ -31,20 +31,20 @@ public class IntegerArgNode implements Node {
         return integerArg(name, null, next);
     }
 
-    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, @NotNull Node @NotNull ... next) {
-        return integerArg(name, min, null, next);
-    }
-
-    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, int max, @NotNull Node @NotNull ... next) {
-        return integerArg(name, min, max, null, next);
-    }
-
     public static @NotNull IntegerArgNode integerArg(@NotNull String name, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
         return new IntegerArgNode(name, executor, null, null, Arrays.asList(next));
     }
 
+    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, @NotNull Node @NotNull ... next) {
+        return integerArg(name, min, null, next);
+    }
+
     public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
         return new IntegerArgNode(name, executor, min, null, Arrays.asList(next));
+    }
+
+    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, int max, @NotNull Node @NotNull ... next) {
+        return integerArg(name, min, max, null, next);
     }
 
     public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, int max, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
@@ -95,5 +95,10 @@ public class IntegerArgNode implements Node {
             builder = builder.then(piece.asBrigadier());
         }
         return builder.build();
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return name;
     }
 }

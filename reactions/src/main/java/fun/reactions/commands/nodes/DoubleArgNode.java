@@ -31,20 +31,20 @@ public class DoubleArgNode implements Node {
         return doubleArg(name, null, next);
     }
 
-    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, @NotNull Node @NotNull ... next) {
-        return doubleArg(name, min, null, next);
-    }
-
-    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, double max, @NotNull Node @NotNull ... next) {
-        return doubleArg(name, min, max, null, next);
-    }
-
     public static @NotNull DoubleArgNode doubleArg(@NotNull String name, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
         return new DoubleArgNode(name, executor, null, null, Arrays.asList(next));
     }
 
+    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, @NotNull Node @NotNull ... next) {
+        return doubleArg(name, min, null, next);
+    }
+
     public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
         return new DoubleArgNode(name, executor, min, null, Arrays.asList(next));
+    }
+
+    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, double max, @NotNull Node @NotNull ... next) {
+        return doubleArg(name, min, max, null, next);
     }
 
     public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, double max, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
@@ -96,4 +96,10 @@ public class DoubleArgNode implements Node {
         }
         return builder.build();
     }
+
+    @Override
+    public @NotNull String getName() {
+        return name;
+    }
+
 }

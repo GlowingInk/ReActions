@@ -87,4 +87,9 @@ public class CommandNode implements Node, CommandExecutor, TabCompleter {
         }
         return builder.build();
     }
+
+    @Override
+    public @NotNull String getName() {
+        return value;
+    }
 }

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +29,8 @@ public class StringArgNode implements Node {
         this.next = next;
     }
 
-    public static StringArgNode stringArg(
-            @NotNull String name,
-            @NotNull Type type,
-            @Nullable Supplier<Collection<String>> suggestions,
-            @Nullable Executor executor,
-            @NotNull Node @NotNull ... next
-    ) {
-        return new StringArgNode(
-                name,
-                type,
-                executor,
-                suggestions,
-                List.of(next)
-        );
+    public static StringArgNode stringArg(@NotNull String name, @NotNull Type type, @NotNull Node @NotNull ... next) {
+        return stringArg(name, type, null, null, next);
     }
 
     public static StringArgNode stringArg(
@@ -62,8 +51,20 @@ public class StringArgNode implements Node {
         return stringArg(name, type, suggestions, null, next);
     }
 
-    public static StringArgNode stringArg(@NotNull String name, @NotNull Type type, @NotNull Node @NotNull ... next) {
-        return stringArg(name, type, null, null, next);
+    public static StringArgNode stringArg(
+            @NotNull String name,
+            @NotNull Type type,
+            @Nullable Supplier<Collection<String>> suggestions,
+            @Nullable Executor executor,
+            @NotNull Node @NotNull ... next
+    ) {
+        return new StringArgNode(
+                name,
+                type,
+                executor,
+                suggestions,
+                Arrays.asList(next)
+        );
     }
 
     @Override
@@ -151,5 +152,10 @@ public class StringArgNode implements Node {
                 case GREEDY, OPTIONAL_GREEDY -> StringArgumentType.greedyString();
             };
         }
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return name;
     }
 }

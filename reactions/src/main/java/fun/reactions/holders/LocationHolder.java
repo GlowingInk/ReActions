@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO Refactor
+@Deprecated
 public final class LocationHolder {
     private static final Map<String, Location> locs = new HashMap<>();
     private static final Map<String, RealPosition> tports = new HashMap<>();

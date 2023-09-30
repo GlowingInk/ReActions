@@ -12,35 +12,46 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class ActivitiesRegistry {
     private final Map<String, Action> actionByName;
     private final Map<String, Flag> flagByName;
+    private final Set<String> flagNames;
 
     public ActivitiesRegistry() {
         actionByName = new HashMap<>();
         flagByName = new HashMap<>();
+        flagNames = new HashSet<>();
     }
 
     public void registerAction(@NotNull Action action) {
-        if (actionByName.containsKey(action.getName().toUpperCase(Locale.ROOT))) {
-            throw new IllegalStateException("Action '" + action.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
+        String upperAction = action.getName().toUpperCase(Locale.ROOT);
+        if (actionByName.containsKey(upperAction)) {
+            throw new IllegalStateException("Action '" + upperAction + "' is already registered!");
         }
-        actionByName.put(action.getName().toUpperCase(Locale.ROOT), action);
+        actionByName.put(upperAction, action);
         for (String alias : Aliased.getAliasesOf(action)) {
             actionByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), action);
         }
     }
 
     public void registerFlag(@NotNull Flag flag) {
-        if (flagByName.containsKey(flag.getName().toUpperCase(Locale.ROOT))) {
-            throw new IllegalStateException("Flag '" + flag.getName().toUpperCase(Locale.ROOT) + "' is already registered!");
+        String upperFlag = flag.getName().toUpperCase(Locale.ROOT);
+        if (flagByName.containsKey(upperFlag)) {
+            throw new IllegalStateException("Flag '" + upperFlag + "' is already registered!");
         }
-        flagByName.put(flag.getName().toUpperCase(Locale.ROOT), flag);
+        flagByName.put(upperFlag, flag);
+        flagNames.add(upperFlag);
+        flagNames.add("!" + upperFlag);
         for (String alias : Aliased.getAliasesOf(flag)) {
-            flagByName.putIfAbsent(alias.toUpperCase(Locale.ROOT), flag);
+            String upperAlias = alias.toUpperCase(Locale.ROOT);
+            flagByName.putIfAbsent(upperAlias, flag);
+            flagNames.add(upperAlias);
+            flagNames.add("!" + upperAlias);
         }
     }
 
@@ -57,7 +68,7 @@ public class ActivitiesRegistry {
     }
 
     public @NotNull @UnmodifiableView Collection<@NotNull String> getFlagsTypesNames() {
-        return Collections.unmodifiableCollection(flagByName.keySet());
+        return Collections.unmodifiableCollection(flagNames);
     }
 
     public @NotNull Action.Stored storedActionOf(@NotNull String str) {

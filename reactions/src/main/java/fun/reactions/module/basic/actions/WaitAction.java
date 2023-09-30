@@ -25,11 +25,11 @@ public class WaitAction implements Action, Interrupting {
     }
 
     @Override
-    public void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Stored> actions) {
+    public void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Stored> remaining) {
         env.getPlatform().getWaiter().schedule(new WaitTask(
                 env.getVariables().fork(),
                 env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
-                actions,
+                remaining,
                 offsetNow(Parameters.fromString(params, "time").getTime("time", 0))
         ));
     }
