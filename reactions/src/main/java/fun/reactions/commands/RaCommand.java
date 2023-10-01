@@ -37,7 +37,7 @@ public abstract class RaCommand {
     protected static void sendHelp(@NotNull CommandSender sender, @NotNull Parameters params, @Nullable String command, @NotNull String... help) {
         String start = "/" + params.getString(LABEL_KEY) + (command != null ? " " + command : "");
         sender.sendMessage("");
-        inky(sender, "&6&l" + start + " ...");
+        sendInky(sender, "&6&l" + start + " ...");
         for (int i = 0; i + 2 < help.length; i += 3) {
             String subcommand = help[i];
             String args = help[i + 1];
@@ -50,7 +50,7 @@ public abstract class RaCommand {
             sender.sendMessage(message);
         }
         sender.sendMessage("");
-        inky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type them in chat!");
+        sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type them in chat!");
     }
 
     protected static @NotNull Component inky(@NotNull String str) {
@@ -66,7 +66,7 @@ public abstract class RaCommand {
         return text.build();
     }
 
-    protected static void inky(@NotNull CommandSender sender, @NotNull String str) {
+    protected static void sendInky(@NotNull CommandSender sender, @NotNull String str) {
         sender.sendMessage(inkyMessage().deserialize(str));
     }
 

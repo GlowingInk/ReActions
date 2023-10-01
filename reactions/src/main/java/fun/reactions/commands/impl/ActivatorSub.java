@@ -8,7 +8,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activity.ActivitiesRegistry;
-import fun.reactions.model.activity.actions.Action;
+import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
@@ -72,34 +72,25 @@ public class ActivatorSub extends RaCommand {
         sender.sendMessage(text()
                 .append(inky("&7" + logic.getGroup() + "/&6&l" + logic.getName()))
                 .append(inky("&e (" + logic.getType() + ")")));
-        List<Flag.Stored> flags = logic.getFlags();
-        if (!flags.isEmpty()) {
-            inky(sender, "&aFlags:");
-            for (int i = 0; i < flags.size(); i++) {
-                Flag.Stored flag = flags.get(i);
-                Flag type = flag.getActivity();
-                sender.sendMessage(
-                        inky(" " + (i + 1) + (flag.isInverted() ? "&c&l!&r " : " ") + "&e" + type.getName() + " &7= &r")
-                                .append(text(flag.getContent()))
-                );
-            }
-        }
-        List<Action.Stored> actions = logic.getActions();
-        if (!actions.isEmpty()) {
-            inky(sender, "&aActions:");
-            for (int i = 0; i < actions.size(); i++) {
-                Action.Stored action = actions.get(i);
-                Action type = action.getActivity();
-                sender.sendMessage(inky(" " + (i + 1) + " &e" + type.getName() + " &7= &r").append(text(action.getContent())));
-            }
-        }
-        actions = logic.getReactions();
-        if (!actions.isEmpty()) {
-            inky(sender, "&aReactions:");
-            for (int i = 0; i < actions.size(); i++) {
-                Action.Stored action = actions.get(i);
-                Action type = action.getActivity();
-                sender.sendMessage(inky(" " + (i + 1) + " &e" + type.getName() + " &7= &r").append(text(action.getContent())));
+        sendActionsInfo(sender, logic.getFlags(), "&aFlags:", true);
+        sendActionsInfo(sender, logic.getActions(), "&aActions:", false);
+        sendActionsInfo(sender, logic.getReactions(), "&aReactions:", false);
+    }
+
+    private void sendActionsInfo(CommandSender sender, List<? extends Activity.Stored<?>> storeds, String title, boolean isFlag) {
+        if (!storeds.isEmpty()) {
+            sendInky(sender, title);
+            for (int i = 0; i < storeds.size(); i++) {
+                Activity.Stored<?> storedActivity = storeds.get(i);
+                Activity activity = storedActivity.getActivity();
+                if (isFlag && storedActivity instanceof Flag.Stored storedFlag) {
+                    sender.sendMessage(
+                            inky(" " + (i + 1) + (storedFlag.isInverted() ? "&c&l!&r " : " ") + "&e" + activity.getName() + " &7= &r")
+                                    .append(text(storedFlag.getContent()))
+                    );
+                } else {
+                    sender.sendMessage(inky(" " + (i + 1) + " &e" + activity.getName() + " &7= &r").append(text(storedActivity.getContent())));
+                }
             }
         }
     }
