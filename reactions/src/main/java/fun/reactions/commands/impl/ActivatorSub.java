@@ -9,8 +9,10 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.Activity;
+import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.util.parameter.Parameters;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +26,6 @@ import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 import static net.kyori.adventure.text.Component.text;
 
-// TODO
 public class ActivatorSub extends RaCommand {
     private final ActivatorsManager activators;
     private final ActivitiesRegistry activities;
@@ -40,15 +41,15 @@ public class ActivatorSub extends RaCommand {
         return literal("activator", stringArg("name", StringArgNode.Type.WORD, this::help,
                 literal("info", this::info),
                 literal("delete", this::delete, literal("confirm", this::delete)),
-                activityNode(ActivityType.ACTION, activities::getActionsTypesNames),
-                activityNode(ActivityType.REACTION, activities::getActionsTypesNames),
-                activityNode(ActivityType.FLAG, activities::getFlagsTypesNames)
+                activityNode(ActivitySelection.ACTION, activities::getActionsTypesNames),
+                activityNode(ActivitySelection.REACTION, activities::getActionsTypesNames),
+                activityNode(ActivitySelection.FLAG, activities::getFlagsTypesNames)
         ));
     }
 
-    private @NotNull Node activityNode(ActivityType type, Supplier<Collection<String>> suggests) {
+    private @NotNull Node activityNode(ActivitySelection type, Supplier<Collection<String>> suggests) {
         return literal(type.name().toLowerCase(Locale.ROOT), (p, s) -> activityHelp(p, s, type),
-                literal("add", stringArg("type", StringArgNode.Type.WORD, suggests, stringArg("args", StringArgNode.Type.OPTIONAL_GREEDY, (p, s) -> activityAdd(p, s, type)))),
+                literal("add", stringArg("type", StringArgNode.Type.WORD, suggests, (p, s) -> activityAdd(p, s, type), stringArg("parameters", StringArgNode.Type.OPTIONAL_GREEDY))),
                 literal("remove", integerArg("index", 1, (p, s) -> activityRemove(p, s, type))),
                 literal("move", integerArg("from", 1, integerArg("to", 1, (p, s) -> activityMove(p, s, type))))
         );
@@ -69,6 +70,7 @@ public class ActivatorSub extends RaCommand {
     private void info(@NotNull Parameters params, @NotNull CommandSender sender) {
         Activator activator = getActivator(params);
         Logic logic = activator.getLogic();
+        sender.sendMessage("");
         sender.sendMessage(text()
                 .append(inky("&7" + logic.getGroup() + "/&6&l" + logic.getName()))
                 .append(inky("&e (" + logic.getType() + ")")));
@@ -83,14 +85,13 @@ public class ActivatorSub extends RaCommand {
             for (int i = 0; i < storeds.size(); i++) {
                 Activity.Stored<?> storedActivity = storeds.get(i);
                 Activity activity = storedActivity.getActivity();
+                Component text;
                 if (isFlag && storedActivity instanceof Flag.Stored storedFlag) {
-                    sender.sendMessage(
-                            inky(" " + (i + 1) + (storedFlag.isInverted() ? "&c&l!&r " : " ") + "&e" + activity.getName() + " &7= &r")
-                                    .append(text(storedFlag.getContent()))
-                    );
+                    text = inky(" &7" + (i + 1) + (storedFlag.isInverted() ? " &c&l!&r" : " "));
                 } else {
-                    sender.sendMessage(inky(" " + (i + 1) + " &e" + activity.getName() + " &7= &r").append(text(storedActivity.getContent())));
+                    text = inky(" &7" + (i + 1) + " ");
                 }
+                sender.sendMessage(text.append(inky("&e" + activity.getName() + " &7= &r")).append(text(storedActivity.getContent())));
             }
         }
     }
@@ -98,39 +99,117 @@ public class ActivatorSub extends RaCommand {
     private void delete(@NotNull Parameters params, @NotNull CommandSender sender) {
         Activator activator = getActivator(params);
         if (!params.getString("full-command").endsWith(" confirm")) {
-            sender.sendMessage("Add confirm to the end of a command");
+            sendPrefixed(sender, "Add confirm to the end of a command");
         } else {
             activators.removeActivator(activator.getLogic().getName());
-            sender.sendMessage("Activator removed");
+            sendPrefixed(sender, "Activator removed");
+            saveActivator(activator);
         }
     }
 
-    private void activityHelp(@NotNull Parameters params, @NotNull CommandSender sender, ActivityType activityType) {
+    private void activityHelp(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection) {
         Activator activator = getActivator(params);
-        sender.sendMessage(activityType + " help");
+        String selectionName = selection.name().toLowerCase(Locale.ROOT);
+        sendHelp(sender, params, "activator " + activator.getLogic().getName() + " " + selectionName,
+                "add", "<type> [parameters...]", "Add &e" + selectionName + "&r to an activator",
+                "remove", "<index>", "Remove &e" + selectionName + "&r from an activator",
+                "move", "<from> <to>", "Move &e" + selectionName + "&r to another index"
+        );
     }
 
-    private void activityAdd(@NotNull Parameters params, @NotNull CommandSender sender, ActivityType activityType) {
+    private void activityAdd(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection) {
         Activator activator = getActivator(params);
-        sender.sendMessage(activityType + " add");
+        if (selection == ActivitySelection.FLAG) {
+            String type = params.getString("type");
+            boolean inverted = type.startsWith("!");
+            activator.getLogic().getFlags().add(
+                    new Flag.Stored(
+                            ensure(activities.getFlag(inverted ? type.substring(1) : type), "Flag &c'" + type + "'&r doesn't exist."),
+                            params.getString("parameters"),
+                            inverted
+                    )
+            );
+            sendPrefixed(sender, "Successfully added activity."); // TODO
+        } else {
+            (selection == ActivitySelection.ACTION ? activator.getLogic().getActions() : activator.getLogic().getReactions()).add(
+                    new Action.Stored(
+                            ensure(activities.getAction(params.getString("type")), "Action &c'" + params.getString("type") + "'&r doesn't exist."),
+                            params.getString("parameters")
+                    )
+            );
+            sendPrefixed(sender, "Successfully added activity."); // TODO
+        }
+        saveActivator(activator);
     }
 
-    private void activityRemove(@NotNull Parameters params, @NotNull CommandSender sender, ActivityType activityType) {
+    private void activityRemove(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection) {
         Activator activator = getActivator(params);
-        sender.sendMessage(activityType + " remove");
+        List<? extends Activity.Stored<?>> activities = switch (selection) {
+            case FLAG -> activator.getLogic().getFlags();
+            case ACTION -> activator.getLogic().getActions();
+            case REACTION -> activator.getLogic().getReactions();
+        };
+        int index = params.getInteger("index");
+        if (index < 0 || index >= activities.size()) {
+            exception("There's no activities under index &c" + index);
+            return;
+        }
+        activities.remove(index);
+        sendPrefixed(sender, "Removed activity."); // TODO
+        saveActivator(activator);
     }
 
-    private void activityMove(@NotNull Parameters params, @NotNull CommandSender sender, ActivityType activityType) {
+    private void activityMove(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection) {
         Activator activator = getActivator(params);
-        sender.sendMessage(activityType + " move");
+        List<? extends Activity.Stored<?>> activities = switch (selection) {
+            case FLAG -> activator.getLogic().getFlags();
+            case ACTION -> activator.getLogic().getActions();
+            case REACTION -> activator.getLogic().getReactions();
+        };
+        activityMove(params, sender, activities);
+        saveActivator(activator);
+    }
+
+    private <T extends Activity.Stored<?>> void activityMove(@NotNull Parameters params, @NotNull CommandSender sender, List<T> activities) {
+        int from = params.getInteger("from");
+        if (from < 0 || from >= activities.size()) {
+            exception("There's no activities under index &c" + from);
+            return;
+        }
+        int to = params.getInteger("from");
+        if (to < 0 || to >= activities.size()) {
+            exception("Index &c" + to + "&r is out of bounds");
+            return;
+        }
+        if (from == to) {
+            exception("You can't move activity onto itself");
+            return;
+        }
+        if (to > from) to--;
+        var activity = activities.remove(from);
+        activities.add(to, activity);
+        sendPrefixed(sender, "Successfully moved activity."); // TODO
     }
 
     private @NotNull Activator getActivator(Parameters params) {
         String name = params.getString("name");
-        return ensurePrefixed(activators.getActivator(name), "Activator &c'" + escape(name) + "'&r doesn't exist!");
+        return ensure(activators.getActivator(name), "Activator &c'" + escape(name) + "'&r doesn't exist!");
     }
 
-    private enum ActivityType {
-        REACTION, ACTION, FLAG
+    private void saveActivator(@NotNull Activator activator) {
+        activators.saveGroup(activator.getLogic().getGroup());
+    }
+
+    private enum ActivitySelection {
+        REACTION, ACTION, FLAG;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase(Locale.ROOT);
+        }
+
+        public String asStart() {
+            return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
+        }
     }
 }

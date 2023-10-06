@@ -6,6 +6,7 @@ import fun.reactions.util.parameter.Parameters;
 import ink.glowing.text.InkyMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,10 +25,6 @@ public abstract class RaCommand {
     }
 
     public abstract @NotNull Node asNode();
-
-    protected static void sendMessage(@NotNull CommandSender sender, @NotNull String message) {
-        sender.sendMessage(inky(message));
-    }
 
     protected static void sendPrefixed(@NotNull CommandSender sender, @NotNull String message) {
         sender.sendMessage(REA_PREFIX.append(inky(message)));
@@ -57,11 +54,11 @@ public abstract class RaCommand {
         return inkyMessage().deserialize(str);
     }
 
-    protected static @NotNull Component inky(@NotNull String... strs) {
+    protected static @NotNull Component inky(@NotNull Object... objs) {
         var inky = inkyMessage();
         var text = text();
-        for (var str : strs) {
-            text.append(inky.deserialize(str));
+        for (var obj : objs) {
+            text.append(inky.deserialize(String.valueOf(obj)));
         }
         return text.build();
     }
@@ -82,25 +79,33 @@ public abstract class RaCommand {
         throw new RaCommandException(message);
     }
 
+    @Contract("null, _ -> fail")
     protected static <T> @NotNull T ensure(@Nullable T obj, @NotNull String message) {
-        return ensure(obj, inky(message));
+        if (obj != null) {
+            return obj;
+        }
+        throw new RaCommandException(REA_PREFIX.append(inky(message)));
     }
 
+    @Contract("null, _ -> fail")
     protected static <T> @NotNull T ensure(@Nullable T obj, @NotNull Component message) {
         if (obj != null) {
             return obj;
         }
-        throw new RaCommandException(message);
-    }
-
-    protected static <T> @NotNull T ensurePrefixed(@Nullable T obj, @NotNull String message) {
-        return ensurePrefixed(obj, inky(message));
-    }
-
-    protected static <T> @NotNull T ensurePrefixed(@Nullable T obj, @NotNull Component message) {
-        if (obj != null) {
-            return obj;
-        }
         throw new RaCommandException(REA_PREFIX.append(message));
+    }
+
+    @Contract("false, _ -> fail")
+    protected static void ensure(boolean v, @NotNull String message) {
+        if (!v) {
+            throw new RaCommandException(REA_PREFIX.append(inky(message)));
+        }
+    }
+
+    @Contract("false, _ -> fail")
+    protected static void ensure(boolean v, @NotNull Component message) {
+        if (!v) {
+            throw new RaCommandException(REA_PREFIX.append(message));
+        }
     }
 }

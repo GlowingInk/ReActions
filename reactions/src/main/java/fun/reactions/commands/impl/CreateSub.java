@@ -74,12 +74,12 @@ public final class CreateSub extends RaCommand {
             }
 
             ActivatorTypesRegistry types = platform.getActivatorTypes();
-            ActivatorType type = ensurePrefixed(
+            ActivatorType type = ensure(
                     params.get("type", types::get),
                     "Activator type &c'" + escape(params.getString("type")) + "'&r doesn't exist"
             );
 
-            Activator activator = ensurePrefixed(type.createActivator(
+            Activator activator = ensure(type.createActivator(
                     new Logic(platform, type.getName(), params.getString("name")),
                     params.getParameters("parameters")
             ), "Failed to create activator&c!");
