@@ -30,8 +30,8 @@ public class ReactionsCommand extends RaCommand {
     @Override
     public @NotNull Node asNode() {
         return command(commodore, reactionsCommand, this::help,
-                    new CreateSub(platform).asNode(),
-                    new ActivatorSub(platform).asNode(),
+                    new ReaCreateSub(platform).asNode(),
+                    new ReaActivatorSub(platform).asNode(),
                     literal("location", (p, s) -> s.sendMessage("loc help"),
                             stringArg("name", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("loc specific help"),
                                     literal("info", (p, s) -> s.sendMessage("loc info")),

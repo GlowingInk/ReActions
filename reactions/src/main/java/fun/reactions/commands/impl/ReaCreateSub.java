@@ -24,8 +24,8 @@ import static fun.reactions.commands.nodes.IntegerArgNode.integerArg;
 import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
-public final class CreateSub extends RaCommand {
-    public CreateSub(@NotNull ReActions.Platform platform) {
+public final class ReaCreateSub extends RaCommand {
+    public ReaCreateSub(@NotNull ReActions.Platform platform) {
         super(platform);
     }
 

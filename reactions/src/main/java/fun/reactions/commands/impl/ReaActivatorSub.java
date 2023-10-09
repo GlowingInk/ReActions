@@ -26,11 +26,11 @@ import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 import static net.kyori.adventure.text.Component.text;
 
-public class ActivatorSub extends RaCommand {
+public class ReaActivatorSub extends RaCommand {
     private final ActivatorsManager activators;
     private final ActivitiesRegistry activities;
 
-    public ActivatorSub(@NotNull ReActions.Platform platform) {
+    public ReaActivatorSub(@NotNull ReActions.Platform platform) {
         super(platform);
         this.activators = platform.getActivators();
         this.activities = platform.getActivities();
