@@ -99,21 +99,21 @@ public class ActivatorSub extends RaCommand {
     private void delete(@NotNull Parameters params, @NotNull CommandSender sender) {
         Activator activator = getActivator(params);
         if (!params.getString("full-command").endsWith(" confirm")) {
-            sendPrefixed(sender, "Add confirm to the end of a command");
+            sendPrefixed(sender, "Add confirm to the end of a command.");
         } else {
-            activators.removeActivator(activator.getLogic().getName());
-            sendPrefixed(sender, "Activator removed");
+            String activatorName = activator.getLogic().getName();
+            activators.removeActivator(activatorName);
+            sendPrefixed(sender, "Activator &a'" + escape(activatorName) + "'&r was successfully removed.");
             saveActivator(activator);
         }
     }
 
     private void activityHelp(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection) {
         Activator activator = getActivator(params);
-        String selectionName = selection.name().toLowerCase(Locale.ROOT);
-        sendHelp(sender, params, "activator " + activator.getLogic().getName() + " " + selectionName,
-                "add", "<type> [parameters...]", "Add &e" + selectionName + "&r to an activator",
-                "remove", "<index>", "Remove &e" + selectionName + "&r from an activator",
-                "move", "<from> <to>", "Move &e" + selectionName + "&r to another index"
+        sendHelp(sender, params, "activator " + escape(activator.getLogic().getName()) + " " + selection,
+                "add", "<type> [parameters...]", "Add &e" + selection + "&r to an activator",
+                "remove", "<index>", "Remove &e" + selection + "&r from an activator",
+                "move", "<from> <to>", "Move &e" + selection + "&r to another index"
         );
     }
 
@@ -129,7 +129,7 @@ public class ActivatorSub extends RaCommand {
                             inverted
                     )
             );
-            sendPrefixed(sender, "Successfully added activity."); // TODO
+            sendPrefixed(sender, "&a" + selection.asStart() + " was successfully added."); // TODO
         } else {
             (selection == ActivitySelection.ACTION ? activator.getLogic().getActions() : activator.getLogic().getReactions()).add(
                     new Action.Stored(
@@ -137,7 +137,7 @@ public class ActivatorSub extends RaCommand {
                             params.getString("parameters")
                     )
             );
-            sendPrefixed(sender, "Successfully added activity."); // TODO
+            sendPrefixed(sender, "&a" + selection.asStart() + " was successfully added."); // TODO
         }
         saveActivator(activator);
     }
@@ -151,11 +151,11 @@ public class ActivatorSub extends RaCommand {
         };
         int index = params.getInteger("index");
         if (index < 0 || index >= activities.size()) {
-            exception("There's no activities under index &c" + index);
+            exception("There's no &c" + selection + "&r under index &c" + index + "&r.");
             return;
         }
         activities.remove(index);
-        sendPrefixed(sender, "Removed activity."); // TODO
+        sendPrefixed(sender, "Successfully removed &a" + selection + "&r."); // TODO
         saveActivator(activator);
     }
 
@@ -166,29 +166,29 @@ public class ActivatorSub extends RaCommand {
             case ACTION -> activator.getLogic().getActions();
             case REACTION -> activator.getLogic().getReactions();
         };
-        activityMove(params, sender, activities);
+        activityMove(params, sender, selection, activities);
         saveActivator(activator);
     }
 
-    private <T extends Activity.Stored<?>> void activityMove(@NotNull Parameters params, @NotNull CommandSender sender, List<T> activities) {
+    private <T extends Activity.Stored<?>> void activityMove(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection, List<T> activities) {
         int from = params.getInteger("from");
         if (from < 0 || from >= activities.size()) {
-            exception("There's no activities under index &c" + from);
+            exception("There's no &c" + selection + "&r under index &c" + from + "&r.");
             return;
         }
-        int to = params.getInteger("from");
+        int to = params.getInteger("to");
         if (to < 0 || to >= activities.size()) {
-            exception("Index &c" + to + "&r is out of bounds");
+            exception("There's no &c" + selection + "&r under index &c" + to + "&r.");
             return;
         }
         if (from == to) {
-            exception("You can't move activity onto itself");
+            exception("You can't move &c" + selection + "&r onto itself.");
             return;
         }
         if (to > from) to--;
         var activity = activities.remove(from);
         activities.add(to, activity);
-        sendPrefixed(sender, "Successfully moved activity."); // TODO
+        sendPrefixed(sender, "Successfully moved &a" + selection + "&r."); // TODO
     }
 
     private @NotNull Activator getActivator(Parameters params) {
@@ -209,7 +209,11 @@ public class ActivatorSub extends RaCommand {
         }
 
         public String asStart() {
-            return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
+            return switch (this) {
+                case REACTION -> "Reaction";
+                case ACTION -> "Action";
+                case FLAG -> "Flag";
+            };
         }
     }
 }
