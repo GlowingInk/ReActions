@@ -4,6 +4,7 @@ import fun.reactions.ReActionsPlugin;
 import fun.reactions.commands.RaCommand;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.parameter.Parameters;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.CommodoreProvider;
@@ -30,16 +31,18 @@ public class ExecCommand extends RaCommand {
     public @NotNull Node asNode() {
         return command(commodore, execCommand, this::help,
                 stringArg("activator", StringArgNode.Type.WORD, this::activate,
-                        stringArg("players", StringArgNode.Type.OPTIONAL_GREEDY)
+                        stringArg("parameters", StringArgNode.Type.OPTIONAL_GREEDY)
                 )
         );
     }
 
     private void help(Parameters params, CommandSender sender) {
-        // TODO
+        sendHelp(sender, params, null, "",
+                "", "<activator> [player:<selector>] [delay:<time>]", "Execute FUNCTION &aactivator&r."
+        );
     }
 
     private void activate(Parameters params, CommandSender sender) {
-        // TODO
+        ContextManager.triggerFunction(sender, params.getParameters("parameters"));
     }
 }

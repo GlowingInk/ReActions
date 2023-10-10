@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import static fun.reactions.commands.nodes.DoubleArgNode.doubleArg;
+import static fun.reactions.commands.nodes.IntegerArgNode.Range.intRange;
 import static fun.reactions.commands.nodes.IntegerArgNode.integerArg;
 import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
@@ -139,7 +140,7 @@ public final class ReaCreateSub extends RaCommand {
         public @NotNull Node asNode() {
             return literal("menu",
                     stringArg("name", StringArgNode.Type.WORD, this::menu,
-                            integerArg("rows", 1, 6,
+                            integerArg("rows", intRange(1, 6),
                                     stringArg("title", StringArgNode.Type.GREEDY)
                             )
                     )

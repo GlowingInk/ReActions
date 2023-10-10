@@ -15,40 +15,30 @@ public class IntegerArgNode implements Node {
     private final String name;
     private final Executor executor;
 
-    private final Integer min;
-    private final Integer max;
+    private final Range range;
     private final List<Node> next;
 
-    private IntegerArgNode(String name, Executor executor, Integer min, Integer max, List<Node> next) {
+    private IntegerArgNode(String name, Executor executor, Range range, List<Node> next) {
         this.name = name;
         this.executor = executor;
-        this.min = min;
-        this.max = max;
+        this.range = range;
         this.next = next;
     }
 
     public static @NotNull IntegerArgNode integerArg(@NotNull String name, @NotNull Node @NotNull ... next) {
-        return integerArg(name, null, next);
+        return integerArg(name, (Executor) null, next);
     }
 
     public static @NotNull IntegerArgNode integerArg(@NotNull String name, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
-        return new IntegerArgNode(name, executor, null, null, Arrays.asList(next));
+        return new IntegerArgNode(name, executor, Range.intUnlimited(), Arrays.asList(next));
     }
 
-    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, @NotNull Node @NotNull ... next) {
-        return integerArg(name, min, null, next);
+    public static @NotNull IntegerArgNode integerArg(@NotNull String name, @NotNull IntegerArgNode.Range range, @NotNull Node @NotNull ... next) {
+        return integerArg(name, range, null, next);
     }
 
-    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
-        return new IntegerArgNode(name, executor, min, null, Arrays.asList(next));
-    }
-
-    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, int max, @NotNull Node @NotNull ... next) {
-        return integerArg(name, min, max, null, next);
-    }
-
-    public static @NotNull IntegerArgNode integerArg(@NotNull String name, int min, int max, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
-        return new IntegerArgNode(name, executor, min, max, Arrays.asList(next));
+    public static @NotNull IntegerArgNode integerArg(@NotNull String name, @NotNull IntegerArgNode.Range range, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
+        return new IntegerArgNode(name, executor, range, Arrays.asList(next));
     }
 
     @Override
@@ -58,17 +48,14 @@ public class IntegerArgNode implements Node {
         }
         int index = remaining.indexOf(' ');
         String numStr = index == -1 ? remaining : remaining.substring(index);
-        if (!NumberUtils.isNumber(remaining, NumberUtils.Is.INTEGER)) {
+        if (!range.isValidFor(numStr)) {
             return null;
         }
-        int num;
-        if ((min == null || ((num = NumberUtils.asInteger(numStr)) >= min && (max == null || num <= max)))) {
-            remaining = remaining.substring(index + 1);
-            paramsBuilder.put(name, numStr);
-            for (Node piece : next) {
-                Executor exec = piece.progress(paramsBuilder, remaining);
-                if (exec != null) return exec;
-            }
+        remaining = remaining.substring(index + 1);
+        paramsBuilder.put(name, numStr);
+        for (Node piece : next) {
+            Executor exec = piece.progress(paramsBuilder, remaining);
+            if (exec != null) return exec;
         }
         return executor;
     }
@@ -80,17 +67,7 @@ public class IntegerArgNode implements Node {
 
     @Override
     public @NotNull ArgumentCommandNode<Object, Integer> asBrigadier() {
-        IntegerArgumentType type;
-        if (min != null) {
-            if (max != null) {
-                type = IntegerArgumentType.integer(min, max);
-            } else {
-                type = IntegerArgumentType.integer(min);
-            }
-        } else {
-            type = IntegerArgumentType.integer();
-        }
-        var builder = RequiredArgumentBuilder.argument(name, type);
+        var builder = RequiredArgumentBuilder.argument(name, range.asType());
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }
@@ -100,5 +77,49 @@ public class IntegerArgNode implements Node {
     @Override
     public @NotNull String getName() {
         return name;
+    }
+
+    public static class Range {
+        private static final Range EMPTY = new Range(null, null);
+
+        private final Integer min;
+        private final Integer max;
+
+        private Range(@Nullable Integer min, @Nullable Integer max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public static @NotNull IntegerArgNode.Range intUnlimited() {
+            return EMPTY;
+        }
+
+        public static @NotNull IntegerArgNode.Range intFrom(int min) {
+            return new Range(min, null);
+        }
+
+        public static @NotNull IntegerArgNode.Range intRange(int min, int max) {
+            return new Range(min, max);
+        }
+
+        public boolean isValidFor(@NotNull String numStr) {
+            if (!NumberUtils.isNumber(numStr, NumberUtils.Is.INTEGER)) {
+                return false;
+            }
+            int num;
+            return min == null || ((num = NumberUtils.asInteger(numStr)) >= min && (max == null || num <= max));
+        }
+
+        public @NotNull IntegerArgumentType asType() {
+            if (min != null) {
+                if (max != null) {
+                    return IntegerArgumentType.integer(min, max);
+                } else {
+                    return IntegerArgumentType.integer(min);
+                }
+            } else {
+                return IntegerArgumentType.integer();
+            }
+        }
     }
 }

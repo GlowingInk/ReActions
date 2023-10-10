@@ -71,11 +71,11 @@ public abstract class RaCommand {
         return InkyMessage.escape(str);
     }
 
-    protected static void exception(@NotNull String message) {
+    protected static void exception(@NotNull String message) throws RaCommandException {
         throw new RaCommandException(message);
     }
 
-    protected static void exception(@NotNull Component message) {
+    protected static void exception(@NotNull Component message) throws RaCommandException {
         throw new RaCommandException(message);
     }
 

@@ -15,40 +15,30 @@ public class DoubleArgNode implements Node {
     private final String name;
     private final Executor executor;
 
-    private final Double min;
-    private final Double max;
+    private final Range range;
     private final List<Node> next;
 
-    private DoubleArgNode(String name, Executor executor, Double min, Double max, List<Node> next) {
+    private DoubleArgNode(String name, Executor executor, Range range, List<Node> next) {
         this.name = name;
         this.executor = executor;
-        this.min = min;
-        this.max = max;
+        this.range = range;
         this.next = next;
     }
 
     public static @NotNull DoubleArgNode doubleArg(@NotNull String name, @NotNull Node @NotNull ... next) {
-        return doubleArg(name, null, next);
+        return doubleArg(name, (Executor) null, next);
     }
 
     public static @NotNull DoubleArgNode doubleArg(@NotNull String name, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
-        return new DoubleArgNode(name, executor, null, null, Arrays.asList(next));
+        return new DoubleArgNode(name, executor, Range.doubleUnlimited(), Arrays.asList(next));
     }
 
-    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, @NotNull Node @NotNull ... next) {
-        return doubleArg(name, min, null, next);
+    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, @NotNull Range range, @NotNull Node @NotNull ... next) {
+        return doubleArg(name, range, null, next);
     }
 
-    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
-        return new DoubleArgNode(name, executor, min, null, Arrays.asList(next));
-    }
-
-    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, double max, @NotNull Node @NotNull ... next) {
-        return doubleArg(name, min, max, null, next);
-    }
-
-    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, double min, double max, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
-        return new DoubleArgNode(name, executor, min, max, Arrays.asList(next));
+    public static @NotNull DoubleArgNode doubleArg(@NotNull String name, @NotNull Range range, @Nullable Executor executor, @NotNull Node @NotNull ... next) {
+        return new DoubleArgNode(name, executor, range, Arrays.asList(next));
     }
 
     @Override
@@ -58,17 +48,14 @@ public class DoubleArgNode implements Node {
         }
         int index = remaining.indexOf(' ');
         String numStr = index == -1 ? remaining : remaining.substring(index);
-        if (!NumberUtils.isNumber(remaining)) {
+        if (!range.isValidFor(numStr)) {
             return null;
         }
-        double num;
-        if (min == null || ((num = NumberUtils.asDouble(numStr)) >= min && (max == null || num <= max))) {
-            remaining = remaining.substring(index + 1);
-            paramsBuilder.put(name, numStr);
-            for (Node piece : next) {
-                Executor exec = piece.progress(paramsBuilder, remaining);
-                if (exec != null) return exec;
-            }
+        remaining = remaining.substring(index + 1);
+        paramsBuilder.put(name, numStr);
+        for (Node piece : next) {
+            Executor exec = piece.progress(paramsBuilder, remaining);
+            if (exec != null) return exec;
         }
         return executor;
     }
@@ -80,17 +67,7 @@ public class DoubleArgNode implements Node {
 
     @Override
     public @NotNull ArgumentCommandNode<Object, Double> asBrigadier() {
-        DoubleArgumentType type;
-        if (min != null) {
-            if (max != null) {
-                type = DoubleArgumentType.doubleArg(min, max);
-            } else {
-                type = DoubleArgumentType.doubleArg(min);
-            }
-        } else {
-            type = DoubleArgumentType.doubleArg();
-        }
-        var builder = RequiredArgumentBuilder.argument(name, type);
+        var builder = RequiredArgumentBuilder.argument(name, range.asType());
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }
@@ -102,4 +79,47 @@ public class DoubleArgNode implements Node {
         return name;
     }
 
+    public static class Range {
+        private static final Range EMPTY = new Range(null, null);
+
+        private final Double min;
+        private final Double max;
+
+        private Range(@Nullable Double min, @Nullable Double max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public static @NotNull DoubleArgNode.Range doubleUnlimited() {
+            return EMPTY;
+        }
+
+        public static @NotNull DoubleArgNode.Range doubleFrom(double min) {
+            return new Range(min, null);
+        }
+
+        public static @NotNull DoubleArgNode.Range doubleRange(double min, double max) {
+            return new Range(min, max);
+        }
+
+        public boolean isValidFor(@NotNull String numStr) {
+            if (!NumberUtils.isNumber(numStr)) {
+                return false;
+            }
+            double num;
+            return min == null || ((num = NumberUtils.asDouble(numStr)) >= min && (max == null || num <= max));
+        }
+
+        public @NotNull DoubleArgumentType asType() {
+            if (min != null) {
+                if (max != null) {
+                    return DoubleArgumentType.doubleArg(min, max);
+                } else {
+                    return DoubleArgumentType.doubleArg(min);
+                }
+            } else {
+                return DoubleArgumentType.doubleArg();
+            }
+        }
+    }
 }

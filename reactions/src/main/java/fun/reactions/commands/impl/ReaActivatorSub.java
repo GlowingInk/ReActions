@@ -2,6 +2,7 @@ package fun.reactions.commands.impl;
 
 import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommand;
+import fun.reactions.commands.nodes.IntegerArgNode;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.model.Logic;
@@ -50,8 +51,8 @@ public class ReaActivatorSub extends RaCommand {
     private @NotNull Node activityNode(ActivitySelection type, Supplier<Collection<String>> suggests) {
         return literal(type.name().toLowerCase(Locale.ROOT), (p, s) -> activityHelp(p, s, type),
                 literal("add", stringArg("type", StringArgNode.Type.WORD, suggests, (p, s) -> activityAdd(p, s, type), stringArg("parameters", StringArgNode.Type.OPTIONAL_GREEDY))),
-                literal("remove", integerArg("index", 1, (p, s) -> activityRemove(p, s, type))),
-                literal("move", integerArg("from", 1, integerArg("to", 1, (p, s) -> activityMove(p, s, type))))
+                literal("remove", integerArg("index", IntegerArgNode.Range.intFrom(1), (p, s) -> activityRemove(p, s, type))),
+                literal("move", integerArg("from", IntegerArgNode.Range.intFrom(1), integerArg("to", IntegerArgNode.Range.intFrom(1), (p, s) -> activityMove(p, s, type))))
         );
     }
 
