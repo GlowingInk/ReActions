@@ -1,7 +1,7 @@
 package fun.reactions.commands.impl;
 
 import fun.reactions.ReActions;
-import fun.reactions.commands.RaCommand;
+import fun.reactions.commands.RaCommandBase;
 import fun.reactions.commands.nodes.IntegerArgNode;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
@@ -27,7 +27,7 @@ import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 import static net.kyori.adventure.text.Component.text;
 
-public class ReaActivatorSub extends RaCommand {
+public class ReaActivatorSub extends RaCommandBase {
     private final ActivatorsManager activators;
     private final ActivitiesRegistry activities;
 
@@ -112,9 +112,9 @@ public class ReaActivatorSub extends RaCommand {
     private void activityHelp(@NotNull Parameters params, @NotNull CommandSender sender, ActivitySelection selection) {
         Activator activator = getActivator(params);
         sendHelp(sender, params, "activator " + escape(activator.getLogic().getName()) + " " + selection,
-                "add", "<type> [parameters...]", "Add &e" + selection + "&r to an activator",
-                "remove", "<index>", "Remove &e" + selection + "&r from an activator",
-                "move", "<from> <to>", "Move &e" + selection + "&r to another index"
+                "add", "<type> &e[parameters...]", "Add &a" + selection + "&r to an activator",
+                "remove", "<index>", "Remove &a" + selection + "&r from an activator",
+                "move", "<from> <to>", "Move &a" + selection + "&r to another index"
         );
     }
 

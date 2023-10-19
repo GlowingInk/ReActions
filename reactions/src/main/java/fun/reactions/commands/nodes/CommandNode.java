@@ -2,7 +2,7 @@ package fun.reactions.commands.nodes;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import fun.reactions.commands.RaCommandException;
+import fun.reactions.commands.ComponentException;
 import fun.reactions.util.parameter.Parameters;
 import me.lucko.commodore.Commodore;
 import org.bukkit.command.Command;
@@ -50,7 +50,7 @@ public class CommandNode implements Node, CommandExecutor, TabCompleter {
             paramsMap.put(LABEL_KEY, label);
             paramsMap.put(FULL_COMMAND_KEY, label + " " + argsJoined);
             progress(paramsMap, argsJoined).accept(Parameters.fromMap(paramsMap), sender);
-        } catch (RaCommandException exception) {
+        } catch (ComponentException exception) {
             sender.sendMessage(exception.message());
         }
         return true;

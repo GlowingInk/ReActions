@@ -1,7 +1,7 @@
 package fun.reactions.commands.impl;
 
 import fun.reactions.ReActionsPlugin;
-import fun.reactions.commands.RaCommand;
+import fun.reactions.commands.RaCommandBase;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.module.basic.ContextManager;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import static fun.reactions.commands.nodes.CommandNode.command;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
-public class ExecCommand extends RaCommand {
+public class ExecCommand extends RaCommandBase {
     private final Commodore commodore;
     private final PluginCommand execCommand;
 
@@ -38,11 +38,11 @@ public class ExecCommand extends RaCommand {
 
     private void help(Parameters params, CommandSender sender) {
         sendHelp(sender, params, null, "",
-                "", "<activator> [player:<selector>] [delay:<time>]", "Execute FUNCTION &aactivator&r."
+                "", "<activator> &e[player:<selector>] [delay:<time>]&r", "Execute FUNCTION &aactivator&r."
         );
     }
 
     private void activate(Parameters params, CommandSender sender) {
-        ContextManager.triggerFunction(sender, params.getParameters("parameters"));
+        ContextManager.triggerFunction(sender, params.getParameters("parameters").with("activator", params.getString("activator")));
     }
 }

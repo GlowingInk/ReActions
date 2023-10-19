@@ -6,21 +6,21 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class RaCommandException extends RuntimeException {
+public class ComponentException extends RuntimeException {
     private static final Component ERROR = Component.text("ERROR").color(NamedTextColor.DARK_RED).decorate(TextDecoration.BOLD);
     private final Component message;
 
-    public RaCommandException() {
+    public ComponentException() {
         super("ERROR");
         this.message = ERROR;
     }
 
-    public RaCommandException(@NotNull String message) {
+    public ComponentException(@NotNull String message) {
         super(message);
         this.message = Component.text(message);
     }
 
-    public RaCommandException(@NotNull Component message) {
+    public ComponentException(@NotNull Component message) {
         super(PlainTextComponentSerializer.plainText().serialize(message));
         this.message = message;
     }

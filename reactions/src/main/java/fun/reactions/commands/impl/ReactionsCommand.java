@@ -1,7 +1,7 @@
 package fun.reactions.commands.impl;
 
 import fun.reactions.ReActionsPlugin;
-import fun.reactions.commands.RaCommand;
+import fun.reactions.commands.RaCommandBase;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.util.parameter.Parameters;
@@ -17,7 +17,7 @@ import static fun.reactions.commands.nodes.CommandNode.command;
 import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
-public class ReactionsCommand extends RaCommand {
+public class ReactionsCommand extends RaCommandBase {
     private final Commodore commodore;
     private final PluginCommand reactionsCommand;
 

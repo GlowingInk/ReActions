@@ -1,7 +1,7 @@
 package fun.reactions.commands.impl;
 
 import fun.reactions.ReActions;
-import fun.reactions.commands.RaCommand;
+import fun.reactions.commands.RaCommandBase;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.holders.LocationHolder;
@@ -25,7 +25,7 @@ import static fun.reactions.commands.nodes.IntegerArgNode.integerArg;
 import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
-public final class ReaCreateSub extends RaCommand {
+public final class ReaCreateSub extends RaCommandBase {
     public ReaCreateSub(@NotNull ReActions.Platform platform) {
         super(platform);
     }
@@ -47,7 +47,7 @@ public final class ReaCreateSub extends RaCommand {
         );
     }
 
-    private static class ActivatorSub extends RaCommand {
+    private static class ActivatorSub extends RaCommandBase {
         protected ActivatorSub(@NotNull ReActions.Platform platform) {
             super(platform);
         }
@@ -90,7 +90,7 @@ public final class ReaCreateSub extends RaCommand {
         }
     }
 
-    private static class LocationSub extends RaCommand {
+    private static class LocationSub extends RaCommandBase {
         protected LocationSub(@NotNull ReActions.Platform platform) {
             super(platform);
         }
@@ -131,7 +131,7 @@ public final class ReaCreateSub extends RaCommand {
         }
     }
 
-    private static class MenuSub extends RaCommand {
+    private static class MenuSub extends RaCommandBase {
         protected MenuSub(@NotNull ReActions.Platform platform) {
             super(platform);
         }

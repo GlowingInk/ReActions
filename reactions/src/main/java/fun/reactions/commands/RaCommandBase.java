@@ -15,12 +15,12 @@ import static ink.glowing.text.InkyMessage.inkyMessage;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
 
-public abstract class RaCommand {
+public abstract class RaCommandBase {
     private static final Component REA_PREFIX = inky("&6&lReA>&r ");
 
     protected final ReActions.Platform platform;
 
-    protected RaCommand(@NotNull ReActions.Platform platform) {
+    protected RaCommandBase(@NotNull ReActions.Platform platform) {
         this.platform = platform;
     }
 
@@ -71,12 +71,12 @@ public abstract class RaCommand {
         return InkyMessage.escape(str);
     }
 
-    protected static void exception(@NotNull String message) throws RaCommandException {
-        throw new RaCommandException(message);
+    protected static void exception(@NotNull String message) throws ComponentException {
+        throw new ComponentException(message);
     }
 
-    protected static void exception(@NotNull Component message) throws RaCommandException {
-        throw new RaCommandException(message);
+    protected static void exception(@NotNull Component message) throws ComponentException {
+        throw new ComponentException(message);
     }
 
     @Contract("null, _ -> fail")
@@ -84,7 +84,7 @@ public abstract class RaCommand {
         if (obj != null) {
             return obj;
         }
-        throw new RaCommandException(REA_PREFIX.append(inky(message)));
+        throw new ComponentException(REA_PREFIX.append(inky(message)));
     }
 
     @Contract("null, _ -> fail")
@@ -92,20 +92,20 @@ public abstract class RaCommand {
         if (obj != null) {
             return obj;
         }
-        throw new RaCommandException(REA_PREFIX.append(message));
+        throw new ComponentException(REA_PREFIX.append(message));
     }
 
     @Contract("false, _ -> fail")
     protected static void ensure(boolean v, @NotNull String message) {
         if (!v) {
-            throw new RaCommandException(REA_PREFIX.append(inky(message)));
+            throw new ComponentException(REA_PREFIX.append(inky(message)));
         }
     }
 
     @Contract("false, _ -> fail")
     protected static void ensure(boolean v, @NotNull Component message) {
         if (!v) {
-            throw new RaCommandException(REA_PREFIX.append(message));
+            throw new ComponentException(REA_PREFIX.append(message));
         }
     }
 }
