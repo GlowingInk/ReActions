@@ -37,5 +37,3 @@ that, and as the most of project's users are Russian-speaking, this README file'
 
 Кроме того, в проекте используется редактированная часть исходного кода 
 [Quartz Scheduler](https://github.com/quartz-scheduler/quartz) (класс `CronExpression`).
-
-## [Разработано с IntelliJ IDEA от JetBrains](https://www.jetbrains.com/)
