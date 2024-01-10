@@ -133,8 +133,7 @@ public final class SQLManager {
                 if (column > 0 && column <= columns) resultStr = result.getString(column);
             }
         } catch (SQLException e) {
-            Msg.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) Msg.logOnce(query + e.getMessage(), e.getMessage());
+            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
         }
         try {
             if (result != null) result.close();
@@ -158,8 +157,7 @@ public final class SQLManager {
             statement.executeUpdate(query);
             ok = true;
         } catch (SQLException e) {
-            Msg.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) Msg.logOnce(query + e.getMessage(), e.getMessage());
+            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
         }
         try {
             if (statement != null) statement.close();
@@ -188,8 +186,7 @@ public final class SQLManager {
             result = selectStmt.executeQuery(query);
             resultBool = result.next();
         } catch (SQLException e) {
-            Msg.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) Msg.logOnce(query + e.getMessage(), e.getMessage());
+            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
         }
         try {
             if (result != null) result.close();
