@@ -1,4 +1,4 @@
-package fun.reactions.commands.impl;
+package fun.reactions.commands.impl.sub;
 
 import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommandBase;

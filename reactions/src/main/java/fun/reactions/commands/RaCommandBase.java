@@ -6,6 +6,7 @@ import fun.reactions.util.parameter.Parameters;
 import ink.glowing.text.InkyMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,7 @@ import static ink.glowing.text.InkyMessage.inkyMessage;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
 
+@ApiStatus.Internal
 public abstract class RaCommandBase {
     private static final Component REA_PREFIX = inky("&6&lReA>&r ");
 

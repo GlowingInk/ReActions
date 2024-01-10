@@ -22,13 +22,10 @@
 
 package fun.reactions;
 
+import fun.reactions.commands.impl.ExecCommand;
 import fun.reactions.commands.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
-import fun.reactions.events.listeners.BukkitListener;
-import fun.reactions.events.listeners.GodModeListener;
-import fun.reactions.events.listeners.LogHandler;
-import fun.reactions.events.listeners.MoveListener;
-import fun.reactions.events.listeners.RaListener;
+import fun.reactions.events.listeners.*;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.activators.ActivatorsManager;
@@ -138,7 +135,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         GodModeListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
-        new ReactionsCommand(this).asNode(); // TODO That's a little weird
+        new ReactionsCommand(this).asNode(); // TODO That's a little awkward
+        new ExecCommand(this).asNode();
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);

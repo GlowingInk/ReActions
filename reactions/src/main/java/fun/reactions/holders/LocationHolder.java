@@ -25,6 +25,7 @@ package fun.reactions.holders;
 import fun.reactions.ReActions;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
+import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.location.position.RealPosition;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Location;
@@ -32,6 +33,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +46,7 @@ import java.util.Map;
 @Deprecated
 public final class LocationHolder {
     private static final Map<String, Location> locs = new HashMap<>();
-    private static final Map<String, RealPosition> tports = new HashMap<>();
+    private static final Map<String, RealPosition> tports = new CaseInsensitiveMap<>();
 
     private LocationHolder() {}
 
@@ -78,6 +81,10 @@ public final class LocationHolder {
                 if (locCfg == null) continue;
                 tports.put(key, RealPosition.fromConfiguration(locCfg));
             }
+    }
+
+    public static @Nullable RealPosition getTpPosition(@NotNull String posName) {
+        return tports.get(posName);
     }
 
     public static Location getTpLoc(String locstr) {

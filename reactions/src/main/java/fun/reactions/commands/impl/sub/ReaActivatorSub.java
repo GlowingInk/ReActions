@@ -1,4 +1,4 @@
-package fun.reactions.commands.impl;
+package fun.reactions.commands.impl.sub;
 
 import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommandBase;
@@ -130,7 +130,6 @@ public class ReaActivatorSub extends RaCommandBase {
                             inverted
                     )
             );
-            sendPrefixed(sender, "&a" + selection.asStart() + " was successfully added."); // TODO
         } else {
             (selection == ActivitySelection.ACTION ? activator.getLogic().getActions() : activator.getLogic().getReactions()).add(
                     new Action.Stored(
@@ -138,8 +137,8 @@ public class ReaActivatorSub extends RaCommandBase {
                             params.getString("parameters")
                     )
             );
-            sendPrefixed(sender, "&a" + selection.asStart() + " was successfully added."); // TODO
         }
+        sendPrefixed(sender, "&a" + selection.asStart() + " was successfully added."); // TODO Improve messaging
         saveActivator(activator);
     }
 
@@ -156,7 +155,7 @@ public class ReaActivatorSub extends RaCommandBase {
             return;
         }
         activities.remove(index);
-        sendPrefixed(sender, "Successfully removed &a" + selection + "&r."); // TODO
+        sendPrefixed(sender, "Successfully removed &a" + selection + "&r."); // TODO Improve messaging
         saveActivator(activator);
     }
 
@@ -189,7 +188,7 @@ public class ReaActivatorSub extends RaCommandBase {
         if (to > from) to--;
         var activity = activities.remove(from);
         activities.add(to, activity);
-        sendPrefixed(sender, "Successfully moved &a" + selection + "&r."); // TODO
+        sendPrefixed(sender, "Successfully moved &a" + selection + "&r."); // TODO Improve messaging
     }
 
     private @NotNull Activator getActivator(Parameters params) {

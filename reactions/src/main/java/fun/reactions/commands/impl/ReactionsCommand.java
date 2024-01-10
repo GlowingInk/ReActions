@@ -2,6 +2,9 @@ package fun.reactions.commands.impl;
 
 import fun.reactions.ReActionsPlugin;
 import fun.reactions.commands.RaCommandBase;
+import fun.reactions.commands.impl.sub.ReaActivatorSub;
+import fun.reactions.commands.impl.sub.ReaCreateSub;
+import fun.reactions.commands.impl.sub.ReaLocationSub;
 import fun.reactions.commands.nodes.Node;
 import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.util.parameter.Parameters;
@@ -32,14 +35,7 @@ public class ReactionsCommand extends RaCommandBase {
         return command(commodore, reactionsCommand, this::help,
                     new ReaCreateSub(platform).asNode(),
                     new ReaActivatorSub(platform).asNode(),
-                    literal("location", (p, s) -> s.sendMessage("loc help"),
-                            stringArg("name", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("loc specific help"),
-                                    literal("info", (p, s) -> s.sendMessage("loc info")),
-                                    literal("delete", (p, s) -> s.sendMessage("loc delete")),
-                                    literal("tp", (p, s) -> s.sendMessage("loc tp")),
-                                    literal("move", (p, s) -> s.sendMessage("loc move"))
-                            )
-                    ),
+                    new ReaLocationSub(platform).asNode(),
                     literal("menu", (p, s) -> s.sendMessage("menu help"),
                             stringArg("name", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("menu specific help"),
                                     literal("title", stringArg("title", StringArgNode.Type.GREEDY, (p, s) -> s.sendMessage("set title"))),
