@@ -19,7 +19,6 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         int limit = countLimit;
         do {
             oldText = text;
-            text = resolvePreprocess(env, text);
             text = parseRecursive(text, PLACEHOLDER_GREEDY, env);
             text = parseRecursive(text, PLACEHOLDER_NONGREEDY, env);
         } while (!text.equals(oldText) & --limit > 0);

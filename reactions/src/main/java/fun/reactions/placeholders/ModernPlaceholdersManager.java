@@ -19,7 +19,6 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         int limit = countLimit;
         do {
             oldText = text;
-            text = resolvePreprocess(env, text);
             text = parseGradually(env, text);
         } while (!oldText.equals(text) & --limit > 0);
         return unescapeSpecial(text);
