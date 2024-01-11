@@ -28,7 +28,6 @@ public class Cfg {
     public static int godActivatorCheckTicks = 10;
     public static boolean altOperator = false; // experimental, disabled by default
     public static boolean modernPlaceholders = false;
-    public static String papiSplitter = "_";
     public static boolean parseBookPages = false;
 
     public static void save(FileConfiguration config) {
@@ -42,7 +41,6 @@ public class Cfg {
         config.set("general.waiter-hours-limit", 8760L);
         config.set("general.waiter-missing-player-behaviour", "SKIP");
         config.set("general.use-modern-placeholders", modernPlaceholders);
-        config.set("general.use-colon-for-papi-placeholders", papiSplitter.equals(":"));
         config.set("general.parse-book-pages", parseBookPages);
         config.set("general.log-registering", logRegistering);
 
@@ -75,7 +73,6 @@ public class Cfg {
 
         PlaceholdersManager.setCountLimit(config.getInt("general.placeholder-limit", 127));
         modernPlaceholders = config.getBoolean("general.use-modern-placeholders", false);
-        papiSplitter = config.getBoolean("general.use-colon-for-papi-placeholders", false) ? ":" : "_";
 
         parseBookPages = config.getBoolean("general.parse-book-pages", false);
 

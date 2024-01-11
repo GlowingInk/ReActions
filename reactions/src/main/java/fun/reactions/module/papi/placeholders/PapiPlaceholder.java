@@ -1,6 +1,5 @@
 package fun.reactions.module.papi.placeholders;
 
-import fun.reactions.Cfg;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
@@ -16,7 +15,7 @@ public class PapiPlaceholder implements Placeholder.Dynamic {
 
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String phText) {
-        String[] split = phText.split(Cfg.papiSplitter, 2);
+        String[] split = phText.split("_", 2);
         var phExpansion = papiPlugin.getLocalExpansionManager().getExpansion(split[0]);
         return phExpansion == null
                 ? null
