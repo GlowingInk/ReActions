@@ -42,12 +42,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class PersistentVariablesManager { // TODO: Should probably be reworked from scratch
+public class PersistentVariablesManager { // TODO: Should be reworked from scratch
 
     private final Map<String, String> vars;
 
     public PersistentVariablesManager() {
-        this.vars = new CaseInsensitiveMap();
+        this.vars = new CaseInsensitiveMap<>();
     }
 
     public @Nullable String getVariable(@Nullable String player, @NotNull String var) {
@@ -128,8 +128,7 @@ public class PersistentVariablesManager { // TODO: Should probably be reworked f
                 loadVars();
                 File dir = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables");
                 if (!dir.exists() || !dir.isDirectory()) return;
-                String[] files = dir.list();
-                for (String file : files) {
+                for (String file : dir.list()) {
                     File fl = new File(dir, file);
                     fl.delete();
                 }
@@ -169,7 +168,7 @@ public class PersistentVariablesManager { // TODO: Should probably be reworked f
     }
 
     private void removePlayerVars(String player) {
-        Map<String, String> varsTmp = new CaseInsensitiveMap();
+        Map<String, String> varsTmp = new CaseInsensitiveMap<>();
         YamlConfiguration cfg = new YamlConfiguration();
         String fileName = ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml";
         File f = new File(fileName);

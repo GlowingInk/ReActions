@@ -21,7 +21,6 @@ public class Cfg {
     public static int chatLength = 55;
     public static boolean playerSelfVarFile = false;
     public static boolean playerAsynchSaveSelfVarFile = false;
-    public static boolean logRegistering = true;
     public static boolean playerMoveTaskUse = false;
     public static int playerMoveTaskTick = 5;
     public static boolean godActivatorEnable = false; // experimental, disabled by default
@@ -42,7 +41,6 @@ public class Cfg {
         config.set("general.waiter-missing-player-behaviour", "SKIP");
         config.set("general.use-modern-placeholders", modernPlaceholders);
         config.set("general.parse-book-pages", parseBookPages);
-        config.set("general.log-registering", logRegistering);
 
         config.set("reactions.activators.god.enable", godActivatorEnable);
         config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
@@ -66,7 +64,6 @@ public class Cfg {
         playerAsynchSaveSelfVarFile = config.getBoolean("general.player-asynch-save-self-variable-file", false);
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
         playerMoveTaskTick = config.getInt("general.player-move-event.task-tick", 5);
-        logRegistering = config.getBoolean("general.log-registering", true);
 
         WaitingManager.setHoursLimit(config.getLong("general.waiter-hours-limit", 4380));
         WaitingManager.setBehaviour(Utils.getEnum(config.getString("general.waiter-missing-player-behaviour", "SKIP"), WaitingManager.AttachedBehaviour.SKIP));

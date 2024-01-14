@@ -28,7 +28,9 @@ public class CmdClear extends Cmd {
                 Msg.MSG_CLEARREACT.print(sender, activatorId);
             }
             ReActions.getActivators().saveGroup(logic.getGroup());
-        } else return Msg.CMD_UNKNOWNBUTTON.print(sender, activatorId);
-        return false;
+        } else {
+            Msg.CMD_UNKNOWNBUTTON.print(sender, activatorId);
+        }
+        return true;
     }
 }

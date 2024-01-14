@@ -17,7 +17,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import fun.reactions.module.worldedit.external.RaWorldEdit;
-import fun.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -44,9 +43,6 @@ public class WGBridge {
         connectToWorldGuard();
         setVersion("[" + this.getClass().getSimpleName() + "]");
         init();
-        if (connected) {
-            Msg.logMessage("WorldGuard " + wgPlugin.getDescription().getVersion() + " found. Bridge loaded: " + getVersion());
-        } else Msg.logMessage("Worlguard not found...");
     }
 
     public static boolean isAccessible(@NotNull Player bukkitPlayer, @NotNull Location loc, @NotNull StateFlag flag) {

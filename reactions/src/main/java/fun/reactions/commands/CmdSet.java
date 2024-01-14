@@ -27,26 +27,36 @@ public class CmdSet extends Cmd {
         Player p = (sender instanceof Player) ? (Player) sender : null;
         Parameters params = Parameters.fromString(param, "id");
         String id = params.getString("id", "");
-        if (id.isEmpty()) return Msg.MSG_NEEDVDMID.print(sender, 'c');
+        if (id.isEmpty()) {
+            Msg.MSG_NEEDVDMID.print(sender, 'c');
+            return true;
+        }
+        boolean msg = !params.getBoolean("silent", false);
         if (var.equalsIgnoreCase("delay") || var.equalsIgnoreCase("d")) {
             boolean add = params.getBoolean("add", false);
             String player = params.getString("player", "");
             if (player.equalsIgnoreCase("%player%") && (p != null)) player = p.getName();
-            long time = /*System.currentTimeMillis()+*/TimeUtils.parseTime(params.getString("delay", "3s")); //дефолтная задержка три секунды
+            long time = params.getTime("delay");
             if (player.isEmpty()) CooldownManager.setCooldown(id, time, add);
             else CooldownManager.setPersonalCooldown(player, id, time, add);
-            Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(System.currentTimeMillis() + time));
+            if (msg) Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(System.currentTimeMillis() + time));
+            return true;
         } else if (var.equalsIgnoreCase("var") || var.equalsIgnoreCase("variable") || var.equalsIgnoreCase("v")) {
             String value = params.getString("value", "");
             String player = params.getString("player", "");
             ReActions.getPersistentVariables().setVariable(player, id, value);
-            return Msg.CMD_VARSET.print(sender, player.isEmpty() ? id : player + "." + id, ReActions.getPersistentVariables().getVariable(player, id));
+            if (msg) Msg.CMD_VARSET.print(sender, player.isEmpty() ? id : player + "." + id, ReActions.getPersistentVariables().getVariable(player, id));
+            return true;
         } else if (var.equalsIgnoreCase("menu") || var.equalsIgnoreCase("m")) {
-            if (InventoryMenu.set(id, params))
-                return Msg.MSG_MENUPARAMSET.print(sender, id);
-            else return Msg.MSG_MENUSETFAIL.print(sender, 'c', '4', id);
-        } else return false;
-        return true;
+            if (InventoryMenu.set(id, params)) {
+                if (msg) Msg.MSG_MENUPARAMSET.print(sender, id);
+            } else {
+                if (msg) Msg.MSG_MENUSETFAIL.print(sender, 'c', '4', id);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

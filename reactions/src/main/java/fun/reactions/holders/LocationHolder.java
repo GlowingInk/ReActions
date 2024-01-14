@@ -56,7 +56,7 @@ public final class LocationHolder {
     }
 
     public static void saveLocs() {
-        if (tports.size() > 0) {
+        if (!tports.isEmpty()) {
             File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "locations.yml");
             YamlConfiguration lcs = new YamlConfiguration();
             for (var entry : tports.entrySet()) {

@@ -36,12 +36,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TimersManager { // TODO Rework from scratch; maybe rework with WaitingManager
 	/*
@@ -110,7 +105,8 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         }
         timers.remove(name);
         save();
-        return Msg.MSG_TIMERREMOVED.print(sender, name);
+        Msg.MSG_TIMERREMOVED.print(sender, name);
+        return true;
     }
 
     public static boolean addTimer(CommandSender sender, String name, Parameters params, boolean save) {
@@ -139,7 +135,8 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         timers.put(name, timer);
         updateIngameTimers();
         if (save) save();
-        return (sender == null) || Msg.MSG_TIMERADDED.print(sender, name);
+        if (sender != null) Msg.MSG_TIMERADDED.print(sender, name);
+        return true;
     }
 
     public static Map<String, Timer> getIngameTimers() {

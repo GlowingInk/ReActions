@@ -41,7 +41,7 @@ public class CmdRemove extends Cmd {
         } else if (arg1.equalsIgnoreCase("timer") || arg1.equalsIgnoreCase("tmr")) {
             TimersManager.removeTimer(sender, arg2);
         } else if (arg1.equalsIgnoreCase("var") || arg1.equalsIgnoreCase("variable") || arg1.equalsIgnoreCase("variables")) {
-            removeVariable(sender, arg2 + ((arg3.length() == 0) ? "" : " " + arg3));
+            removeVariable(sender, arg2 + (arg3.isEmpty() ? "" : " " + arg3));
         } else if (arg1.equalsIgnoreCase("menu") || arg1.equalsIgnoreCase("m")) {
             if (InventoryMenu.remove(arg2)) Msg.printMSG(sender, "msg_removemenu", arg2);
             else Msg.printMSG(sender, "msg_removemenufail", 'c', '4', arg2);
@@ -68,19 +68,21 @@ public class CmdRemove extends Cmd {
         return true;
     }
 
-    private boolean removeVariable(CommandSender sender, String param) {
+    private void removeVariable(CommandSender sender, String param) {
         Player p = (sender instanceof Player) ? (Player) sender : null;
         Parameters params = Parameters.fromString(param);
         String player = params.getString("player", "");
         if (player.equalsIgnoreCase("%player%") && p != null) player = p.getName();
         String id = params.getString("id", "");
         if (id.isEmpty()) {
-            return Msg.MSG_VARNEEDID.print(sender);
+            Msg.MSG_VARNEEDID.print(sender);
+            return;
         }
         if (ReActions.getPersistentVariables().removeVariable(player, id)) {
-            return Msg.MSG_VARREMOVED.print(sender, id);
+            Msg.MSG_VARREMOVED.print(sender, id);
+            return;
         }
-        return Msg.MSG_VARREMOVEFAIL.print(sender);
+        Msg.MSG_VARREMOVEFAIL.print(sender);
     }
 
 }

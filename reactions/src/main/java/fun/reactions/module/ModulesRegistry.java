@@ -8,6 +8,7 @@ import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.selectors.Selector;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -36,6 +37,7 @@ public class ModulesRegistry {
         this.later = new ArrayList<>();
     }
 
+    @ApiStatus.Internal
     public void registerPluginDepended() {
         if (later == null) {
             throw new IllegalStateException("Plugin-depended modules are already registered.");
@@ -138,7 +140,7 @@ public class ModulesRegistry {
     }
 
     private void optionalInfo(String msg) {
-        if (Cfg.logRegistering) {
+        if (Cfg.debugMode) {
             platform.logger().info(msg);
         }
     }
