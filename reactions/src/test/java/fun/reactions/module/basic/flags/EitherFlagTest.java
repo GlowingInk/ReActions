@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-public class EitherFlagTest {
+public class EitherFlagTest { // TODO Doesn't test for flag params
     @Test
     public void testProceed() {
         ActivitiesRegistry registry = new ActivitiesRegistry();
@@ -20,6 +20,7 @@ public class EitherFlagTest {
         registry.registerFlag(new MockFlag(false, "test1"));
         registry.registerFlag(new MockFlag(true, "test2"));
         EitherFlag flag = new EitherFlag();
+        // TODO Use DataProvider
         assertTrue(flag.proceed(
                 new Environment(platform, "", new Variables(), null),
                 "test1:{some value} test2:other test1:repeat"
@@ -27,6 +28,10 @@ public class EitherFlagTest {
         assertFalse(flag.proceed(
                 new Environment(platform, "", new Variables(), null),
                 "test1:{some value} test1:repeat"
+        ));
+        assertTrue(flag.proceed(
+                new Environment(platform, "", new Variables(), null),
+                "!test1:inverted"
         ));
     }
 }
