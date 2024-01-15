@@ -8,9 +8,7 @@ import fun.reactions.save.Saveable;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.TimeUtils;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static fun.reactions.util.TimeUtils.offsetUntil;
 import static fun.reactions.util.TimeUtils.timeToTicks;
@@ -185,45 +182,25 @@ public class WaitingManager implements Saveable {
 
     @Override
     public void save() {
-        BukkitScheduler scheduler = rea.getServer().getScheduler();
-        scheduler.runTaskAsynchronously(rea.getPlugin(), () -> {
-            YamlConfiguration cfg = new YamlConfiguration();
-            scheduler.runTask(rea.getPlugin(), () -> {
-                for (WaitTask task : tasks) {
-                    UUID id = UUID.randomUUID();
-                    var taskCfg = cfg.createSection(id.toString());
-                    if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
-                    taskCfg.set("execution-time", task.executionTime());
-                    taskCfg.set("actions", task.actions().stream().map(Action.Stored::toString).collect(Collectors.toList()));
-                    Variables vars = task.variables();
-                    if (!vars.isEmpty()) {
-                        var varsCfg = taskCfg.createSection("variables");
-                        for (String varKey : vars.keys()) {
-                            varsCfg.set(varKey, vars.getString(varKey));
-                        }
-                    }
-                }
-                scheduler.runTaskAsynchronously(
-                        rea.getPlugin(),
-                        () -> FileUtils.saveCfg(
-                                cfg,
-                                new File(rea.getDataFolder(), "delayed-actions.yml"),
-                                "Failed to save delayed actions"
-                        )
-                );
-            });
-        });
+        save(true);
     }
 
     @Override
     public void saveSync() {
-        YamlConfiguration cfg = new YamlConfiguration();
+        save(false);
+    }
+
+    private void save(boolean async) {
+        var cfg = new YamlConfiguration();
         for (WaitTask task : tasks) {
-            UUID id = UUID.randomUUID();
-            ConfigurationSection taskCfg = cfg.createSection(id.toString());
+            var taskCfg = cfg.createSection(task.executionTime() + "_" + System.nanoTime());
             if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
             taskCfg.set("execution-time", task.executionTime());
-            taskCfg.set("actions", task.actions().stream().map(Action.Stored::toString).collect(Collectors.toList()));
+            List<String> actions = new ArrayList<>(task.actions().size());
+            for (var action : task.actions()) {
+                actions.add(action.toString());
+            }
+            taskCfg.set("actions", actions);
             Variables vars = task.variables();
             if (!vars.isEmpty()) {
                 var varsCfg = taskCfg.createSection("variables");
@@ -232,10 +209,15 @@ public class WaitingManager implements Saveable {
                 }
             }
         }
-        FileUtils.saveCfg(
+        Runnable saveRun = () -> FileUtils.saveCfg(
                 cfg,
                 new File(rea.getDataFolder(), "delayed-actions.yml"),
                 "Failed to save delayed actions"
         );
+        if (async) {
+            rea.getServer().getScheduler().runTaskAsynchronously(rea.getPlugin(), saveRun);
+        } else {
+            saveRun.run();
+        }
     }
 }
