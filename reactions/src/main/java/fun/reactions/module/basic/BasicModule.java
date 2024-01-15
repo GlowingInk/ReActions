@@ -9,15 +9,7 @@ import fun.reactions.module.basic.actions.*;
 import fun.reactions.module.basic.activators.*;
 import fun.reactions.module.basic.external.RaProtocolLib;
 import fun.reactions.module.basic.flags.*;
-import fun.reactions.module.basic.placeholders.ActivatorNamePlaceholder;
-import fun.reactions.module.basic.placeholders.CalcPlaceholder;
-import fun.reactions.module.basic.placeholders.LocalVarPlaceholder;
-import fun.reactions.module.basic.placeholders.PersistentVarPlaceholders;
-import fun.reactions.module.basic.placeholders.PlayerInvPlaceholder;
-import fun.reactions.module.basic.placeholders.PlayerPlaceholders;
-import fun.reactions.module.basic.placeholders.RandomPlaceholder;
-import fun.reactions.module.basic.placeholders.TimePlaceholders;
-import fun.reactions.module.basic.placeholders.TimestampPlaceholder;
+import fun.reactions.module.basic.placeholders.*;
 import fun.reactions.module.basic.selectors.LocSelector;
 import fun.reactions.module.basic.selectors.PermSelector;
 import fun.reactions.module.basic.selectors.PlayerSelector;
@@ -33,9 +25,21 @@ import java.util.List;
 import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
+    private LogHandler logHandler;
+
     @Override
     public void preRegister(@NotNull ReActions.Platform platform) {
         RaProtocolLib.init();
+    }
+
+    @Override
+    public void postRegister(@NotNull ReActions.Platform platform) {
+        logHandler = new LogHandler();
+    }
+
+    @Override
+    public void onDisable(@NotNull ReActions.Platform platform) {
+        platform.getServer().getLogger().removeHandler(logHandler);
     }
 
     @Override

@@ -5,6 +5,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.util.collections.CaseInsensitiveMap;
+import fun.reactions.util.collections.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -62,16 +63,15 @@ public class ActivatorsManager {
                         ? file.getName()
                         : group + File.separator + file.getName();
             }
-            for (File inner : Objects.requireNonNull(file.listFiles())) {
+            for (File inner : CollectionUtils.emptyOnNull(file.listFiles())) {
                 loadGroupsRecursively(inner, group, clear, true);
             }
         } else if (file.getName().endsWith(".yml")) {
             FileConfiguration cfg = new YamlConfiguration();
             try {
                 cfg.load(file);
-            } catch (InvalidConfigurationException | IOException e) {
-                logger.warn("Cannot load '" + file.getName() + "' file!");
-                e.printStackTrace();
+            } catch (InvalidConfigurationException | IOException ex) {
+                logger.warn("Cannot load '" + file.getName() + "' file", ex);
                 return;
             }
             String localGroup = file.getName().substring(0, file.getName().length() - 4);
@@ -88,7 +88,7 @@ public class ActivatorsManager {
             for (String strType : cfg.getKeys(false)) {
                 ActivatorType type = types.get(strType);
                 if (type == null) {
-                    logger.warn("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'.");
+                    logger.warn("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'");
                     // TODO Move failed activators to backup
                     continue;
                 }
@@ -101,7 +101,7 @@ public class ActivatorsManager {
                     logic.load(cfgActivator);
                     Activator activator = type.loadActivator(logic, cfgActivator);
                     if (activator == null || !activator.isValid()) {
-                        logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'.");
+                        logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'");
                         continue;
                     }
                     addActivator(activator, false);
@@ -128,7 +128,7 @@ public class ActivatorsManager {
         Logic logic = activator.getLogic();
         String name = logic.getName();
         if (activatorsNames.containsKey(name)) {
-            logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists!");
+            logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists");
             return false;
         }
         Objects.requireNonNull(types.get(activator.getClass())).addActivator(activator);
@@ -176,19 +176,9 @@ public class ActivatorsManager {
     private void saveGroup(@NotNull String name, @NotNull Set<Activator> activators) {
         File file = new File(actsFolder, name.replace('/', File.separatorChar) + ".yml");
         if (activators.isEmpty()) {
-            file.delete();
-            return;
-        }
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-        } else {
-            file.delete();
-        }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            logger.warn("Failed to save group '" + name + "'!");
-            e.printStackTrace();
+            if (!file.delete()) {
+                logger.warn("Failed to delete empty group file '" + name + "'");
+            }
             return;
         }
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
@@ -201,9 +191,8 @@ public class ActivatorsManager {
         }
         try {
             cfg.save(file);
-        } catch (IOException e) {
-            logger.warn("Failed to save group '" + name + "'!");
-            e.printStackTrace();
+        } catch (IOException ex) {
+            logger.error("Failed to save group '" + name + "'", ex);
         }
     }
 

@@ -26,6 +26,7 @@ import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.FileUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.CaseInsensitiveMap;
+import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -35,8 +36,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,8 +107,9 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         YamlConfiguration cfg = new YamlConfiguration();
         String varDir = ReActions.getPlugin().getDataFolder() + File.separator + "variables";
         File f = new File(varDir + File.separator + "general.yml");
-        for (String key : vars.keySet())
+        for (String key : vars.keySet()) {
             if (key.contains("general")) cfg.set(key, vars.get(key));
+        }
         FileUtils.saveCfg(cfg, f, "Failed to save variable configuration file");
     }
 
@@ -117,9 +117,9 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         vars.clear();
         try {
             YamlConfiguration cfg = new YamlConfiguration();
-            File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml");
-            if (!f.exists()) return;
-            cfg.load(f);
+            File file = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml");
+            if (!file.exists()) return;
+            cfg.load(file);
             for (String key : cfg.getKeys(true)) {
                 if (!key.contains(".")) continue;
                 vars.put(key, cfg.getString(key));
@@ -127,10 +127,9 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
             if (!Cfg.playerSelfVarFile) {
                 loadVars();
                 File dir = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables");
-                if (!dir.exists() || !dir.isDirectory()) return;
-                for (String file : dir.list()) {
-                    File fl = new File(dir, file);
-                    fl.delete();
+                if (!dir.isDirectory()) return;
+                for (File varFile : CollectionUtils.emptyOnNull(dir.listFiles())) {
+                    varFile.delete();
                 }
                 dir.delete();
             }
@@ -145,24 +144,22 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
             YamlConfiguration cfg = new YamlConfiguration();
             File dir = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables");
             if (!dir.exists()) return;
-            for (File f : dir.listFiles()) {
-                BasicFileAttributes fileAttributes = Files.readAttributes(f.toPath(), BasicFileAttributes.class);
-                if (!fileAttributes.isDirectory()) {
-                    if (fileAttributes.size() == 0) {
-                        f.delete();
-                        deleted++;
-                        continue;
-                    }
-                    String fstr = f.getName();
-                    if (fstr.endsWith(".yml")) {
-                        cfg.load(f);
-                        for (String key : cfg.getKeys(true)) {
-                            if (key.contains(".")) vars.put(key, cfg.getString(key));
-                        }
+            for (File file : CollectionUtils.emptyOnNull(dir.listFiles())) {
+                if (file.isDirectory()) continue;
+                if (file.length() == 0) {
+                    if (file.delete()) deleted++;
+                    continue;
+                }
+                if (file.getName().endsWith(".yml")) {
+                    cfg.load(file);
+                    for (String key : cfg.getKeys(true)) {
+                        if (key.contains(".")) vars.put(key, cfg.getString(key));
                     }
                 }
             }
-            Msg.logMessage("Deleted " + deleted + " variable files.");
+            if (deleted > 0) {
+                Msg.logMessage("Deleted " + deleted + " variable files");
+            }
         } catch (Exception ignored) {
         }
     }
@@ -180,8 +177,9 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         }
 
         YamlConfiguration cfg2 = new YamlConfiguration();
-        for (String key : varsTmp.keySet())
+        for (String key : varsTmp.keySet()) {
             cfg2.set(key, varsTmp.get(key));
+        }
         if (!FileUtils.saveCfg(cfg2, f, "Failed to save variable file")) return;
         varsTmp.clear();
     }

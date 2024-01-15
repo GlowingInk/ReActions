@@ -5,13 +5,7 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SelectorsManager {
     private final Map<String, Selector> selectorByName;
@@ -24,7 +18,7 @@ public class SelectorsManager {
 
     public void registerSelector(@NotNull Selector selector) {
         if (selectorByName.containsKey(selector.getName().toLowerCase(Locale.ROOT))) {
-            throw new IllegalStateException("Selector '" + selector.getName().toLowerCase(Locale.ROOT) + "' is already registered!");
+            throw new IllegalStateException("Selector '" + selector.getName().toLowerCase(Locale.ROOT) + "' is already registered");
         }
         selectors.add(selector);
         selectorByName.put(selector.getName().toLowerCase(Locale.ROOT), selector);

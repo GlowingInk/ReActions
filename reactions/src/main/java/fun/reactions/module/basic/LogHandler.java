@@ -20,9 +20,8 @@
  *
  */
 
-package fun.reactions.events.listeners;
+package fun.reactions.module.basic;
 
-import fun.reactions.module.basic.ContextManager;
 import fun.reactions.module.basic.activators.MessageActivator;
 
 import java.util.logging.LogRecord;

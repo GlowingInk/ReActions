@@ -26,7 +26,6 @@ import fun.reactions.commands.Commander;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.GodModeListener;
-import fun.reactions.events.listeners.LogHandler;
 import fun.reactions.events.listeners.MoveListener;
 import fun.reactions.events.listeners.RaListener;
 import fun.reactions.holders.LocationHolder;
@@ -69,8 +68,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private WaitingManager waitingManager;
     private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
-
-    private LogHandler logHandler; // TODO Move to ContextManager
 
     @Override
     public void onLoad() {
@@ -129,7 +126,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         LocationHolder.loadLocs();
         SQLManager.init();
         InventoryMenu.init(this);
-        getServer().getLogger().addHandler(logHandler = new LogHandler());
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
         pluginManager.registerEvents(new BukkitListener(), this);
@@ -147,8 +143,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onDisable() {
-        getServer().getLogger().removeHandler(logHandler);
         savingManager.saveSync();
+        modulesRegistry.onDisable();
     }
 
     @Override
