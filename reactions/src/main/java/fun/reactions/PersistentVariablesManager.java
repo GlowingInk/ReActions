@@ -172,7 +172,6 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         YamlConfiguration cfg = new YamlConfiguration();
         String fileName = ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml";
         File f = new File(fileName);
-        if (!f.exists()) return;
         if (!FileUtils.loadCfg(cfg, f, "Failed to load variable file")) return;
         for (String key : cfg.getKeys(true)) {
             if (!key.contains(".")) continue;

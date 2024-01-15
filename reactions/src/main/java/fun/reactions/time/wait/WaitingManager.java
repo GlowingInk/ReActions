@@ -17,15 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -195,10 +187,7 @@ public class WaitingManager implements Saveable {
     public void save() {
         BukkitScheduler scheduler = rea.getServer().getScheduler();
         scheduler.runTaskAsynchronously(rea.getPlugin(), () -> {
-            File file = new File(rea.getDataFolder(), "delayed-actions.yml");
-            if (file.exists()) file.delete();
             YamlConfiguration cfg = new YamlConfiguration();
-            if (!FileUtils.loadCfg(cfg, file, "Failed to load delayed actions")) return;
             scheduler.runTask(rea.getPlugin(), () -> {
                 for (WaitTask task : tasks) {
                     UUID id = UUID.randomUUID();
@@ -216,7 +205,11 @@ public class WaitingManager implements Saveable {
                 }
                 scheduler.runTaskAsynchronously(
                         rea.getPlugin(),
-                        () -> FileUtils.saveCfg(cfg, file, "Failed to save delayed actions")
+                        () -> FileUtils.saveCfg(
+                                cfg,
+                                new File(rea.getDataFolder(), "delayed-actions.yml"),
+                                "Failed to save delayed actions"
+                        )
                 );
             });
         });
@@ -224,10 +217,7 @@ public class WaitingManager implements Saveable {
 
     @Override
     public void saveSync() {
-        File file = new File(rea.getDataFolder(), "delayed-actions.yml");
-        if (file.exists()) file.delete();
         YamlConfiguration cfg = new YamlConfiguration();
-        if (!FileUtils.loadCfg(cfg, file, "Failed to load delayed actions")) return;
         for (WaitTask task : tasks) {
             UUID id = UUID.randomUUID();
             ConfigurationSection taskCfg = cfg.createSection(id.toString());
@@ -242,6 +232,10 @@ public class WaitingManager implements Saveable {
                 }
             }
         }
-        FileUtils.saveCfg(cfg, file, "Failed to save delayed actions");
+        FileUtils.saveCfg(
+                cfg,
+                new File(rea.getDataFolder(), "delayed-actions.yml"),
+                "Failed to save delayed actions"
+        );
     }
 }
