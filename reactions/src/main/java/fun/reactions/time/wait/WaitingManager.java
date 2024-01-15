@@ -56,8 +56,8 @@ public class WaitingManager implements Saveable {
             throw new IllegalStateException("WaitingManager is already initialized");
         }
         init = true;
-        rea.getServer().getScheduler().runTaskTimer(rea.getPlugin(), this::updateTasks, 1L, 1L);
         load();
+        rea.getServer().getScheduler().runTaskTimer(rea.getPlugin(), this::updateTasks, 1L, 1L);
     }
 
     private void updateTasks() {
