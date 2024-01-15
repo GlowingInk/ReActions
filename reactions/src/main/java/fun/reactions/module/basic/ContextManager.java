@@ -38,11 +38,7 @@ import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.command.CommandSender;
@@ -56,12 +52,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -465,12 +457,6 @@ public final class ContextManager {
 
     public static boolean triggerGamemode(Player player, GameMode gameMode) {
         GameModeActivator.Context e = new GameModeActivator.Context(player, gameMode);
-        activate(e);
-        return e.isCancelled();
-    }
-
-    public static boolean triggerGod(Player player, boolean god) {
-        GodActivator.Context e = new GodActivator.Context(player, god);
         activate(e);
         return e.isCancelled();
     }

@@ -90,7 +90,6 @@ public class BasicModule implements Module {
                 typeOf(DamageByBlockActivator.class, "DAMAGE_BY_BLOCK", DamageByBlockActivator::create, DamageByBlockActivator::load),
                 typeOf(VariableActivator.class, "VARIABLE", VariableActivator::create, VariableActivator::load),
                 typeOf(GameModeActivator.class, "GAMEMODE", GameModeActivator::create, GameModeActivator::load),
-                typeOf(GodActivator.class, "GOD", GodActivator::create, GodActivator::load),
                 typeOf(CuboidActivator.class, "CUBOID", CuboidActivator::create, CuboidActivator::load),
                 typeOf(WeatherChangeActivator.class, "WEATHER_CHANGE", WeatherChangeActivator::create, WeatherChangeActivator::load)
         );

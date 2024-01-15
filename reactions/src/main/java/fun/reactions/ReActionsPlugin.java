@@ -25,7 +25,6 @@ package fun.reactions;
 import fun.reactions.commands.Commander;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.listeners.BukkitListener;
-import fun.reactions.events.listeners.GodModeListener;
 import fun.reactions.events.listeners.MoveListener;
 import fun.reactions.events.listeners.RaListener;
 import fun.reactions.holders.LocationHolder;
@@ -108,7 +107,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onEnable() {
-        // TODO god why
+        // TODO Why...
         Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
 
         this.savingManager = new SavingManager(this);
@@ -132,7 +131,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         pluginManager.registerEvents(new RaListener(), this);
         pluginManager.registerEvents(userCommandsManager, this);
         MoveListener.init();
-        GodModeListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
         getServer().getScheduler().runTask(this, () -> {

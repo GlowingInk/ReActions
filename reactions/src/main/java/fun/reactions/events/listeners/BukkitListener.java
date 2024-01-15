@@ -8,21 +8,9 @@ import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variables;
-import fun.reactions.module.basic.activators.BlockBreakActivator;
-import fun.reactions.module.basic.activators.DamageActivator;
-import fun.reactions.module.basic.activators.DropActivator;
-import fun.reactions.module.basic.activators.InventoryClickActivator;
-import fun.reactions.module.basic.activators.MessageActivator;
-import fun.reactions.module.basic.activators.MobDamageActivator;
-import fun.reactions.module.basic.activators.QuitActivator;
-import fun.reactions.module.basic.activators.SignActivator;
-import fun.reactions.module.basic.activators.TeleportActivator;
+import fun.reactions.module.basic.activators.*;
 import fun.reactions.module.vault.external.RaVault;
-import fun.reactions.util.BlockUtils;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.Rng;
-import fun.reactions.util.TemporaryOp;
-import fun.reactions.util.Utils;
+import fun.reactions.util.*;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
@@ -42,12 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
@@ -230,11 +213,6 @@ public class BukkitListener implements Listener {
             triggerFunction(killer, exec, new Variables());
         }
 
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onCheckGodEvent(EntityDamageEvent event) {
-        GodModeListener.cancelGodEvent(event);
     }
 
     @EventHandler(ignoreCancelled = true)

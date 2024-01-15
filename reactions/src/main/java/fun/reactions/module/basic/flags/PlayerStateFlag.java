@@ -22,7 +22,6 @@
 
 package fun.reactions.module.basic.flags;
 
-import fun.reactions.events.listeners.GodModeListener;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
@@ -68,9 +67,6 @@ public class PlayerStateFlag implements Flag, Activity.Personal {
                 return player.getSpectatorTarget() != null;
             case GLIDE:
                 return player.isGliding();
-            case GOD:
-                GodModeListener.setCheckGod(player);
-                if (GodModeListener.isGod(player)) return true;
         }
         return false;
     }
@@ -90,8 +86,7 @@ public class PlayerStateFlag implements Flag, Activity.Personal {
         FLY,
         OP,
         SPECTATOR_TARGET,
-        GLIDE,
-        GOD;
+        GLIDE;
 
         private static final Map<String, Posture> BY_NAME = Stream.of(values()).collect(Collectors.toMap(Enum::name, d -> d));
 
