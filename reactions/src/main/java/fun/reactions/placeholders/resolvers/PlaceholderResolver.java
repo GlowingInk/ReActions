@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public sealed interface Resolver<T extends Placeholder> permits KeyedResolver, DynamicResolver {
+public sealed interface PlaceholderResolver<T extends Placeholder> permits KeyedResolver, DynamicResolver {
     boolean add(@NotNull T ph);
 
     @Nullable String resolve(@NotNull Environment env, @NotNull String text);

@@ -6,13 +6,9 @@ import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-public final class KeyedResolver implements Resolver<Placeholder.Keyed> {
+public final class KeyedResolver implements PlaceholderResolver<Placeholder.Keyed> {
     private final Map<String, Placeholder.Keyed> placeholders = new HashMap<>();
 
     @Override

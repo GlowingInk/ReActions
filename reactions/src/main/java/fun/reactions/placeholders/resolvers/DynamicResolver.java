@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public final class DynamicResolver implements Resolver<Placeholder.Dynamic> {
+public final class DynamicResolver implements PlaceholderResolver<Placeholder.Dynamic> {
     private final List<Placeholder.Dynamic> placeholders = new ArrayList<>();
 
     @Override

@@ -20,7 +20,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         do {
             oldText = text;
             text = parseGradually(env, text);
-        } while (!oldText.equals(text) & --limit > 0);
+        } while (!oldText.equals(text) && --limit > 0);
         return unescapeSpecial(text);
     }
 
@@ -44,10 +44,8 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
             }
             switch (stage) {
                 case TEXT -> {
-                    if (c == '%') {
-                        if (allowSpecial) {
-                            stage = IterationStage.PLACEHOLDER_CHECK;
-                        }
+                    if (c == '%' && allowSpecial) {
+                        stage = IterationStage.PLACEHOLDER_CHECK;
                     }
                 }
                 case PLACEHOLDER_CHECK -> {
