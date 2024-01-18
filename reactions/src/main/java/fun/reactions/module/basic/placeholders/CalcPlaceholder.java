@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliased.Names({"calculate", "expression", "eval", "math"})
-public class CalcPlaceholder implements Placeholder.Keyed {
+public class CalcPlaceholder implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         if (Cfg.modernPlaceholders || !param.contains("%")) {

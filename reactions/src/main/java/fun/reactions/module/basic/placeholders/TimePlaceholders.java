@@ -12,7 +12,7 @@ import static fun.reactions.util.TimeUtils.formatIngameTime;
 import static fun.reactions.util.TimeUtils.formatTime;
 
 @Aliased.Names({"TIME_INGAME", "curtime", "TIME_SERVER", "servertime"})
-public class TimePlaceholders implements Placeholder.Keyed {
+public class TimePlaceholders implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         Player player = env.getPlayer();

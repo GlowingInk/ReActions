@@ -13,8 +13,8 @@ import java.util.Locale;
 
 import static fun.reactions.util.NumberUtils.Is.NATURAL;
 
-@Aliased.Names("invplayer")
-public class PlayerInvPlaceholder implements Placeholder.Keyed {
+@Aliased.Names({"invplayer", "playerinv"})
+public class PlayerInvPlaceholder implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String text) {
         Player player = env.getPlayer();

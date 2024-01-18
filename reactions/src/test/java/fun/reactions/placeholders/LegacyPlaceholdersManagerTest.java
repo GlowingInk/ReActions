@@ -14,11 +14,11 @@ public class LegacyPlaceholdersManagerTest {
         mgr.registerPlaceholder(new LocalVarPlaceholder());
         PlaceholdersManager.setCountLimit(16);
         Variables vars = new Variables();
-        vars.set("test", "yay");
-        vars.set("another", "%test%,");
+        vars.set("test", "y\\ay");
+        vars.set("another", "%test%\\,");
         assertEquals(
                 mgr.parse(new Environment(null, "", vars, null), "Foo %another% bar %ignored%"),
-                "Foo yay, bar %ignored%"
+                "Foo y\\ay\\, bar %ignored%"
         );
     }
 }

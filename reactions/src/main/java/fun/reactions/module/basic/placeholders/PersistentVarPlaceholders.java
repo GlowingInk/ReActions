@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliased.Names({"var", "varp", "varplayer"})
-public class PersistentVarPlaceholders implements Placeholder.Keyed {
+public class PersistentVarPlaceholders implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
         PersistentVariablesManager variablesManager = env.getPlatform().getPersistentVariables();

@@ -5,19 +5,22 @@ import fun.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public sealed interface Placeholder extends Named permits Placeholder.Keyed, Placeholder.Dynamic {
-    non-sealed interface Keyed extends Placeholder {
-        /**
-         * Process this placeholder
-         * @param env Context of activation
-         * @param key Key of placeholder(e.g. %var:test% - var) in lower case
-         * @param params Text of placeholder(e.g. %var:test% - test)
-         * @return Processed placeholder
-         */
-        @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params);
-    }
+public interface Placeholder extends Named {
+    /**
+     * Process this placeholder
+     * @param env Context of activation
+     * @param key Key of placeholder(e.g. %var:test% - var) in lower case
+     * @param params Text of placeholder(e.g. %var:test% - test)
+     * @return Processed placeholder
+     */
+    @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params);
 
-    non-sealed interface Dynamic extends Placeholder {
+    interface Dynamic extends Placeholder {
+        @Override
+        default @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
+            return resolve(env, params);
+        }
+
         /**
          * Process this placeholder
          * @param env Context of activation

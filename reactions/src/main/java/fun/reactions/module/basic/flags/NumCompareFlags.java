@@ -9,30 +9,38 @@ import org.jetbrains.annotations.NotNull;
  * @author MaxDikiy
  * @since 10/01/2017
  */
-public class NumCompareFlags implements Flag {
-    private final boolean greater;
+public class NumCompareFlags implements Flag { // TODO Very unintuitive
+    private final Type type;
 
-    public NumCompareFlags(boolean greater) {
-        this.greater = greater;
+    public NumCompareFlags(Type type) {
+        this.type = type;
     }
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        double paramValue = params.getDouble("param");
-        double value = params.getDouble("value");
-        if (greater) {
-            env.getVariables().set("gparam", Double.toString(paramValue));
-            return paramValue > value;
+        double left = params.getDouble("param");
+        double right = params.getDouble("value");
+        boolean equal = params.getBoolean("or-equal");
+        if (type == Type.GREATER) {
+            env.getVariables().set("gparam", Double.toString(left));
+            return equal
+                    ? left >= right
+                    : left > right;
         } else {
-            env.getVariables().set("lparam", Double.toString(paramValue));
-            return paramValue < value;
+            env.getVariables().set("lparam", Double.toString(left));
+            return equal
+                    ? left <= right
+                    : left < right;
         }
     }
 
     @Override
     public @NotNull String getName() {
-        return greater ? "GREATER" : "LOWER";
+        return type.name();
     }
 
+    public enum Type {
+        GREATER, LOWER;
+    }
 }

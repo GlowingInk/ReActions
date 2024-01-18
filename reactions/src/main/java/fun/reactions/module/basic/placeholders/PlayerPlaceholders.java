@@ -30,7 +30,7 @@ import java.util.Set;
         "player_level", "level",
         "player_ip", "ip_address"
 })
-public class PlayerPlaceholders implements Placeholder.Keyed {
+public class PlayerPlaceholders implements Placeholder {
 
     private static final Set<Material> NON_SOLID;
     static {

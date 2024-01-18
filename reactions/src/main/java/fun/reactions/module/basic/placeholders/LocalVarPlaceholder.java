@@ -6,8 +6,8 @@ import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Aliased.Names({"local", "context"})
-public class LocalVarPlaceholder implements Placeholder.Dynamic, Placeholder.Keyed {
+@Aliased.Names({"local", "local_var", "context"})
+public class LocalVarPlaceholder implements Placeholder.Dynamic, Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String phText) {
         return env.getVariables().getStringUnsafe(phText);

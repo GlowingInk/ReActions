@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliased.Names("papi")
-public class PapiPlaceholder implements Placeholder.Dynamic, Placeholder.Keyed {
+public class PapiPlaceholder implements Placeholder.Dynamic, Placeholder {
     private final PlaceholderAPIPlugin papiPlugin;
 
     public PapiPlaceholder(PlaceholderAPIPlugin papiPlugin) {

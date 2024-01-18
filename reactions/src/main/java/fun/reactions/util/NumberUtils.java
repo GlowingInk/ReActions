@@ -81,6 +81,7 @@ public final class NumberUtils {
         return true;
     }
 
+    // TODO That's, actually, a very bad solution...
     public static final class Is {
         private Is() {}
 
@@ -111,7 +112,6 @@ public final class NumberUtils {
      * @return Trimmed double
      */
     public static double trimDouble(double d) {
-        d *= TRIM_VALUE;
-        return (d > 0 ? Math.floor(d) : Math.ceil(d)) / TRIM_VALUE;
+        return Math.floor(d * TRIM_VALUE) / TRIM_VALUE;
     }
 }
