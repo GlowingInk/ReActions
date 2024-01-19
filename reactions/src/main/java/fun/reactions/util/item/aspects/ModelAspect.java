@@ -1,12 +1,14 @@
 package fun.reactions.util.item.aspects;
 
 
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.OptionalInt;
 
 @Aliased.Names({"custommodeldata", "model"})
 public class ModelAspect implements MetaAspect {
@@ -17,8 +19,9 @@ public class ModelAspect implements MetaAspect {
 
     @Override
     public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
-        return NumberUtils.isNumber(value, Is.NATURAL)
-                ? new ModelInst(Integer.valueOf(value))
+        OptionalInt modelValue = NumberUtils.parseInteger(value, Is.NON_NEGATIVE);
+        return modelValue.isPresent()
+                ? new ModelInst(modelValue.getAsInt())
                 : ModelInst.EMPTY;
     }
 

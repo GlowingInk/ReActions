@@ -5,16 +5,18 @@ import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.Logic;
 import fun.reactions.time.timers.TimersManager;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.OptionalInt;
+
 @CmdDefine(command = "reactions", description = Msg.CMD_REMOVE, permission = "reactions.config",
         subCommands = {"remove|rmv|del|delete"}, allowConsole = true, shortDescription = "&3/react remove [loc|activator] <id>")
-public class CmdRemove extends Cmd {
+public class CmdRemove extends Cmd { // What the actual...
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -47,8 +49,9 @@ public class CmdRemove extends Cmd {
             else Msg.printMSG(sender, "msg_removemenufail", 'c', '4', arg2);
         } else if (ReActions.getActivators().containsActivator(arg1)) {
             Logic act = ReActions.getActivators().getActivator(arg1).getLogic();
-            if (NumberUtils.isNumber(arg3.toString(), Is.POSITIVE_NATURAL)) {
-                int num = Integer.parseInt(arg3.toString());
+            OptionalInt indexOpt = NumberUtils.parseInteger(arg3.toString(), Is.POSITIVE);
+            if (indexOpt.isPresent()) {
+                int num = indexOpt.getAsInt();
                 if (arg2.equalsIgnoreCase("f") || arg2.equalsIgnoreCase("flag")) {
                     if (act.removeFlag(num - 1))
                         Msg.printMSG(sender, "msg_flagremoved", act.getName(), num);

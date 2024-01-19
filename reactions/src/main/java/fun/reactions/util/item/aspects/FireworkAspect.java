@@ -1,7 +1,7 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.parameter.ParametersUtils;
 import org.bukkit.Color;

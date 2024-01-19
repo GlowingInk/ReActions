@@ -24,14 +24,14 @@ package fun.reactions.util.mob;
 
 import fun.reactions.ReActions;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Rng;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.parameter.ParametersUtils;
 import org.bukkit.ChatColor;
@@ -47,11 +47,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public final class MobSpawn { // TODO: Requires major refactoring
 
@@ -263,8 +259,11 @@ public final class MobSpawn { // TODO: Requires major refactoring
             pef = ln[0];
             PotionEffectType pet = PotionEffectType.getByName(pef);
             if (pet == null) continue;
-            if ((ln.length == 2) && NumberUtils.isNumber(ln[1], Is.NATURAL)) level = Integer.parseInt(ln[1]);
-            PotionEffect pe = new PotionEffect(pet, Integer.MAX_VALUE, level, true);
+            if (ln.length == 2) {
+                OptionalInt levelOpt = NumberUtils.parseInteger(ln[1], Is.NATURAL);
+                if (levelOpt.isPresent()) level = levelOpt.getAsInt();
+            }
+            PotionEffect pe = new PotionEffect(pet, PotionEffect.INFINITE_DURATION, level, true);
             e.addPotionEffect(pe);
         }
     }

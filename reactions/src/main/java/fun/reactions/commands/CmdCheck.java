@@ -2,9 +2,9 @@ package fun.reactions.commands;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ public class CmdCheck extends Cmd {
 
     @Override
     public boolean execute(Player player, String[] args) {
-        int radius = args.length > 1 && NumberUtils.isNumber(args[1], Is.POSITIVE_NATURAL) ? Integer.parseInt(args[1]) : 8;
+        int radius = args.length > 1 ? NumberUtils.parseInteger(args[1], Is.POSITIVE).orElse(8) : 8;
         printActivatorsAround(player, radius);
         return true;
     }

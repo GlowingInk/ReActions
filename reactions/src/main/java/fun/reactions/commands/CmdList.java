@@ -6,21 +6,18 @@ import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 @CmdDefine(command = "reactions", description = Msg.CMD_LIST, permission = "reactions.config",
         subCommands = {"list"}, allowConsole = true, shortDescription = "&3/react list [loc|group|type] [page]")
-public class CmdList extends Cmd {
+public class CmdList extends Cmd { // I don't know what's going on here...
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
@@ -29,15 +26,22 @@ public class CmdList extends Cmd {
         String arg1 = args.length >= 2 ? args[1].toLowerCase(Locale.ROOT) : "";
         String arg2 = args.length >= 3 ? args[2] : "";
         String arg3 = args.length >= 4 ? args[3] : "";
-        if (NumberUtils.isNumber(arg1, Is.POSITIVE_NATURAL)) printAct(sender, 1, lpp);
-        else {
+
+        OptionalInt opt = NumberUtils.parseInteger(arg1, Is.POSITIVE);
+        if (opt.isPresent()) {
+            printAct(sender, opt.getAsInt(), lpp);
+        } else {
             String mask = "";
-            if (NumberUtils.isNumber(arg2, Is.POSITIVE_NATURAL)) {
-                page = Integer.parseInt(arg2);
+            opt = NumberUtils.parseInteger(arg2, Is.POSITIVE);
+            if (opt.isPresent()) {
+                page = opt.getAsInt();
                 mask = arg3;
-            } else if (NumberUtils.isNumber(arg3, Is.POSITIVE_NATURAL)) {
-                page = Integer.parseInt(arg3);
-                mask = arg2;
+            } else {
+                opt = NumberUtils.parseInteger(arg3, Is.POSITIVE);
+                if (opt.isPresent()) {
+                    page = opt.getAsInt();
+                    mask = arg2;
+                }
             }
 
             switch (arg1) {
@@ -78,6 +82,4 @@ public class CmdList extends Cmd {
         Msg.MSG_ACTLISTTYPE.print(sender, type, '6', '6');
         Msg.printPage(sender, ag, null, page, lpp, true);
     }
-
-
 }

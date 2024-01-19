@@ -2,15 +2,16 @@ package fun.reactions.module.basic.placeholders;
 
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static fun.reactions.util.NumberUtils.Is.NATURAL;
+import java.util.OptionalInt;
 
 @Aliased.Names("enderchest")
 public class EnderChestPlaceholder implements Placeholder {
@@ -18,8 +19,9 @@ public class EnderChestPlaceholder implements Placeholder {
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
         Player player = env.getPlayer();
         if (player == null) return null;
-        if (NumberUtils.isNumber(params, NATURAL)) {
-            int slotNum = Integer.parseInt(params);
+        OptionalInt slotOpt = NumberUtils.parseInteger(params, Is.NON_NEGATIVE);
+        if (slotOpt.isPresent()) {
+            int slotNum = slotOpt.getAsInt();
             Inventory inv = player.getEnderChest();
             if (slotNum >= 0 && slotNum < inv.getSize()) {
                 return VirtualItem.asString(inv.getItem(slotNum));

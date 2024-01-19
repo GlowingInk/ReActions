@@ -24,11 +24,11 @@ package fun.reactions.module.basic.actions;
 
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -37,6 +37,7 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.OptionalInt;
 
 @Aliased.Names("POTION")
 public class PotionEffectAction implements Action {// TODO Allow to use player selectors
@@ -65,13 +66,19 @@ public class PotionEffectAction implements Action {// TODO Allow to use player s
                 String[] prm = param.split("/");
                 if (prm.length > 1) {
                     peffstr = prm[0];
-                    if (NumberUtils.isNumber(prm[1], Is.POSITIVE_NATURAL)) duration = Integer.parseInt(prm[1]);
-                    if ((prm.length > 2) && NumberUtils.isNumber(prm[2], Is.POSITIVE_NATURAL)) amplifier = Integer.parseInt(prm[2]);
+                    OptionalInt durationOpt = NumberUtils.parseInteger(prm[1], Is.POSITIVE);
+                    if (durationOpt.isPresent()) duration = durationOpt.getAsInt();
+                    if (prm.length > 2) {
+                        OptionalInt amplifierOpt = NumberUtils.parseInteger(prm[2], Is.POSITIVE);
+                        if (amplifierOpt.isPresent()) amplifier = amplifierOpt.getAsInt();
+                    }
                 }
             } else peffstr = param;
         } else {
             peffstr = params.getString("type");
-            duration = NumberUtils.compactLong(TimeUtils.timeToTicksSafe(TimeUtils.parseTime(params.getString("time", "3s"))));
+            duration = params.getString("time").equals("infinite")
+                    ? PotionEffect.INFINITE_DURATION
+                    : NumberUtils.compactLong(TimeUtils.timeToTicksSafe(params.getTime("time")));
             amplifier = Math.max(params.getInteger("level", 1) - 1, 0);
             ambient = params.getBoolean("ambient", false);
         }
@@ -98,6 +105,4 @@ public class PotionEffectAction implements Action {// TODO Allow to use player s
 
         return pef;
     }
-
-
 }

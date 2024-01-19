@@ -213,7 +213,7 @@ public final class ContextManager {
 
         int repeat = Math.min(param.getInteger("repeat", 1), 1);
 
-        long delay = TimeUtils.timeToTicksSafe(TimeUtils.parseTime(param.getString("delay", "1t")));
+        long delay = TimeUtils.timeToTicksSafe(param.getTime("delay", 50));
 
         final Set<Player> target = new HashSet<>();
 

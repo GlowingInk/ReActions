@@ -22,12 +22,14 @@
 
 package fun.reactions;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 
 import java.sql.*;
+import java.util.OptionalInt;
 import java.util.Properties;
 
 public final class SQLManager {
@@ -78,8 +80,12 @@ public final class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
-        if (NumberUtils.isNumber(result, NumberUtils.Is.NATURAL) && NumberUtils.isNumber(value, NumberUtils.Is.NATURAL)) {
-            return Integer.parseInt(result) == Integer.parseInt(value);
+        OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NATURAL);
+        if (resultOpt.isPresent()) {
+            OptionalInt valueOpt = NumberUtils.parseInteger(value, Is.NATURAL);
+            if (valueOpt.isPresent()) {
+                return resultOpt.getAsInt() == valueOpt.getAsInt();
+            }
         }
         return result.equalsIgnoreCase(value);
     }

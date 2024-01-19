@@ -8,10 +8,10 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.time.timers.TimersManager;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.command.CommandSender;
@@ -52,7 +52,7 @@ public class CmdCreate extends Cmd {
                 if (param.length() == 0) return false;
                 String arg3 = args[3];
                 if (InventoryMenu.add(id,
-                        NumberUtils.isNumber(arg3, Is.NATURAL) ? Integer.parseInt(arg3) : 9,
+                        NumberUtils.parseInteger(arg3, Is.NON_NEGATIVE).orElse(9),
                         (param.length() == 1) ? "" : param.substring(arg3.length()))) {
                     Msg.CMD_ADDMENUADDED.print(sender, id);
                     return true;

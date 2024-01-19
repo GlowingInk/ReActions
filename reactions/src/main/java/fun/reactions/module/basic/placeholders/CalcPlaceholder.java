@@ -3,8 +3,8 @@ package fun.reactions.module.basic.placeholders;
 import fun.reactions.Cfg;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import ink.glowing.math.ExpressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +14,7 @@ public class CalcPlaceholder implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         if (Cfg.modernPlaceholders || !param.contains("%")) {
-            return NumberUtils.format(ExpressionEvaluator.eval(param));
+            return NumberUtils.simpleFormat(ExpressionEvaluator.eval(param));
         }
         return null;
     }

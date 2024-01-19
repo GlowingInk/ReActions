@@ -22,10 +22,10 @@
 
 package fun.reactions.module.vault.external;
 
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Utils;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -34,6 +34,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.OptionalDouble;
 
 @Deprecated
 public final class RaVault {
@@ -59,7 +61,6 @@ public final class RaVault {
     public static boolean isPermissionConnected() {
         return vault_perm;
     }
-
 
     private static boolean setupPermissions() {
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
@@ -169,8 +170,9 @@ public final class RaVault {
 
     public static String creditAccount(String target, String source, String amountStr, String worldName) {
         if (target.isEmpty()) return "";
-        if (!NumberUtils.isNumber(amountStr, Is.POSITIVE)) return "";
-        double amount = Double.parseDouble(amountStr);
+        OptionalDouble amountOpt = NumberUtils.parseDouble(amountStr, Is.NON_NEGATIVE);
+        if (amountOpt.isEmpty()) return "";
+        double amount = amountOpt.getAsDouble();
         if (isEconomyConnected()) {
             if (creditAccount(target, source, amount, worldName))
                 return format(amount, worldName);
@@ -180,8 +182,9 @@ public final class RaVault {
 
     public static String debitAccount(String accountFrom, String accountTo, String amountStr, String worldName) {
         if (accountFrom.isEmpty()) return "";
-        if (!NumberUtils.isNumber(amountStr, Is.POSITIVE)) return "";
-        double amount = Double.parseDouble(amountStr);
+        OptionalDouble amountOpt = NumberUtils.parseDouble(amountStr, Is.NON_NEGATIVE);
+        if (amountOpt.isEmpty()) return "";
+        double amount = amountOpt.getAsDouble();
         if (isEconomyConnected()) {
             if (debitAccount(accountFrom, accountTo, amount, worldName))
                 return format(amount, worldName);

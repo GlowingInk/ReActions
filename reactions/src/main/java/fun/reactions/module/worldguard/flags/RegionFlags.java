@@ -26,7 +26,7 @@ import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
-import fun.reactions.util.NumberUtils;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

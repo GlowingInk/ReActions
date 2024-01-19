@@ -1,9 +1,9 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;

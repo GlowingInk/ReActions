@@ -26,17 +26,19 @@ package fun.reactions.module.basic.actions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.BlockUtils;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Utils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.OptionalInt;
 
 @Aliased.Names("SIGN_LINE")
 public class SignSetAction implements Action {
@@ -65,11 +67,9 @@ public class SignSetAction implements Action {
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {
-                if (!NumberUtils.isNumber(cl, Is.NATURAL)) continue;
-                int num = Integer.parseInt(cl) - 1;
-                if (num < 0) continue;
-                if (num >= 4) continue;
-                sign.setLine(num, "");
+                OptionalInt lineOpt = NumberUtils.parseInteger(cl, Is.NATURAL.and(v -> v <= 4));
+                if (lineOpt.isEmpty()) continue;
+                sign.setLine(lineOpt.getAsInt(), "");
             }
         }
         sign.update(true);

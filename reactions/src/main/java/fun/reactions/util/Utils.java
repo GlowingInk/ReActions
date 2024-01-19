@@ -22,8 +22,9 @@
 
 package fun.reactions.util;
 
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -37,17 +38,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Utils {
-    public static final String[] EMPTY_ARRAY = new String[0];
     private static final Pattern HEX_COLOR = Pattern.compile("#([a-fA-F\\d]{6})");
     private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
 
@@ -79,8 +74,8 @@ public final class Utils {
                     if (prm.length > 2) strpitch = prm[2];
                 }
             } else sndstr = param;
-            if (NumberUtils.isNumber(strvolume, Is.POSITIVE)) volume = Float.parseFloat(strvolume);
-            if (NumberUtils.isNumber(strpitch, Is.POSITIVE)) pitch = Float.parseFloat(strpitch);
+            volume = (float) NumberUtils.parseDouble(strvolume, Is.NON_NEGATIVE).orElse(1);
+            pitch = (float) NumberUtils.parseDouble(strvolume, Is.NON_NEGATIVE).orElse(1);
         } else {
             String locationStr = params.getString("loc");
             soundLoc = locationStr.isEmpty() ? loc : LocationUtils.parseLocation(locationStr, null);

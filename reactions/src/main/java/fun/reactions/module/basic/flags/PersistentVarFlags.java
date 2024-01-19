@@ -25,8 +25,8 @@ package fun.reactions.module.basic.flags;
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -46,24 +46,12 @@ public class PersistentVarFlags implements Flag, Aliased {
 
     @Override
     public @NotNull String getName() {
-        return switch (flagType) {
-            case EXIST -> personal ? "PLAYER_VAR_EXIST" : "GLOBAL_VAR_EXIST";
-            case COMPARE -> personal ? "PLAYER_VAR_COMPARE" : "GLOBAL_VAR_COMPARE";
-            case GREATER -> personal ? "PLAYER_VAR_GREATER" : "GLOBAL_VAR_GREATER";
-            case LOWER -> personal ? "PLAYER_VAR_LOWER" : "GLOBAL_VAR_LOWER";
-            case MATCH -> personal ? "PLAYER_VAR_MATCH" : "GLOBAL_VAR_MATCH";
-        };
+        return (personal ? "PLAYER_VAR_" : "VAR_") + flagType;
     }
 
     @Override
     public @NotNull Collection<String> getAliases() {
-        return List.of(switch (flagType) {
-            case EXIST -> personal ? "VAR_PLAYER_EXIST" : "VAR_EXIST";
-            case COMPARE -> personal ? "VAR_PLAYER_COMPARE" : "VAR_COMPARE";
-            case GREATER -> personal ? "VAR_PLAYER_GREATER" : "VAR_GREATER";
-            case LOWER -> personal ? "VAR_PLAYER_LOWER" : "VAR_LOWER";
-            case MATCH -> personal ? "VAR_PLAYER_MATCH" : "VAR_MATCH";
-        });
+        return List.of((personal ? "VAR_PLAYER_" : "GLOBAL_VAR_") + flagType);
     }
 
 

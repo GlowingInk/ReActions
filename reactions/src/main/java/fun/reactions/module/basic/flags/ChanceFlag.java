@@ -24,21 +24,21 @@ package fun.reactions.module.basic.flags;
 
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Rng;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.OptionalDouble;
 
 @Aliased.Names("PROBABILITY")
 public class ChanceFlag implements Flag {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         env.getVariables().set("chance", paramsStr + "%");
-        double d = 50;
-        if (NumberUtils.isNumber(paramsStr, Is.POSITIVE)) d = Double.parseDouble(paramsStr);
-        d = Math.max(Math.min(d, 100), 0);
-        return Rng.percentChance(d);
+        OptionalDouble chanceOpt = NumberUtils.parseDouble(paramsStr, Is.NON_NEGATIVE);
+        return chanceOpt.isPresent() && Rng.percentChance(chanceOpt.getAsDouble());
     }
 
     @Override

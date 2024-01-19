@@ -25,18 +25,19 @@ package fun.reactions.module.basic.flags;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.OptionalInt;
 
 @Aliased.Names({"FOODLEVEL", "FOOD"})
 public class FoodLevelFlag implements Flag, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
-        if (!NumberUtils.isNumber(paramsStr, Is.NATURAL)) return false;
-        return player.getFoodLevel() >= Integer.parseInt(paramsStr);
+        OptionalInt foodOpt = NumberUtils.parseInteger(paramsStr);
+        return foodOpt.isPresent() && player.getFoodLevel() >= foodOpt.getAsInt();
     }
 
     @Override
