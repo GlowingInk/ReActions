@@ -79,9 +79,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     public static @NotNull ImplicitPosition fromConfiguration(@NotNull ConfigurationSection cfg) {
         return new ImplicitPosition(
                 !cfg.getString("world", "*").equals("*") ? cfg.getString("world") : null,
-                cfg.isDouble("x") ? cfg.getInt("x") : null,
-                cfg.isDouble("y") ? cfg.getInt("y") : null,
-                cfg.isDouble("z") ? cfg.getInt("z") : null
+                cfg.isInt("x") ? cfg.getInt("x") : null,
+                cfg.isInt("y") ? cfg.getInt("y") : null,
+                cfg.isInt("z") ? cfg.getInt("z") : null
         );
     }
 

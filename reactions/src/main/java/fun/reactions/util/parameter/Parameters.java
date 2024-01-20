@@ -374,6 +374,10 @@ public class Parameters implements Parameterizable {
         return value == null ? def : TimeUtils.parseTime(value);
     }
 
+    public long getTime(@NotNull String key, @NotNull String def) {
+        return TimeUtils.parseTime(getString(key, def));
+    }
+
     public @NotNull Duration getDuration(@NotNull String key) {
         return getDuration(key, Duration.ZERO);
     }
@@ -568,6 +572,7 @@ public class Parameters implements Parameterizable {
     }
 
     @Override
+    @Contract("null -> false")
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj instanceof Parameters other) {
@@ -582,6 +587,7 @@ public class Parameters implements Parameterizable {
         return false;
     }
 
+    @Contract("null -> false")
     public boolean equalsFull(@Nullable Parameters params) {
         return params != null && (params == this || params.origin.equals(origin));
     }
