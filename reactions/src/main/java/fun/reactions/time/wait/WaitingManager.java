@@ -5,7 +5,7 @@ import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.save.Saveable;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.TimeUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -99,16 +99,19 @@ public class WaitingManager implements Saveable {
             if (!task.isTime()) {
                 break;
             }
-            if (task.playerId() != null && rea.getServer().getPlayer(task.playerId()) == null) switch (behaviour) {
-                case SKIP -> {
-                    if (timeLimit > TimeUtils.offsetFrom(task.executionTime())) {
-                        iterator.remove();
+            if (task.playerId() != null && rea.getServer().getPlayer(task.playerId()) == null) {
+                switch (behaviour) {
+                    case SKIP -> {
+                        if (timeLimit > TimeUtils.offsetFrom(task.executionTime())) {
+                            iterator.remove();
+                        }
+                        continue;
                     }
-                    continue;
-                }
-                case DISCARD -> {
-                    iterator.remove();
-                    continue;
+                    case DISCARD -> {
+                        iterator.remove();
+                        continue;
+                    }
+                    case EXECUTE -> {}
                 }
             }
             task.execute(rea);
@@ -139,7 +142,7 @@ public class WaitingManager implements Saveable {
 
     private void load() {
         YamlConfiguration cfg = new YamlConfiguration();
-        if (!FileUtils.loadCfg(cfg, new File(rea.getDataFolder(), "delayed-actions.yml"), "Failed to load delayed actions")) return;
+        if (!ConfigUtils.loadConfig(cfg, new File(rea.getDataFolder(), "delayed-actions.yml"), "Failed to load delayed actions")) return;
         ActivitiesRegistry activities = rea.getActivities();
         for (String key : cfg.getKeys(false)) {
             var taskCfg = Objects.requireNonNull(cfg.getConfigurationSection(key));
@@ -191,9 +194,9 @@ public class WaitingManager implements Saveable {
     }
 
     private void save(boolean async) {
-        var cfg = new YamlConfiguration();
+        YamlConfiguration cfg = new YamlConfiguration();
         for (WaitTask task : tasks) {
-            var taskCfg = cfg.createSection(task.executionTime() + "_" + System.nanoTime());
+            var taskCfg = cfg.createSection(Long.toString(task.executionTime() * System.identityHashCode(task)));
             if (task.playerId() != null) taskCfg.set("player-id", task.playerId().toString());
             taskCfg.set("execution-time", task.executionTime());
             List<String> actions = new ArrayList<>(task.actions().size());
@@ -209,7 +212,7 @@ public class WaitingManager implements Saveable {
                 }
             }
         }
-        Runnable saveRun = () -> FileUtils.saveCfg(
+        Runnable saveRun = () -> ConfigUtils.saveConfig(
                 cfg,
                 new File(rea.getDataFolder(), "delayed-actions.yml"),
                 "Failed to save delayed actions"

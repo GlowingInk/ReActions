@@ -24,7 +24,7 @@ package fun.reactions.time;
 
 import fun.reactions.ReActions;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -53,14 +53,14 @@ public final class CooldownManager { // TODO Requires refactoring
             if (delayTime > System.currentTimeMillis())
                 cfg.set(key, delayTime);
         }
-        FileUtils.saveCfg(cfg, f, "Failed to save delays configuration file");
+        ConfigUtils.saveConfig(cfg, f, "Failed to save delays configuration file");
     }
 
     public static void load() {
         cooldowns.clear();
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "delay.yml");
-        if (FileUtils.loadCfg(cfg, f, "Failed to load delay configuration file")) {
+        if (ConfigUtils.loadConfig(cfg, f, "Failed to load delay configuration file")) {
             for (String key : cfg.getKeys(true)) {
                 if (!key.contains(".")) continue;
                 long delayTime = cfg.getLong(key);
@@ -137,7 +137,7 @@ public final class CooldownManager { // TODO Requires refactoring
         if (days > 0) sb.append(days).append("d");
         if (days > 0 || hour > 0) sb.append(" ").append(hour).append("h");
         if (days > 0 || hour > 0 || min > 0) sb.append(" ").append(min).append("m");
-        if (sb.length() == 0 || sec > 0) sb.append(" ").append(sec).append("s");
+        if (sb.isEmpty() || sec > 0) sb.append(" ").append(sec).append("s");
         times[7] = sb.toString().trim();
         return times;
     }

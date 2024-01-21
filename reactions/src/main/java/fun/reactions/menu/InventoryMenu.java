@@ -3,7 +3,7 @@ package fun.reactions.menu;
 import fun.reactions.ReActions;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.message.Msg;
@@ -23,11 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class InventoryMenu implements Listener { // TODO Requires major refactoring
 
@@ -45,7 +41,7 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
         menu.clear();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "menu.yml");
         YamlConfiguration cfg = new YamlConfiguration();
-        if (FileUtils.loadCfg(cfg, f, "Failed to load menu configuration file"))
+        if (ConfigUtils.loadConfig(cfg, f, "Failed to load menu configuration file"))
             for (String key : cfg.getKeys(false)) {
                 VirtualInventory vi = new VirtualInventory(cfg, key);
                 putMenu(key, vi);
@@ -58,7 +54,7 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
         for (String key : menu.keySet()) {
             getMenu(key).save(cfg, key);
         }
-        FileUtils.saveCfg(cfg, f, "Failed to save menu configuration file");
+        ConfigUtils.saveConfig(cfg, f, "Failed to save menu configuration file");
     }
 
     public static boolean add(String id, int size, String title) {

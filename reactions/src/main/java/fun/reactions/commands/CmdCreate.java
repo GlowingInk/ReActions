@@ -45,11 +45,11 @@ public class CmdCreate extends Cmd {
                 Msg.CMD_ADDTPADDED.print(sender, id);
                 return true;
             case "timer":
-                if (param.length() == 0) return false;
+                if (param.isEmpty()) return false;
                 return TimersManager.addTimer(sender, id, Parameters.fromString(param.toString()), true);
             case "menu":
                 // TODO: Create menu from chest
-                if (param.length() == 0) return false;
+                if (param.isEmpty()) return false;
                 String arg3 = args[3];
                 if (InventoryMenu.add(id,
                         NumberUtils.parseInteger(arg3, Is.NON_NEGATIVE).orElse(9),

@@ -16,35 +16,35 @@ public class Cuboid {
 
     public Cuboid(Location loc1, Location loc2) {
         this.world = loc1.getWorld().getName();
-        this.xMin = Math.min(loc1.blockX(), loc2.blockX());
-        this.xMax = Math.max(loc1.blockX(), loc2.blockX());
-        this.zMin = Math.min(loc1.blockZ(), loc2.blockZ());
-        this.zMax = Math.max(loc1.blockZ(), loc2.blockZ());
-        this.yMin = Math.min(loc1.blockY(), loc2.blockY());
-        this.yMax = Math.max(loc1.blockY(), loc2.blockY());
+        this.xMin = Math.min(loc1.getBlockX(), loc2.getBlockX());
+        this.xMax = Math.max(loc1.getBlockX(), loc2.getBlockX());
+        this.zMin = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
+        this.zMax = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
+        this.yMin = Math.min(loc1.getBlockY(), loc2.getBlockY());
+        this.yMax = Math.max(loc1.getBlockY(), loc2.getBlockY());
     }
 
-    public Cuboid(ImplicitPosition loc1, ImplicitPosition loc2) {
-        this.world = loc1.worldName();
-        this.xMin = Math.min(loc1.blockX(0), loc2.blockX(0));
-        this.xMax = Math.max(loc1.blockX(0), loc2.blockX(0));
-        this.zMin = Math.min(loc1.blockZ(0), loc2.blockZ(0));
-        this.zMax = Math.max(loc1.blockZ(0), loc2.blockZ(0));
-        if (loc1.virtualY() == null) {
-            if (loc2.virtualY() == null) {
+    public Cuboid(ImplicitPosition pos1, ImplicitPosition pos2) {
+        this.world = pos1.worldName();
+        this.xMin = Math.min(pos1.blockX(0), pos2.blockX(0));
+        this.xMax = Math.max(pos1.blockX(0), pos2.blockX(0));
+        this.zMin = Math.min(pos1.blockZ(0), pos2.blockZ(0));
+        this.zMax = Math.max(pos1.blockZ(0), pos2.blockZ(0));
+        if (pos1.virtualY() == null) {
+            if (pos2.virtualY() == null) {
                 this.yMin = null;
                 this.yMax = null;
             } else {
-                this.yMin = loc2.virtualY();
-                this.yMax = loc2.virtualY();
+                this.yMin = pos2.virtualY();
+                this.yMax = pos2.virtualY();
             }
         } else {
-            if (loc2.virtualY() == null) {
-                this.yMin = loc1.virtualY();
-                this.yMax = loc1.virtualY();
+            if (pos2.virtualY() == null) {
+                this.yMin = pos1.virtualY();
+                this.yMax = pos1.virtualY();
             } else {
-                this.yMin = Math.min(loc1.blockY(), loc2.blockY());
-                this.yMax = Math.max(loc1.blockY(), loc2.blockY());
+                this.yMin = Math.min(pos1.blockY(), pos2.blockY());
+                this.yMax = Math.max(pos1.blockY(), pos2.blockY());
             }
         }
     }
@@ -53,8 +53,8 @@ public class Cuboid {
     public boolean isInside(Location loc, boolean head) {
         if (!loc.getWorld().getName().equalsIgnoreCase(world))
             return false;
-        int x = loc.blockX();
-        int z = loc.blockZ();
+        int x = loc.getBlockX();
+        int z = loc.getBlockZ();
         if ((xMin > x || xMax < x) || (zMin > z || zMax < z))
             return false;
         if (yMin == null)

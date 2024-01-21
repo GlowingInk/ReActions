@@ -69,9 +69,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         if (loc == null) return EVERYWHERE;
         return new ImplicitPosition(
                 loc.getWorld().getName(),
-                loc.blockX(),
-                loc.blockY(),
-                loc.blockZ()
+                loc.getBlockX(),
+                loc.getBlockY(),
+                loc.getBlockZ()
         );
     }
 

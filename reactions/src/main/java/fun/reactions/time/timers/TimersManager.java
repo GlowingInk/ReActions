@@ -24,7 +24,7 @@ package fun.reactions.time.timers;
 
 import fun.reactions.ReActions;
 import fun.reactions.module.basic.ContextManager;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.message.Msg;
@@ -208,8 +208,8 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     public static void load() {
         timers.clear();
         YamlConfiguration cfg = new YamlConfiguration();
-        File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "timers.yml");
-        if (FileUtils.loadCfg(cfg, f, "Failed to load timers.yml file"))
+        File file = new File(ReActions.getPlugin().getDataFolder() + File.separator + "timers.yml");
+        if (ConfigUtils.loadConfig(cfg, file, "Failed to load timers configuration file"))
             for (String timerType : cfg.getKeys(false)) {
                 if (!(timerType.equalsIgnoreCase("INGAME") || timerType.equalsIgnoreCase("SERVER"))) continue;
                 ConfigurationSection cs = cfg.getConfigurationSection(timerType);
@@ -243,7 +243,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
                 cfg.set(root + key, key.equalsIgnoreCase("time") ? params.getString(key).replace("_", " ") : params.getString(key));
             }
         }
-        FileUtils.saveCfg(cfg, f, "Failed to save timers.yml file");
+        ConfigUtils.saveConfig(cfg, f, "Failed to save timers configuration file");
     }
 
     public static boolean isTimerExists(String timerName) {

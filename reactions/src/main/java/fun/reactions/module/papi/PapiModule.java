@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class PapiModule implements Module {
+public class PapiModule implements Module { // TODO To own jar
     private PlaceholderAPIPlugin papiPlugin;
 
     @Override

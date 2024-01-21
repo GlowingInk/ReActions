@@ -23,7 +23,7 @@
 package fun.reactions.holders;
 
 import fun.reactions.ReActions;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.location.position.RealPosition;
 import fun.reactions.util.message.Msg;
@@ -62,7 +62,7 @@ public final class LocationHolder {
             for (var entry : tports.entrySet()) {
                 entry.getValue().intoConfiguration(lcs.createSection(entry.getKey()));
             }
-            FileUtils.saveCfg(lcs, f, "Failed to save locations to configuration file");
+            ConfigUtils.saveConfig(lcs, f, "Failed to save locations to configuration file");
         }
     }
 
@@ -70,7 +70,7 @@ public final class LocationHolder {
         tports.clear();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "locations.yml");
         YamlConfiguration lcs = new YamlConfiguration();
-        if (FileUtils.loadCfg(lcs, f, "Failed to load locations configuration file"))
+        if (ConfigUtils.loadConfig(lcs, f, "Failed to load locations configuration file"))
             for (String key : lcs.getKeys(false)) {
                 ConfigurationSection locCfg = lcs.getConfigurationSection(key);
                 if (locCfg == null) continue;

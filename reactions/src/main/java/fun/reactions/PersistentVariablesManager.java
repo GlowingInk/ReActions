@@ -23,7 +23,7 @@
 package fun.reactions;
 
 import fun.reactions.module.basic.ContextManager;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.collections.CollectionUtils;
@@ -73,9 +73,10 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
     public void save() {
         YamlConfiguration cfg = new YamlConfiguration();
         File f = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml");
-        for (String key : vars.keySet())
+        for (String key : vars.keySet()) {
             cfg.set(key, vars.get(key));
-        FileUtils.saveCfg(cfg, f, "Failed to save variables configuration file");
+        }
+        ConfigUtils.saveConfig(cfg, f, "Failed to save variables configuration file");
     }
 
     public void save(String player) {
@@ -95,7 +96,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         for (String key : vars.keySet()) {
             if (key.contains(player)) cfg.set(key, vars.get(key));
         }
-        if (FileUtils.saveCfg(cfg, f, "Failed to save variable configuration file"))
+        if (ConfigUtils.saveConfig(cfg, f, "Failed to save variable configuration file"))
             removePlayerVars(player);
     }
 
@@ -110,7 +111,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         for (String key : vars.keySet()) {
             if (key.contains("general")) cfg.set(key, vars.get(key));
         }
-        FileUtils.saveCfg(cfg, f, "Failed to save variable configuration file");
+        ConfigUtils.saveConfig(cfg, f, "Failed to save variable configuration file");
     }
 
     public void load() {
@@ -169,7 +170,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         YamlConfiguration cfg = new YamlConfiguration();
         String fileName = ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml";
         File f = new File(fileName);
-        if (!FileUtils.loadCfg(cfg, f, "Failed to load variable file")) return;
+        if (!ConfigUtils.loadConfig(cfg, f, "Failed to load variable file")) return;
         for (String key : cfg.getKeys(true)) {
             if (!key.contains(".")) continue;
             if (key.contains(player) || key.contains("general")) continue;
@@ -180,7 +181,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         for (String key : varsTmp.keySet()) {
             cfg2.set(key, varsTmp.get(key));
         }
-        if (!FileUtils.saveCfg(cfg2, f, "Failed to save variable file")) return;
+        if (!ConfigUtils.saveConfig(cfg2, f, "Failed to save variable file")) return;
         varsTmp.clear();
     }
 

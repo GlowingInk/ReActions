@@ -4,7 +4,7 @@ import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basic.activators.CommandActivator;
-import fun.reactions.util.FileUtils;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,13 +17,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class UserCommandsManager implements Listener {
     private final ReActions.Platform platform;
@@ -40,7 +34,7 @@ public final class UserCommandsManager implements Listener {
 
     public void reload() {
         YamlConfiguration cfg = new YamlConfiguration();
-        if (!FileUtils.loadCfg(cfg, file, "Failed to load commands")) return;
+        if (!ConfigUtils.loadConfig(cfg, file, "Failed to load commands")) return;
         commands.clear();
         for (String cmdKey : cfg.getKeys(false)) {
             ConfigurationSection cmdSection = cfg.getConfigurationSection(cmdKey);

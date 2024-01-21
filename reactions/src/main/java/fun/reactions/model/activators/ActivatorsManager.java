@@ -4,9 +4,9 @@ import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.collections.CollectionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -80,20 +80,26 @@ public class ActivatorsManager {
                     : group + File.separator + localGroup;
             if (clear) {
                 Set<Activator> activators = activatorsGroups.remove(group);
-                if (activators != null) for (Activator activator : activators) {
-                    types.get(activator.getClass()).removeActivator(activator);
-                    activatorsNames.remove(activator.getLogic().getName());
+                if (activators != null) {
+                    for (Activator activator : activators) {
+                        types.get(activator.getClass()).removeActivator(activator);
+                        activatorsNames.remove(activator.getLogic().getName());
+                    }
                 }
             }
-            for (String strType : cfg.getKeys(false)) {
-                ActivatorType type = types.get(strType);
+            for (String typeStr : cfg.getKeys(false)) {
+                ActivatorType type = types.get(typeStr);
                 if (type == null) {
-                    logger.warn("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'");
+                    logger.warn("Failed to load activators with the unknown type '" + typeStr + "' in the group '"+ group + "'");
                     // TODO Move failed activators to backup
                     continue;
                 }
-                // TODO Replace with some simpler null-safe method
-                ConfigurationSection cfgType = Objects.requireNonNull(cfg.getConfigurationSection(strType));
+                if (!cfg.isConfigurationSection(typeStr)) {
+                    logger.warn("Failed to load activators with the type '" + typeStr + "' - isn't a section");
+                    continue;
+                }
+                ConfigurationSection cfgType = cfg.getConfigurationSection(typeStr);
+                //noinspection DataFlowIssue
                 for (String name : cfgType.getKeys(false)) {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
                     Logic logic = new Logic(platform, type.getName().toUpperCase(Locale.ROOT), name);
@@ -169,7 +175,7 @@ public class ActivatorsManager {
         Set<Activator> activators = activatorsGroups.get(name);
         if (activators == null) return false;
         Set<Activator> finalActivators = new HashSet<>(activators);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators));
+        platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators));
         return true;
     }
 
@@ -183,10 +189,8 @@ public class ActivatorsManager {
         }
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
         for (Activator activator : activators) {
-            String type = Objects.requireNonNull(types.get(activator.getClass())).getName();
-            ConfigurationSection typeCfg = cfg.isConfigurationSection(type)
-                    ? Objects.requireNonNull(cfg.getConfigurationSection(type))
-                    : cfg.createSection(type);
+            String typeStr = Objects.requireNonNull(types.get(activator.getClass())).getName();
+            ConfigurationSection typeCfg = ConfigUtils.getSection(cfg, typeStr);
             activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
         }
         try {
@@ -196,9 +200,12 @@ public class ActivatorsManager {
         }
     }
 
-    public void activate(@NotNull ActivationContext details, @NotNull String id) {
-        details.initialize();
-        activatorsNames.get(id).executeActivator(details);
+    public void activate(@NotNull ActivationContext context, @NotNull String id) {
+        Activator activator = activatorsNames.get(id);
+        if (activator != null) {
+            context.initialize();
+            activator.executeActivator(context);
+        }
     }
 
     public boolean activate(@NotNull ActivationContext context) {
