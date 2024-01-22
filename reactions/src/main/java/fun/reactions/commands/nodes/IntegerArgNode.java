@@ -3,13 +3,14 @@ package fun.reactions.commands.nodes;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
-import fun.reactions.util.NumberUtils;
+import fun.reactions.util.num.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 
 public class IntegerArgNode implements Node {
     private final String name;
@@ -103,11 +104,12 @@ public class IntegerArgNode implements Node {
         }
 
         public boolean isValidFor(@NotNull String numStr) {
-            if (!NumberUtils.isNumber(numStr, NumberUtils.Is.INTEGER)) {
+            OptionalInt numOpt = NumberUtils.parseInteger(numStr);
+            if (numOpt.isEmpty()) {
                 return false;
             }
-            int num;
-            return min == null || ((num = NumberUtils.asInteger(numStr)) >= min && (max == null || num <= max));
+            int num = numOpt.getAsInt();
+            return min == null || (num >= min && (max == null || num <= max));
         }
 
         public @NotNull IntegerArgumentType asType() {

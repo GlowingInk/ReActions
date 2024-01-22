@@ -25,7 +25,9 @@ package fun.reactions;
 import fun.reactions.commands.impl.ExecCommand;
 import fun.reactions.commands.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
-import fun.reactions.events.listeners.*;
+import fun.reactions.events.listeners.BukkitListener;
+import fun.reactions.events.listeners.MoveListener;
+import fun.reactions.events.listeners.RaListener;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.activators.ActivatorsManager;
@@ -66,8 +68,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private WaitingManager waitingManager;
     private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
-
-    private LogHandler logHandler; // TODO Move to ContextManager
 
     @Override
     public void onLoad() {
@@ -125,14 +125,12 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         LocationHolder.loadLocs();
         SQLManager.init();
         InventoryMenu.init(this);
-        getServer().getLogger().addHandler(logHandler = new LogHandler());
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
         pluginManager.registerEvents(new BukkitListener(), this);
         pluginManager.registerEvents(new RaListener(), this);
         pluginManager.registerEvents(userCommandsManager, this);
         MoveListener.init();
-        GodModeListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
         new ReactionsCommand(this).asNode(); // TODO That's a little awkward
@@ -145,8 +143,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onDisable() {
-        getServer().getLogger().removeHandler(logHandler);
         savingManager.saveSync();
+        modulesRegistry.onDisable();
     }
 
     @Override

@@ -3,7 +3,7 @@ package fun.reactions.commands.nodes;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
-import fun.reactions.util.NumberUtils;
+import fun.reactions.util.num.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
