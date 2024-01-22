@@ -28,7 +28,6 @@ public class RunFunctionAction implements Action {
             Msg.logOnce("wrongactype_" + id, "Failed to run FUNCTION activator " + id + ". Wrong activator type.");
             return false;
         }
-        env.getVariables().set("previous_activator", env.getActivatorName());
         try {
             activator.getLogic().execute(new Environment(
                     env.getPlatform(),
