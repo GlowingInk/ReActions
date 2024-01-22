@@ -4,32 +4,28 @@ import fun.reactions.selectors.Selector;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class PlayerSelector implements Selector {
-
     @Override
     public @NotNull String getName() {
         return "player";
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(@NotNull String param) {
-        Set<Player> players = new HashSet<>();
-        if (param.isEmpty()) return players;
+    public void iteratePlayers(@NotNull String param, @NotNull Consumer<@Nullable Player> run) {
+        if (param.isEmpty()) return;
         if (param.equalsIgnoreCase("~null")) {
-            players.add(null);
+            run.accept(null);
         } else if (param.equalsIgnoreCase("~all")) {
-            players.addAll(Bukkit.getOnlinePlayers());
+            Bukkit.getOnlinePlayers().forEach(run);
         } else {
-            String[] arrPlayers = param.split(",");
-            for (String playerName : arrPlayers) {
+            for (String playerName : param.split(",")) {
                 Player targetPlayer = Bukkit.getPlayerExact(playerName.trim());
-                if ((targetPlayer != null) && (targetPlayer.isOnline())) players.add(targetPlayer);
+                if ((targetPlayer != null) && (targetPlayer.isOnline())) run.accept(targetPlayer);
             }
         }
-        return players;
     }
 }

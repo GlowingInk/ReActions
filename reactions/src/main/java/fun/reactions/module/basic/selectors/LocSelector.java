@@ -6,9 +6,9 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class LocSelector implements Selector {
     @Override
@@ -17,25 +17,22 @@ public class LocSelector implements Selector {
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(@NotNull String param) {
-        if (param.isEmpty()) return Set.of();
+    public void iteratePlayers(@NotNull String param, @NotNull Consumer<@Nullable Player> run) {
+        if (param.isEmpty()) return;
         Parameters params = Parameters.fromString(param, "loc");
         String locStr = params.getString("loc");
-        if (locStr.isEmpty()) return Set.of();
+        if (locStr.isEmpty()) return;
         Location loc = LocationUtils.parseLocation(locStr, null);
-        if (loc == null) return Set.of();
+        if (loc == null) return;
         loc.setX(loc.getBlockX() + 0.5);
         loc.setY(loc.getBlockY() + 0.5);
         loc.setZ(loc.getBlockZ() + 0.5);
         double radius = params.getDouble("radius", 1.0);
         radius *= radius;
-        Set<Player> players = new HashSet<>();
         for (Player player : loc.getWorld().getPlayers()) {
             if (player.getLocation().distanceSquared(loc) <= radius) {
-                players.add(player);
+                run.accept(player);
             }
         }
-        return players;
     }
-
 }

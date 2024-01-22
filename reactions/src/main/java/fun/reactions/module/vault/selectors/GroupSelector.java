@@ -5,31 +5,28 @@ import fun.reactions.selectors.Selector;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class GroupSelector implements Selector {
-
     @Override
     public @NotNull String getName() {
         return "group";
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(@NotNull String param) {
-        if (!RaVault.isPermissionConnected()) return Set.of();
-        if (param.isEmpty()) return Set.of();
-        Set<Player> players = new HashSet<>();
+    public void iteratePlayers(@NotNull String param, @NotNull Consumer<@Nullable Player> run) {
+        if (!RaVault.isPermissionConnected()) return;
+        if (param.isEmpty()) return;
         String[] group = param.split(",");
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (String g : group) {
                 if (RaVault.playerInGroup(player, g.trim())) {
-                    players.add(player);
+                    run.accept(player);
                     break;
                 }
             }
         }
-        return players;
     }
 }

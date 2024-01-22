@@ -235,7 +235,6 @@ public class BasicModule implements Module {
                 new ActivatorNamePlaceholder(),
                 new PersistentVarPlaceholders(),
                 new LocalVarPlaceholder(),
-                new TimestampPlaceholder(),
                 new EnderChestPlaceholder()
         );
     }

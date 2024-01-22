@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static fun.reactions.util.TimeUtils.offsetNow;
+import static fun.reactions.util.TimeUtils.addOffset;
 
 @Aliased.Names({"ACTDELAY", "DELAYED_ACTION", "ACTION_DELAYED", "RUNTIME_ACTION"})
 public class RunActionAction implements Action {
@@ -50,7 +50,7 @@ public class RunActionAction implements Action {
                     env.getVariables(),
                     env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
                     List.of(new Stored(action, actionParamsStr)),
-                    offsetNow(delayMs)
+                    addOffset(delayMs)
             ));
         }
         return true;

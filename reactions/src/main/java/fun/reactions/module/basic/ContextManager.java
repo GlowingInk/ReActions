@@ -218,9 +218,9 @@ public final class ContextManager {
         final Set<Player> target = new HashSet<>();
 
         if (param.contains("player")) {
-            target.addAll(ReActions.getSelectors().getPlayerList(Parameters.fromString(param.getString("player"), "player")));
+            target.addAll(ReActions.getSelectors().getPlayers(Parameters.fromString(param.getString("player"), "player")));
         }
-        target.addAll(ReActions.getSelectors().getPlayerList(param));   // Оставляем для совместимости со старым вариантом
+        target.addAll(ReActions.getSelectors().getPlayers(param));   // Оставляем для совместимости со старым вариантом
 
         if (target.isEmpty() && !param.containsAny(ReActions.getSelectors().getAllKeys())) target.add(senderPlayer);
 

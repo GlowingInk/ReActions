@@ -2,6 +2,7 @@ package fun.reactions.placeholders;
 
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Named;
+import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +14,7 @@ public interface Placeholder extends Named {
      * @param params Text of placeholder(e.g. %var:test% - test)
      * @return Processed placeholder
      */
-    @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params);
+    @Nullable String resolve(@NotNull Environment env, @Pattern("[a-z\\d_-]+") @NotNull String key, @NotNull String params);
 
     interface Dynamic extends Placeholder {
         @Override

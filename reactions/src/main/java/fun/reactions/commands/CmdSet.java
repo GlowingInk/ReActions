@@ -39,7 +39,7 @@ public class CmdSet extends Cmd {
             long time = params.getTime("delay");
             if (player.isEmpty()) CooldownManager.setCooldown(id, time, add);
             else CooldownManager.setPersonalCooldown(player, id, time, add);
-            if (msg) Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(System.currentTimeMillis() + time));
+            if (msg) Msg.printMSG(sender, "cmd_delayset", player.isEmpty() ? id : player + "." + id, TimeUtils.formatTime(TimeUtils.addOffset(time)));
             return true;
         } else if (var.equalsIgnoreCase("var") || var.equalsIgnoreCase("variable") || var.equalsIgnoreCase("v")) {
             String value = params.getString("value", "");

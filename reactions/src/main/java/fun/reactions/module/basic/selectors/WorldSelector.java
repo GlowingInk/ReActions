@@ -5,29 +5,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class WorldSelector implements Selector {
-
     @Override
     public @NotNull String getName() {
         return "world";
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(@NotNull String worldNames) {
-        Set<Player> players = new HashSet<>();
-        if (!worldNames.isEmpty()) {
-            String[] arrWorlds = worldNames.split(",");
-            for (String worldName : arrWorlds) {
+    public void iteratePlayers(@NotNull String param, @NotNull Consumer<@Nullable Player> run) {
+        if (!param.isEmpty()) {
+            for (String worldName : param.split(",")) {
                 World world = Bukkit.getWorld(worldName.trim());
                 if (world == null) continue;
-                players.addAll(world.getPlayers());
+                world.getPlayers().forEach(run);
             }
         }
-        return players;
     }
-
 }
