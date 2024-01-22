@@ -1,6 +1,7 @@
 package fun.reactions.util;
 
-import fun.reactions.util.NumberUtils.Is;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -55,16 +56,8 @@ public final class Rng {
     public static int nextIntRanged(String numsStr) { // TODO Requires refactoring to nextRanged
         int index = numsStr.indexOf('-');
         if (index > -1) {
-            int min = 0;
-            String minStr = numsStr.substring(0, index);
-            if (NumberUtils.isNumber(minStr, Is.NATURAL)) {
-                min = Integer.parseInt(minStr);
-            }
-            int max = 0;
-            String maxStr = numsStr.substring(index + 1);
-            if (NumberUtils.isNumber(maxStr, Is.NATURAL)) {
-                max = Integer.parseInt(maxStr) + 1;
-            }
+            int min = NumberUtils.parseInteger(numsStr.substring(0, index), Is.NATURAL).orElse(0);
+            int max = NumberUtils.parseInteger(numsStr.substring(index + 1), Is.NATURAL).orElse(0);
             return max > min ? nextInt(min, max) : min;
         }
         return NumberUtils.asInteger(numsStr);

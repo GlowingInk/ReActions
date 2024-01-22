@@ -22,16 +22,14 @@
 
 package fun.reactions;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.message.Msg;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.OptionalInt;
 import java.util.Properties;
 
 public final class SQLManager {
@@ -82,8 +80,12 @@ public final class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
-        if (NumberUtils.isNumber(result, NumberUtils.Is.NATURAL) && NumberUtils.isNumber(value, NumberUtils.Is.NATURAL)) {
-            return Integer.parseInt(result) == Integer.parseInt(value);
+        OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NATURAL);
+        if (resultOpt.isPresent()) {
+            OptionalInt valueOpt = NumberUtils.parseInteger(value, Is.NATURAL);
+            if (valueOpt.isPresent()) {
+                return resultOpt.getAsInt() == valueOpt.getAsInt();
+            }
         }
         return result.equalsIgnoreCase(value);
     }
@@ -132,12 +134,12 @@ public final class SQLManager {
                 selectStmt.execute(sqlset);
             }
             result = selectStmt.executeQuery(query);
-            if (result.first()) {
+            if (result.next()) {
                 int columns = result.getMetaData().getColumnCount();
                 if (column > 0 && column <= columns) resultStr = result.getString(column);
             }
         } catch (SQLException e) {
-            Msg.logOnce(query, "Failed to execute query: " + query);
+            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
         }
         try {
             if (result != null) result.close();
@@ -161,9 +163,7 @@ public final class SQLManager {
             statement.executeUpdate(query);
             ok = true;
         } catch (SQLException e) {
-            Msg.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) Msg.logOnce(query + e.getMessage(), e.getMessage());
-            e.printStackTrace();
+            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
         }
         try {
             if (statement != null) statement.close();
@@ -192,8 +192,7 @@ public final class SQLManager {
             result = selectStmt.executeQuery(query);
             resultBool = result.next();
         } catch (SQLException e) {
-            Msg.logOnce(query, "Failed to execute query: " + query);
-            if (e.getMessage() != null) Msg.logOnce(query + e.getMessage(), e.getMessage());
+            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
         }
         try {
             if (result != null) result.close();

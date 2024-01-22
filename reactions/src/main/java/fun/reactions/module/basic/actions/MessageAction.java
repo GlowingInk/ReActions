@@ -50,9 +50,9 @@ public class MessageAction implements Action {
     private static void sendMessage(Environment env, Player player, Parameters params) {
         Set<Player> players = new HashSet<>();
         if (params.containsAny(env.getPlatform().getSelectors().getAllKeys())) {
-            players.addAll(env.getPlatform().getSelectors().getPlayerList(params));
+            players.addAll(env.getPlatform().getSelectors().getPlayers(params));
             if (players.isEmpty() && params.contains("player")) {
-                players.addAll(env.getPlatform().getSelectors().getPlayerList(Parameters.fromString(params.getString("player"))));
+                players.addAll(env.getPlatform().getSelectors().getPlayers(Parameters.fromString(params.getString("player"))));
             }
         } else if (player != null) {
             players.add(player);

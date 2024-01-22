@@ -2,27 +2,28 @@ package fun.reactions.module.basic.placeholders;
 
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.OptionalInt;
 
-import static fun.reactions.util.NumberUtils.Is.NATURAL;
-
-@Aliased.Names("invplayer")
-public class PlayerInvPlaceholder implements Placeholder.Keyed {
+@Aliased.Names({"invplayer", "playerinv"})
+public class PlayerInvPlaceholder implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String text) {
         Player player = env.getPlayer();
         if (player == null) {
             return null;
         }
-        if (NumberUtils.isNumber(text, NATURAL)) {
-            int slotNum = Integer.parseInt(text);
+        OptionalInt slotOpt = NumberUtils.parseInteger(text, Is.NON_NEGATIVE);
+        if (slotOpt.isPresent()) {
+            int slotNum = slotOpt.getAsInt();
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return VirtualItem.AIR.asString();
             return VirtualItem.asString(player.getInventory().getItem(slotNum));
         } else {

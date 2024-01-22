@@ -13,13 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ActivatorTypesRegistry {
     private final Logger logger;
@@ -34,13 +28,13 @@ public class ActivatorTypesRegistry {
 
     public void registerType(@NotNull ActivatorType type) {
         if (types.containsKey(type.getActivatorClass())) {
-            throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered!");
+            throw new IllegalStateException("Activator type '" + type.getName() + "' is already registered");
         }
         String name = type.getName().toUpperCase(Locale.ROOT);
         if (typesAliases.containsKey(name)) {
             ActivatorType preserved = typesAliases.get(name);
             if (preserved.getName().equalsIgnoreCase(name)) {
-                throw new IllegalStateException("Activator type name '" + name + "' is already used for '" + preserved.getName() + "'!");
+                throw new IllegalStateException("Activator type name '" + name + "' is already used for '" + preserved.getName() + "'");
             } else {
                 logger.warn("Activator type name '" + name + "' is already used as an alias for '" + preserved.getName() + "', overriding it.");
             }

@@ -4,14 +4,10 @@ import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class SelectorsManager {
     private final Map<String, Selector> selectorByName;
@@ -23,17 +19,19 @@ public class SelectorsManager {
     }
 
     public void registerSelector(@NotNull Selector selector) {
-        if (selectorByName.containsKey(selector.getName().toLowerCase(Locale.ROOT))) {
-            throw new IllegalStateException("Selector '" + selector.getName().toLowerCase(Locale.ROOT) + "' is already registered!");
+        String selectorName = selector.getName().toLowerCase(Locale.ROOT);
+        if (selectorByName.containsKey(selectorName)) {
+            throw new IllegalStateException("Selector '" + selectorName + "' is already registered");
         }
         selectors.add(selector);
-        selectorByName.put(selector.getName().toLowerCase(Locale.ROOT), selector);
+        selectorByName.put(selectorName, selector);
         for (String alias : Aliased.getAliasesOf(selector)) {
             selectorByName.putIfAbsent(alias.toLowerCase(Locale.ROOT), selector);
         }
     }
 
-    public Set<Player> getPlayerList(Parameters param) { // TODO: Honestly, I'm not even sure what's going on here. Rework from scratch
+    @Deprecated
+    public Set<Player> getPlayers(Parameters param) {
         Set<Player> players = new HashSet<>();
         for (Selector selector : selectors) {
             String selectorParam = param.getString(selector.getName());
@@ -44,6 +42,15 @@ public class SelectorsManager {
             players.addAll(selector.getPlayers(selectorParam));
         }
         return players;
+    }
+
+    public void iteratePlayers(@NotNull Parameters params, @NotNull Consumer<@Nullable Player> run) {
+        for (Selector selector : selectors) {
+            String selectorParam = params.getString(selector.getName(), null);
+            if (selectorParam != null) {
+                selector.iteratePlayers(selectorParam, run);
+            }
+        }
     }
 
     public Set<String> getAllKeys() {

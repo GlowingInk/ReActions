@@ -4,31 +4,27 @@ import fun.reactions.selectors.Selector;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class PermSelector implements Selector {
-
     @Override
     public @NotNull String getName() {
         return "perm";
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(@NotNull String param) {
-        if (param.isEmpty()) return Set.of();
+    public void iteratePlayers(@NotNull String param, @NotNull Consumer<@Nullable Player> run) {
+        if (param.isEmpty()) return;
         String[] perms = param.split(",");
-        Set<Player> players = new HashSet<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (String p : perms) {
                 if (player.hasPermission(p.trim())) {
-                    players.add(player);
+                    run.accept(player);
                     break;
                 }
             }
         }
-        return players;
     }
-
 }

@@ -19,9 +19,8 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         int limit = countLimit;
         do {
             oldText = text;
-            text = resolvePreprocess(env, text);
             text = parseGradually(env, text);
-        } while (!oldText.equals(text) & --limit > 0);
+        } while (!oldText.equals(text) && --limit > 0);
         return unescapeSpecial(text);
     }
 
@@ -31,8 +30,8 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         int stepIndex = 0;
         boolean allowSpecial = true;
         for (int index = 0; index < text.length(); index++) {
-            char c = text.charAt(index);
-            if (c == '\\' && stage != IterationStage.PLACEHOLDER_CHECK) {
+            char ch = text.charAt(index);
+            if (ch == '\\' && stage != IterationStage.PLACEHOLDER_CHECK) {
                 if (stage == IterationStage.TEXT) {
                     builder.append(text, stepIndex, index + 1);
                     stepIndex = index + 1;
@@ -41,18 +40,16 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                 if (text.length() == ++index) {
                     break;
                 }
-                c = text.charAt(index);
+                ch = text.charAt(index);
             }
             switch (stage) {
                 case TEXT -> {
-                    if (c == '%') {
-                        if (allowSpecial) {
-                            stage = IterationStage.PLACEHOLDER_CHECK;
-                        }
+                    if (ch == '%' && allowSpecial) {
+                        stage = IterationStage.PLACEHOLDER_CHECK;
                     }
                 }
                 case PLACEHOLDER_CHECK -> {
-                    if (c == '[') {
+                    if (ch == '[') {
                         builder.append(text, stepIndex, index - 1);
                         stepIndex = index - 1;
                         stage = IterationStage.PLACEHOLDER_INSIDE;
@@ -61,10 +58,10 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                     }
                 }
                 case PLACEHOLDER_INSIDE -> {
-                    if (c == ' ') {
+                    if (ch == ' ') {
                         stage = IterationStage.TEXT;
                     } else if (allowSpecial) {
-                        if (c == ']') {
+                        if (ch == ']') {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(env, substring);
                             if (processed != null) {
@@ -82,7 +79,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             }
                             stepIndex = index + 1;
                             stage = IterationStage.TEXT;
-                        } else if (c == '%') {
+                        } else if (ch == '%') {
                             stage = IterationStage.PLACEHOLDER_CHECK;
                         }
                     }

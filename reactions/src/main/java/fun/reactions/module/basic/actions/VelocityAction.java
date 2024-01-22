@@ -25,8 +25,8 @@ package fun.reactions.module.basic.actions;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -50,13 +50,13 @@ public class VelocityAction implements Action, Activity.Personal { // TODO Playe
         if (velstr.isEmpty()) return false;
         Vector velocity = player.getVelocity();
         String[] ln = velstr.split(",");
-        if ((ln.length == 1) && (NumberUtils.FLOAT.matcher(velstr).matches())) {
+        if ((ln.length == 1) && (NumberUtils.IS_NUMBER.test(velstr))) {
             double power = Double.parseDouble(velstr);
             velocity.setY(Math.min(10, kick ? power * player.getVelocity().getY() : power));
         } else if ((ln.length == 3) &&
-                NumberUtils.FLOAT.matcher(ln[0]).matches() &&
-                NumberUtils.FLOAT.matcher(ln[1]).matches() &&
-                NumberUtils.FLOAT.matcher(ln[2]).matches()) {
+                NumberUtils.IS_NUMBER.test(ln[0]) &&
+                NumberUtils.IS_NUMBER.test(ln[1]) &&
+                NumberUtils.IS_NUMBER.test(ln[2])) {
             double powerx = Double.parseDouble(ln[0]);
             double powery = Double.parseDouble(ln[1]);
             double powerz = Double.parseDouble(ln[2]);

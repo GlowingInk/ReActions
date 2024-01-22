@@ -36,12 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Deprecated
 public class Messenger {
@@ -82,23 +77,20 @@ public class Messenger {
         return text != null ? ChatColor.translateAlternateColorCodes('&', text) : text;
     }
 
-    public boolean log(String text) {
+    public void log(String text) {
         plugin.getLogger().info(text);
-        return true;
     }
 
     public String clean(String text) {
         return ChatColor.stripColor(text);
     }
 
-    public boolean print(Object obj, String text) {
-        CommandSender sender = toSender(obj);
+    public void print(CommandSender sender, String text) {
         if (sender != null) {
             sender.sendMessage(text);
         } else {
-            log("Failed to print message - wrong recipient: " + (obj == null ? "null" : obj.toString()));
+            log("Failed to print message - wrong recipient");
         }
-        return true;
     }
 
     public String toString(Object obj, boolean fullFloat) {
@@ -152,13 +144,4 @@ public class Messenger {
             Msg.LNG_SAVE_FAIL.log();
         }
     }
-
-    public boolean isValidSender(Object send) {
-        return (toSender(send) != null);
-    }
-
-    private CommandSender toSender(Object sender) {
-        return sender instanceof CommandSender ? (CommandSender) sender : null;
-    }
-
 }

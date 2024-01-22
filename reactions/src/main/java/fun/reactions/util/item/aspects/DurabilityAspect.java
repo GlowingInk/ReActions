@@ -1,7 +1,7 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;

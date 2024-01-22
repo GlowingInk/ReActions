@@ -1,9 +1,9 @@
 package fun.reactions.util.item;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.aspects.*;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -13,11 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;

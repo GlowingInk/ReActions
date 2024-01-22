@@ -6,7 +6,7 @@ import fun.reactions.util.naming.Aliased;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("activatorname")
-public class ActivatorNamePlaceholder implements Placeholder.Keyed {
+public class ActivatorNamePlaceholder implements Placeholder {
     @Override
     public @NotNull String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
         return env.getActivatorName();

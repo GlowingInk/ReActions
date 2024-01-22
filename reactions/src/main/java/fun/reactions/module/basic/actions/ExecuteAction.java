@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fun.reactions.util.TimeUtils.offsetNow;
+import static fun.reactions.util.TimeUtils.addOffset;
 
 @Aliased.Names({"RUN", "EXEC"})
 public class ExecuteAction implements Action {
@@ -53,7 +53,7 @@ public class ExecuteAction implements Action {
         long delayMs = params.getTime("delay", 0);
         List<Player> targets = new ArrayList<>();
         if (params.contains("player")) {
-            targets.addAll(platform.getSelectors().getPlayerList(Parameters.fromString(params.getString("player"), "player")));
+            targets.addAll(platform.getSelectors().getPlayers(Parameters.fromString(params.getString("player"), "player")));
         }
         if (targets.isEmpty()) {
             if (!params.containsAny(env.getPlatform().getSelectors().getAllKeys())) {  // TODO Remove legacy compatibility (selectors)
@@ -65,7 +65,7 @@ public class ExecuteAction implements Action {
         var storedFunct = List.of(new Stored(functAction, paramsStr));
         WaitingManager waiter = platform.getWaiter();
         for (int i = 0; i < repeat; i++) {
-            long until = offsetNow(delayMs * (i + 1));
+            long until = addOffset(delayMs * (i + 1));
             for (Player player : targets) {
                 waiter.schedule(new WaitTask(
                         env.getVariables().fork(),

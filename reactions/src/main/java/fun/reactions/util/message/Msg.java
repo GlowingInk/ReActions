@@ -22,16 +22,10 @@
 
 package fun.reactions.util.message;
 
+import org.bukkit.command.CommandSender;
+
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Deprecated
 public enum Msg {
@@ -444,7 +438,6 @@ public enum Msg {
     ACTIVATOR_WE_CHANGE("This activator is triggered when a player edits the world using the WorldEdit plug-in. /react add we_change <id> [region:<region>] [block-type:<block-type>]"),
     ACTIVATOR_WE_SELECTION_REGION("This activator is initiates when a player make a select using the WorldEdit plug-in. /react add we_selection_region <id> [min-blocks:<digit>] [max-blocks:<digit>] [type:<selectionType>]"),
     ACTIVATOR_GAMEMODE("This activators initiates when player's gamemode changed"),
-    ACTIVATOR_GOD("This activators initiates when the player is changing the god mode."),
     ACTIVATOR_CUBOID("This activators initiates when the player moves to specified cuboid"),
     MSG_PLACEHOLDERLISTTITLE("Placeholders"),
     PLACEHOLDER_TIME_SERVER("Server (system) time"),
@@ -547,27 +540,27 @@ public enum Msg {
     private static String join(Object... s) {
         StringBuilder sb = new StringBuilder();
         for (Object o : s) {
-            if (sb.length() > 0) sb.append(" ");
+            if (!sb.isEmpty()) sb.append(" ");
             sb.append(messenger.toString(o, false));
         }
         return sb.toString();
     }
 
-    private static void printLines(Object sender, Collection<String> lines) {
+    private static void printLines(CommandSender sender, Collection<String> lines) {
         for (String l : lines) {
             messenger.print(sender, colorize(l));
         }
     }
 
-    public static void printPage(Object sender, Collection<String> lines, Msg title, int pageNum, int linesPerPage) {
+    public static void printPage(CommandSender sender, Collection<String> lines, Msg title, int pageNum, int linesPerPage) {
         printPage(sender, lines, title, pageNum, linesPerPage, false);
     }
 
-    public static void printPage(Object sender, Collection<String> lines, Msg title, int pageNum, int linesPerPage, boolean showNum) {
+    public static void printPage(CommandSender sender, Collection<String> lines, Msg title, int pageNum, int linesPerPage, boolean showNum) {
         printPage(sender, lines, title, null, pageNum, linesPerPage, showNum);
     }
 
-    public static void printPage(Object sender, Collection<String> lines, Msg title, Msg footer, int pageNum, int linesPerPage, boolean showNum) {
+    public static void printPage(CommandSender sender, Collection<String> lines, Msg title, Msg footer, int pageNum, int linesPerPage, boolean showNum) {
         if (lines == null || lines.isEmpty()) return;
         List<String> page = new ArrayList<>();
         if (title != null) page.add(title.getText('e', '6', pluginName));
@@ -598,13 +591,13 @@ public enum Msg {
         return null;
     }
 
-    public static boolean printMSG(Object sender, String key, Object... s) {
+    public static void printMSG(CommandSender sender, String key, Object... s) {
         Msg m = getByName(key.toUpperCase(Locale.ROOT));
         if (m == null) {
             LNG_PRINT_FAIL_M.print(sender, key);
-            return LNG_PRINT_FAIL_M.log(sender, key);
+            LNG_PRINT_FAIL_M.log(sender, key);
         } else {
-            return m.print(sender, s);
+            m.print(sender, s);
         }
     }
 
@@ -614,10 +607,8 @@ public enum Msg {
         Msg.logMessage(s);
     }
 
-    public static void printMessage(Object sender, String message) {
-        if (messenger.isValidSender(sender)) {
-            messenger.print(sender, colorize(message));
-        }
+    public static void printMessage(CommandSender sender, String message) {
+        messenger.print(sender, colorize(message));
     }
 
     /**
@@ -629,9 +620,8 @@ public enum Msg {
      * Message.ERROR_MESSAGE.log(variable1); // just print in log
      * return Message.ERROR_MESSAGE.log(variable1); // print in log and return value true
      */
-    public boolean log(Object... s) {
+    public void log(Object... s) {
         Msg.logMessage(getText(s));
-        return true;
     }
 
     /**
@@ -640,11 +630,10 @@ public enum Msg {
      * @param s - array of any object that you need to print out.
      * @return — always returns true.
      */
-    public boolean debug(Object... s) {
+    public void debug(Object... s) {
         if (debugMode) {
             log(messenger.clean(getText(s)));
         }
-        return true;
     }
 
     /**
@@ -654,9 +643,12 @@ public enum Msg {
      * @param s      - array of any object that you need to print out.
      * @return — always returns true.
      */
-    public boolean print(Object sender, Object... s) {
-        if (sender == null) return Msg.LNG_PRINT_FAIL.log(this.name());
-        return messenger.print(sender, getText(s));
+    public void print(CommandSender sender, Object... s) {
+        if (sender == null) {
+            Msg.LNG_PRINT_FAIL.log(this.name());
+        } else {
+            messenger.print(sender, getText(s));
+        }
     }
 
     /**

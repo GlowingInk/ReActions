@@ -21,11 +21,8 @@ public class Cfg {
     public static int chatLength = 55;
     public static boolean playerSelfVarFile = false;
     public static boolean playerAsynchSaveSelfVarFile = false;
-    public static boolean logRegistering = true;
     public static boolean playerMoveTaskUse = false;
     public static int playerMoveTaskTick = 5;
-    public static boolean godActivatorEnable = false; // experimental, disabled by default
-    public static int godActivatorCheckTicks = 10;
     public static boolean altOperator = false; // experimental, disabled by default
     public static boolean modernPlaceholders = false;
     public static boolean parseBookPages = false;
@@ -42,10 +39,7 @@ public class Cfg {
         config.set("general.waiter-missing-player-behaviour", "SKIP");
         config.set("general.use-modern-placeholders", modernPlaceholders);
         config.set("general.parse-book-pages", parseBookPages);
-        config.set("general.log-registering", logRegistering);
 
-        config.set("reactions.activators.god.enable", godActivatorEnable);
-        config.set("reactions.activators.god.recheck-ticks", godActivatorCheckTicks);
         config.set("reactions.save-empty-actions-and-flags-sections", saveEmptySections);
         config.set("reactions.center-player-teleport", centerTpCoords);
         config.set("reactions.region-recheck-delay", worldguardRecheck);
@@ -66,7 +60,6 @@ public class Cfg {
         playerAsynchSaveSelfVarFile = config.getBoolean("general.player-asynch-save-self-variable-file", false);
         playerMoveTaskUse = config.getBoolean("general.player-move-event.use-task", false);
         playerMoveTaskTick = config.getInt("general.player-move-event.task-tick", 5);
-        logRegistering = config.getBoolean("general.log-registering", true);
 
         WaitingManager.setHoursLimit(config.getLong("general.waiter-hours-limit", 4380));
         WaitingManager.setBehaviour(Utils.getEnum(config.getString("general.waiter-missing-player-behaviour", "SKIP"), WaitingManager.AttachedBehaviour.SKIP));
@@ -76,8 +69,6 @@ public class Cfg {
 
         parseBookPages = config.getBoolean("general.parse-book-pages", false);
 
-        godActivatorEnable = config.getBoolean("reactions.activators.god.enable", false);
-        godActivatorCheckTicks = config.getInt("reactions.activators.god.recheck-ticks", 10);
         chatLength = config.getInt("reactions.default-chat-line-length", 55);
         saveEmptySections = config.getBoolean("reactions.save-empty-actions-and-flags-sections", false);
         centerTpCoords = config.getBoolean("reactions.center-player-teleport", true);

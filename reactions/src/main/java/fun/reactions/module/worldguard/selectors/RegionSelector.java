@@ -4,26 +4,21 @@ import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.selectors.Selector;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class RegionSelector implements Selector {
-
     @Override
     public @NotNull String getName() {
         return "region";
     }
 
     @Override
-    public @NotNull Set<Player> getPlayers(@NotNull String regionStr) {
-        if (regionStr.isEmpty()) return Set.of();
-        String[] arrRegion = regionStr.split(",");
-        Set<Player> players = new HashSet<>();
-        for (String regionName : arrRegion) {
-            players.addAll(RaWorldGuard.playersInRegion(regionName.trim()));
+    public void iteratePlayers(@NotNull String param, @NotNull Consumer<@Nullable Player> run) {
+        if (param.isEmpty()) return;
+        for (String regionName : param.split(",")) {
+            RaWorldGuard.playersInRegion(regionName.trim()).forEach(run);
         }
-        return players;
     }
-
 }

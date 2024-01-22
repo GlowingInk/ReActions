@@ -26,21 +26,16 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.function.FunctionalUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -216,9 +211,9 @@ public class MessageActivator extends Activator {
                     this.nums = new ArrayList<>(0);
                     this.ints = new ArrayList<>(0);
                     for (String arg : args) {
-                        if (NumberUtils.isNumber(arg)) {
+                        if (NumberUtils.IS_NUMBER.test(arg)) {
                             nums.add(arg);
-                            if (NumberUtils.isNumber(arg, NumberUtils.Is.INTEGER)) {
+                            if (NumberUtils.IS_INTEGER.test(arg)) {
                                 ints.add(arg);
                             }
                         }

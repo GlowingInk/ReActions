@@ -30,10 +30,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class SqlFlags implements Flag {
     // TODO: Make it safer
-    private final boolean check;
+    private final Type type;
 
-    public SqlFlags(boolean check) {
-        this.check = check;
+    public SqlFlags(Type type) {
+        this.type = type;
     }
 
     @Override
@@ -53,12 +53,24 @@ public class SqlFlags implements Flag {
             query = "SELECT " + select + " FROM " + from + (where.isEmpty() ? "" : " WHERE " + where);
         }
         int column = params.getInteger("column", 1);
-        if (check) return SQLManager.compareSelect(value, query, column, params, env.getVariables().getString("SQL_SET"));
-        else return SQLManager.isSelectResultEmpty(query);
+        if (type == Type.CHECK) {
+            return SQLManager.compareSelect(value, query, column, params, env.getVariables().getString("sql_set"));
+        } else {
+            return SQLManager.isSelectResultEmpty(query);
+        }
     }
 
     @Override
     public @NotNull String getName() {
-        return check ? "SQL_CHECK" : "SQL_RESULT";
+        return type.toString();
+    }
+
+    public enum Type {
+        CHECK, RESULT;
+
+        @Override
+        public String toString() {
+            return "SQL_" + name();
+        }
     }
 }

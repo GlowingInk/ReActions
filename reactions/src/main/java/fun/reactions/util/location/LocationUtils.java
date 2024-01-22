@@ -24,8 +24,8 @@ package fun.reactions.util.location;
 
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.Rng;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -177,7 +177,7 @@ public final class LocationUtils { // TODO: Requires refactoring
         World w = Bukkit.getWorld(ln[0]);
         if (w == null) return null;
         for (int i = 1; i < ln.length; i++) {
-            if (!NumberUtils.FLOAT.matcher(ln[i]).matches()) return null;
+            if (!NumberUtils.IS_NUMBER.test(ln[i])) return null;
         }
         loc = new Location(w, Double.parseDouble(ln[1]), Double.parseDouble(ln[2]), Double.parseDouble(ln[3]));
         if (ln.length == 6) {
@@ -192,7 +192,7 @@ public final class LocationUtils { // TODO: Requires refactoring
         String[] ln = vectorStr.split(",");
         if (ln.length != 3) return null;
         for (String s : ln) {
-            if (!NumberUtils.FLOAT.matcher(s).matches()) return null;
+            if (!NumberUtils.IS_NUMBER.test(s)) return null;
         }
         return new Vector(Double.parseDouble(ln[0]), Double.parseDouble(ln[1]), Double.parseDouble(ln[2]));
     }

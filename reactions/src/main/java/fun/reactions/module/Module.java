@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface Module extends Named {
 
-    default @NotNull Collection<String> requiredPlugins() {
+    default @NotNull Collection<@NotNull String> requiredPlugins() {
         return List.of();
     }
 
@@ -22,25 +22,27 @@ public interface Module extends Named {
 
     default void postRegister(@NotNull ReActions.Platform platform) { }
 
-    @NotNull Collection<String> getAuthors();
+    default void onDisable(@NotNull ReActions.Platform platform) { }
 
-    default @NotNull Collection<ActivatorType> getActivatorTypes() {
+    @NotNull Collection<@NotNull String> getAuthors();
+
+    default @NotNull Collection<@NotNull ActivatorType> getActivatorTypes() {
         return List.of();
     }
 
-    default @NotNull Collection<Action> getActions() {
+    default @NotNull Collection<@NotNull Action> getActions() {
         return List.of();
     }
 
-    default @NotNull Collection<Flag> getFlags() {
+    default @NotNull Collection<@NotNull Flag> getFlags() {
         return List.of();
     }
 
-    default @NotNull Collection<Placeholder> getPlaceholders() {
+    default @NotNull Collection<@NotNull Placeholder> getPlaceholders() {
         return List.of();
     }
 
-    default @NotNull Collection<Selector> getSelectors() {
+    default @NotNull Collection<@NotNull Selector> getSelectors() {
         return List.of();
     }
 }

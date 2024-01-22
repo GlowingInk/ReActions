@@ -8,8 +8,8 @@ import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.module.basic.ItemContextManager;
 import fun.reactions.module.basic.activators.DropActivator;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.item.VirtualItem;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

@@ -31,7 +31,7 @@ public class ActivitiesRegistry {
     public void registerAction(@NotNull Action action) {
         String upperAction = action.getName().toUpperCase(Locale.ROOT);
         if (actionByName.containsKey(upperAction)) {
-            throw new IllegalStateException("Action '" + upperAction + "' is already registered!");
+            throw new IllegalStateException("Action '" + upperAction + "' is already registered");
         }
         actionByName.put(upperAction, action);
         for (String alias : Aliased.getAliasesOf(action)) {
@@ -42,7 +42,7 @@ public class ActivitiesRegistry {
     public void registerFlag(@NotNull Flag flag) {
         String upperFlag = flag.getName().toUpperCase(Locale.ROOT);
         if (flagByName.containsKey(upperFlag)) {
-            throw new IllegalStateException("Flag '" + upperFlag + "' is already registered!");
+            throw new IllegalStateException("Flag '" + upperFlag + "' is already registered");
         }
         flagByName.put(upperFlag, flag);
         flagNames.add(upperFlag);

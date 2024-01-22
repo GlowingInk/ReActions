@@ -12,7 +12,7 @@ public class LocalVarAction implements Action {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         env.getVariables().set(
-                params.getString(params.findKey("id", "key")),
+                params.getString(params.findKey("key", "id")),
                 params.getString("value", params.getBoolean("delete-empty", false) ? null : "")
         );
         return true;

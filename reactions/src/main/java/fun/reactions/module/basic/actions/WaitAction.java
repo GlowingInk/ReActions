@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static fun.reactions.util.TimeUtils.offsetNow;
+import static fun.reactions.util.TimeUtils.addOffset;
 
 @Aliased.Names("PAUSE")
 public class WaitAction implements Action, Interrupting {
@@ -30,7 +30,7 @@ public class WaitAction implements Action, Interrupting {
                 env.getVariables().fork(),
                 env.getPlayer() != null ? env.getPlayer().getUniqueId() : null,
                 remaining,
-                offsetNow(Parameters.fromString(params, "time").getTime("time", 0))
+                addOffset(Parameters.fromString(params, "time").getTime("time", 0))
         ));
     }
 }

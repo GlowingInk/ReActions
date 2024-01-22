@@ -25,8 +25,8 @@ package fun.reactions.module.basic.actions;
 import fun.reactions.PersistentVariablesManager;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,8 +81,7 @@ public class PersistentVarActions implements Action, Aliased {
                 }
                 double mod = change.isEmpty() || !(NumberUtils.isNumber(change)) ? 1 : Double.parseDouble(change);
                 varNumberValue += actType == Type.INCREASE ? mod : -mod;
-                varsManager.setVariable(playerName, varName, NumberUtils.format(varNumberValue));
-
+                varsManager.setVariable(playerName, varName, NumberUtils.simpleFormat(varNumberValue));
             }
         }
         return true;

@@ -27,12 +27,12 @@ import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.basic.ItemContextManager;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.OptionalInt;
 
 // TODO: Remake from scratch
 public class ItemActions implements Action, Activity.Personal {
@@ -92,8 +93,9 @@ public class ItemActions implements Action, Activity.Personal {
         if (itemStr.isEmpty()) return false;
         String slotStr = params.getString("slot");
         if (slotStr.isEmpty()) return false;
-        if (!NumberUtils.isNumber(slotStr, Is.NATURAL)) return wearItem(env, params);
-        int slotNum = Integer.parseInt(slotStr);
+        OptionalInt slotOpt = NumberUtils.parseInteger(slotStr, Is.NON_NEGATIVE);
+        if (slotOpt.isEmpty()) return wearItem(env, params);
+        int slotNum = slotOpt.getAsInt();
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack oldItem = player.getInventory().getItem(slotNum);
         if (oldItem != null) oldItem = oldItem.clone();
@@ -119,9 +121,9 @@ public class ItemActions implements Action, Activity.Personal {
     private boolean getInventorySlot(Environment env, Parameters params) {
         Player player = env.getPlayer();
         String slotStr = params.getString("slot");
-        if (slotStr.isEmpty()) return false;
-        if (!NumberUtils.isNumber(slotStr, Is.NATURAL)) return wearItemView(env, params);
-        int slotNum = Integer.parseInt(slotStr);
+        OptionalInt slotOpt = NumberUtils.parseInteger(slotStr, Is.NON_NEGATIVE);
+        if (slotOpt.isEmpty()) return wearItemView(env, params);
+        int slotNum = slotOpt.getAsInt();
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);
         String actionItems = "";

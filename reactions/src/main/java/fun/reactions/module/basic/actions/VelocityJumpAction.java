@@ -40,7 +40,7 @@ public class VelocityJumpAction implements Action, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        Msg.logOnce("velocity-jump-warning", "&cWarning! VELOCITY_JUMP action is under development. In next version of plugin it could be changed, renamed or removed!");
+        Msg.logOnce("velocity-jump-warning", "&cWarning! VELOCITY_JUMP action is under development. In next version of plugin it could be changed, renamed or removed");
         String locStr = params.getString("loc");
         if (locStr.isEmpty()) return false;
         Location loc = LocationUtils.parseCoordinates(locStr);

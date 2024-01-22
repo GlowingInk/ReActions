@@ -24,12 +24,14 @@ package fun.reactions.module.basic.flags;
 
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.OptionalInt;
 
 @Aliased.Names("TIME")
 public class WorldTimeFlag implements Flag { // TODO Rework, support specific worlds
@@ -53,12 +55,12 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
 
         } else {
             String[] tln = paramsStr.split(",");
-            if (tln.length > 0) {
-                for (String timeStr : tln)
-                    if (NumberUtils.isNumber(timeStr, Is.NATURAL)) {
-                        int ct = (int) ((currentTime / 1000 + 6) % 24);
-                        if (ct == Integer.parseInt(timeStr)) return true;
-                    }
+            for (String timeStr : tln) {
+                OptionalInt timeOpt = NumberUtils.parseInteger(timeStr, Is.NON_NEGATIVE);
+                if (timeOpt.isPresent()) {
+                    int ct = (int) ((currentTime / 1000 + 6) % 24);
+                    if (ct == timeOpt.getAsInt()) return true;
+                }
             }
         }
         return false;
@@ -70,8 +72,9 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
             String[] ln = time.split(",");
             if (ln.length > 0)
                 for (int i = 0; i < ln.length; i++) {
-                    if (!NumberUtils.isNumber(ln[i], Is.NATURAL)) continue;
-                    String tmp = String.format("%02d:00", Integer.parseInt(ln[i]));
+                    OptionalInt tmpOpt = NumberUtils.parseInteger(ln[i], Is.NON_NEGATIVE);
+                    if (tmpOpt.isEmpty()) continue;
+                    String tmp = String.format("%02d:00", tmpOpt.getAsInt());
                     if (i == 0) result = new StringBuilder(tmp);
                     else result.append(", ").append(tmp);
                 }

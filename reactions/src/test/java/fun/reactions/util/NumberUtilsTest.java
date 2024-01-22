@@ -1,28 +1,33 @@
 package fun.reactions.util;
 
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.OptionalDouble;
+import java.util.function.DoublePredicate;
 
 import static org.testng.Assert.assertEquals;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class NumberUtilsTest {
     @DataProvider
-    public Object[][] isNumberData() {
-        return new Object[][] {
-                {"123", List.of(), true},
-                {"123.1", List.of(NumberUtils.Is.INTEGER), false},
-                {"-123.4", List.of(NumberUtils.Is.POSITIVE.negate()), true},
-                {"-123", List.of(NumberUtils.Is.INTEGER, NumberUtils.Is.NON_ZERO), true}
+    public static Object[][] parseDoubleData() {
+        return new Object[][]{
+                {"3.14", Is.POSITIVE, OptionalDouble.of(3.14)},
+                {"-5.0", Is.POSITIVE_NATURAL, OptionalDouble.empty()},
+                {"0.0", Is.NON_NEGATIVE, OptionalDouble.of(0.0)},
+                {"7", Is.INTEGER, OptionalDouble.of(7)},
+                {"3.14", Is.NATURAL, OptionalDouble.empty()},
+                {"abc", Is.NEGATIVE, OptionalDouble.empty()}
         };
     }
 
-    @Test(dataProvider = "isNumberData")
-    public void isNumberTest(String input, List<Predicate<String>> flags, boolean expected) {
+    @Test(dataProvider = "parseDoubleData")
+    public void parseDoubleTest(String str, DoublePredicate predicate, OptionalDouble expected) {
         assertEquals(
-                NumberUtils.isNumber(input, flags),
+                NumberUtils.parseDouble(str, predicate),
                 expected
         );
     }

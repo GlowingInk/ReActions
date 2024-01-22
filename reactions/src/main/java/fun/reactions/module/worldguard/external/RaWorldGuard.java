@@ -48,6 +48,7 @@ public class RaWorldGuard {
     }
 
     public static void updateRegionCache() {
+        if (bridge == null) return;
         regionActivators = new HashSet<>();
         // TODO Custom ActivatorType
         for (Activator a : ReActions.getActivatorTypes().get(RegionActivator.class).getActivators()) {

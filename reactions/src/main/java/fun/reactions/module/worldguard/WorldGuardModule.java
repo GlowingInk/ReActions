@@ -81,6 +81,6 @@ public class WorldGuardModule implements Module {
 
     @Override
     public @NotNull String getName() {
-        return "worldguard";
+        return "WorldGuard";
     }
 }

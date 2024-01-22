@@ -2,12 +2,10 @@ package fun.reactions.module;
 
 import fun.reactions.Cfg;
 import fun.reactions.ReActions;
-import fun.reactions.model.activators.type.ActivatorType;
-import fun.reactions.model.activity.actions.Action;
-import fun.reactions.model.activity.flags.Flag;
-import fun.reactions.placeholders.Placeholder;
-import fun.reactions.selectors.Selector;
+import fun.reactions.util.collections.CollectionUtils;
+import fun.reactions.util.naming.Named;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -20,13 +18,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 public class ModulesRegistry {
     private final ReActions.Platform platform;
     private final File modulesFolder;
+    private final List<Module> loadedModules;
     private List<Module> later;
     private boolean loaded;
 
@@ -34,17 +32,26 @@ public class ModulesRegistry {
         this.platform = platform;
         this.modulesFolder = new File(platform.getDataFolder(), "Modules");
         this.later = new ArrayList<>();
+        this.loadedModules = new ArrayList<>();
     }
 
+    @ApiStatus.Internal
     public void registerPluginDepended() {
         if (later == null) {
             throw new IllegalStateException("Plugin-depended modules are already registered.");
         }
         if (!later.isEmpty()) {
-            optionalInfo("Registering plugin-depended modules.");
+            debugInfo("Registering plugin-depended modules.");
             later.forEach(this::register);
         }
         later = null;
+    }
+
+    @ApiStatus.Internal
+    public void onDisable() {
+        for (Module module : loadedModules) {
+            module.onDisable(platform);
+        }
     }
 
     public void registerModule(@NotNull Module module) {
@@ -63,12 +70,13 @@ public class ModulesRegistry {
             return;
         }
         module.preRegister(platform);
-        register("activators", module.getActivatorTypes(), ActivatorType::getName, platform.getActivatorTypes()::registerType);
-        register("actions", module.getActions(), Action::getName, platform.getActivities()::registerAction);
-        register("flags", module.getFlags(), Flag::getName, platform.getActivities()::registerFlag);
-        register("placeholders", module.getPlaceholders(), Placeholder::getName, platform.getPlaceholders()::registerPlaceholder);
-        register("selectors", module.getSelectors(), Selector::getName, platform.getSelectors()::registerSelector);
+        register("activators", module.getActivatorTypes(), platform.getActivatorTypes()::registerType);
+        register("actions", module.getActions(), platform.getActivities()::registerAction);
+        register("flags", module.getFlags(), platform.getActivities()::registerFlag);
+        register("placeholders", module.getPlaceholders(), platform.getPlaceholders()::registerPlaceholder);
+        register("selectors", module.getSelectors(), platform.getSelectors()::registerSelector);
         module.postRegister(platform);
+        loadedModules.add(module);
     }
 
     private @NotNull List<String> checkPlugins(@NotNull Module module) {
@@ -82,21 +90,21 @@ public class ModulesRegistry {
         return missingPlugins;
     }
 
-    private <T> void register(String what, Collection<T> values, Function<T, String> toString, Consumer<T> register) {
+    private <T extends Named> void register(String what, Collection<T> values, Consumer<T> register) {
         if (values.isEmpty()) return;
         List<String> names = new ArrayList<>(values.size());
         List<String> failed = null;
         for (T type : values) {
             try {
                 register.accept(type);
-                names.add(toString.apply(type).toUpperCase(Locale.ROOT));
+                names.add(type.getName().toUpperCase(Locale.ROOT));
             } catch (IllegalStateException e) {
                 if (failed == null) failed = new ArrayList<>();
                 failed.add(e.getMessage());
             }
         }
         if (!names.isEmpty()) {
-            optionalInfo("Added " + names.size() + " " + what + ": " + String.join(", ", names));
+            debugInfo("Added " + names.size() + " " + what + ": " + String.join(", ", names));
         }
         if (failed != null && !failed.isEmpty()) {
             failed.forEach(platform.logger()::warn);
@@ -104,11 +112,11 @@ public class ModulesRegistry {
     }
 
     public void loadFolderModules() {
-        if (loaded) throw new IllegalStateException("Modules from folder are already loaded.");
+        if (loaded) throw new IllegalStateException("Modules from folder are already loaded");
         modulesFolder.mkdirs();
         List<Class<?>> toRegister = new ArrayList<>();
         ClassLoader moduleClassLoader = Module.class.getClassLoader();
-        for (File file : modulesFolder.listFiles((dir, name) -> name.endsWith(".jar"))) {
+        for (File file : CollectionUtils.emptyOnNull(modulesFolder.listFiles((dir, name) -> name.endsWith(".jar")))) {
             URI fileUri = file.toURI();
             try (JarInputStream stream = new JarInputStream(fileUri.toURL().openStream());
                 URLClassLoader loader = new URLClassLoader(new URL[]{fileUri.toURL()}, moduleClassLoader)) {
@@ -124,21 +132,21 @@ public class ModulesRegistry {
                     }
                 }
             } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace();
+                platform.logger().error("Something went wrong during module parsing", ex);
             }
         }
         for (Class<?> clazz : toRegister) {
             try {
                 registerModule((Module) clazz.getConstructor().newInstance());
             } catch (Exception ex) {
-                ex.printStackTrace();
+                platform.logger().error("Something went wrong during module registration", ex);
             }
         }
         loaded = true;
     }
 
-    private void optionalInfo(String msg) {
-        if (Cfg.logRegistering) {
+    private void debugInfo(String msg) {
+        if (Cfg.debugMode) {
             platform.logger().info(msg);
         }
     }

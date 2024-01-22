@@ -22,7 +22,7 @@
 
 package fun.reactions.util.location.position;
 
-import fun.reactions.util.NumberUtils;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.math.FinePosition;
@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Objects;
 
-import static fun.reactions.util.NumberUtils.asDouble;
+import static fun.reactions.util.num.NumberUtils.asDouble;
 
 @SuppressWarnings("UnstableApiUsage")
 public class RealPosition implements FinePosition, Parameterizable {

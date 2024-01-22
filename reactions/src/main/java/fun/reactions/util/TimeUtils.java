@@ -24,36 +24,43 @@ package fun.reactions.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
-    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+(?:\\.\\d+([eE][+\\-]\\d+)?)?))?");
-    private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)(ms|[dhmst])?");
+    private static final Pattern TIME_SPLITTED = Pattern.compile("(\\d+):(\\d+)(?::(\\d+(?:\\.\\d+(?:[eE]-\\d+)?)?))?");
+    private static final Pattern TIME_PRECISE = Pattern.compile("(\\d+)(m[so]|[ywdhmst])?", Pattern.CASE_INSENSITIVE);
     private static final DateFormat DEF_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     public static final long MS_PER_SECOND = 1000L;
     public static final long MS_PER_MINUTE = MS_PER_SECOND * 60L;
     public static final long MS_PER_HOUR = MS_PER_MINUTE * 60L;
     public static final long MS_PER_DAY = MS_PER_HOUR * 24L;
-    public static final long MS_PER_TICK = MS_PER_SECOND / 20;
+
+    public static final long MS_PER_WEEK = MS_PER_DAY * 7L;
+    public static final long MS_PER_MONTH = MS_PER_DAY * 30L;
+    public static final long MS_PER_YEAR = MS_PER_DAY * 365L;
+
+    public static final long MS_PER_TICK = MS_PER_SECOND / 20L;
 
     private TimeUtils() {}
 
-    public static long offsetNow(long offsetMs) {
+    public static long addOffset(long offsetMs) {
         return System.currentTimeMillis() + offsetMs;
     }
 
-    public static long offsetUntil(long futureMs) {
-        return futureMs - System.currentTimeMillis();
+    public static long offsetUntil(long futureTimestamp) {
+        return futureTimestamp - System.currentTimeMillis();
     }
 
-    public static long offsetFrom(long pastMs) {
-        return System.currentTimeMillis() - pastMs;
+    public static long offsetFrom(long pastTimestamp) {
+        return System.currentTimeMillis() - pastTimestamp;
     }
 
     public static String formatIngameTime() {
@@ -90,28 +97,30 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
         return msTime / MS_PER_TICK;
     }
 
-    public static long parseTime(String timeStr) {
+    public static long parseTime(@NotNull String timeStr) {
         long time = parseTimeSplitted(timeStr);
         return time == -1
                 ? parseTimePrecise(timeStr)
                 : time;
     }
 
-    public static long parseTimeSplitted(String timeStr) {
+    public static long parseTimeSplitted(@NotNull String timeStr) {
         Matcher matcher = TIME_SPLITTED.matcher(timeStr);
         if (!matcher.matches()) return -1;
         long time = MS_PER_HOUR * Long.parseLong(matcher.group(1)) + MS_PER_MINUTE * Long.parseLong(matcher.group(2));
-        if (matcher.group(3) != null) time += MS_PER_SECOND * Double.parseDouble(matcher.group(3));
+        if (matcher.group(3) != null) time += (long) (MS_PER_SECOND * Double.parseDouble(matcher.group(3)));
         return time;
     }
 
-    public static long parseTimePrecise(String timeStr) {
+    public static long parseTimePrecise(@NotNull String timeStr) {
         Matcher matcher = TIME_PRECISE.matcher(timeStr);
         long time = 0;
         while (matcher.find()) {
             String unit = matcher.group(2);
-            if (unit == null) unit = "s";
-            time += Long.parseLong(matcher.group(1)) * switch (unit) {
+            time += Long.parseLong(matcher.group(1)) * switch (unit == null ? "s" : unit.toLowerCase(Locale.ROOT)) {
+                case "y" -> MS_PER_YEAR;
+                case "mo" -> MS_PER_MONTH;
+                case "w" -> MS_PER_WEEK;
                 case "d" -> MS_PER_DAY;
                 case "h" -> MS_PER_HOUR;
                 case "m" -> MS_PER_MINUTE;

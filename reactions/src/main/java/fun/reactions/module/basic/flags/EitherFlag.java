@@ -43,7 +43,7 @@ public class EitherFlag implements Flag {
                 continue;
             }
             if (flagSplit[1].startsWith("{") && flagSplit[1].endsWith("}")) {
-                flagSplit[1] = flagSplit[1].substring(1, flagSplit.length - 1);
+                flagSplit[1] = flagSplit[1].substring(1, flagSplit[1].length() - 1);
             }
             boolean invert = flagSplit[0].startsWith("!");
             Flag flag = activities.getFlag(invert ? flagSplit[0].substring(1) : flagSplit[0]);

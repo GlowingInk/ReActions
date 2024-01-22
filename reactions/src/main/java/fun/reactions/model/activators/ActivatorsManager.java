@@ -4,8 +4,9 @@ import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
+import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.collections.CaseInsensitiveMap;
-import org.bukkit.Bukkit;
+import fun.reactions.util.collections.CollectionUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -62,16 +63,15 @@ public class ActivatorsManager {
                         ? file.getName()
                         : group + File.separator + file.getName();
             }
-            for (File inner : Objects.requireNonNull(file.listFiles())) {
+            for (File inner : CollectionUtils.emptyOnNull(file.listFiles())) {
                 loadGroupsRecursively(inner, group, clear, true);
             }
         } else if (file.getName().endsWith(".yml")) {
             FileConfiguration cfg = new YamlConfiguration();
             try {
                 cfg.load(file);
-            } catch (InvalidConfigurationException | IOException e) {
-                logger.warn("Cannot load '" + file.getName() + "' file!");
-                e.printStackTrace();
+            } catch (InvalidConfigurationException | IOException ex) {
+                logger.warn("Cannot load '" + file.getName() + "' file", ex);
                 return;
             }
             String localGroup = file.getName().substring(0, file.getName().length() - 4);
@@ -80,20 +80,26 @@ public class ActivatorsManager {
                     : group + File.separator + localGroup;
             if (clear) {
                 Set<Activator> activators = activatorsGroups.remove(group);
-                if (activators != null) for (Activator activator : activators) {
-                    types.get(activator.getClass()).removeActivator(activator);
-                    activatorsNames.remove(activator.getLogic().getName());
+                if (activators != null) {
+                    for (Activator activator : activators) {
+                        types.get(activator.getClass()).removeActivator(activator);
+                        activatorsNames.remove(activator.getLogic().getName());
+                    }
                 }
             }
-            for (String strType : cfg.getKeys(false)) {
-                ActivatorType type = types.get(strType);
+            for (String typeStr : cfg.getKeys(false)) {
+                ActivatorType type = types.get(typeStr);
                 if (type == null) {
-                    logger.warn("Failed to load activators with the unknown type '" + strType + "' in the group '"+ group + "'.");
+                    logger.warn("Failed to load activators with the unknown type '" + typeStr + "' in the group '"+ group + "'");
                     // TODO Move failed activators to backup
                     continue;
                 }
-                // TODO Replace with some simpler null-safe method
-                ConfigurationSection cfgType = Objects.requireNonNull(cfg.getConfigurationSection(strType));
+                if (!cfg.isConfigurationSection(typeStr)) {
+                    logger.warn("Failed to load activators with the type '" + typeStr + "' - isn't a section");
+                    continue;
+                }
+                ConfigurationSection cfgType = cfg.getConfigurationSection(typeStr);
+                //noinspection DataFlowIssue
                 for (String name : cfgType.getKeys(false)) {
                     ConfigurationSection cfgActivator = Objects.requireNonNull(cfgType.getConfigurationSection(name));
                     Logic logic = new Logic(platform, type.getName().toUpperCase(Locale.ROOT), name);
@@ -101,7 +107,7 @@ public class ActivatorsManager {
                     logic.load(cfgActivator);
                     Activator activator = type.loadActivator(logic, cfgActivator);
                     if (activator == null || !activator.isValid()) {
-                        logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'.");
+                        logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'");
                         continue;
                     }
                     addActivator(activator, false);
@@ -128,7 +134,7 @@ public class ActivatorsManager {
         Logic logic = activator.getLogic();
         String name = logic.getName();
         if (activatorsNames.containsKey(name)) {
-            logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists!");
+            logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists");
             return false;
         }
         Objects.requireNonNull(types.get(activator.getClass())).addActivator(activator);
@@ -169,47 +175,37 @@ public class ActivatorsManager {
         Set<Activator> activators = activatorsGroups.get(name);
         if (activators == null) return false;
         Set<Activator> finalActivators = new HashSet<>(activators);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators));
+        platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators));
         return true;
     }
 
     private void saveGroup(@NotNull String name, @NotNull Set<Activator> activators) {
         File file = new File(actsFolder, name.replace('/', File.separatorChar) + ".yml");
         if (activators.isEmpty()) {
-            file.delete();
-            return;
-        }
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-        } else {
-            file.delete();
-        }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            logger.warn("Failed to save group '" + name + "'!");
-            e.printStackTrace();
+            if (!file.delete()) {
+                logger.warn("Failed to delete empty group file '" + name + "'");
+            }
             return;
         }
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
         for (Activator activator : activators) {
-            String type = Objects.requireNonNull(types.get(activator.getClass())).getName();
-            ConfigurationSection typeCfg = cfg.isConfigurationSection(type)
-                    ? Objects.requireNonNull(cfg.getConfigurationSection(type))
-                    : cfg.createSection(type);
+            String typeStr = Objects.requireNonNull(types.get(activator.getClass())).getName();
+            ConfigurationSection typeCfg = ConfigUtils.getSection(cfg, typeStr);
             activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
         }
         try {
             cfg.save(file);
-        } catch (IOException e) {
-            logger.warn("Failed to save group '" + name + "'!");
-            e.printStackTrace();
+        } catch (IOException ex) {
+            logger.error("Failed to save group '" + name + "'", ex);
         }
     }
 
-    public void activate(@NotNull ActivationContext details, @NotNull String id) {
-        details.initialize();
-        activatorsNames.get(id).executeActivator(details);
+    public void activate(@NotNull ActivationContext context, @NotNull String id) {
+        Activator activator = activatorsNames.get(id);
+        if (activator != null) {
+            context.initialize();
+            activator.executeActivator(context);
+        }
     }
 
     public boolean activate(@NotNull ActivationContext context) {

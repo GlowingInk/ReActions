@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import static fun.reactions.util.NumberUtils.asDouble;
+import static fun.reactions.util.num.NumberUtils.asDouble;
 import static org.bukkit.util.NumberConversions.floor;
 
 /**
@@ -69,9 +69,9 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
         if (loc == null) return EVERYWHERE;
         return new ImplicitPosition(
                 loc.getWorld().getName(),
-                loc.blockX(),
-                loc.blockY(),
-                loc.blockZ()
+                loc.getBlockX(),
+                loc.getBlockY(),
+                loc.getBlockZ()
         );
     }
 

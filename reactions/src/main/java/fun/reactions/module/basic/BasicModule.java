@@ -9,15 +9,7 @@ import fun.reactions.module.basic.actions.*;
 import fun.reactions.module.basic.activators.*;
 import fun.reactions.module.basic.external.RaProtocolLib;
 import fun.reactions.module.basic.flags.*;
-import fun.reactions.module.basic.placeholders.ActivatorNamePlaceholder;
-import fun.reactions.module.basic.placeholders.CalcPlaceholder;
-import fun.reactions.module.basic.placeholders.LocalVarPlaceholder;
-import fun.reactions.module.basic.placeholders.PersistentVarPlaceholders;
-import fun.reactions.module.basic.placeholders.PlayerInvPlaceholder;
-import fun.reactions.module.basic.placeholders.PlayerPlaceholders;
-import fun.reactions.module.basic.placeholders.RandomPlaceholder;
-import fun.reactions.module.basic.placeholders.TimePlaceholders;
-import fun.reactions.module.basic.placeholders.TimestampPlaceholder;
+import fun.reactions.module.basic.placeholders.*;
 import fun.reactions.module.basic.selectors.LocSelector;
 import fun.reactions.module.basic.selectors.PermSelector;
 import fun.reactions.module.basic.selectors.PlayerSelector;
@@ -33,9 +25,21 @@ import java.util.List;
 import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
+    private LogHandler logHandler;
+
     @Override
     public void preRegister(@NotNull ReActions.Platform platform) {
         RaProtocolLib.init();
+    }
+
+    @Override
+    public void postRegister(@NotNull ReActions.Platform platform) {
+        logHandler = new LogHandler();
+    }
+
+    @Override
+    public void onDisable(@NotNull ReActions.Platform platform) {
+        platform.getServer().getLogger().removeHandler(logHandler);
     }
 
     @Override
@@ -86,7 +90,6 @@ public class BasicModule implements Module {
                 typeOf(DamageByBlockActivator.class, "DAMAGE_BY_BLOCK", DamageByBlockActivator::create, DamageByBlockActivator::load),
                 typeOf(VariableActivator.class, "VARIABLE", VariableActivator::create, VariableActivator::load),
                 typeOf(GameModeActivator.class, "GAMEMODE", GameModeActivator::create, GameModeActivator::load),
-                typeOf(GodActivator.class, "GOD", GodActivator::create, GodActivator::load),
                 typeOf(CuboidActivator.class, "CUBOID", CuboidActivator::create, CuboidActivator::load),
                 typeOf(WeatherChangeActivator.class, "WEATHER_CHANGE", WeatherChangeActivator::create, WeatherChangeActivator::load)
         );
@@ -150,7 +153,7 @@ public class BasicModule implements Module {
                 new SqlActions(SqlActions.Type.DELETE),
                 new SqlActions(SqlActions.Type.SET),
                 new RegexAction(),
-                new RunActionAction(),
+                new DynamicActionAction(),
                 new OpenMenuAction(),
                 new WaitAction(),
                 new LogAction(),
@@ -196,22 +199,22 @@ public class BasicModule implements Module {
                 new EitherFlag(),
                 new ExecuteStopFlag(),
                 new PersistentVarFlags(PersistentVarFlags.Type.EXIST, false),
-                new PersistentVarFlags(PersistentVarFlags.Type.COMPARE, false),
-                new PersistentVarFlags(PersistentVarFlags.Type.GREATER, false),
-                new PersistentVarFlags(PersistentVarFlags.Type.LOWER, false),
-                new PersistentVarFlags(PersistentVarFlags.Type.MATCH, false),
                 new PersistentVarFlags(PersistentVarFlags.Type.EXIST, true),
+                new PersistentVarFlags(PersistentVarFlags.Type.COMPARE, false),
                 new PersistentVarFlags(PersistentVarFlags.Type.COMPARE, true),
+                new PersistentVarFlags(PersistentVarFlags.Type.GREATER, false),
                 new PersistentVarFlags(PersistentVarFlags.Type.GREATER, true),
+                new PersistentVarFlags(PersistentVarFlags.Type.LOWER, false),
                 new PersistentVarFlags(PersistentVarFlags.Type.LOWER, true),
+                new PersistentVarFlags(PersistentVarFlags.Type.MATCH, false),
                 new PersistentVarFlags(PersistentVarFlags.Type.MATCH, true),
                 new EqualsFlag(),
-                new NumCompareFlags(true),
-                new NumCompareFlags(false),
+                new NumCompareFlags(NumCompareFlags.Type.GREATER),
+                new NumCompareFlags(NumCompareFlags.Type.LOWER),
                 new WeatherFlag(),
                 new TimerActiveFlag(),
-                new SqlFlags(true),
-                new SqlFlags(false),
+                new SqlFlags(SqlFlags.Type.CHECK),
+                new SqlFlags(SqlFlags.Type.RESULT),
                 new FlySpeedFlag(),
                 new WalkSpeedFlag(),
                 new CheckOnlineFlag(),
@@ -232,7 +235,7 @@ public class BasicModule implements Module {
                 new ActivatorNamePlaceholder(),
                 new PersistentVarPlaceholders(),
                 new LocalVarPlaceholder(),
-                new TimestampPlaceholder()
+                new EnderChestPlaceholder()
         );
     }
 

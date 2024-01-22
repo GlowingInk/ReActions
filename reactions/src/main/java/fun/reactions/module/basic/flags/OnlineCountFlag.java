@@ -24,18 +24,20 @@ package fun.reactions.module.basic.flags;
 
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.NumberUtils;
-import fun.reactions.util.NumberUtils.Is;
 import fun.reactions.util.naming.Aliased;
-import org.bukkit.Bukkit;
+import fun.reactions.util.num.Is;
+import fun.reactions.util.num.NumberUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.OptionalInt;
 
 @Aliased.Names("ONLINE")
 public class OnlineCountFlag implements Flag {
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        return NumberUtils.isNumber(paramsStr, Is.POSITIVE_NATURAL) && Integer.parseInt(paramsStr) <= Bukkit.getOnlinePlayers().size();
+        OptionalInt countOpt = NumberUtils.parseInteger(paramsStr, Is.POSITIVE);
+        return countOpt.isPresent() && env.getPlatform().getServer().getOnlinePlayers().size() >= countOpt.getAsInt();
     }
 
     @Override

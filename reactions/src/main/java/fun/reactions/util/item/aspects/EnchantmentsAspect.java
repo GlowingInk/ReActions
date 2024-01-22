@@ -1,8 +1,8 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.NumberUtils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.util.num.NumberUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
