@@ -9,6 +9,7 @@ import fun.reactions.util.location.position.RealPosition;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,8 +28,8 @@ public class ReaLocationSub extends RaCommandBase {
         return literal("location", stringArg("name", StringArgNode.Type.WORD, this::help,
                         literal("info", this::info),
                         literal("delete", this::delete),
-                        literal("tp", stringArg("player", StringArgNode.Type.OPTIONAL_GREEDY, this::teleport)),
-                        literal("move", stringArg("location", StringArgNode.Type.OPTIONAL_GREEDY, this::move))
+                        literal("tp", this::teleport, stringArg("player", StringArgNode.Type.OPTIONAL_GREEDY)),
+                        literal("move", this::move, stringArg("location", StringArgNode.Type.OPTIONAL_GREEDY))
                 )
         );
     }
@@ -76,6 +77,7 @@ public class ReaLocationSub extends RaCommandBase {
         });
         if (player != null) {
             player.teleport(loc.toLocation(server));
+            // TODO Message
         } else {
             sender.sendMessage("Couldn't find selected player"); // TODO Better message
         }
@@ -84,7 +86,18 @@ public class ReaLocationSub extends RaCommandBase {
     private void move(@NotNull Parameters params, @NotNull CommandSender sender) {
         getLocation(params);
         String name = params.getString("name");
-
+        RealPosition pos = params.getOr("location", RealPosition::byString, () -> {
+            if (sender instanceof Entity entity) {
+                return RealPosition.byLocation(entity.getLocation());
+            }
+            return null;
+        });
+        if (pos != null) {
+            LocationHolder.addTpLoc(name, pos);
+            // TODO Message
+        } else {
+            sender.sendMessage("Console not allowed"); // TODO Better message
+        }
     }
 
     private @NotNull RealPosition getLocation(Parameters params) {

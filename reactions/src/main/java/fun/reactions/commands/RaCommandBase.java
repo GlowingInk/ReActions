@@ -49,7 +49,7 @@ public abstract class RaCommandBase {
             sender.sendMessage(message);
         }
         sender.sendMessage("");
-        sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type them in chat!");
+        sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type in chat!");
     }
 
     protected static @NotNull Component inky(@NotNull String str) {
