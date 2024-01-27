@@ -66,7 +66,7 @@ public class ReactionsCommand extends RaCommandBase {
                 "activator", "&a<name>", "Manage &anamed&r activator",
                 "location", "&a<name>", "Manage &anamed&r location",
                 "menu", "&a<name>", "Manage &anamed&r menu",
-                // TODO variables
+                "variable", "&a<name>", "Manage &anamed&R variable",
                 "list", "&7(&aactivators&7|&alocations&7|&amenus&7)", "List &aobjects", // TODO List activities
                 "reload", "", "Reload a plugin or its specific parts"
         );

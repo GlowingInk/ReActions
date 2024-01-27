@@ -25,18 +25,17 @@ public class ReaLocationSub extends RaCommandBase {
 
     @Override
     public @NotNull Node asNode() {
-        return literal("location", stringArg("name", StringArgNode.Type.WORD, this::help,
+        return literal("location", stringArg("name", StringArgNode.Type.WORD, this::help, // TODO Name suggestions
                         literal("info", this::info),
                         literal("delete", this::delete),
                         literal("tp", this::teleport, stringArg("player", StringArgNode.Type.OPTIONAL_GREEDY)),
-                        literal("move", this::move, stringArg("location", StringArgNode.Type.OPTIONAL_GREEDY))
+                        literal("move", this::move, stringArg("location", StringArgNode.Type.OPTIONAL_GREEDY)) // TODO Better location
                 )
         );
     }
 
     private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
-        getLocation(params);
-        sendHelp(sender, params, "activator " + escape(params.getString("name")),
+        sendHelp(sender, params, "location " + escape(params.getString("name")),
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
                 "tp", "[player]", "Teleport yourself or a &especified player",
@@ -84,7 +83,6 @@ public class ReaLocationSub extends RaCommandBase {
     }
 
     private void move(@NotNull Parameters params, @NotNull CommandSender sender) {
-        getLocation(params);
         String name = params.getString("name");
         RealPosition pos = params.getOr("location", RealPosition::byString, () -> {
             if (sender instanceof Entity entity) {

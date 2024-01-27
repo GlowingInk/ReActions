@@ -41,10 +41,30 @@ public final class ReaCreateSub extends RaCommandBase {
 
     private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
         sendHelp(sender, params, "create",
-                "activator", "&a<name> <type> &e[<parameters...>]", "Create &anamed&r activator with specified &atype&r and &eparameters",
-                "location", "&a<name> &e[<world> <x> <y> <z> &6[<yaw> <pitch>]&e]", "Create &anamed&r location at your position, or with &especified coordinates",
-                "menu", "&a<name> &e[<rows> <title>]", "Create &anamed&r menu with optional &erows&r count and &etitle"
+                "activator", "&a<name> <type>&e [<parameters...>]", "Create&a named&r activator with specified&a type&r and&e parameters",
+                "location", "&a<name>&e [<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Create&a named&r location at your position, or with&e specified coordinates",
+                "menu", "&a<name>&e [<rows> <title>]", "Create&a named&r menu with optional&e rows&r count and&e title",
+                "variable", "&a<name>&e [value]", "Create&a named&r menu with optional&e value"
         );
+    }
+
+    private static class VariableSub extends RaCommandBase {
+        protected VariableSub(@NotNull ReActions.Platform platform) {
+            super(platform);
+        }
+
+        @Override
+        public @NotNull Node asNode() {
+            return literal("variable",
+                    stringArg("name", StringArgNode.Type.WORD,
+                            stringArg("type", StringArgNode.Type.OPTIONAL_GREEDY)
+                    )
+            );
+        }
+
+        private void variable(@NotNull Parameters params, @NotNull CommandSender sender) {
+
+        }
     }
 
     private static class ActivatorSub extends RaCommandBase {
@@ -70,14 +90,14 @@ public final class ReaCreateSub extends RaCommandBase {
         private void activator(@NotNull Parameters params, @NotNull CommandSender sender) {
             ActivatorsManager activators = platform.getActivators();
             if (activators.getActivator(params.getString("name")) != null) {
-                sendPrefixed(sender, "Activator &c'" + escape(params.getString("name")) + "'&r already exists");
+                sendPrefixed(sender, "Activator&c '" + escape(params.getString("name")) + "'&r already exists");
                 return;
             }
 
             ActivatorTypesRegistry types = platform.getActivatorTypes();
             ActivatorType type = ensure(
                     params.get("type", types::get),
-                    "Activator type &c'" + escape(params.getString("type")) + "'&r doesn't exist"
+                    "Activator type&c '" + escape(params.getString("type")) + "'&r doesn't exist"
             );
 
             Activator activator = ensure(type.createActivator(
@@ -86,7 +106,7 @@ public final class ReaCreateSub extends RaCommandBase {
             ), "Failed to create activator&c!");
 
             activators.addActivator(activator, true);
-            sendPrefixed(sender, "Activator &a'" + escape(activator.getLogic().getName()) + "'&r of type &a'" + escape(activator.getLogic().getType()) + "'&r was created");
+            sendPrefixed(sender, "Activator&a '" + escape(activator.getLogic().getName()) + "'&r of type&a '" + escape(activator.getLogic().getType()) + "'&r was created");
         }
     }
 
@@ -122,12 +142,12 @@ public final class ReaCreateSub extends RaCommandBase {
 
         private void location(@NotNull Parameters params, @NotNull CommandSender sender) {
             if (params.get("name", LocationHolder::getTpLoc) != null) {
-                sendPrefixed(sender, "Location &c'" + escape(params.getString("name")) + "'&r already exists");
+                sendPrefixed(sender, "Location&c '" + escape(params.getString("name")) + "'&r already exists");
                 return;
             }
             RealPosition pos = RealPosition.fromParameters(params);
             LocationHolder.addTpLoc(params.getString("name"), pos);
-            sendPrefixed(sender, "Location &a'" + escape(params.getString("name")) + "'&r &7(" + pos + ")&r was created");
+            sendPrefixed(sender, "Location&a '" + escape(params.getString("name")) + "'&r&7 (" + pos + ")&r was created");
         }
     }
 
@@ -149,11 +169,11 @@ public final class ReaCreateSub extends RaCommandBase {
 
         private void menu(@NotNull Parameters params, @NotNull CommandSender sender) {
             if (InventoryMenu.containsMenu(params.getString("name"))) {
-                sendPrefixed(sender, "Menu &c'" + escape(params.getString("name")) + "'&r already exists");
+                sendPrefixed(sender, "Menu&c '" + escape(params.getString("name")) + "'&r already exists");
                 return;
             }
             InventoryMenu.add(params.getString("name"), params.getInteger("rows", 3), params.getString("title"));
-            sendPrefixed(sender, "Menu &a'" + escape(params.getString("name")) + "'&r was created");
+            sendPrefixed(sender, "Menu&a '" + escape(params.getString("name")) + "'&r was created");
         }
     }
 }
