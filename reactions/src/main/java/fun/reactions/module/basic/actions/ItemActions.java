@@ -222,24 +222,29 @@ public class ItemActions implements Action, Activity.Personal {
 
     private boolean removeItemInInventory(Environment env, Parameters params) {
         VirtualItem search = VirtualItem.fromParameters(params);
-        int remAmount = search.getAmount();
-        boolean all = !params.contains("amount");
+        int toRemove = search.getAmount();
+        int totalRemoved = 0;
+        boolean all = toRemove == -1;
         PlayerInventory inventory = env.getPlayer().getInventory();
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
             if (item != null && search.isSimilar(item)) {
                 if (all) {
+                    totalRemoved += item.getAmount();
                     inventory.setItem(i, null);
-                } else if (item.getAmount() > remAmount) {
-                    item.setAmount(item.getAmount() - remAmount);
+                } else if (item.getAmount() <= toRemove) {
+                    totalRemoved += item.getAmount();
+                    toRemove -= item.getAmount();
+                    inventory.setItem(i, null);
+                } else {
+                    totalRemoved += item.getAmount() - toRemove;
+                    item.setAmount(item.getAmount() - toRemove);
                     inventory.setItem(i, item);
                     break;
-                } else {
-                    remAmount -= item.getAmount();
-                    inventory.setItem(i, null);
                 }
             }
         }
+        env.getVariables().set("items_removed", Integer.toString(totalRemoved));
         env.getVariables().set("item", search.toString());
         env.getVariables().set("item_str", ItemUtils.toDisplayString(params));
         return true;
