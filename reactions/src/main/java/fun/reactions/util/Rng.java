@@ -56,8 +56,8 @@ public final class Rng {
     public static int nextIntRanged(String numsStr) { // TODO Requires refactoring to nextRanged
         int index = numsStr.indexOf('-');
         if (index > -1) {
-            int min = NumberUtils.parseInteger(numsStr.substring(0, index), Is.NATURAL).orElse(0);
-            int max = NumberUtils.parseInteger(numsStr.substring(index + 1), Is.NATURAL).orElse(0);
+            int min = NumberUtils.parseInteger(numsStr.substring(0, index), Is.NON_NEGATIVE).orElse(0);
+            int max = NumberUtils.parseInteger(numsStr.substring(index + 1), Is.NON_NEGATIVE).orElse(0);
             return max > min ? nextInt(min, max) : min;
         }
         return NumberUtils.asInteger(numsStr);

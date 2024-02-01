@@ -80,9 +80,9 @@ public final class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
-        OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NATURAL);
+        OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NON_NEGATIVE);
         if (resultOpt.isPresent()) {
-            OptionalInt valueOpt = NumberUtils.parseInteger(value, Is.NATURAL);
+            OptionalInt valueOpt = NumberUtils.parseInteger(value, Is.NON_NEGATIVE);
             if (valueOpt.isPresent()) {
                 return resultOpt.getAsInt() == valueOpt.getAsInt();
             }

@@ -1,5 +1,7 @@
 package fun.reactions.util.num;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.function.DoublePredicate;
 
 /**
@@ -39,4 +41,8 @@ public final class Is {
      * Checks if number is positive or zero and integer
      */
     public static final DoublePredicate NATURAL = NON_NEGATIVE.and(INTEGER);
+
+    public static @NotNull DoublePredicate inRange(double min, double max) {
+        return v -> min <= v && v < max;
+    }
 }

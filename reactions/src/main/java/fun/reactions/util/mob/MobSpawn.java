@@ -260,8 +260,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
             PotionEffectType pet = PotionEffectType.getByName(pef);
             if (pet == null) continue;
             if (ln.length == 2) {
-                OptionalInt levelOpt = NumberUtils.parseInteger(ln[1], Is.NATURAL);
-                if (levelOpt.isPresent()) level = levelOpt.getAsInt();
+                level = NumberUtils.parseInteger(ln[1], Is.NON_NEGATIVE).orElse(1);
             }
             PotionEffect pe = new PotionEffect(pet, PotionEffect.INFINITE_DURATION, level, true);
             e.addPotionEffect(pe);

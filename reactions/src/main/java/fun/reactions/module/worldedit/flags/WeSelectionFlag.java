@@ -51,7 +51,7 @@ public class WeSelectionFlag implements Flag, Activity.Personal {
         env.getVariables().set("maxY", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockY()));
         env.getVariables().set("maxZ", (maxPoint == null) ? "" : Integer.toString(maxPoint.getBlockZ()));
         env.getVariables().set("selblocks", Integer.toString(selectionBlocks));
-        OptionalInt paramsOpt = NumberUtils.parseInteger(paramsStr, Is.NATURAL);
+        OptionalInt paramsOpt = NumberUtils.parseInteger(paramsStr, Is.NON_NEGATIVE);
         return paramsOpt.isPresent() && selectionBlocks <= paramsOpt.getAsInt();
     }
 

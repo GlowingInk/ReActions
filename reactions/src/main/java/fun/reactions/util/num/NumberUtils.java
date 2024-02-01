@@ -7,15 +7,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.*;
 import java.util.regex.Pattern;
 
 public final class NumberUtils {
     private static final double TRIM_VALUE = 1_0000;
-
-    public static final Pattern INTEGER = Pattern.compile("-?\\d+");
-    public static final Predicate<String> IS_INTEGER = INTEGER.asMatchPredicate();
-    public static final Pattern NUMBER = Pattern.compile("-?\\d+(?:\\.\\d+([eE][+\\-]\\d+)?)?");
+    public static final Predicate<String> IS_INTEGER = (str) -> parseLong(str).isPresent();
+    public static final Pattern NUMBER = Pattern.compile("-?\\d+(?:\\.\\d+(?:[eE][+-]?\\d+)?)?");
     public static final Predicate<String> IS_NUMBER = NUMBER.asMatchPredicate();
 
     private NumberUtils() {}
@@ -59,47 +58,109 @@ public final class NumberUtils {
     }
 
     public static int asInteger(@Nullable String str, int def) {
-        return isInteger(str)
-                ? Integer.parseInt(str)
-                : def;
+        if (Utils.isStringEmpty(str)) return def;
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException ignored) {
+            return def;
+        }
     }
 
     public static int asInteger(@Nullable String str, @NotNull IntSupplier def) {
-        return isInteger(str)
-                ? Integer.parseInt(str)
-                : def.getAsInt();
+        if (Utils.isStringEmpty(str)) return def.getAsInt();
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException ignored) {
+            return def.getAsInt();
+        }
     }
 
     public static @NotNull OptionalInt parseInteger(@NotNull String str) {
-        return IS_INTEGER.test(str)
-                ? OptionalInt.of(Integer.parseInt(str))
-                : OptionalInt.empty();
+        try {
+            return OptionalInt.of(Integer.parseInt(str));
+        } catch (NumberFormatException ignored) {
+            return OptionalInt.empty();
+        }
     }
 
     public static @NotNull OptionalInt parseInteger(@NotNull String str, @NotNull IntPredicate predicate) {
-        if (IS_INTEGER.test(str)) {
+        try {
             int v = Integer.parseInt(str);
-            if (predicate.test(v)) return OptionalInt.of(v);
+            return predicate.test(v) ? OptionalInt.of(v) : OptionalInt.empty();
+        } catch (NumberFormatException ignored) {
+            return OptionalInt.empty();
         }
-        return OptionalInt.empty();
+    }
+
+    public static @NotNull OptionalInt parseInteger(@NotNull String str, @NotNull LongPredicate predicate) {
+        try {
+            int v = Integer.parseInt(str);
+            return predicate.test(v) ? OptionalInt.of(v) : OptionalInt.empty();
+        } catch (NumberFormatException ignored) {
+            return OptionalInt.empty();
+        }
     }
 
     public static @NotNull OptionalInt parseInteger(@NotNull String str, @NotNull DoublePredicate predicate) {
-        if (IS_INTEGER.test(str)) {
+        try {
             int v = Integer.parseInt(str);
-            if (predicate.test(v)) return OptionalInt.of(v);
+            return predicate.test(v) ? OptionalInt.of(v) : OptionalInt.empty();
+        } catch (NumberFormatException ignored) {
+            return OptionalInt.empty();
         }
-        return OptionalInt.empty();
+    }
+
+    public static long asLong(@Nullable String str) {
+        return asLong(str, 0);
+    }
+
+    public static long asLong(@Nullable String str, long def) {
+        if (Utils.isStringEmpty(str)) return def;
+        try {
+            return Long.parseLong(str);
+        } catch (NumberFormatException ignored) {
+            return def;
+        }
+    }
+
+    public static long asLong(@Nullable String str, @NotNull LongSupplier def) {
+        if (Utils.isStringEmpty(str)) return def.getAsLong();
+        try {
+            return Long.parseLong(str);
+        } catch (NumberFormatException ignored) {
+            return def.getAsLong();
+        }
+    }
+
+    public static @NotNull OptionalLong parseLong(@NotNull String str) {
+        try {
+            return OptionalLong.of(Long.parseLong(str));
+        } catch (NumberFormatException ignored) {
+            return OptionalLong.empty();
+        }
+    }
+
+    public static @NotNull OptionalLong parseLong(@NotNull String str, @NotNull LongPredicate predicate) {
+        try {
+            long v = Long.parseLong(str);
+            return predicate.test(v) ? OptionalLong.of(v) : OptionalLong.empty();
+        } catch (NumberFormatException ignored) {
+            return OptionalLong.empty();
+        }
+    }
+
+    public static @NotNull OptionalLong parseLong(@NotNull String str, @NotNull DoublePredicate predicate) {
+        try {
+            long v = Long.parseLong(str);
+            return predicate.test(v) ? OptionalLong.of(v) : OptionalLong.empty();
+        } catch (NumberFormatException ignored) {
+            return OptionalLong.empty();
+        }
     }
 
     @Contract("null -> false")
     public static boolean isNumber(@Nullable String str) {
         return !Utils.isStringEmpty(str) && IS_NUMBER.test(str);
-    }
-
-    @Contract("null -> false")
-    public static boolean isInteger(@Nullable String str) {
-        return !Utils.isStringEmpty(str) && IS_INTEGER.test(str);
     }
 
     /**
