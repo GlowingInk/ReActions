@@ -1,6 +1,7 @@
 package fun.reactions.model.environment;
 
 import fun.reactions.ReActions;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,5 +51,13 @@ public final class Environment {
 
     public boolean isAsync() {
         return this.async;
+    }
+
+    public void warn(@NotNull String msg) {
+        platform.logger().warn(activatorName + " | " + msg);
+    }
+
+    public void warn(@NotNull Component msg) {
+        platform.logger().warn(Component.text(activatorName).append(Component.text(" | ")).append(msg));
     }
 }

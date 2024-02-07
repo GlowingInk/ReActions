@@ -1,5 +1,6 @@
 package fun.reactions.util.parameter;
 
+import fun.reactions.util.RichOptional;
 import fun.reactions.util.TimeUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.CaseInsensitiveMap;
@@ -249,6 +250,13 @@ public class Parameters implements Parameterizable {
         return brackets != 0
                 ? UNESCAPED.matcher(str).replaceAll("\\\\$0")
                 : str;
+    }
+
+    public <R> @NotNull RichOptional<String, R> getOptional(@NotNull String key, @NotNull Function<String, R> converter) {
+        String value = params.get(key);
+        return value == null
+                ? RichOptional.ofNullable(key, null)
+                : RichOptional.of(key, converter.apply(value));
     }
 
     public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter) {

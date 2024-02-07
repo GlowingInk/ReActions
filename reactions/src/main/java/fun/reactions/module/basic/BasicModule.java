@@ -7,7 +7,6 @@ import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.module.Module;
 import fun.reactions.module.basic.actions.*;
 import fun.reactions.module.basic.activators.*;
-import fun.reactions.module.basic.external.RaProtocolLib;
 import fun.reactions.module.basic.flags.*;
 import fun.reactions.module.basic.placeholders.*;
 import fun.reactions.module.basic.selectors.LocSelector;
@@ -26,11 +25,6 @@ import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
     private LogHandler logHandler;
-
-    @Override
-    public void preRegister(@NotNull ReActions.Platform platform) {
-        RaProtocolLib.init();
-    }
 
     @Override
     public void postRegister(@NotNull ReActions.Platform platform) {
@@ -220,7 +214,8 @@ public class BasicModule implements Module {
                 new CheckOnlineFlag(),
                 new RegexFlag(),
                 new HeldSlotFlag(),
-                new DistanceFlag()
+                new DistanceFlag(),
+                new DynamicFlagFlag()
         );
     }
 

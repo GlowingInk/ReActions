@@ -24,37 +24,37 @@ public class DynamicActionAction implements Action {
 
         long delayMs = params.getTime(params.findKey("delay", "time"));
 
-        String actionStr;
-        String actionParamsStr;
+        String typeStr;
+        String content;
         if (params.contains("action")) {
             String actionSource = params.getString("action");
             int splitIndex = actionSource.indexOf(' ');
             if (splitIndex == -1) {
-                actionStr = actionSource;
-                actionParamsStr = "";
+                typeStr = actionSource;
+                content = "";
             } else {
-                actionStr = actionSource.substring(0, splitIndex);
-                actionParamsStr = actionSource.substring(splitIndex + 1);
+                typeStr = actionSource.substring(0, splitIndex);
+                content = actionSource.substring(splitIndex + 1);
             }
         } else {
-            actionStr = params.getString("type");
-            actionParamsStr = params.getString("params");
+            typeStr = params.getString("type");
+            content = params.getString("content");
         }
 
         ReActions.Platform platform = env.getPlatform();
-        Action action = platform.getActivities().getAction(actionStr);
+        Action action = platform.getActivities().getAction(typeStr);
         if (action == null) {
-            platform.logger().warn("Failed to prepare dynamic action: action '" + actionStr + "' doesn't exist");
+            platform.logger().warn("Failed to prepare dynamic action: action type '" + typeStr + "' doesn't exist");
             return false;
         }
 
         if (delayMs <= 0) {
-            action.proceed(env, actionParamsStr);
+            action.proceed(env, content);
         } else {
             platform.getWaiter().schedule(new WaitTask(
                     env.getVariables(),
                     env.getPlayer() != null ? env.getPlayer().getUniqueId() : null, // TODO Selector
-                    List.of(new Stored(action, actionParamsStr)),
+                    List.of(new Stored(action, content)),
                     addOffset(delayMs)
             ));
         }
