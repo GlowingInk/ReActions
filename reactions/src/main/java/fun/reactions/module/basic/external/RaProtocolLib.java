@@ -107,28 +107,31 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
 
     private static void initPacketListener() {
         if (!connected) return;
-        ProtocolLibrary.getProtocolManager().addPacketListener(
-                new PacketAdapter(ReActions.getPlugin(), PacketType.Play.Server.CHAT) {
-                    @Override
-                    public void onPacketSending(PacketEvent event) {
-                        String message = "";
-                        try {
-                            String jsonMessage = event.getPacket().getChatComponents().getValues().get(0).getJson();
-                            if (jsonMessage != null) message = jsonToString(jsonMessage);
-                        } catch (Throwable ignore) {
-                        }
-                        if (message.isEmpty() && event.getPacket().getStrings().size() > 0) {
-                            String jsonMessage = event.getPacket().getStrings().read(0);
-                            if (jsonMessage != null) message = textToString(jsonMessage);
-                        }
-                        if (message.isEmpty()) return;
-                        Optional<Variables> optVars = ContextManager.triggerMessage(event.getPlayer(), MessageActivator.Source.CHAT_OUTPUT, message);
-                        if (optVars.isEmpty()) return;
-                        Variables vars = optVars.get();
-                        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-                    }
-        });
+        ProtocolLibrary.getProtocolManager().addPacketListener(new ChatOutputListener());
     }
 
+    private static class ChatOutputListener extends PacketAdapter {
+        public ChatOutputListener() {
+            super(ReActions.getPlugin(), PacketType.Play.Server.CHAT);
+        }
 
+        @Override
+        public void onPacketSending(PacketEvent event) {
+            String message = "";
+            try {
+                String jsonMessage = event.getPacket().getChatComponents().getValues().get(0).getJson();
+                if (jsonMessage != null) message = jsonToString(jsonMessage);
+            } catch (Throwable ignore) {
+            }
+            if (message.isEmpty() && event.getPacket().getStrings().size() > 0) {
+                String jsonMessage = event.getPacket().getStrings().read(0);
+                if (jsonMessage != null) message = textToString(jsonMessage);
+            }
+            if (message.isEmpty()) return;
+            Optional<Variables> optVars = ContextManager.triggerMessage(event.getPlayer(), MessageActivator.Source.CHAT_OUTPUT, message);
+            if (optVars.isEmpty()) return;
+            Variables vars = optVars.get();
+            vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        }
+    }
 }
