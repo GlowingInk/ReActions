@@ -26,7 +26,6 @@ import fun.reactions.ReActions;
 import fun.reactions.SQLManager;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +50,7 @@ public class SqlActions implements Action {
             case SELECT -> { // SELECT to variable
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("select")) {
-                    Msg.logOnce("needselect" + query, "You need to use only \"SELECT\" query in SQL_SELECT action. Query: " + query);
+                    env.warn("You need to use only \"SELECT\" query in SQL_SELECT action. Query: " + query);
                     return false;
                 }
                 if (varName.isEmpty()) return false;
@@ -61,7 +60,7 @@ public class SqlActions implements Action {
                 query = params.getString("query", params.origin()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("insert")) {
-                    Msg.logOnce("needinsert" + query, "You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
+                    env.warn("You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
                     return false;
                 }
                 SQLManager.executeUpdate(query, params);
@@ -70,7 +69,7 @@ public class SqlActions implements Action {
                 query = params.getString("query", params.origin()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("update")) {
-                    Msg.logOnce("needupdate" + query, "You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
+                    env.warn("You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
                     return false;
                 }
                 SQLManager.executeUpdate(query, params);
@@ -79,7 +78,7 @@ public class SqlActions implements Action {
                 query = params.getString("query", params.origin()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("delete")) {
-                    Msg.logOnce("needdelete" + query, "You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
+                    env.warn("You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
                     return false;
                 }
                 SQLManager.executeUpdate(query, params);
@@ -88,7 +87,7 @@ public class SqlActions implements Action {
                 query = params.getString("query", params.origin()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("set")) {
-                    Msg.logOnce("needset" + query, "You need to use only \"SET\" query in SQL_SET action. Query: " + query);
+                    env.warn("You need to use only \"SET\" query in SQL_SET action. Query: " + query);
                     return false;
                 }
                 env.getVariables().set("SQL_SET", query);

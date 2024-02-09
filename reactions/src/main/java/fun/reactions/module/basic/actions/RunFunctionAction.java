@@ -5,7 +5,6 @@ import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.basic.activators.FunctionActivator;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -19,13 +18,13 @@ public class RunFunctionAction implements Action {
         String id = params.getString(params.findKey(Parameters.ORIGIN, "id", "activator", "exec"));
         Activator activator = activators.getActivator(id);
         if (activator == null) {
-            Msg.logOnce("wrongact_" + id, "Failed to run FUNCTION activator " + id + ". Activator not found.");
+            env.warn("Failed to run FUNCTION activator " + id + ". Activator not found.");
             return false;
         } else {
             id = activator.getLogic().getName();
         }
         if (activator.getClass() != FunctionActivator.class) {
-            Msg.logOnce("wrongactype_" + id, "Failed to run FUNCTION activator " + id + ". Wrong activator type.");
+            env.warn("Failed to run FUNCTION activator " + id + ". Wrong activator type.");
             return false;
         }
         try {

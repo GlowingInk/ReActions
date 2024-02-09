@@ -24,7 +24,6 @@ package fun.reactions.module.basic.flags;
 
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +36,7 @@ public class ExecuteStopFlag implements Flag {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         // TODO Custom ActivatorType to handle exec stopping
         Player player = env.getPlayer();
-        Msg.logOnce("flagexecstopnotworking", "Sorry, but flag EXECUTE_STOP doesn't work yet.");
+        env.warn("Sorry, but flag EXECUTE_STOP doesn't work.");
         return false; // ReActions.getActivators().isStopped(player, param, false);
     }
 
