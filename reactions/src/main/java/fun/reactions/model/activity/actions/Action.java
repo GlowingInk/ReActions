@@ -2,6 +2,7 @@ package fun.reactions.model.activity.actions;
 
 import com.google.common.base.Objects;
 import fun.reactions.model.activity.Activity;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,11 @@ public interface Action extends Activity {
     final class Stored extends Activity.Stored<Action> {
         public Stored(@NotNull Action action, @NotNull String content) {
             super(action, content);
+        }
+
+        @Override
+        public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+            return activity.proceed(env, paramsStr);
         }
 
         @Override

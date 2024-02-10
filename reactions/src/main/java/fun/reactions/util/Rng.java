@@ -53,7 +53,7 @@ public final class Rng {
      * @param numsStr String with min-max values or just max value(e.g. "2-47", "76")
      * @return Random value
      */
-    public static int nextIntRanged(String numsStr) { // TODO Requires refactoring to nextRanged
+    public static int nextIntRanged(@NotNull String numsStr) { // TODO Requires refactoring to nextRanged
         int index = numsStr.indexOf('-');
         if (index > -1) {
             int min = NumberUtils.parseInteger(numsStr.substring(0, index), Is.NON_NEGATIVE).orElse(0);

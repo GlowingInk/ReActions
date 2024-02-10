@@ -101,7 +101,7 @@ public final class Logic {
             String params = flag.hasPlaceholders()
                     ? placeholders.parse(env, flag.getContent())
                     : flag.getContent();
-            if (!flag.getActivity().proceed(env, params)) {
+            if (!flag.proceed(env, params)) {
                 executeActions(env, reactions);
                 return;
             }
@@ -116,7 +116,7 @@ public final class Logic {
             String params = action.hasPlaceholders()
                     ? placeholders.parse(env, action.getContent())
                     : action.getContent();
-            if (action.getActivity().proceed(env, params) && action.getActivity() instanceof Interrupting stopAction) {
+            if (action.proceed(env, params) && action.getActivity() instanceof Interrupting stopAction) {
                 stopAction.stop(env, action.getContent(), new ArrayList<>(actions.subList(i + 1, actions.size())));
                 break;
             }
