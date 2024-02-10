@@ -6,7 +6,7 @@
 
     <groupId>fun.reactions</groupId>
     <artifactId>reactions-project</artifactId>
-    <version>0.14.5</version>
+    <version>0.14.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ReActions-Project</name>
