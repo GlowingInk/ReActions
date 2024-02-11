@@ -30,6 +30,7 @@ import fun.reactions.util.parameter.Parameters;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class PvpFlag implements Flag, Activity.Personal { // TODO: Requires rework
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
