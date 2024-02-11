@@ -9,7 +9,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -98,9 +97,9 @@ public class ModulesRegistry {
             try {
                 register.accept(type);
                 names.add(type.getName().toUpperCase(Locale.ROOT));
-            } catch (IllegalStateException e) {
+            } catch (Exception ex) {
                 if (failed == null) failed = new ArrayList<>();
-                failed.add(e.getMessage());
+                failed.add(ex.getMessage());
             }
         }
         if (!names.isEmpty()) {
@@ -131,7 +130,7 @@ public class ModulesRegistry {
                         toRegister.add(clazz);
                     }
                 }
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch (Exception ex) {
                 platform.logger().error("Something went wrong during module parsing", ex);
             }
         }

@@ -1,13 +1,23 @@
 package fun.reactions.module.papi.external;
 
-import fun.reactions.PersistentVariablesManager;
 import fun.reactions.ReActions;
+import fun.reactions.model.environment.Environment;
+import fun.reactions.model.environment.Variables;
+import fun.reactions.placeholders.PlaceholdersManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.util.StringUtil;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class RaPapiExpansion extends PlaceholderExpansion {
+    private final ReActions.Platform platform;
+    private final PlaceholdersManager raPlaceholders;
+
+    public RaPapiExpansion(@NotNull ReActions.Platform platform) {
+        this.platform = platform;
+        this.raPlaceholders = platform.getPlaceholders();
+    }
+
     @Override
     public boolean persist() {
         return true;
@@ -25,29 +35,22 @@ public class RaPapiExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        return "fromgate";
+        return "imDaniX";
     }
 
     @Override
     public @NotNull String getVersion() {
-        return "0.0.3";
+        return "1.0";
     }
 
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String param) {
-        PersistentVariablesManager variables = ReActions.getPersistentVariables();
-
-        if (StringUtil.startsWithIgnoreCase(param, "varp:")) {
-            return player == null || player.getName() == null
-                    ? null
-                    : variables.getVariable(player.getName(), param.substring(5));
-        } else if (StringUtil.startsWithIgnoreCase(param, "var:")) {
-            String[] split = param.substring(4).split("\\.", 2);
-            return split.length > 1
-                    ? variables.getVariable(split[0], split[1])
-                    : variables.getVariable(null, split[0]);
-        }
-
-        return null;
+        return raPlaceholders.resolvePlaceholder(new Environment(
+                platform,
+                "",
+                new Variables(),
+                player instanceof Player onlinePlayer ? onlinePlayer : null,
+                true // We don't know if we're in async, so let's consider we are
+        ), param);
     }
 }

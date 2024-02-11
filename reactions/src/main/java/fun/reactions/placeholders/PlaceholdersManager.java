@@ -22,13 +22,14 @@ public abstract class PlaceholdersManager {
 
     public final void registerPlaceholder(@NotNull Placeholder ph) {
         if (!resolver.add(ph)) {
-            throw new IllegalArgumentException("Cannot register '" + ph.getName() + "' placeholder - it doesn't implement any specific Placeholder interfaces");
+            throw new IllegalStateException("Cannot register " + ph.getClass() + " placeholder - " +
+                    "the name '" + ph.getName() + "' is already registered");
         }
     }
 
     public abstract @NotNull String parse(@NotNull Environment env, @NotNull String text);
 
-    protected final @Nullable String resolvePlaceholder(@NotNull Environment env, @NotNull String phText) {
+    public final @Nullable String resolvePlaceholder(@NotNull Environment env, @NotNull String phText) {
         return resolver.resolve(env, phText);
     }
 }
