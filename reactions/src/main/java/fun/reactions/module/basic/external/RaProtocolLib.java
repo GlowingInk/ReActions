@@ -131,7 +131,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
             Optional<Variables> optVars = ContextManager.triggerMessage(event.getPlayer(), MessageActivator.Source.CHAT_OUTPUT, message);
             if (optVars.isEmpty()) return;
             Variables vars = optVars.get();
-            vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+            vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
         }
     }
 }

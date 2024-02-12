@@ -100,6 +100,6 @@ public abstract class ActivationContext {
     }
 
     public boolean isCancelled() {
-        return variables != null && variables.getChanged(CANCEL_EVENT, Boolean::valueOf).orElse(false);
+        return variables != null && variables.changedBoolean(CANCEL_EVENT).orElse(false);
     }
 }

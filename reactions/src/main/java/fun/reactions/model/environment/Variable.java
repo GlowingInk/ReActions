@@ -19,7 +19,7 @@ public interface Variable {
         }
 
         @Override
-        public @NotNull Optional<String> getChanged() {
+        public @NotNull Optional<String> changed() {
             return Optional.empty();
         }
 
@@ -33,7 +33,7 @@ public interface Variable {
 
     @NotNull Variable set(@NotNull String value);
 
-    @NotNull Optional<String> getChanged();
+    @NotNull Optional<String> changed();
 
     @NotNull Variable fork();
 
@@ -86,7 +86,7 @@ public interface Variable {
         }
 
         @Override
-        public @NotNull Optional<String> getChanged() {
+        public @NotNull Optional<String> changed() {
             return Optional.of(value);
         }
 
@@ -119,7 +119,7 @@ public interface Variable {
         }
 
         @Override
-        public @NotNull Optional<String> getChanged() {
+        public @NotNull Optional<String> changed() {
             return optional;
         }
 
@@ -147,7 +147,7 @@ public interface Variable {
         }
 
         @Override
-        public @NotNull Optional<String> getChanged() {
+        public @NotNull Optional<String> changed() {
             return Optional.empty();
         }
 

@@ -9,7 +9,6 @@ import fun.reactions.module.basic.ContextManager;
 import fun.reactions.module.basic.ItemContextManager;
 import fun.reactions.module.basic.activators.DropActivator;
 import fun.reactions.util.item.VirtualItem;
-import fun.reactions.util.num.NumberUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -33,9 +32,9 @@ public class RaListener implements Listener {
         Optional<Variables> optVars = ContextManager.triggerPickupItem(event.getPlayer(), event.getItem(), event.getItem().getPickupDelay());
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(DropActivator.Context.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItem().setPickupDelay(d));
-        vars.getChanged(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItem().setItemStack(i));
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
+        vars.changedInt(DropActivator.Context.PICKUP_DELAY).ifPresent((d) -> event.getItem().setPickupDelay(d));
+        vars.changed(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItem().setItemStack(i));
         if (event.isCancelled()) return;
         ItemContextManager.triggerItemHold(event.getPlayer());
         ItemContextManager.triggerItemWear(event.getPlayer());

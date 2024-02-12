@@ -1,4 +1,4 @@
-package fun.reactions.util.enums;
+package fun.reactions.util.bool;
 
 import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.Contract;
@@ -19,6 +19,14 @@ public enum TriBoolean {
         this.triState = triState;
     }
 
+    public @NotNull OptionalBoolean asOptional() {
+        return switch (this) {
+            case TRUE -> OptionalBoolean.TRUE;
+            case FALSE -> OptionalBoolean.FALSE;
+            case ANY -> OptionalBoolean.EMPTY;
+        };
+    }
+
     public @Nullable Boolean asBoolean() {
         return triState.toBoolean();
     }
@@ -35,7 +43,7 @@ public enum TriBoolean {
         return switch (this) {
             case TRUE -> bool;
             case FALSE -> !bool;
-            default -> true;
+            case ANY -> true;
         };
     }
 
@@ -43,7 +51,7 @@ public enum TriBoolean {
         return switch (this) {
             case TRUE -> bool != null && bool;
             case FALSE -> bool != null && !bool;
-            default -> true;
+            case ANY -> true;
         };
     }
 

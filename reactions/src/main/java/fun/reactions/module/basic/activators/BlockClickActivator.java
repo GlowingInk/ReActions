@@ -147,8 +147,8 @@ public class BlockClickActivator extends Activator implements Locatable {
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
                     "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
-                    "blocktype", Variable.simple(block.getType()),
-                    "block", Variable.simple(block.getType()) // FIXME Why there is a copy?
+                    "blocktype", simple(block.getType()),
+                    "block", simple(block.getType()) // FIXME Why there is a copy?
             );
         }
     }
