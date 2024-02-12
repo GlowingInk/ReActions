@@ -10,22 +10,25 @@ import org.jetbrains.annotations.Nullable;
  * Context created per activator
  */
 public final class Environment {
+    private static final int MAX_DEPTH = 256;
+
     private final ReActions.Platform platform;
     private final String activatorName;
     private final Player player;
-
     private final Variables variables;
+    private final int depth;
     private final boolean async; // TODO
 
-    public Environment(@NotNull ReActions.Platform platform, @NotNull String activator, @NotNull Variables variables, @Nullable Player player) {
-        this(platform, activator, variables, player, false);
+    public Environment(@NotNull ReActions.Platform platform, @NotNull String activator, @NotNull Variables variables, @Nullable Player player, int depth) {
+        this(platform, activator, variables, player, depth, false);
     }
 
-    public Environment(@NotNull ReActions.Platform platform, @NotNull String activator, @NotNull Variables variables, @Nullable Player player, boolean async) {
+    public Environment(@NotNull ReActions.Platform platform, @NotNull String activator, @NotNull Variables variables, @Nullable Player player, int depth, boolean async) {
         this.platform = platform;
         this.variables = variables;
         this.activatorName = activator;
         this.player = player;
+        this.depth = depth;
         this.async = async;
     }
 
@@ -47,6 +50,14 @@ public final class Environment {
 
     public @NotNull Variables getVariables() {
         return variables;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public boolean isStepAllowed() {
+        return depth < MAX_DEPTH;
     }
 
     public boolean isAsync() {

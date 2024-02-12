@@ -66,7 +66,7 @@ public abstract class ActivationContext {
     @Contract(pure = true)
     public final @NotNull Environment createEnvironment(@NotNull ReActions.Platform platform, @NotNull String activatorName) {
         initialize();
-        return new Environment(platform, activatorName, variables, player);
+        return new Environment(platform, activatorName, variables, player, 0);
     }
 
     public final void initialize() {

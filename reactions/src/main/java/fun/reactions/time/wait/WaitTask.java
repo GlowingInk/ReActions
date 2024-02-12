@@ -27,7 +27,7 @@ public record WaitTask(
 
     public void execute(@NotNull ReActions.Platform platform) {
         Player player = playerId == null ? null : Bukkit.getPlayer(playerId);
-        Logic.executeActions(new Environment(platform, "", variables, player), actions);
+        Logic.executeActions(new Environment(platform, "", variables, player, 0), actions);
     }
 
     @Override

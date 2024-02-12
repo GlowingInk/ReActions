@@ -17,7 +17,7 @@ public class LegacyPlaceholdersManagerTest {
         vars.set("test", "y\\ay");
         vars.set("another", "%test%\\,");
         assertEquals(
-                mgr.parse(new Environment(null, "", vars, null), "Foo %another% bar %ignored%"),
+                mgr.parse(new Environment(null, "", vars, null, 0), "Foo %another% bar %ignored%"),
                 "Foo y\\ay\\, bar %ignored%"
         );
     }

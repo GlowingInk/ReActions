@@ -22,15 +22,15 @@ public class EitherFlagTest { // TODO Doesn't test for flag params
         EitherFlag flag = new EitherFlag();
         // TODO Use DataProvider
         assertTrue(flag.proceed(
-                new Environment(platform, "", new Variables(), null),
+                new Environment(platform, "", new Variables(), null, 0),
                 "test1:{some value} test2:other test1:repeat"
         ));
         assertFalse(flag.proceed(
-                new Environment(platform, "", new Variables(), null),
+                new Environment(platform, "", new Variables(), null, 0),
                 "test1:{some value} test1:repeat"
         ));
         assertTrue(flag.proceed(
-                new Environment(platform, "", new Variables(), null),
+                new Environment(platform, "", new Variables(), null, 0),
                 "!test1:inverted"
         ));
     }

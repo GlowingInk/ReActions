@@ -27,18 +27,19 @@ public class RunFunctionAction implements Action {
             env.warn("Failed to run FUNCTION activator " + id + ". Wrong activator type.");
             return false;
         }
-        try {
+        if (env.isStepAllowed()) {
             activator.getLogic().execute(new Environment(
                     env.getPlatform(),
                     id,
                     env.getVariables(),
                     env.getPlayer(),
+                    env.getDepth() + 1,
                     env.isAsync()
             ));
-        } catch (StackOverflowError error) {
+        } else {
             env.getPlatform().logger().error(
-                    "RUN_FUNCTION action failed in '" + env.getActivatorName() + "' due to stack overflow. " +
-                    "Consider limiting the usage of looped RUN_FUNCTION actions and FUNCTION placeholders " +
+                    "RUN_FUNCTION action in '" + id + "' was stopped at the depth '" + env.getDepth() + "' to prevent stack overflow. " +
+                    "Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders " +
                     "or try using EXECUTE actions."
             );
             return false;

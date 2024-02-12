@@ -19,18 +19,19 @@ public class FunctionPlaceholder implements Placeholder {
         }
         String id = activator.getLogic().getName();
         Variables vars = new Variables();
-        try {
+        if (env.isStepAllowed()) {
             activator.getLogic().execute(new Environment(
                     env.getPlatform(),
                     id,
                     vars,
                     env.getPlayer(),
+                    env.getDepth() + 1,
                     env.isAsync()
             ));
-        } catch (StackOverflowError error) {
+        } else  {
             env.getPlatform().logger().error(
-                    "FUNCTION placeholder (" + params + ") failed in '" + env.getActivatorName() + "' due to stack overflow. " +
-                    "Consider limiting the usage of looped FUNCTION placeholders and RUN_FUNCTION actions."
+                    "FUNCTION placeholder in '" + id + "' was stopped at the depth '" + env.getDepth() + "' to prevent stack overflow. " +
+                    "Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders."
             );
         }
         return vars.getStringUnsafe("return");

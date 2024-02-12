@@ -50,6 +50,7 @@ public class RaPapiExpansion extends PlaceholderExpansion {
                 "",
                 new Variables(),
                 player instanceof Player onlinePlayer ? onlinePlayer : null,
+                0,
                 true // We don't know if we're in async, so let's consider we are
         ), param);
     }
