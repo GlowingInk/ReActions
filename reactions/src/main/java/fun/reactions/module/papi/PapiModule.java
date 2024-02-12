@@ -30,7 +30,7 @@ public class PapiModule implements Module { // TODO To own jar
 
     @Override
     public @NotNull Collection<String> getAuthors() {
-        return List.of("fromgate", "imDaniX");
+        return List.of("imDaniX");
     }
 
     @Override

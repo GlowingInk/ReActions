@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class PapiPlaceholder implements Placeholder.Dynamic, Placeholder {
     private final PlaceholderAPIPlugin papiPlugin;
 
-    public PapiPlaceholder(PlaceholderAPIPlugin papiPlugin) {
+    public PapiPlaceholder(@NotNull PlaceholderAPIPlugin papiPlugin) {
         this.papiPlugin = papiPlugin;
     }
 

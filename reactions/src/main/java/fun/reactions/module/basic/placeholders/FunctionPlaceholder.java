@@ -18,7 +18,7 @@ public class FunctionPlaceholder implements Placeholder {
             return null;
         }
         String id = activator.getLogic().getName();
-        Variables vars = new Variables();
+        Variables vars = env.getVariables().fork();
         if (env.isStepAllowed()) {
             activator.getLogic().execute(new Environment(
                     env.getPlatform(),

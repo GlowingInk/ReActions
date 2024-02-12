@@ -29,7 +29,6 @@ import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,11 +41,11 @@ public class BlockPoweredFlag implements Flag {
         if (locStr.isEmpty()) return false;
         Location loc = LocationUtils.parseLocation(locStr, null);
         if (loc == null) return false;
-        Block b = loc.getBlock();
-        BlockData data = b.getBlockData();
-        if (data instanceof Powerable)
-            return ((Powerable) data).isPowered();
-        return b.isBlockIndirectlyPowered();
+        Block block = loc.getBlock();
+        if (block.getBlockData() instanceof Powerable powerable) {
+            return powerable.isPowered();
+        }
+        return block.isBlockIndirectlyPowered();
     }
 
     @Override

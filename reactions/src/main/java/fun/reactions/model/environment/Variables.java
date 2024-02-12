@@ -49,8 +49,10 @@ public class Variables {
 
     public @NotNull Map<String, Variable> forkMap() {
         Map<String, Variable> forkedVars = new HashMap<>(variables.size());
-        for (var entry : variables.entrySet()) {
-            forkedVars.put(entry.getKey(), entry.getValue().fork());
+        if (!variables.isEmpty()) {
+            for (var entry : variables.entrySet()) {
+                forkedVars.put(entry.getKey(), entry.getValue().fork());
+            }
         }
         return forkedVars;
     }
