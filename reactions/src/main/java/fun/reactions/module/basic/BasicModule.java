@@ -230,7 +230,8 @@ public class BasicModule implements Module {
                 new ActivatorNamePlaceholder(),
                 new PersistentVarPlaceholders(),
                 new LocalVarPlaceholder(),
-                new EnderChestPlaceholder()
+                new EnderChestPlaceholder(),
+                new FunctionPlaceholder()
         );
     }
 

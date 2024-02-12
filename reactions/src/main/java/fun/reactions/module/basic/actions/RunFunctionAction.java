@@ -38,7 +38,8 @@ public class RunFunctionAction implements Action {
         } catch (StackOverflowError error) {
             env.getPlatform().logger().error(
                     "RUN_FUNCTION action failed in '" + env.getActivatorName() + "' due to stack overflow. " +
-                    "Consider limiting the usage of looped FUNCTION actions or try using EXECUTE actions when possible."
+                    "Consider limiting the usage of looped RUN_FUNCTION actions and FUNCTION placeholders " +
+                    "or try using EXECUTE actions."
             );
             return false;
         }
