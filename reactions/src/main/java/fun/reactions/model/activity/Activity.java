@@ -9,8 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Activity extends Named {
     boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
-    // TODO
-    default boolean isAsync() {
+    default boolean isAsync() { // TODO
         return true;
     }
 

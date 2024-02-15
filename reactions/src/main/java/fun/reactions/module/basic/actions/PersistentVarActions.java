@@ -79,7 +79,7 @@ public class PersistentVarActions implements Action, Aliased {
                 } else {
                     return false;
                 }
-                double mod = change.isEmpty() || !(NumberUtils.isNumber(change)) ? 1 : Double.parseDouble(change);
+                double mod = NumberUtils.parseDouble(change).orElse(1);
                 varNumberValue += actType == Type.INCREASE ? mod : -mod;
                 varsManager.setVariable(playerName, varName, NumberUtils.simpleFormat(varNumberValue));
             }
