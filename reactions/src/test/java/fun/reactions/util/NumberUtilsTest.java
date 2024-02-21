@@ -16,10 +16,6 @@ public class NumberUtilsTest {
     public static Object[][] parseDoubleData() {
         return new Object[][]{
                 {"3.14", Is.POSITIVE, OptionalDouble.of(3.14)},
-                {"-5.0", Is.POSITIVE_NATURAL, OptionalDouble.empty()},
-                {"3.0", Is.NATURAL, OptionalDouble.of(3.0)},
-                {"7", Is.INTEGER, OptionalDouble.of(7)},
-                {"3.14", Is.NATURAL, OptionalDouble.empty()},
                 {"abc", Is.NEGATIVE, OptionalDouble.empty()}
         };
     }

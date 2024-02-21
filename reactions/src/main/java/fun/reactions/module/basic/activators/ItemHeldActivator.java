@@ -74,8 +74,8 @@ public class ItemHeldActivator extends Activator {
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                "itemnew:" + (virtualItemNew == VirtualItem.EMPTY ? "-" : virtualItemNew) +
-                " itemprev:" + (virtualItemPrev == VirtualItem.EMPTY ? "-" : virtualItemPrev) +
+                "itemnew:" + (virtualItemNew == VirtualItem.ANY ? "-" : virtualItemNew) +
+                " itemprev:" + (virtualItemPrev == VirtualItem.ANY ? "-" : virtualItemPrev) +
                 " slotnew:" + (slotNew + 1) +
                 " slotprev:" + (slotPrev + 1) +
                 ")";

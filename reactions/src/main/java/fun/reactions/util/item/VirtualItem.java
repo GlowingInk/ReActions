@@ -1,6 +1,5 @@
 package fun.reactions.util.item;
 
-import fun.reactions.util.Utils;
 import fun.reactions.util.item.aspects.*;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.NumberUtils;
@@ -19,7 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public final class VirtualItem implements Parameterizable {
-    private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z_]+)(?::(\\d+))?(?:\\*(\\d+))?");
+    private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z\\d_]+)(?::(\\d{1,9}))?(?:\\*(\\d{1,9}))?");
 
     /**
      * A VirtualItem that accepts only null or air ItemStacks
@@ -28,9 +27,9 @@ public final class VirtualItem implements Parameterizable {
     /**
      * A VirtualItem that accepts any ItemStacks but null or air
      */
-    public static final VirtualItem EMPTY = new VirtualItem(null, -1, List.of(), Parameters.EMPTY);
+    public static final VirtualItem ANY = new VirtualItem(null, -1, List.of(), Parameters.EMPTY);
     /**
-     * A VirtualItem that accepts noting
+     * A VirtualItem that accepts nothing
      */
     public static final VirtualItem INVALID = new VirtualItem(null, -1, List.of(new MetaAspect.Instance() {
         @Override
@@ -181,18 +180,21 @@ public final class VirtualItem implements Parameterizable {
                     ? null
                     : itemValue.clone();
         } else {
-            itemGenerated = true;
             if (type == null || !type.isItem()) {
                 return null;
             } else {
-                itemValue = new ItemStack(type);
-                itemValue.setAmount(Math.max(amount, 1));
-                if (!type.isEmpty() && !aspects.isEmpty()) {
-                    ItemMeta meta = itemValue.getItemMeta();
-                    aspects.forEach(aspect -> aspect.apply(meta));
-                    itemValue.setItemMeta(meta);
+                ItemStack genItem = new ItemStack(type);
+                if (!type.isEmpty()) {
+                    genItem.setAmount(Math.max(amount, 1));
+                    if (!aspects.isEmpty()) {
+                        ItemMeta meta = genItem.getItemMeta();
+                        aspects.forEach(aspect -> aspect.apply(meta));
+                        genItem.setItemMeta(meta);
+                    }
                 }
-                return initClone ? itemValue.clone() : itemValue;
+                itemValue = genItem;
+                itemGenerated = true;
+                return initClone ? genItem.clone() : genItem;
             }
         }
     }
@@ -304,7 +306,7 @@ public final class VirtualItem implements Parameterizable {
 
     @Contract(pure = true)
     public static @NotNull VirtualItem fromParameters(@NotNull Parameters params) {
-        if (params.isEmpty()) return VirtualItem.EMPTY;
+        if (params.isEmpty()) return VirtualItem.ANY;
         List<MetaAspect.Instance> aspects = new ArrayList<>();
         Material type = null;
         int amount = -1;
@@ -327,10 +329,10 @@ public final class VirtualItem implements Parameterizable {
                     if (!matcher.matches()) break;
                     type = ItemUtils.getMaterial(matcher.group(1));
                     if (type == null) return VirtualItem.INVALID;
-                    if (!Utils.isStringEmpty(matcher.group(2))) {
+                    if (matcher.group(2) != null) {
                         aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
                     }
-                    if (!Utils.isStringEmpty(matcher.group(3))) {
+                    if (matcher.group(3) != null) {
                         amount = NumberUtils.asInteger(matcher.group(3), -1);
                     }
                     break;
@@ -361,7 +363,7 @@ public final class VirtualItem implements Parameterizable {
         );
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> !null")
     public static @Nullable ItemStack asCleanItemStack(@Nullable ItemStack item) {
         if (item == null) return null;
         VirtualItem virtual = fromItemStack(item, false);
@@ -369,7 +371,7 @@ public final class VirtualItem implements Parameterizable {
                 virtual.type,
                 virtual.amount,
                 virtual.aspects,
-                virtual.paramsValue
+                virtual.asParameters()
         ).asItemStack(false);
     }
 
@@ -402,6 +404,19 @@ public final class VirtualItem implements Parameterizable {
         return asString();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return this == other || other instanceof VirtualItem otherItem &&
+                amount == otherItem.amount &&
+                type == otherItem.type &&
+                aspects.equals(otherItem.aspects);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, amount, aspects);
+    }
+
     public enum AmountCheck {
         /**
          * Skip amount check as a whole
@@ -412,7 +427,7 @@ public final class VirtualItem implements Parameterizable {
          */
         EQUAL,
         /**
-         * Checks if amount of ItemStack satisfies amount of VirtualItem
+         * Checks if amount of ItemStack satisfies (>=) amount of VirtualItem
          */
         SATISFIES
     }

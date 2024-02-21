@@ -23,7 +23,7 @@ public class EnchantmentsAspect implements MetaAspect {
     }
 
     @Override
-    public @NotNull EnchantmentsAspect.EnchantmentsInst fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         if (value.isEmpty()) {
             return EnchantmentsInst.EMPTY;
         }
@@ -53,7 +53,7 @@ public class EnchantmentsAspect implements MetaAspect {
     }
 
     @Override
-    public EnchantmentsInst fromItem(@NotNull ItemMeta meta) {
+    public MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         Map<Enchantment, Integer> enchants =  meta instanceof EnchantmentStorageMeta enchantmentMeta
                 ? enchantmentMeta.getStoredEnchants()
                 : meta.getEnchants();

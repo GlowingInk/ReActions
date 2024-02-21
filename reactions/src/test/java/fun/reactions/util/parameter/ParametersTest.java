@@ -11,27 +11,51 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class ParametersTest {
     @DataProvider
     public Object[][] fromStringData() {
         return new Object[][] {
-                {"test:{value} test2:value\\ test3:va:lue test4:value}", "test:value test2:{value\\\\} test3:{va:lue} test4:{value\\}}", 4},
-                {"test:ignored test:value1 test2:\\{value2 test3:value3}", "test:value1 test2:{\\{value2} test3:{value3\\}}", 3},
-                {"test:{{additional brackets}} empty:{} test2:\\{brackets2\\}", "test:{{additional brackets}} empty:{} test2:{{brackets2}}", 3},
-                {"test:{value broken\\}", "", 0},
-                {"test:{value{ broken}", "", 0},
-                {"key:{s p a c e:fake\\}} e:test", "key:{s p a c e:fake\\}} e:test", 2},
-                {"key:someverylongvaluewow!", "key:{someverylongvaluewow!}", 1}
+                {
+                        "test:{value} test2:value\\ test3:va:lue test4:value}",
+                        "test:value test2:{value\\\\} test3:{va:lue} test4:{value\\}}", 4
+                },
+                {
+                        "test:ignored test:value1 test2:\\{value2 test3:value3}",
+                        "test:value1 test2:{\\{value2} test3:{value3\\}}", 3
+                },
+                {
+                        "test:{inside:{hallo world}} test2:{inside1:{hallo world} inside2:{howa u 2day}}",
+                        "test:{inside:{hallo world}} test2:{inside1:{hallo world} inside2:{howa u 2day}}", 2
+                },
+                {
+                        "test:{{additional brackets}} empty:{} test2:\\{brackets2\\}",
+                        "test:{{additional brackets}} empty:{} test2:{{brackets2}}", 3},
+                {
+                        "test:{value broken\\}",
+                        "", 0
+                },
+                {
+                        "test:{value{ broken}",
+                        "", 0
+                },
+                {
+                        "key:{s p a c e:fake\\}} e:test",
+                        "key:{s p a c e:fake\\}} e:test", 2
+                },
+                {
+                        "key:someverylongvaluewow!",
+                        "key:{someverylongvaluewow!}", 1
+                }
         };
     }
 
     @Test(dataProvider = "fromStringData")
     public void fromStringTest(String input, String expected, int size) {
         Parameters result = Parameters.fromString(input);
-        assertEquals( // Testing Parameters#equals too
-                result,
-                Parameters.fromString(expected)
+        assertTrue( // Testing Parameters#isSimilar too
+                result.isSimilar(Parameters.fromString(expected))
         );
         assertEquals( // We expect the result to be the same
                 Parameters.fromString(result.originFormatted()).originFormatted(),
@@ -50,7 +74,7 @@ public class ParametersTest {
 
     @Test(dataProvider = "fromMapData")
     public void fromMapTest(Map<String, String> map, String paramsStr) {
-        assertEquals(Parameters.fromMap(map), Parameters.fromString(paramsStr));
+        assertTrue(Parameters.fromMap(map).isSimilar(Parameters.fromString(paramsStr)));
     }
 
     @DataProvider
@@ -88,9 +112,8 @@ public class ParametersTest {
     public void fromConfigurationTest(String cfgStr, String expected) throws InvalidConfigurationException {
         FileConfiguration cfg = new YamlConfiguration();
         cfg.loadFromString(cfgStr);
-        assertEquals(
-                Parameters.fromConfiguration(cfg, Set.of("ignored")),
-                Parameters.fromString(expected)
+        assertTrue(
+                Parameters.fromConfiguration(cfg, Set.of("ignored")).isSimilar(Parameters.fromString(expected))
         );
     }
 
@@ -109,7 +132,7 @@ public class ParametersTest {
     }
 
     @DataProvider
-    public static Object[][] escapeParametersData() {
+    public static Object[][] escapeValueData() {
         return new Object[][] {
                 {"basic text", "basic text"},
                 {"", ""},
@@ -117,8 +140,8 @@ public class ParametersTest {
                 {"}", "\\}"},
                 {"already\\{escaped", "already\\{escaped"},
                 {"on\\ly \\the last\\", "on\\ly \\the last\\\\"},
-                {"{equal amount}", "{equal amount}"},
-                {"{unequal amount}}", "\\{unequal amount\\}\\}"},
+                {"test:{equal amount}", "test:{equal amount}"},
+                {"test:{unequal amount}}", "test:\\{unequal amount\\}\\}"},
                 {"{{unequal amount}", "\\{\\{unequal amount\\}"},
                 {"{unequal escaped\\}}", "{unequal escaped\\}}"},
                 {"{unequal with last}}\\", "\\{unequal with last\\}\\}\\\\"},
@@ -126,11 +149,36 @@ public class ParametersTest {
         };
     }
 
-    @Test(dataProvider = "escapeParametersData")
-    public void escapeParametersTest(String input, String expected) {
-        String result = Parameters.escapeParameters(input);
+    @Test(dataProvider = "escapeValueData")
+    public void escapeValueTest(String input, String expected) {
+        String result = Parameters.escapeValue(input);
         assertEquals(result, expected);
-        assertEquals(Parameters.escapeParameters(result), expected); // Escaping the escaped should not work
+        assertEquals(Parameters.escapeValue(result), expected); // Escaping the escaped should not work
+    }
+
+    @DataProvider
+    public static Object[][] escapeData() {
+        return new Object[][] {
+                {"basic text", "basic text"},
+                {"", ""},
+                {"\\", "\\\\"},
+                {"}", "\\}"},
+                {"already\\{escaped", "already\\\\\\{escaped"},
+                {"on\\ly \\the last\\", "on\\\\ly \\\\the last\\\\"},
+                {"test:{equal amount}", "test\\:\\{equal amount\\}"},
+                {"test:{unequal amount}}", "test\\:\\{unequal amount\\}\\}"},
+                {"{{unequal amount}", "\\{\\{unequal amount\\}"},
+                {"{unequal escaped\\}}", "\\{unequal escaped\\\\\\}\\}"},
+                {"{unequal with last}}\\", "\\{unequal with last\\}\\}\\\\"},
+                {"}wrong order{", "\\}wrong order\\{"}
+        };
+    }
+
+    @Test(dataProvider = "escapeData")
+    public void escapeTest(String input, String expected) {
+        String result = Parameters.escape(input);
+        assertEquals(result, expected);
+        assertTrue(Parameters.fromString(result).isEmpty(), Parameters.fromString(result).keys().toString());
     }
 
     @DataProvider
@@ -154,7 +202,8 @@ public class ParametersTest {
         return new Object[][] {
                 {Parameters.fromString("key:abc anOther_value:123 EXTRA:{456} key:overridden"), "key", "overridden"},
                 {Parameters.fromString("key:abc anOther_value:123 EXTRA:{456} key:overridden"), "extra", "456"},
-                {Parameters.fromString("nothing!"), "key", ""}
+                {Parameters.fromString("nothing!"), "key", ""},
+                {Parameters.fromString("key:{Escaped \\{ \\} \\\\\\} \\: \\\\ \\ value}"), "key", "Escaped { } \\} : \\ \\ value"}
         };
     }
 

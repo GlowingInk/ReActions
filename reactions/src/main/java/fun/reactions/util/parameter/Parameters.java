@@ -21,10 +21,13 @@ import java.util.*;
 import java.util.function.*;
 import java.util.regex.Pattern;
 
+import static ink.glowing.text.InkyMessage.isEscapedAt;
+
 public class Parameters implements Parameterizable {
-    public static final String ORIGIN = " :";
+    public static final String ORIGIN = ": ";
     public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap<>(1));
-    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
+    private static final Pattern VALUE_ESCAPE = Pattern.compile("(?<!\\\\)[{}]");
+    private static final Pattern FULL_ESCAPE = Pattern.compile("[{}:\\\\]");
 
     private final String origin;
     private final Map<String, String> params;
@@ -42,6 +45,10 @@ public class Parameters implements Parameterizable {
     protected Parameters(@NotNull String origin, @NotNull String formatted, @NotNull Map<String, String> params) {
         this(origin, params);
         this.formatted = formatted;
+    }
+
+    public static @NotNull String originKey() {
+        return ORIGIN;
     }
 
     public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg) {
@@ -104,7 +111,7 @@ public class Parameters implements Parameterizable {
                 int next = i + 1;
                 if (next < str.length()) {
                     char n = str.charAt(next);
-                    if (n == '{' || n == '}' || (n == '\\' && next + 1 < str.length() && str.charAt(next + 1) == '}')) {
+                    if ("{}:\\".indexOf(n) != -1) {
                         if (state == IterationState.SPACE) {
                             bld = new StringBuilder();
                             state = IterationState.TEXT;
@@ -195,7 +202,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
         Map<String, String> params = new CaseInsensitiveMap<>(2);
         params.put(key, value);
-        String escaped = escapeParameters(value);
+        String escaped = escapeValue(value);
         String origin;
         if (requiresBrackets(escaped, value)) {
             origin = key + ":{" + escaped + "}";
@@ -210,7 +217,7 @@ public class Parameters implements Parameterizable {
         map.forEach((key, value) -> {
             if (key.equals(ORIGIN)) return;
             bld.append(key).append(':');
-            String escaped = escapeParameters(value);
+            String escaped = escapeValue(value);
             if (requiresBrackets(escaped, value)) {
                 bld.append('{').append(escaped).append('}');
             } else {
@@ -226,7 +233,7 @@ public class Parameters implements Parameterizable {
                 value.indexOf(' ') != -1 || value.indexOf(':') != -1 || value.charAt(0) == '{';
     }
 
-    public static @NotNull String escapeParameters(@NotNull String str) {
+    public static @NotNull String escapeValue(@NotNull String str) {
         if (str.isEmpty()) return str;
         int brackets = 0;
         boolean escaped = false;
@@ -244,12 +251,17 @@ public class Parameters implements Parameterizable {
                 break;
             }
         }
-        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || str.charAt(str.length() - 2) != '\\')) {
+        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || !isEscapedAt(str, str.length() - 1))) {
             str += '\\';
         }
         return brackets != 0
-                ? UNESCAPED.matcher(str).replaceAll("\\\\$0")
+                ? VALUE_ESCAPE.matcher(str).replaceAll("\\\\$0")
                 : str;
+    }
+
+    public static @NotNull String escape(@NotNull String str) {
+        if (str.isEmpty()) return str;
+        return FULL_ESCAPE.matcher(str).replaceAll("\\\\$0");
     }
 
     public <R> @NotNull RichOptional<String, R> getOptional(@NotNull String key, @NotNull Function<String, R> converter) {
@@ -582,22 +594,18 @@ public class Parameters implements Parameterizable {
     @Override
     @Contract("null -> false")
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj instanceof Parameters other) {
-            if (other.size() != size()) return false;
-            for (String key : keys()) {
-                if (!Objects.equals(getString(key), other.getString(key, null))) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+        return obj instanceof Parameters otherParams && (otherParams == this || otherParams.origin.equals(origin));
     }
 
     @Contract("null -> false")
-    public boolean equalsFull(@Nullable Parameters params) {
-        return params != null && (params == this || params.origin.equals(origin));
+    public boolean isSimilar(@Nullable Parameters other) {
+        if (other == null || other.size() != size()) return false;
+        for (String key : keys()) {
+            if (!Objects.equals(getString(key), other.getString(key, null))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class DurabilityAspect implements MetaAspect {
         @Override
         public boolean isSimilar(@NotNull ItemMeta meta) {
             if (meta instanceof Damageable damageMeta) {
-                return value < 0 ? !damageMeta.hasDamage() : damageMeta.getDamage() >= value;
+                return value >= 0 ? damageMeta.getDamage() >= value : !damageMeta.hasDamage();
             }
             return false;
         }

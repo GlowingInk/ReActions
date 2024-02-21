@@ -65,11 +65,11 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(env, substring);
                             if (processed != null) {
-                                if (text.length() > index + 3 && text.charAt(index + 1) == '(') {
+                                if (text.length() > index + 3 && text.charAt(index + 1) == '(') { // TODO Better escaping trigger
                                     String options = optionsSearch(text, index + 2);
                                     if (options != null) {
                                         index += options.length() + 2;
-                                        if (options.contains("prms")) processed = Parameters.escapeParameters(processed);
+                                        if (options.contains("prms")) processed = Parameters.escapeValue(processed);
                                         if (options.contains("phs")) processed = escapeSpecial(processed);
                                     }
                                 }
