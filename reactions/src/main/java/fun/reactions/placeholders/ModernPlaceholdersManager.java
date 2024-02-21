@@ -21,7 +21,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
             oldText = text;
             text = parseGradually(env, text);
         } while (!oldText.equals(text) && --limit > 0);
-        return unescapeSpecial(text);
+        return unescape(text);
     }
 
     private String parseGradually(@NotNull Environment env, @NotNull String text) {
@@ -70,7 +70,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                                     if (options != null) {
                                         index += options.length() + 2;
                                         if (options.contains("prms")) processed = Parameters.escapeValue(processed);
-                                        if (options.contains("phs")) processed = escapeSpecial(processed);
+                                        if (options.contains("phs")) processed = escape(processed);
                                     }
                                 }
                                 builder.append(processed);
@@ -116,14 +116,14 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return matcher.appendTail(builder).toString();
     }
 
-    private static @NotNull String escapeSpecial(@NotNull String text) {
+    public static @NotNull String escape(@NotNull String text) {
         return text
                 .replace("\\", "\\\\")
                 .replace("%[", "\\%[")
                 .replace("]", "\\]");
     }
 
-    private static @NotNull String unescapeSpecial(@NotNull String text) {
+    public static @NotNull String unescape(@NotNull String text) {
         return text
                 .replace("\\\\", "\\")
                 .replace("\\%[", "%[")

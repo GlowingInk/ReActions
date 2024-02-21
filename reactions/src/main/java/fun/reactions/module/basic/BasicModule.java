@@ -231,7 +231,8 @@ public class BasicModule implements Module {
                 new PersistentVarPlaceholders(),
                 new LocalVarPlaceholder(),
                 new EnderChestPlaceholder(),
-                new FunctionPlaceholder()
+                new FunctionPlaceholder(),
+                new EscapePlaceholder()
         );
     }
 
