@@ -16,10 +16,10 @@ public class EscapePlaceholderTest {
     @DataProvider
     public static Object[][] resolveData() {
         return new Object[][]{
-                {"esc-ph", "%[esc-ph]", "placeholders:esc-ph", "\\%[esc-ph\\]"},
-                {"esc-prm", "\\ {test}\\", "params:esc-prm", "\\ {test}\\\\"},
-                {"esc-prm-f", "\\ {test}\\", "params-full:esc-prm-f", "\\\\ \\{test\\}\\\\"},
-                {"esc-inky", "&aHello", "inky:esc-inky", "\\&aHello"},
+                {"esc-ph", "%[esc-ph]", "placeholders|esc-ph", "\\%[esc-ph\\]"},
+                {"esc-prm", "\\ {test}\\", "params|esc-prm", "\\ {test}\\\\"},
+                {"esc-prm-f", "\\ {test}\\", "params-full|esc-prm-f", "\\\\ \\{test\\}\\\\"},
+                {"esc-inky", "&aHello", "inky|esc-inky", "\\&aHello"},
                 {"esc-default", "some %[test]}", "esc-default", "some \\%[test\\]\\\\}"}
         };
     }
