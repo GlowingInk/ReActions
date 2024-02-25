@@ -65,9 +65,13 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             String substring = text.substring(stepIndex + 2, index);
                             String processed = resolvePlaceholder(env, substring);
                             if (processed != null) {
-                                if (text.length() > index + 3 && text.charAt(index + 1) == '(') { // TODO Better escaping trigger
+                                if (text.length() > index + 3 && text.charAt(index + 1) == '(') {
                                     String options = optionsSearch(text, index + 2);
                                     if (options != null) {
+                                        env.warn(
+                                                "Usage of %[placeholder](...) is not supported anymore. " +
+                                                "Consider using %[escape:...|placeholder] instead"
+                                        );
                                         index += options.length() + 2;
                                         if (options.contains("prms")) processed = Parameters.escapeValue(processed);
                                         if (options.contains("phs")) processed = escape(processed);

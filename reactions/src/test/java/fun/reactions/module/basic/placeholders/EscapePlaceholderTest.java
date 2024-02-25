@@ -5,10 +5,10 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.placeholders.ModernPlaceholdersManager;
 import fun.reactions.placeholders.PlaceholdersManager;
-import org.mockito.Mockito;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
@@ -28,7 +28,7 @@ public class EscapePlaceholderTest {
     @Test(dataProvider = "resolveData")
     public void resolveTest(String varKey, String varValue, String arg, String expected) {
         PlaceholdersManager placeholdersManager = new ModernPlaceholdersManager();
-        ReActions.Platform platform = Mockito.mock(ReActions.Platform.class);
+        ReActions.Platform platform = mock(ReActions.Platform.class);
         when(platform.getPlaceholders()).thenReturn(placeholdersManager);
 
         EscapePlaceholder escapePlaceholder = new EscapePlaceholder();

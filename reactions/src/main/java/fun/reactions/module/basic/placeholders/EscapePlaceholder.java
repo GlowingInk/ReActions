@@ -9,39 +9,26 @@ import ink.glowing.text.InkyMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
-@Aliased.Names({"escape-inky", "escape-params", "escape-params-full", "escape-phs"})
+@Aliased.Names("esc")
 public class EscapePlaceholder implements Placeholder {
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params) {
-        Set<Type> escapeTypes;
+        Set<EscapeType> escapeTypes;
         String phText = params;
-        switch (key) {
-            case "escape-inky" -> escapeTypes = Set.of(Type.INKY);
-            case "escape-params" -> escapeTypes = Set.of(Type.PARAMETERS);
-            case "escape-params-full" -> escapeTypes = Set.of(Type.PARAMETERS_FULL);
-            case "escape-phs" -> escapeTypes = Set.of(Type.PLACEHOLDERS);
-            default -> {
-                String[] split = params.split("\\|", 2);
-                if (split.length == 1) {
-                    escapeTypes = new TreeSet<>();
-                    escapeTypes.add(Type.PLACEHOLDERS);
-                    escapeTypes.add(Type.PARAMETERS);
-                } else {
-                    String[] typesStr = split[0].split(",");
-                    escapeTypes = new TreeSet<>();
-                    for (String typeStr : typesStr) switch (typeStr.toLowerCase(Locale.ROOT)) {
-                        case "inky", "inkymessage" -> escapeTypes.add(Type.INKY);
-                        case "params", "parameters" -> escapeTypes.add(Type.PARAMETERS);
-                        case "params-full", "parameters-full" -> escapeTypes.add(Type.PARAMETERS_FULL);
-                        case "phs", "placeholders" -> escapeTypes.add(Type.PLACEHOLDERS);
-                    }
-                    phText = split[1];
-                }
+        String[] split = params.split("\\|", 2);
+        escapeTypes = new TreeSet<>();
+        if (split.length == 1) {
+            escapeTypes.add(EscapeType.PLACEHOLDERS);
+            escapeTypes.add(EscapeType.PARAMETERS);
+        } else {
+            String[] typesStr = split[0].split(",");
+            for (String typeStr : typesStr) {
+                EscapeType escapeType = EscapeType.TYPES_MAP.get(typeStr.toLowerCase(Locale.ROOT));
+                if (escapeType != null) escapeTypes.add(escapeType);
             }
+            phText = split[1];
         }
         String resolved = env.getPlatform().getPlaceholders().resolvePlaceholder(
                 new Environment(
@@ -54,7 +41,7 @@ public class EscapePlaceholder implements Placeholder {
                 ), phText
         );
         if (resolved == null) return null;
-        for (Type escapeType : escapeTypes) {
+        for (EscapeType escapeType : escapeTypes) {
             resolved = switch (escapeType) {
                 case INKY -> InkyMessage.escape(resolved);
                 case PARAMETERS -> Parameters.escapeValue(resolved);
@@ -70,7 +57,36 @@ public class EscapePlaceholder implements Placeholder {
         return "escape";
     }
 
-    private enum Type {
-        PARAMETERS_FULL, PARAMETERS, INKY, PLACEHOLDERS
+    private enum EscapeType {
+        PARAMETERS_FULL(
+                "params-full", "param-full", "prms-full", "prm-full"
+        ),
+        PARAMETERS(
+                "params", "param", "prms", "prm"
+        ),
+        INKY(
+                "inkymessage", "inkymsg", "im"
+        ),
+        PLACEHOLDERS(
+                "placeholder", "phs", "ph"
+        );
+
+        private static final Map<String, EscapeType> TYPES_MAP;
+        static {
+            Map<String, EscapeType> typesMap = new HashMap<>();
+            for (EscapeType type : values()) {
+                typesMap.put(type.name().toLowerCase(Locale.ROOT), type);
+                for (String alias : type.aliases) {
+                    typesMap.put(alias, type);
+                }
+            }
+            TYPES_MAP = Map.copyOf(typesMap);
+        }
+
+        private final List<String> aliases;
+
+        EscapeType(String... aliases) {
+            this.aliases = List.of(aliases);
+        }
     }
 }

@@ -29,7 +29,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class DirectionFlag implements Flag, Activity.Personal {
                     byName.put(dirName.replace('_', '-'), dir);
                 }
             }
-            BY_NAME = Collections.unmodifiableMap(byName);
+            BY_NAME = Map.copyOf(byName);
         }
 
         public static Direction getByName(String dirstr) {
