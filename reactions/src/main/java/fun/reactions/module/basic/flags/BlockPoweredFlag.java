@@ -37,7 +37,7 @@ public class BlockPoweredFlag implements Flag {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        String locStr = params.getString("loc", params.origin());
+        String locStr = params.getString("loc", params.originValue());
         if (locStr.isEmpty()) return false;
         Location loc = LocationUtils.parseLocation(locStr, null);
         if (loc == null) return false;

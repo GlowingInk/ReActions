@@ -46,7 +46,7 @@ public class TeleportAction implements Action, Activity.Personal { // TODO Playe
             loc = LocationUtils.parseLocation(params.getString("loc"), player.getLocation());
             radius = params.getInteger("radius");
         } else {
-            loc = LocationUtils.parseLocation(params.origin(), player.getLocation());
+            loc = LocationUtils.parseLocation(params.originValue(), player.getLocation());
         }
         boolean land = params.getBoolean("land", true);
 

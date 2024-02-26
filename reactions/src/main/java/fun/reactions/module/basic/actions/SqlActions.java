@@ -57,7 +57,7 @@ public class SqlActions implements Action {
                 ReActions.getPersistentVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, env.getVariables().getString("sql_set")));
             }
             case INSERT -> { // INSERT
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("insert")) {
                     env.warn("You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
@@ -66,7 +66,7 @@ public class SqlActions implements Action {
                 SQLManager.executeUpdate(query, params);
             }
             case UPDATE -> { // UPDATE
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("update")) {
                     env.warn("You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
@@ -75,7 +75,7 @@ public class SqlActions implements Action {
                 SQLManager.executeUpdate(query, params);
             }
             case DELETE -> { // DELETE
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("delete")) {
                     env.warn("You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
@@ -84,7 +84,7 @@ public class SqlActions implements Action {
                 SQLManager.executeUpdate(query, params);
             }
             case SET -> { // SET
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("set")) {
                     env.warn("You need to use only \"SET\" query in SQL_SET action. Query: " + query);

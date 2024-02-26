@@ -43,7 +43,7 @@ public class MoneyFlag implements Flag {
         if (!RaVault.isEconomyConnected()) return false;
         Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
-        double amount = params.getDouble("amount", () -> params.getDouble(Parameters.ORIGIN, -1));
+        double amount = params.getDouble("amount", () -> params.getDouble(Parameters.ORIGIN_KEY, -1));
         if (amount < 0) return false;
         String account = params.getString("player", player == null ? "" : player.getName());
         String world = params.getString("world");

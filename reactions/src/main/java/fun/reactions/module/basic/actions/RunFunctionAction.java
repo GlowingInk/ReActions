@@ -15,7 +15,7 @@ public class RunFunctionAction implements Action {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         ActivatorsManager activators = env.getPlatform().getActivators();
-        String id = params.getString(params.findKey(Parameters.ORIGIN, "id", "activator", "exec"));
+        String id = params.getString(params.findKey(Parameters.ORIGIN_KEY, "id", "activator", "exec"));
         Activator activator = activators.getActivator(id);
         if (activator == null) {
             env.warn("Failed to run FUNCTION activator " + id + ". Activator not found.");

@@ -17,7 +17,7 @@ public class WeToolControlAction implements Action, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        boolean isToolControl = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN, false));
+        boolean isToolControl = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN_KEY, false));
         if (params.contains("player"))
             player = Bukkit.getPlayerExact(params.getString("player"));
         RaWorldEdit.getSession(player).setToolControl(isToolControl);

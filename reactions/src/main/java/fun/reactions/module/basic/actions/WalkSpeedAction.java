@@ -17,7 +17,7 @@ public class WalkSpeedAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = params.get("player", Bukkit::getPlayerExact, env.getPlayer()); // TODO Selectors
         if (player == null) return false;
-        double speed = params.getInteger("speed", () -> params.getInteger(Parameters.ORIGIN));
+        double speed = params.getInteger("speed", () -> params.getInteger(Parameters.ORIGIN_KEY));
         return walkSpeedPlayer(player, speed / 10);
     }
 

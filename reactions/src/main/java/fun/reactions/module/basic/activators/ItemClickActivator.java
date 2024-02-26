@@ -50,7 +50,7 @@ public class ItemClickActivator extends Activator {
     }
 
     public static ItemClickActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.origin());
+        String item = param.getString("item", param.originValue());
         HandType hand = param.getSafe("hand", HandType::getByName);
         return new ItemClickActivator(base, item, hand);
     }

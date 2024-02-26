@@ -60,7 +60,7 @@ public class MessageAction implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = Msg.colorize(params.getStringSafe("text", () -> hideSelectors(env, params.origin())));
+        String message = Msg.colorize(params.getStringSafe("text", () -> hideSelectors(env, params.originValue())));
         String annoymentTime = params.getString("hide");
         for (Player receiver : players) {
             if (showMessage(env, receiver, message, annoymentTime)) {

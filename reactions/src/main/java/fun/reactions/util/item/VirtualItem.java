@@ -315,7 +315,7 @@ public final class VirtualItem implements Parameterizable {
             key = key.toLowerCase(Locale.ROOT);
             String value = params.getString(key);
             switch (key) {
-                case Parameters.ORIGIN: {
+                case Parameters.ORIGIN_KEY: {
                     continue;
                 }
                 case "invalid": {

@@ -58,13 +58,13 @@ public class ItemActions implements Action, Activity.Personal {
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         return switch (actionType) {
-            case GIVE_ITEM -> giveItemPlayer(env, params.origin());
+            case GIVE_ITEM -> giveItemPlayer(env, params.originValue());
             case REMOVE_ITEM_HAND -> removeItemInHand(env, params);
             case REMOVE_ITEM_OFFHAND -> removeItemInOffHand(env, params);
             case REMOVE_ITEM_INVENTORY -> removeItemInInventory(env, params);
             case DROP_ITEM -> dropItems(env, params);
             case WEAR_ITEM -> wearItem(env, params);
-            case OPEN_INVENTORY -> openInventory(env, params.origin());
+            case OPEN_INVENTORY -> openInventory(env, params.originValue());
             case SET_INVENTORY -> setInventorySlot(env, params);
             case GET_INVENTORY -> getInventorySlot(env, params);
             case UNWEAR_ITEM -> unwearItem(env, params);
@@ -169,7 +169,7 @@ public class ItemActions implements Action, Activity.Personal {
         int slot = -1; //4 - auto, 3 - helmete, 2 - chestplate, 1 - leggins, 0 - boots
         ItemPolicy existDrop = ItemPolicy.UNDRESS;
         if (itemStr.isEmpty()) {
-            itemStr = params.origin();
+            itemStr = params.originValue();
         } else {
             slot = getSlotNum(params.getString("slot", "auto"));
             existDrop = params.getEnum("exist", ItemPolicy.UNDRESS);

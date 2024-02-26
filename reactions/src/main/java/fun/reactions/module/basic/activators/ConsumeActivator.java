@@ -52,7 +52,7 @@ public class ConsumeActivator extends Activator {
     }
 
     public static ConsumeActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.origin());
+        String item = param.getString("item", param.originValue());
         HandType hand = param.get("hand", HandType::getByName);
         return new ConsumeActivator(base, item, hand);
     }

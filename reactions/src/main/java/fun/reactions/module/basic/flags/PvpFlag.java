@@ -36,7 +36,7 @@ public class PvpFlag implements Flag, Activity.Personal { // TODO: Requires rewo
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!player.hasMetadata("reactions-pvp-time")) return false;
-        String timeStr = params.getString("time", params.origin());
+        String timeStr = params.getString("time", params.originValue());
         long delay = TimeUtils.parseTime(timeStr);
         if (delay == 0) return false;
         return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").get(0).asLong()) < delay);

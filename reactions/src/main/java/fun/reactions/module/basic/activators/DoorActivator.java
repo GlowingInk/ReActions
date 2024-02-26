@@ -60,7 +60,7 @@ public class DoorActivator extends Activator implements Locatable {
 
     public static DoorActivator create(Logic base, Parameters params) {
         Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
-        TriBoolean state = params.get(params.findKey(Parameters.ORIGIN, "state"), STATE_MAPPER::byString);
+        TriBoolean state = params.get(params.findKey(Parameters.ORIGIN_KEY, "state"), STATE_MAPPER::byString);
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
             return new DoorActivator(base, state, ImplicitPosition.byLocation(targetBlock.getLocation()));
         } else {

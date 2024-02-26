@@ -56,7 +56,7 @@ public class CooldownActions implements Action, Aliased {
             timeStr = params.getStringSafe("delay", () -> params.getString("time"));
             add = params.getBoolean("add", false);
         } else { // TODO Remove legacy format
-            String oldFormat = params.origin();
+            String oldFormat = params.originValue();
             if (oldFormat.contains("/")) {
                 String[] m = oldFormat.split("/");
                 if (m.length >= 2) {

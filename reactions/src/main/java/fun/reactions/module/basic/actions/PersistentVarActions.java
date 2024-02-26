@@ -57,7 +57,7 @@ public class PersistentVarActions implements Action, Aliased {
             playerName = params.getString("player", playerName);
             if (varName.isEmpty()) return false;
         } else {
-            String[] ln = params.origin().split("/", 2);
+            String[] ln = params.originValue().split("/", 2);
             if (ln.length == 0) return false;
             varName = ln[0];
             change = (ln.length > 1) ? ln[1] : "";

@@ -47,7 +47,7 @@ public class CooldownFlags implements Flag, Aliased {
         Player player = env.getPlayer();
         String playerName = this.global ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
-        String id = params.origin();
+        String id = params.originValue();
         if (params.contains("id")) {
             id = params.getString("id");
             updateTime = params.getTime(params.findKey("set-delay", "set-time", "set-cooldown"));

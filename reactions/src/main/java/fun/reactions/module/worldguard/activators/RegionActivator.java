@@ -51,7 +51,7 @@ public class RegionActivator extends Activator implements Locatable {
     public String getRegion() {return this.region;}
 
     public static RegionActivator create(Logic base, Parameters param) {
-        String region = param.getString("region", param.origin());
+        String region = param.getString("region", param.originValue());
         return new RegionActivator(base, region);
     }
 

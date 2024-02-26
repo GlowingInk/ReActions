@@ -38,7 +38,7 @@ public class DamageAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = params.get("player", Bukkit::getPlayerExact, env.getPlayer()); // TODO Selectors
         if (player == null) return false;
-        double damage = params.getInteger("damage", () -> params.getInteger(Parameters.ORIGIN));
+        double damage = params.getInteger("damage", () -> params.getInteger(Parameters.ORIGIN_KEY));
         return damagePlayer(player, damage);
     }
 

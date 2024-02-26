@@ -36,12 +36,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Aliased.Names("CMD")
@@ -85,7 +80,7 @@ public class CommandActivator extends Activator {
     }
 
     public static CommandActivator create(Logic base, Parameters param) {
-        String command = param.getString("command", param.origin());
+        String command = param.getString("command", param.originValue());
         boolean starts = param.getBoolean("starts", true);
         boolean useRegex = param.getBoolean("regex", false);
         boolean consoleAllowed = param.getBoolean("console", true);

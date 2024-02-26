@@ -184,8 +184,8 @@ public class ParametersTest {
     @DataProvider
     public Object[][] findKeyData() {
         return new Object[][] {
-                {"my test", Parameters.ORIGIN, Parameters.ORIGIN, List.of("test", "my", "yay")},
-                {"exec:activator", "exec", Parameters.ORIGIN, List.of("other", "activator", "exec")}
+                {"my test", Parameters.ORIGIN_KEY, Parameters.ORIGIN_KEY, List.of("test", "my", "yay")},
+                {"exec:activator", "exec", Parameters.ORIGIN_KEY, List.of("other", "activator", "exec")}
         };
     }
 
