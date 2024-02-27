@@ -29,6 +29,7 @@ public class BasicModule implements Module {
     @Override
     public void postRegister(@NotNull ReActions.Platform platform) {
         logHandler = new LogHandler();
+        platform.getServer().getLogger().addHandler(logHandler);
     }
 
     @Override
