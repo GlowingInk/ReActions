@@ -123,14 +123,14 @@ public class Parameters implements Parameterizable {
             }
             switch (state) {
                 case SPACE -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         continue;
                     }
                     bld = new StringBuilder().append(c);
                     state = IterationState.TEXT;
                 }
                 case TEXT -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         if (hasDefKey) {
                             params.put(defKey, bld.toString());
                         }
@@ -146,7 +146,7 @@ public class Parameters implements Parameterizable {
                     bld.append(c);
                 }
                 case COLON -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         state = IterationState.SPACE;
                         continue;
                     }
@@ -158,7 +158,7 @@ public class Parameters implements Parameterizable {
                     state = IterationState.PARAM;
                 }
                 case PARAM -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         state = IterationState.SPACE;
                         params.put(param, bld.toString());
                         continue;
@@ -197,6 +197,10 @@ public class Parameters implements Parameterizable {
     private enum IterationState {
         SPACE, TEXT, COLON, PARAM, BR_PARAM
     }
+    
+    private static boolean isEmptySpace(char ch) {
+        return ch == ' ' || ch == '\n';
+    }
 
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
         Map<String, String> params = new CaseInsensitiveMap<>(2);
@@ -229,7 +233,8 @@ public class Parameters implements Parameterizable {
 
     public static boolean requiresBrackets(@NotNull String escaped, @NotNull String value) {
         return value.length() >= 20 || escaped.length() != value.length() || value.isEmpty() ||
-                value.indexOf(' ') != -1 || value.indexOf(':') != -1 || value.charAt(0) == '{';
+                value.indexOf(' ') != -1 || value.indexOf('\n') != -1 || 
+                value.indexOf(':') != -1 || value.charAt(0) == '{';
     }
 
     public static @NotNull String escapeValue(@NotNull String str) {
