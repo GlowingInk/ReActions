@@ -35,6 +35,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
@@ -46,18 +47,18 @@ public class MobKillActivator extends Activator {
     private final String mobType;
     private final String mobName;
 
-    private MobKillActivator(Logic base, String type, String name) {
+    private MobKillActivator(Logic base, @Nullable String type, @Nullable String name) {
         super(base);
         this.mobType = type;
-        this.mobName = name;
+        this.mobName = name == null ? null : ChatColor.translateAlternateColorCodes('&', name);
     }
 
     public static MobKillActivator create(Logic base, Parameters param) {
         String type = param.originValue();
-        String name = "";
+        String name = null;
         if (param.contains("type")) {
             type = param.getString("type");
-            name = param.getString("name");
+            name = param.getString("name", null);
         } else if (param.originValue().contains("$")) {
             name = type.substring(0, type.indexOf('$'));
             type = type.substring(name.length() + 1);
@@ -66,30 +67,20 @@ public class MobKillActivator extends Activator {
     }
 
     public static MobKillActivator load(Logic base, ConfigurationSection cfg) {
-        String type = cfg.getString("mob-type", "");
-        String name = cfg.getString("mob-name", "");
+        String type = cfg.getString("mob-type");
+        String name = cfg.getString("mob-name");
         return new MobKillActivator(base, type, name);
     }
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context me = (Context) context;
-        if (mobType.isEmpty()) return false;
-        if (me.entity == null) return false;
-        return isActivatorMob(me.entity);
-    }
-
-    private boolean isActivatorMob(LivingEntity mob) {
-        if (!mobName.isEmpty()) {
-            if (!ChatColor.translateAlternateColorCodes('&', mobName.replace("_", " ")).equals(getMobName(mob)))
-                return false;
-        } else if (!getMobName(mob).isEmpty()) return false;
-        return mob.getType().name().equalsIgnoreCase(this.mobType);
-    }
-
-    private String getMobName(LivingEntity mob) {
-        if (mob.getCustomName() == null) return "";
-        return mob.getCustomName();
+        if (mobType != null && !me.entity.getType().name().equals(mobType)) return false;
+        if (mobName != null) {
+            if (mobName.isEmpty()) return me.entity.getCustomName() == null;
+            return mobName.equals(me.entity.getCustomName());
+        }
+        return true;
     }
 
     @Override
@@ -106,8 +97,8 @@ public class MobKillActivator extends Activator {
     @Override
     public String toString() {
         String sb = super.toString() + " (" +
-                "type:" + (mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ROOT)) +
-                " name:" + (mobName.isEmpty() ? "-" : mobName) +
+                "type:" + (mobType == null ? "-" : mobType.toUpperCase(Locale.ROOT)) +
+                " name:" + (mobName == null ? "-" : mobName) +
                 ")";
         return sb;
     }
