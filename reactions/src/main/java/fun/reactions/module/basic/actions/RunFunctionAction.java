@@ -20,14 +20,13 @@ public class RunFunctionAction implements Action {
         if (activator == null) {
             env.warn("Failed to run FUNCTION activator " + id + ". Activator not found.");
             return false;
-        } else {
-            id = activator.getLogic().getName();
         }
+        id = activator.getLogic().getName();
         if (activator.getClass() != FunctionActivator.class) {
             env.warn("Failed to run FUNCTION activator " + id + ". Wrong activator type.");
             return false;
         }
-        if (env.isStepAllowed()) {
+        if (env.isDepthAllowed()) {
             activator.getLogic().execute(new Environment(
                     env.getPlatform(),
                     id,
@@ -40,7 +39,7 @@ public class RunFunctionAction implements Action {
             env.getPlatform().logger().error(
                     "RUN_FUNCTION action in '" + id + "' was stopped at the depth '" + env.getDepth() + "' to prevent stack overflow. " +
                     "Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders " +
-                    "or try using EXECUTE actions."
+                    "or try using DELAYED_FUNCTION actions."
             );
             return false;
         }

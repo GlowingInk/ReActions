@@ -56,7 +56,7 @@ public final class Environment {
         return depth;
     }
 
-    public boolean isStepAllowed() {
+    public boolean isDepthAllowed() {
         return depth < MAX_DEPTH;
     }
 
