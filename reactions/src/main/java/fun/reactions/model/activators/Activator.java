@@ -53,7 +53,7 @@ public abstract class Activator {
      *
      * @param cfg Section of activator
      */
-    public void saveOptions(@NotNull ConfigurationSection cfg) {
+    protected void saveOptions(@NotNull ConfigurationSection cfg) {
         // Sometimes we don't need that
     }
 

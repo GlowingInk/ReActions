@@ -189,9 +189,15 @@ public class ActivatorsManager {
         }
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
         for (Activator activator : activators) {
-            String typeStr = Objects.requireNonNull(types.get(activator.getClass())).getName();
-            ConfigurationSection typeCfg = ConfigUtils.getSection(cfg, typeStr);
-            activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
+            try {
+                String typeStr = Objects.requireNonNull(types.get(activator.getClass())).getName();
+                ConfigurationSection typeCfg = ConfigUtils.getSection(cfg, typeStr);
+                activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
+            } catch (Exception ex) {
+                logger.error("Something went wrong during activator saving. " +
+                        activator.getLogic().getGroup() + "/" + activator.getLogic().getName() +
+                        " (" + activator.getLogic().getType() + ")", ex);
+            }
         }
         try {
             cfg.save(file);
