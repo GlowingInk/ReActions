@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 // TODO: Fully rework. Please.
 public class Cfg {
-
     public static boolean debugMode = false;
     public static boolean saveEmptySections = false;
     public static String language = "english";
