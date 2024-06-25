@@ -1,7 +1,6 @@
 package fun.reactions.util.parameter;
 
 import fun.reactions.util.RichOptional;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.collections.CaseInsensitiveMap;
@@ -9,6 +8,7 @@ import fun.reactions.util.function.SafeFunction;
 import fun.reactions.util.function.SafeSupplier;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.num.NumberUtils;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;

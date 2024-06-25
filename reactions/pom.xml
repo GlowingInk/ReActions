@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -33,23 +33,19 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>fun.reactions.external.bstats</shadedPattern>
+                                    <shadedPattern>fun.reactions.metrics</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.quartz</pattern>
-                                    <shadedPattern>fun.reactions.external.time</shadedPattern>
+                                    <shadedPattern>fun.reactions.util.time.cron</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>ink.glowing.math</pattern>
-                                    <shadedPattern>fun.reactions.external.math</shadedPattern>
+                                    <shadedPattern>fun.reactions.util.num.math</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>ink.glowing.text</pattern>
-                                    <shadedPattern>fun.reactions.external.text</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.spongepowered.configurate</pattern>
-                                    <shadedPattern>fun.reactions.external.config</shadedPattern>
+                                    <shadedPattern>fun.reactions.util.text</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>

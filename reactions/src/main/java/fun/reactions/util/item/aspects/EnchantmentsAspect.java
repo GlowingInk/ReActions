@@ -1,15 +1,15 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.item.ItemUtils;
+import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.NumberUtils;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
@@ -41,11 +41,8 @@ public class EnchantmentsAspect implements MetaAspect {
                 enchKey = enchValue.substring(0, index);
                 levelStr = enchValue.substring(index + 1);
             }
-            Enchantment enchantment = ItemUtils.searchByKey(enchKey, Enchantment::getByKey);
-            if (enchantment == null) {
-                enchantment = Enchantment.getByName(enchKey.toUpperCase(Locale.ROOT));
-                if (enchantment == null) continue;
-            }
+            Enchantment enchantment = Utils.searchRegistry(enchKey, Registry.ENCHANTMENT);
+            if (enchantment == null) continue;
             int level = NumberUtils.asInteger(levelStr, 0);
             enchantments.put(enchantment, level > 0 ? level : null);
         }

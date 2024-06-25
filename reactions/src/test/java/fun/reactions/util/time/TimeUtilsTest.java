@@ -1,4 +1,4 @@
-package fun.reactions.util;
+package fun.reactions.util.time;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fun.reactions.util.TimeUtils.*;
+import static fun.reactions.util.time.TimeUtils.*;
 import static org.testng.Assert.assertEquals;
 
 public class TimeUtilsTest {

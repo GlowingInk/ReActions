@@ -1,23 +1,22 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.Utils;
-import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
+import org.bukkit.Registry;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
 
 public class PotionAspect implements MetaAspect {
     private final boolean base;
@@ -44,79 +43,28 @@ public class PotionAspect implements MetaAspect {
     public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         if (meta instanceof PotionMeta potionMeta) {
             return base
-                    ? new Base(potionMeta.getBasePotionData())
+                    ? potionMeta.hasBasePotionType() ? new Base(potionMeta.getBasePotionType()) : null
                     : potionMeta.hasCustomEffects() ? new Effects(potionMeta.getCustomEffects()) : null;
         }
         return null;
     }
 
-    private static final class Base implements MetaAspect.Instance {
-        private final PotionData potionData;
-        private final String potionDataStr;
-
-        public Base(@NotNull PotionData potionData) {
-            this.potionData = potionData;
-            StringBuilder builder = new StringBuilder();
-            builder.append("base-type:").append(potionData.getType().name());
-            if (potionData.isExtended()) builder.append(" extended:true");
-            if (potionData.isUpgraded()) builder.append(" upgraded:true");
-            this.potionDataStr = builder.toString();
-        }
-
-        public Base(@NotNull String potionDataStr) {
-            this.potionDataStr = potionDataStr;
-            Parameters params = Parameters.fromString(potionDataStr);
-            PotionType type = params.getEnum("base-type", PotionType.UNCRAFTABLE);
-            boolean extended = type.isExtendable() && params.getBoolean("extended", false);
-            boolean upgraded = type.isUpgradeable() && params.getBoolean("upgraded", false);
-            this.potionData = new PotionData(type, extended, upgraded);
-        }
-
-        @Override
-        public void apply(@NotNull ItemMeta meta) {
-            if (meta instanceof PotionMeta potionMeta) {
-                potionMeta.setBasePotionData(potionData);
-            }
-        }
-
-        @Override
-        public boolean isSimilar(@NotNull ItemMeta meta) {
-            if (meta instanceof PotionMeta potionMeta) {
-                return potionMeta.getBasePotionData().equals(potionData);
-            }
-            return false;
-        }
-
-        @Override
-        public @NotNull String getName() {
-            return "potion-base";
-        }
-
-        @Override
-        public @NotNull String asString() {
-            return potionDataStr;
-        }
-    }
-
     private static final class Effects implements MetaAspect.Instance { // TODO Particles, etc
         public static final Effects EMPTY = new Effects(List.of());
 
-        private final List<PotionEffect> effects;
+        private final Set<PotionEffect> effects;
         private final String effectsStr;
 
         public Effects(@NotNull String value) {
             this.effectsStr = value;
             String[] split = value.split(";");
-            this.effects = new ArrayList<>(split.length);
+            this.effects = new HashSet<>(split.length);
             for (String effectStr : split) {
                 effectStr = effectStr.trim();
                 String[] effectData = effectStr.split(":");
                 if (effectData.length < 3) continue;
-                PotionEffectType type = ItemUtils.searchByKey(effectData[0], PotionEffectType::getByKey);
-                if (type == null) {
-                    type = PotionEffectType.getByName(effectData[0].toUpperCase(Locale.ROOT));
-                    if (type == null) continue;
-                }
+                PotionEffectType type = Utils.searchRegistry(effectData[0], Registry.POTION_EFFECT_TYPE);
+                if (type == null) continue;
                 int level = Math.max(NumberUtils.asInteger(effectData[1], 0), 0);
                 long duration = TimeUtils.parseTime(effectData[2]) / 50L;
                 this.effects.add(new PotionEffect(type, NumberUtils.compactLong(duration), level));
@@ -124,10 +72,11 @@ public class PotionAspect implements MetaAspect {
         }
 
         public Effects(@NotNull List<PotionEffect> effects) {
-            this.effects = effects;
             if (effects.isEmpty()) {
+                this.effects = Set.of();
                 this.effectsStr = "";
             } else {
+                this.effects = new HashSet<>(effects);
                 StringBuilder builder = new StringBuilder();
                 for (PotionEffect effect : effects) {
                     builder.append(effect.getType().getKey().getKey())
@@ -151,7 +100,8 @@ public class PotionAspect implements MetaAspect {
         public boolean isSimilar(@NotNull ItemMeta meta) {
             if (meta instanceof PotionMeta potionMeta) {
                 if (effects.isEmpty()) return !potionMeta.hasCustomEffects();
-                return new HashSet<>(potionMeta.getCustomEffects()).containsAll(effects);
+                List<PotionEffect> itemEffects = potionMeta.getCustomEffects();
+                return effects.size() == itemEffects.size() && effects.containsAll(itemEffects);
             }
             return false;
         }
@@ -164,6 +114,52 @@ public class PotionAspect implements MetaAspect {
         @Override
         public @NotNull String asString() {
             return effectsStr;
+        }
+    }
+
+    private static final class Base implements MetaAspect.Instance {
+        private final PotionType potionType;
+        private final String potionTypeStr;
+
+        public Base(@NotNull PotionType potionType) {
+            this.potionType = potionType;
+            this.potionTypeStr = potionType.name();
+        }
+
+        public Base(@NotNull String potionTypeStr) {
+            this.potionTypeStr = potionTypeStr;
+            if (potionTypeStr.isEmpty()) {
+                this.potionType = null;
+            } else if (potionTypeStr.startsWith("base-type:")) {
+                this.potionType = Parameters.fromString(potionTypeStr).getEnum("base-type", PotionType.class);
+            } else {
+                this.potionType = Utils.getEnum(PotionType.class, potionTypeStr);
+            }
+        }
+
+        @Override
+        public void apply(@NotNull ItemMeta meta) {
+            if (meta instanceof PotionMeta potionMeta) {
+                potionMeta.setBasePotionType(potionType);
+            }
+        }
+
+        @Override
+        public boolean isSimilar(@NotNull ItemMeta meta) {
+            if (meta instanceof PotionMeta potionMeta) {
+                return Objects.equals(potionMeta.getBasePotionType(), potionType);
+            }
+            return false;
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return "potion-base";
+        }
+
+        @Override
+        public @NotNull String asString() {
+            return potionTypeStr;
         }
     }
 }

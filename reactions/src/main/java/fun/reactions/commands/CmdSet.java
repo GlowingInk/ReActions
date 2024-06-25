@@ -3,9 +3,9 @@ package fun.reactions.commands;
 import fun.reactions.ReActions;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.time.CooldownManager;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -20,7 +20,7 @@
  *
  */
 
-package fun.reactions.util;
+package fun.reactions.util.time;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

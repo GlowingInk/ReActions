@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static fun.reactions.util.TimeUtils.addOffset;
+import static fun.reactions.util.time.TimeUtils.addOffset;
 
 @Aliased.Names("PAUSE")
 public class WaitAction implements Action, Interrupting {

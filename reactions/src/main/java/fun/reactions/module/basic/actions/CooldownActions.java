@@ -25,9 +25,9 @@ package fun.reactions.module.basic.actions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.CooldownManager;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

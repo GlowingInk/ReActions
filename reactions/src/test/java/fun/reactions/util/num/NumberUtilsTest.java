@@ -1,7 +1,5 @@
-package fun.reactions.util;
+package fun.reactions.util.num;
 
-import fun.reactions.util.num.Is;
-import fun.reactions.util.num.NumberUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

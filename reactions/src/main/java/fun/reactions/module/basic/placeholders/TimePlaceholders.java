@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static fun.reactions.util.TimeUtils.formatIngameTime;
-import static fun.reactions.util.TimeUtils.formatTime;
+import static fun.reactions.util.time.TimeUtils.formatIngameTime;
+import static fun.reactions.util.time.TimeUtils.formatTime;
 
 @Aliased.Names({"time_ingame", "curtime", "time_server", "servertime", "timestamp", "stamp"})
 public class TimePlaceholders implements Placeholder { // TODO World selection

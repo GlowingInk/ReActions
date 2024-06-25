@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -18,18 +17,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 public final class ItemUtils {
     private ItemUtils() {}
-
-    public static <T> @Nullable T searchByKey(@NotNull String key, @NotNull Function<NamespacedKey, T> search) {
-        try {
-            return search.apply(NamespacedKey.minecraft(key.toLowerCase(Locale.ROOT)));
-        } catch (Exception ignored) {
-            return null;
-        }
-    }
 
     public static int getDurability(@NotNull ItemStack item) {
         return item.hasItemMeta() && item.getItemMeta() instanceof Damageable damageMeta
