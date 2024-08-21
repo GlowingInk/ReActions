@@ -14,7 +14,7 @@ EVENT:
     actions:
      - ACTION=do:something
     reactions:
-     - ACTION=do:{something, but if flag wasn't successfull}
+     - ACTION=do:{something, but if flag wasn't successful}
      - ANOTHER_ACTION=do something else
 ```
 
