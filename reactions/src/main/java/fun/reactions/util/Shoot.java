@@ -33,6 +33,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,13 +44,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // TODO Make from scratch
 public final class Shoot {
@@ -167,7 +163,12 @@ public final class Shoot {
         eDirection.add(new Vector(0.0D, 0.1D, 0.0D)).multiply(knockbackTarget);
         entity.setVelocity(eDirection);
 
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(damager, entity, DamageCause.ENTITY_ATTACK, damage);
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
+                damager, entity,
+                DamageCause.ENTITY_ATTACK,
+                DamageSource.builder(DamageType.GENERIC).withCausingEntity(damager).build(),
+                damage
+        );
         Bukkit.getPluginManager().callEvent(event);
         if (!(event.isCancelled()))
             entity.damage(damage);
