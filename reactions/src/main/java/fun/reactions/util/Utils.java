@@ -28,7 +28,10 @@ import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Contract;
@@ -310,10 +313,5 @@ public final class Utils {
         } catch (Exception ignored) {
             return null;
         }
-    }
-
-    public static <T extends Keyed> @Nullable T searchRegistry(@NotNull String keyStr, @NotNull Registry<T> registry) {
-        NamespacedKey key = NamespacedKey.fromString(keyStr.toLowerCase(Locale.ROOT));
-        return key == null ? null : registry.get(key);
     }
 }

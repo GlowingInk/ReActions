@@ -1,9 +1,8 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.NumberUtils;
-import org.bukkit.Registry;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
+import static fun.reactions.util.RegistryUtils.getRegistry;
+import static fun.reactions.util.RegistryUtils.searchRegistry;
 import static fun.reactions.util.Utils.cutLast;
 
 @Aliased.Names({"enchants", "stored-enchantments", "stored-enchants"})
@@ -41,7 +42,7 @@ public class EnchantmentsAspect implements MetaAspect {
                 enchKey = enchValue.substring(0, index);
                 levelStr = enchValue.substring(index + 1);
             }
-            Enchantment enchantment = Utils.searchRegistry(enchKey, Registry.ENCHANTMENT);
+            Enchantment enchantment = searchRegistry(enchKey, getRegistry(RegistryKey.ENCHANTMENT));
             if (enchantment == null) continue;
             int level = NumberUtils.asInteger(levelStr, 0);
             enchantments.put(enchantment, level > 0 ? level : null);

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static fun.reactions.util.RegistryUtils.searchRegistry;
+
 public class PotionAspect implements MetaAspect {
     private final boolean base;
 
@@ -63,7 +65,7 @@ public class PotionAspect implements MetaAspect {
                 effectStr = effectStr.trim();
                 String[] effectData = effectStr.split(":");
                 if (effectData.length < 3) continue;
-                PotionEffectType type = Utils.searchRegistry(effectData[0], Registry.POTION_EFFECT_TYPE);
+                PotionEffectType type = searchRegistry(effectData[0], Registry.POTION_EFFECT_TYPE);
                 if (type == null) continue;
                 int level = Math.max(NumberUtils.asInteger(effectData[1], 0), 0);
                 long duration = TimeUtils.parseTime(effectData[2]) / 50L;

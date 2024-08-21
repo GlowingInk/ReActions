@@ -1,6 +1,6 @@
 name: ReActions
 description: '${project.parent.description}'
-api-version: '1.20'
+api-version: '1.21'
 main: fun.reactions.ReActionsPlugin
 version: '${project.version}${build-suffix}'
 website: https://github.com/GlowingInk/ReActions
