@@ -27,7 +27,6 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
-import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +51,7 @@ public class DamageAction implements Action {
         if (damage > 0) {
             player.damage(damage);
         } else {
-            player.playEffect(EntityEffect.HURT);
+            player.playHurtAnimation(0);
         }
         return true;
     }

@@ -179,8 +179,8 @@ public class WGBridge {
         String regionName = getRegionName(rg);
         ProtectedRegion prg = container.get(BukkitAdapter.adapt(world)).getRegion(regionName);
         if (prg == null) return locs;
-        locs.add(new Location(world, prg.getMinimumPoint().getX(), prg.getMinimumPoint().getY(), prg.getMinimumPoint().getZ()));
-        locs.add(new Location(world, prg.getMaximumPoint().getX(), prg.getMaximumPoint().getY(), prg.getMaximumPoint().getZ()));
+        locs.add(new Location(world, prg.getMinimumPoint().x(), prg.getMinimumPoint().y(), prg.getMinimumPoint().z()));
+        locs.add(new Location(world, prg.getMaximumPoint().x(), prg.getMaximumPoint().y(), prg.getMaximumPoint().z()));
         return locs;
     }
 
