@@ -205,8 +205,8 @@ public final class MobSpawn { // TODO: Requires major refactoring
     private static void setMobHealth(LivingEntity e, double health) {
         if (health > 0) {
             if (health > e.getHealth())
-                e.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
-        } else health = e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+                e.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
+        } else health = e.getAttribute(Attribute.MAX_HEALTH).getBaseValue();
         e.setHealth(health);
     }
 

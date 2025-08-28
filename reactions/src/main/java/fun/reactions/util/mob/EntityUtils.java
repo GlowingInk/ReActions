@@ -4,22 +4,14 @@ import fun.reactions.util.location.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Nameable;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.ThrownPotion;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Some helpful methods related to entities to minify size of code
@@ -35,7 +27,7 @@ public final class EntityUtils {
      * @return Maximal health of entity
      */
     public static double getMaxHealth(@NotNull LivingEntity entity) {
-        return Objects.requireNonNull(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+        return Objects.requireNonNull(entity.getAttribute(Attribute.MAX_HEALTH)).getValue();
     }
 
     /**
