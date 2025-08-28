@@ -26,6 +26,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.google.gson.*;
 import fun.reactions.ReActions;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.environment.Variables;
@@ -33,10 +34,8 @@ import fun.reactions.module.basic.ContextManager;
 import fun.reactions.module.basic.activators.MessageActivator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -48,6 +47,8 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
 
     private static boolean connected = false;
 
+    private static final Gson GSON = new Gson();
+
     private RaProtocolLib() {}
 
     public static void init() {
@@ -57,40 +58,55 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
         ReActions.getLogger().info("ProtocolLib connected");
     }
 
-    private static String jsonToString(JSONObject source) {
+    private static String jsonToString(JsonObject source) {
         StringBuilder result = new StringBuilder();
-        for (Object key : source.keySet()) {
-            Object value = source.get(key);
-            if (value instanceof String) {
-                if ((key instanceof String) && (!((String) key).equalsIgnoreCase("text"))) continue;
-                result.append(value);
-            } else if (value instanceof JSONObject) {
-                result.append(jsonToString((JSONObject) value));
-            } else if (value instanceof JSONArray) {
-                result.append(jsonToString((JSONArray) value));
+        for (Map.Entry<String, JsonElement> entry : source.entrySet()) {
+            String key = entry.getKey();
+            JsonElement value = entry.getValue();
+
+            if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+                if (!"text".equalsIgnoreCase(key)) continue;
+                result.append(value.getAsString());
+            } else if (value.isJsonObject()) {
+                result.append(jsonToString(value.getAsJsonObject()));
+            } else if (value.isJsonArray()) {
+                result.append(jsonToString(value.getAsJsonArray()));
             }
         }
         return result.toString();
     }
 
-    private static String jsonToString(JSONArray source) {
+    private static String jsonToString(JsonArray source) {
         StringBuilder result = new StringBuilder();
-        for (Object value : source) {
-            if (value instanceof String) {
-                result.append(value);
-            } else if (value instanceof JSONObject) {
-                result.append(jsonToString((JSONObject) value));
-            } else if (value instanceof JSONArray) {
-                result.append(jsonToString((JSONArray) value));
+        for (JsonElement element : source) {
+            if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+                result.append(element.getAsString());
+            } else if (element.isJsonObject()) {
+                result.append(jsonToString(element.getAsJsonObject()));
+            } else if (element.isJsonArray()) {
+                result.append(jsonToString(element.getAsJsonArray()));
             }
         }
         return result.toString();
     }
 
     private static String jsonToString(String json) {
-        JSONObject jsonObject = (JSONObject) JSONValue.parse(json);
-        if (jsonObject == null || json.isEmpty()) return json;
-        JSONArray array = (JSONArray) jsonObject.get("extra");
+        if (json == null || json.isEmpty()) return json;
+
+        JsonElement element;
+        try {
+            element = JsonParser.parseString(json);
+        } catch (JsonSyntaxException e) {
+            return json;
+        }
+
+        if (!element.isJsonObject()) return json;
+
+        JsonObject jsonObject = element.getAsJsonObject();
+        JsonArray array = jsonObject.has("extra") && jsonObject.get("extra").isJsonArray()
+                ? jsonObject.getAsJsonArray("extra")
+                : null;
+
         if (array == null || array.isEmpty()) return json;
         return jsonToString(array);
     }
@@ -103,7 +119,6 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
         }
         return ChatColor.stripColor(text);
     }
-
 
     private static void initPacketListener() {
         if (!connected) return;
@@ -119,7 +134,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
         public void onPacketSending(PacketEvent event) {
             String message = "";
             try {
-                String jsonMessage = event.getPacket().getChatComponents().getValues().get(0).getJson();
+                String jsonMessage = event.getPacket().getChatComponents().getValues().getFirst().getJson();
                 if (jsonMessage != null) message = jsonToString(jsonMessage);
             } catch (Throwable ignore) {
             }
