@@ -29,18 +29,20 @@ import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -54,6 +56,8 @@ public final class Shoot {
 
     private static Set<Material> breakTypes;
     private static Set<Material> throughTypes;
+
+    private static final Object2IntMap<UUID> shotTargets = new Object2IntOpenHashMap<>();
 
     public static void reload() {
         breakTypes = EnumSet.noneOf(Material.class);
@@ -74,14 +78,30 @@ public final class Shoot {
         boolean onehit = params.getBoolean("singlehit", true);
         int distance = params.getInteger("distance", 100);
         float knockbackTarget = params.getInteger("knockbackTarget");
-        for (LivingEntity le : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
+        for (LivingEntity victim : getEntityBeam(shooter, getBeam(shooter, distance), onehit)) {
             double damage = Rng.nextIntRanged(params.getString("damage", "1"));
-            boolean shoot = true;
-            if (damage > 0) {
-                shoot = damageEntity(shooter, le, damage, knockbackTarget);
+            shotTargets.computeInt(victim.getUniqueId(), (id, count) -> count == null ? 1 : count + 1);
+            victim.damage(damage, shooter);
+            if (shotTargets.computeIfPresent(victim.getUniqueId(), (id, count) -> count == 1 ? null : count - 1) != null) {
+                Vector eVec = victim.getLocation().toVector().clone();
+                Vector dVec = shooter.getLocation().toVector().clone();
+                Vector eDirection = eVec.subtract(dVec).normalize();
+                eDirection.add(new Vector(0.0D, 0.1D, 0.0D)).multiply(knockbackTarget);
+                victim.setVelocity(eDirection);
+
+                if (params.contains("run")) {
+                    executeActivator(shooter instanceof Player ? (Player) shooter : null, victim, params.getString("run"));
+                }
             }
-            if (shoot && params.contains("run")) {
-                executeActivator(shooter instanceof Player ? (Player) shooter : null, le, params.getString("run"));
+        }
+    }
+
+    public static class DamageListener implements Listener {
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onDamage(EntityDamageByEntityEvent event) {
+            Entity entity = event.getEntity();
+            if (event.isCancelled()) {
+                shotTargets.computeIntIfPresent(entity.getUniqueId(), (id, count) -> count == 1 ? null : count - 1);
             }
         }
     }
@@ -155,24 +175,4 @@ public final class Shoot {
         if (le.getLocation().getBlock().equals(b)) return true;
         return le.getEyeLocation().getBlock().equals(b);
     }
-
-    public static boolean damageEntity(LivingEntity damager, LivingEntity entity, double damage, float knockbackTarget) {
-        Vector eVec = entity.getLocation().toVector().clone();
-        Vector dVec = damager.getLocation().toVector().clone();
-        Vector eDirection = eVec.subtract(dVec).normalize();
-        eDirection.add(new Vector(0.0D, 0.1D, 0.0D)).multiply(knockbackTarget);
-        entity.setVelocity(eDirection);
-
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
-                damager, entity,
-                DamageCause.ENTITY_ATTACK,
-                DamageSource.builder(DamageType.GENERIC).withCausingEntity(damager).build(),
-                damage
-        );
-        Bukkit.getPluginManager().callEvent(event);
-        if (!(event.isCancelled()))
-            entity.damage(damage);
-        return !event.isCancelled();
-    }
-
 }

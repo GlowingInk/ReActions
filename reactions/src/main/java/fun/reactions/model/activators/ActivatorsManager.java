@@ -5,7 +5,6 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.collections.CollectionUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
+
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
 
 public class ActivatorsManager {
     private final ReActions.Platform platform;
@@ -45,7 +46,7 @@ public class ActivatorsManager {
         logger = platform.logger();
         search = new Search();
 
-        activatorsNames = new CaseInsensitiveMap<>();
+        activatorsNames = caseInsensitiveMap();
         activatorsGroups = new HashMap<>();
     }
 

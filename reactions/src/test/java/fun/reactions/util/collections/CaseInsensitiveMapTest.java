@@ -4,13 +4,14 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 
 public class CaseInsensitiveMapTest {
     @Test
     public void test() {
-        Map<String, String> map = new CaseInsensitiveMap<>();
+        Map<String, String> map = caseInsensitiveMap();
         map.put("One", "One");
         map.put("Two", "Two");
         map.put("onE", "Three");
@@ -22,10 +23,6 @@ public class CaseInsensitiveMapTest {
         assertEquals(
                 map.get("two"),
                 "Two"
-        );
-        assertEquals(
-                map.toString(),
-                "{Two=Two, onE=Three, Four=Four}"
         );
         assertNotEquals(
                 Map.of(

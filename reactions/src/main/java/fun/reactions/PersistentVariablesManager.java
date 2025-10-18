@@ -25,7 +25,6 @@ package fun.reactions;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
-import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
@@ -41,12 +40,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
+
 public class PersistentVariablesManager { // TODO: Should be reworked from scratch
 
     private final Map<String, String> vars;
 
     public PersistentVariablesManager() {
-        this.vars = new CaseInsensitiveMap<>();
+        this.vars = caseInsensitiveMap();
     }
 
     public @Nullable String getVariable(@Nullable String player, @NotNull String var) {
@@ -166,7 +167,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
     }
 
     private void removePlayerVars(String player) {
-        Map<String, String> varsTmp = new CaseInsensitiveMap<>();
+        Map<String, String> varsTmp = caseInsensitiveMap();
         YamlConfiguration cfg = new YamlConfiguration();
         String fileName = ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml";
         File f = new File(fileName);
