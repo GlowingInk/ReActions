@@ -37,7 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.File;
 import java.util.*;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
 public class TimersManager { // TODO Rework from scratch; maybe rework with WaitingManager
 	/*
@@ -141,7 +141,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     }
 
     public static Map<String, Timer> getIngameTimers() {
-        Map<String, Timer> ingameTimers = caseInsensitiveMap();
+        Map<String, Timer> ingameTimers = caseInsensitiveLinkedMap();
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (timer.isIngameTimer()) ingameTimers.put(key, timer);
@@ -150,7 +150,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     }
 
     public static Map<String, Timer> getServerTimers() {
-        Map<String, Timer> serverTimers = caseInsensitiveMap();
+        Map<String, Timer> serverTimers = caseInsensitiveLinkedMap();
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (!timer.isIngameTimer()) serverTimers.put(key, timer);
@@ -172,7 +172,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     public static void init() {
         currentIngameTime = "";
         timersIngame = new HashSet<>();
-        timers = caseInsensitiveMap();
+        timers = caseInsensitiveLinkedMap();
         load();
         initIngameTimer();
         initServerTimer();

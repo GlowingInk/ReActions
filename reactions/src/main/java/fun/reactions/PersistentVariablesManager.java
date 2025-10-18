@@ -40,14 +40,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
 public class PersistentVariablesManager { // TODO: Should be reworked from scratch
 
     private final Map<String, String> vars;
 
     public PersistentVariablesManager() {
-        this.vars = caseInsensitiveMap();
+        this.vars = caseInsensitiveLinkedMap();
     }
 
     public @Nullable String getVariable(@Nullable String player, @NotNull String var) {
@@ -167,7 +167,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
     }
 
     private void removePlayerVars(String player) {
-        Map<String, String> varsTmp = caseInsensitiveMap();
+        Map<String, String> varsTmp = caseInsensitiveLinkedMap();
         YamlConfiguration cfg = new YamlConfiguration();
         String fileName = ReActions.getPlugin().getDataFolder() + File.separator + "variables.yml";
         File f = new File(fileName);

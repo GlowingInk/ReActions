@@ -2,6 +2,7 @@ package fun.reactions.util.collections;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public final class CollectionUtils { private CollectionUtils() {}
+public final class CollectionUtils { private CollectionUtils() { }
     public static final Hash.Strategy<String> CASE_INSENSITIVE_STRATEGY = new Hash.Strategy<>() {
         @Override
         public int hashCode(@Nullable String str) {
@@ -30,16 +31,28 @@ public final class CollectionUtils { private CollectionUtils() {}
         }
     };
 
-    public static <T> Map<String, T> caseInsensitiveMap() {
+    public static <T> @NotNull Map<String, T> caseInsensitiveLinkedMap() {
         return new Object2ObjectLinkedOpenCustomHashMap<>(CASE_INSENSITIVE_STRATEGY);
     }
 
-    public static <T> Map<String, T> caseInsensitiveMap(int initSize) {
+    public static <T> @NotNull Map<String, T> caseInsensitiveLinkedMap(int initSize) {
         return new Object2ObjectLinkedOpenCustomHashMap<>(initSize, CASE_INSENSITIVE_STRATEGY);
     }
 
-    public static <T> Map<String, T> caseInsensitiveMap(Map<String, T> origin) {
+    public static <T> @NotNull Map<String, T> caseInsensitiveLinkedMap(Map<String, T> origin) {
         return new Object2ObjectLinkedOpenCustomHashMap<>(origin, CASE_INSENSITIVE_STRATEGY);
+    }
+
+    public static <T> @NotNull Map<String, T> caseInsensitiveMap() {
+        return new Object2ObjectOpenCustomHashMap<>(CASE_INSENSITIVE_STRATEGY);
+    }
+
+    public static <T> @NotNull Map<String, T> caseInsensitiveMap(int initSize) {
+        return new Object2ObjectOpenCustomHashMap<>(initSize, CASE_INSENSITIVE_STRATEGY);
+    }
+
+    public static <T> @NotNull Map<String, T> caseInsensitiveMap(Map<String, T> origin) {
+        return new Object2ObjectOpenCustomHashMap<>(origin, CASE_INSENSITIVE_STRATEGY);
     }
 
     public static <T> @NotNull List<T> emptyOnNull(@Nullable T @Nullable [] arr) {

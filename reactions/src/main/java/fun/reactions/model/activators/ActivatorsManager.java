@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
 public class ActivatorsManager {
     private final ReActions.Platform platform;
@@ -46,7 +46,7 @@ public class ActivatorsManager {
         logger = platform.logger();
         search = new Search();
 
-        activatorsNames = caseInsensitiveMap();
+        activatorsNames = caseInsensitiveLinkedMap();
         activatorsGroups = new HashMap<>();
     }
 

@@ -20,12 +20,12 @@ import java.util.*;
 import java.util.function.*;
 import java.util.regex.Pattern;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 import static ink.glowing.text.InkyMessage.isEscapedAt;
 
 public class Parameters implements Parameterizable {
     public static final String ORIGIN_KEY = ": ";
-    public static final Parameters EMPTY = new Parameters("", "", caseInsensitiveMap(1));
+    public static final Parameters EMPTY = new Parameters("", "", caseInsensitiveLinkedMap(1));
     private static final Pattern VALUE_ESCAPE = Pattern.compile("(?<!\\\\)[{}]");
     private static final Pattern FULL_ESCAPE = Pattern.compile("[{}:\\\\]");
 
@@ -87,7 +87,7 @@ public class Parameters implements Parameterizable {
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return EMPTY;
-        Map<String, String> params = caseInsensitiveMap(map);
+        Map<String, String> params = caseInsensitiveLinkedMap(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
     }
@@ -99,7 +99,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters fromString(final @NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = caseInsensitiveMap();
+        Map<String, String> params = caseInsensitiveLinkedMap();
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;
@@ -190,7 +190,7 @@ public class Parameters implements Parameterizable {
         }
 
         return params.isEmpty()
-                ? new Parameters(str, caseInsensitiveMap(1))
+                ? new Parameters(str, caseInsensitiveLinkedMap(1))
                 : new Parameters(str, params);
     }
 
@@ -203,7 +203,7 @@ public class Parameters implements Parameterizable {
     }
 
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
-        Map<String, String> params = caseInsensitiveMap(2);
+        Map<String, String> params = caseInsensitiveLinkedMap(2);
         params.put(key, value);
         String escaped = escapeValue(value);
         String origin;
