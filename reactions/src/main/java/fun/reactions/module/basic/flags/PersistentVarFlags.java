@@ -35,15 +35,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
-public class PersistentVarFlags implements Flag, Aliased {
-    private final Type flagType;
-    private final boolean personal;
-
-    public PersistentVarFlags(Type flagType, boolean personal) {
-        this.flagType = flagType;
-        this.personal = personal;
-    }
-
+public record PersistentVarFlags(@NotNull Type flagType, boolean personal) implements Flag, Aliased {
     @Override
     public @NotNull String getName() {
         return (personal ? "PLAYER_VAR_" : "VAR_") + flagType;

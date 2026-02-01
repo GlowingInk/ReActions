@@ -121,13 +121,12 @@ public class DamageByMobActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (damagerType.isEmpty() ? "-" : damagerType.toUpperCase(Locale.ROOT)) +
                 "; name:" + (damagerName.isEmpty() ? "-" : damagerName) +
                 "; etype:" + (entityType.isEmpty() ? "-" : entityType.toUpperCase(Locale.ROOT)) +
                 "; cause:" + damageCause +
                 ")";
-        return sb;
     }
 
     /**

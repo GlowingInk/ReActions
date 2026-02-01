@@ -27,6 +27,7 @@ import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
+import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -159,15 +160,17 @@ public final class Shoot {
         return false;
     }
 
-
-    public static boolean breakBlock(Block b, Player p) {
-        BlockBreakEvent event = new BlockBreakEvent(b, p);
-        Bukkit.getPluginManager().callEvent(event);
-        return !event.isCancelled();
-    }
-
+    @SuppressWarnings("UnstableApiUsage")
     private static boolean isShotAndBreak(Block b, Player p) {
-        if (breakTypes.contains(b.getType())) return breakBlock(b, p);
+        if (breakTypes.contains(b.getType())) {
+            try {
+                BlockBreakEvent event = new BlockBreakEvent(b, p);
+                Bukkit.getPluginManager().callEvent(event);
+                return !event.isCancelled();
+            } catch (NoSuchMethodError er) {
+                Msg.logOnce("bbevent", "BlockBreakEvent constructor is no longer valid. Warn a developer.");
+            }
+        }
         return false;
     }
 

@@ -229,7 +229,7 @@ public final class Logic {
     ) {
         S stored = reader.apply(value);
         if (isDummy.test(stored.getActivity())) {
-            platform.logger().warn("Activator '" + name + "' loaded unknown activity '" + stored.getActivity().getName() + "'.");
+            platform.logger().warn("Activator '{}' loaded unknown activity '{}'.", name, stored.getActivity().getName());
         }
         list.add(stored);
     }

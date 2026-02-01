@@ -64,7 +64,7 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
     }
 
     public static String formatIngameTime() {
-        return formatIngameTime(Bukkit.getWorlds().get(0));
+        return formatIngameTime(Bukkit.getWorlds().getFirst());
     }
 
     public static String formatIngameTime(World world) {

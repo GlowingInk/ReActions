@@ -34,14 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class CooldownActions implements Action, Aliased {
-
-    private final boolean global;
-
-    public CooldownActions(boolean global) {
-        this.global = global;
-    }
-
+public record CooldownActions(boolean global) implements Action, Aliased {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

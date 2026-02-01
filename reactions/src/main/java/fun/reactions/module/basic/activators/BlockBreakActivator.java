@@ -81,11 +81,10 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "block:" + (blockType == null ? "-" : blockType) +
                 "; loc:" + (pos == ImplicitPosition.EVERYWHERE ? "-" : pos) +
                 ")";
-        return sb;
     }
 
     /**

@@ -11,13 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class BookAspect implements MetaAspect {
-    private final Type type;
-
-    public BookAspect(@NotNull Type type) {
-        this.type = type;
-    }
-
+public record BookAspect(@NotNull Type type) implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return switch (type) {
@@ -50,7 +44,7 @@ public class BookAspect implements MetaAspect {
         private final List<String> pages;
         private final String pagesStr;
 
-        public PagesInst(@NotNull List<String> pages) {
+        private PagesInst(@NotNull List<String> pages) {
             this.pages = pages;
             if (pages.isEmpty()) {
                 pagesStr = "";
@@ -63,7 +57,7 @@ public class BookAspect implements MetaAspect {
             }
         }
 
-        public PagesInst(@NotNull String pagesStr) {
+        private PagesInst(@NotNull String pagesStr) {
             this.pagesStr = pagesStr;
             List<String> split = Utils.literalSplit(pagesStr, "\\n");
             this.pages = new ArrayList<>(split.size());

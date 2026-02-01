@@ -37,9 +37,9 @@ public class RunFunctionAction implements Action {
             ));
         } else {
             env.getPlatform().logger().error(
-                    "RUN_FUNCTION action in '" + id + "' was stopped at the depth '" + env.getDepth() + "' to prevent stack overflow. " +
+                    "RUN_FUNCTION action in '{}' was stopped at the depth '{}' to prevent stack overflow. " +
                     "Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders " +
-                    "or try using DELAYED_FUNCTION actions."
+                    "or try using DELAYED_FUNCTION actions.", id, env.getDepth()
             );
             return false;
         }

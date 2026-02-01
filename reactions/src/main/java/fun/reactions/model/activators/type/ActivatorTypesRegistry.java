@@ -36,7 +36,7 @@ public class ActivatorTypesRegistry {
             if (preserved.getName().equalsIgnoreCase(name)) {
                 throw new IllegalStateException("Activator type name '" + name + "' is already used for '" + preserved.getName() + "'");
             } else {
-                logger.warn("Activator type name '" + name + "' is already used as an alias for '" + preserved.getName() + "', overriding it.");
+                logger.warn("Activator type name '{}' is already used as an alias for '{}', overriding it.", name, preserved.getName());
             }
         }
         typesAliases.put(name, type);
@@ -86,7 +86,7 @@ public class ActivatorTypesRegistry {
         private final String name;
         private final Set<Activator> activators;
 
-        public SimpleType(Class<? extends Activator> type, String name, RaGenerator<Parameters> creator, RaGenerator<ConfigurationSection> loader, boolean needBlock) {
+        private SimpleType(Class<? extends Activator> type, String name, RaGenerator<Parameters> creator, RaGenerator<ConfigurationSection> loader, boolean needBlock) {
             this.type = type;
             this.creator = creator;
             this.loader = loader;

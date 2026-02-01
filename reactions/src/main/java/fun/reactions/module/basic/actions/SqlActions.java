@@ -31,14 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public class SqlActions implements Action {
-    // TODO: More functionality like working with arrays
-    private final Type sqlType;
-
-    public SqlActions(Type sqlType) {
-        this.sqlType = sqlType;
-    }
-
+public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: More functionality like working with arrays
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

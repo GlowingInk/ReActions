@@ -47,13 +47,7 @@ import java.util.Locale;
 import java.util.OptionalInt;
 
 // TODO: Remake from scratch
-public class ItemActions implements Action, Activity.Personal {
-    private final Type actionType;
-
-    public ItemActions(Type actionType) {
-        this.actionType = actionType;
-    }
-
+public record ItemActions(@NotNull Type actionType) implements Action, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

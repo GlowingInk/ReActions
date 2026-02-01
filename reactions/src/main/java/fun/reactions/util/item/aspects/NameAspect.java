@@ -8,13 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class NameAspect implements MetaAspect {
-    private final boolean regex;
-
-    public NameAspect(boolean regex) {
-        this.regex = regex;
-    }
-
+public record NameAspect(boolean regex) implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return regex
@@ -36,7 +30,7 @@ public class NameAspect implements MetaAspect {
     }
 
     private static final class NameInst implements Instance {
-        public static NameInst EMPTY = new NameInst("", "", false);
+        public static final NameInst EMPTY = new NameInst("", "", false);
 
         private final String colored;
         private final String plain;

@@ -33,16 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class PersistentVarActions implements Action, Aliased {
-
-    private final Type actType;
-    private final boolean personal;
-
-    public PersistentVarActions(Type actType, boolean personalVar) {
-        this.actType = actType;
-        this.personal = personalVar;
-    }
-
+public record PersistentVarActions(@NotNull Type actionType, boolean personal) implements Action, Aliased {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
         Parameters params = Parameters.fromString(paramsStr);
@@ -66,7 +57,7 @@ public class PersistentVarActions implements Action, Aliased {
         if (this.personal && playerName.isEmpty()) return false;
 
         PersistentVariablesManager varsManager = env.getPlatform().getPersistentVariables();
-        switch (this.actType) {
+        switch (this.actionType) {
             case SET -> varsManager.setVariable(playerName, varName, change);
             case CLEAR -> varsManager.removeVariable(playerName, varName);
             case INCREASE, DECREASE -> {
@@ -80,7 +71,7 @@ public class PersistentVarActions implements Action, Aliased {
                     return false;
                 }
                 double mod = NumberUtils.parseDouble(change).orElse(1);
-                varNumberValue += actType == Type.INCREASE ? mod : -mod;
+                varNumberValue += actionType == Type.INCREASE ? mod : -mod;
                 varsManager.setVariable(playerName, varName, NumberUtils.simpleFormat(varNumberValue));
             }
         }
@@ -89,7 +80,7 @@ public class PersistentVarActions implements Action, Aliased {
 
     @Override
     public @NotNull String getName() {
-        return switch (actType) {
+        return switch (actionType) {
             case SET -> personal ? "PLAYER_VAR" : "GLOBAL_VAR";
             case CLEAR -> personal ? "PLAYER_VAR_CLEAR" : "GLOBAL_VAR_CLEAR";
             case INCREASE -> personal ? "PLAYER_VAR_INC" : "GLOBAL_VAR_INC";
@@ -99,7 +90,7 @@ public class PersistentVarActions implements Action, Aliased {
 
     @Override
     public @NotNull Collection<@NotNull String> getAliases() {
-        return switch (actType) {
+        return switch (actionType) {
             case SET -> personal ? List.of("VAR_PLAYER_SET", "PLAYER_VAR_SET") : List.of("VAR_SET", "GLOBAL_VAR_SET");
             case CLEAR -> List.of(personal ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR");
             case INCREASE -> List.of(personal ? "VAR_PLAYER_INC" : "VAR_INC");

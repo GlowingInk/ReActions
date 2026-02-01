@@ -92,7 +92,7 @@ public class MessageAction implements Action {
         if (time == 0) return false;
         String key = "reactions-msg-" +/*.append(this.getActivatorName())*/message.hashCode();
         if (player.hasMetadata(key)) {
-            if ((player.getMetadata(key).get(0).asLong() - System.currentTimeMillis()) > 0)
+            if ((player.getMetadata(key).getFirst().asLong() - System.currentTimeMillis()) > 0)
                 return false;
         }
         player.setMetadata(key, new FixedMetadataValue(env.getPlatform().getPlugin(), System.currentTimeMillis() + time));

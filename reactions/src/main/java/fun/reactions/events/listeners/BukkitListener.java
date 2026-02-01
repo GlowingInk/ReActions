@@ -197,7 +197,7 @@ public class BukkitListener implements Listener {
         }
 
         if (event.getEntity().hasMetadata("ReActions-xp")) {
-            int xp = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-xp").get(0).asString());
+            int xp = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-xp").getFirst().asString());
             event.setDroppedExp(xp);
         }
 
@@ -206,12 +206,12 @@ public class BukkitListener implements Listener {
 
         triggerMobKill(killer, event.getEntity());
         if (event.getEntity().hasMetadata("ReActions-money") && RaVault.isEconomyConnected()) {
-            int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").get(0).asString());
+            int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").getFirst().asString());
             RaVault.creditAccount(killer.getName(), "", Double.toString(money), "");
             Msg.MSG_MOBBOUNTY.print(killer, 'e', '6', RaVault.format(money, ""), event.getEntity().getType().name());
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
-            String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
+            String exec = event.getEntity().getMetadata("ReActions-activator").getFirst().asString();
             triggerFunction(killer, exec, new Variables());
         }
 
@@ -221,7 +221,7 @@ public class BukkitListener implements Listener {
     public void onMobGrowl(PlayerAttacksEntityEvent event) {
         LivingEntity damager = event.getPlayer();
         if (!damager.hasMetadata("ReActions-growl")) return;
-        String growl = damager.getMetadata("ReActions-growl").get(0).asString();
+        String growl = damager.getMetadata("ReActions-growl").getFirst().asString();
         if (Utils.isStringEmpty(growl)) return;
         Utils.soundPlay(damager.getLocation(), growl);
     }
@@ -239,7 +239,7 @@ public class BukkitListener implements Listener {
     public void onDamageByMob(EntityDamageByEntityEvent event) {
         LivingEntity damager = EntityUtils.getDamagerEntity(event);
         if (damager == null || !damager.hasMetadata("ReActions-dmg")) return;
-        double dmg = damager.getMetadata("ReActions-dmg").get(0).asDouble();
+        double dmg = damager.getMetadata("ReActions-dmg").getFirst().asDouble();
         if (dmg < 0) return;
         event.setDamage(event.getDamage() * dmg);
     }
@@ -251,7 +251,7 @@ public class BukkitListener implements Listener {
         String source;
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             source = "ENTITY";
-            var optVars = triggerDamageByMob(evdmg);;
+            var optVars = triggerDamageByMob(evdmg);
             if (optVars.isPresent()) {
                 Variables vars = optVars.get();
                 vars.changedDouble(DamageActivator.Context.DAMAGE).ifPresent(event::setDamage);
@@ -287,7 +287,7 @@ public class BukkitListener implements Listener {
         if (event.getEntityType() == EntityType.PLAYER) return;
         if (!(event.getEntity() instanceof LivingEntity le)) return;
         if (!le.hasMetadata("ReActions-cry")) return;
-        String cry = le.getMetadata("ReActions-cry").get(0).asString();
+        String cry = le.getMetadata("ReActions-cry").getFirst().asString();
         if (cry.isEmpty()) return;
         if (!(event instanceof EntityDamageByEntityEvent evdmg)) return;
         if (evdmg.getDamager() instanceof Projectile prj) {

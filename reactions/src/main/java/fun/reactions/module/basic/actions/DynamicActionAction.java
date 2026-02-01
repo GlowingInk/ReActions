@@ -44,7 +44,7 @@ public class DynamicActionAction implements Action {
         ReActions.Platform platform = env.getPlatform();
         Action action = platform.getActivities().getAction(typeStr);
         if (action == null) {
-            platform.logger().warn("Failed to prepare dynamic action: action type '" + typeStr + "' doesn't exist");
+            platform.logger().warn("Failed to prepare dynamic action: action type '{}' doesn't exist", typeStr);
             return false;
         }
 

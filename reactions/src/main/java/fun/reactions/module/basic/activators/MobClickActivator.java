@@ -130,12 +130,11 @@ public class MobClickActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ROOT)) +
                 " name:" + (mobName.isEmpty() ? "-" : mobName) +
                 " loc:" + (mobLocation.isEmpty() ? "-" : mobLocation) +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

@@ -63,7 +63,6 @@ public class Timer {
             } catch (ParseException e) {
                 Msg.logOnce(time, "Failed to parse cron format: " + time);
                 this.timeServer = null;
-                e.printStackTrace();
             }
         }
     }

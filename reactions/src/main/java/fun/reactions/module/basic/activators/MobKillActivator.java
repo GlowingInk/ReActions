@@ -96,11 +96,10 @@ public class MobKillActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (mobType == null ? "-" : mobType.toUpperCase(Locale.ROOT)) +
                 " name:" + (mobName == null ? "-" : mobName) +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

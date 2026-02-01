@@ -86,7 +86,7 @@ public class BlockFillAction implements Action {
                 for (int y = Math.min(loc1.getBlockY(), loc2.getBlockY()), yMax = Math.max(loc1.getBlockY(), loc2.getBlockY()); y <= yMax; ++y) {
                     if (check.test(chance)) {
                         Block block = world.getBlockAt(x, y, z);
-                        if (drop && !block.getType().isEmpty()) block.breakNaturally();
+                        if (drop && !block.getType().isAir()) block.breakNaturally();
                         block.setType(type, phys);
                     }
                 }

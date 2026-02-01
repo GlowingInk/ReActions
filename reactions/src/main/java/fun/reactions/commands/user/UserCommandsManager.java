@@ -72,7 +72,7 @@ public final class UserCommandsManager implements Listener {
             context.initialize();
             Activator activator = platform.getActivators().getActivator(exec);
             if (activator == null) {
-                platform.logger().warn("There's no activators named " + exec);
+                platform.logger().warn("There's no activators named {}", exec);
                 return false;
             }
             Logic logic = activator.getLogic();

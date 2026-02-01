@@ -30,18 +30,12 @@ import fun.reactions.util.num.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class RegionFlags implements Flag, Activity.Personal {
-    private final Type flagType;
-
-    public RegionFlags(Type flagType) {
-        this.flagType = flagType;
-    }
-
+public record RegionFlags(@NotNull Type flagType) implements Flag, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
         return switch (flagType) {
-            case REGION -> Activity.Personal.super.proceed(env, paramsStr);
+            case REGION -> Personal.super.proceed(env, paramsStr);
             case REGION_PLAYERS -> playersInRegion(paramsStr);
             case REGION_MEMBER -> RaWorldGuard.isMember(player, paramsStr);
             case REGION_OWNER -> RaWorldGuard.isOwner(player, paramsStr);

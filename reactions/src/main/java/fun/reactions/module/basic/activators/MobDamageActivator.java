@@ -114,11 +114,10 @@ public class MobDamageActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ROOT)) +
                 " name:" + (mobName.isEmpty() ? "-" : mobName) +
                 ")";
-        return sb;
     }
 
     public static class MobDamageContext extends ActivationContext {

@@ -29,10 +29,7 @@ public class FunctionPlaceholder implements Placeholder {
                     env.isAsync()
             ));
         } else  {
-            env.getPlatform().logger().error(
-                    "FUNCTION placeholder in '" + id + "' was stopped at the depth '" + env.getDepth() + "' to prevent stack overflow. " +
-                    "Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders."
-            );
+            env.getPlatform().logger().error("FUNCTION placeholder in '{}' was stopped at the depth '{}' to prevent stack overflow. Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders.", id, env.getDepth());
         }
         return vars.getStringUnsafe("return");
     }

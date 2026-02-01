@@ -28,12 +28,12 @@ public class ColorAspect implements MetaAspect {
     @Override
     public @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         Color color = null;
-        if (meta instanceof LeatherArmorMeta leatherMeta) {
-            color = leatherMeta.getColor();
-        } else if (meta instanceof PotionMeta potionMeta) {
-            color = potionMeta.getColor();
-        } else if (meta instanceof MapMeta mapMeta) {
-            color = mapMeta.getColor();
+        switch (meta) {
+            case LeatherArmorMeta leatherMeta -> color = leatherMeta.getColor();
+            case PotionMeta potionMeta -> color = potionMeta.getColor();
+            case MapMeta mapMeta -> color = mapMeta.getColor();
+            default -> {
+            }
         }
         if (color != null) {
             return new ColorInst(color);
@@ -46,25 +46,23 @@ public class ColorAspect implements MetaAspect {
 
         @Override
         public void apply(@NotNull ItemMeta meta) {
-            if (meta instanceof LeatherArmorMeta leatherMeta) {
-                leatherMeta.setColor(color);
-            } else if (meta instanceof PotionMeta potionMeta) {
-                potionMeta.setColor(color);
-            } else if (meta instanceof MapMeta mapMeta) {
-                mapMeta.setColor(color);
+            switch (meta) {
+                case LeatherArmorMeta leatherMeta -> leatherMeta.setColor(color);
+                case PotionMeta potionMeta -> potionMeta.setColor(color);
+                case MapMeta mapMeta -> mapMeta.setColor(color);
+                default -> {
+                }
             }
         }
 
         @Override
         public boolean isSimilar(@NotNull ItemMeta meta) {
-            if (meta instanceof LeatherArmorMeta leatherMeta) {
-                return Objects.equals(leatherMeta.getColor(), color);
-            } else if (meta instanceof PotionMeta potionMeta) {
-                return Objects.equals(potionMeta.getColor(), color);
-            } else if (meta instanceof MapMeta mapMeta) {
-                return Objects.equals(mapMeta.getColor(), color);
-            }
-            return color == null;
+            return switch (meta) {
+                case LeatherArmorMeta leatherMeta -> Objects.equals(leatherMeta.getColor(), color);
+                case PotionMeta potionMeta -> Objects.equals(potionMeta.getColor(), color);
+                case MapMeta mapMeta -> Objects.equals(mapMeta.getColor(), color);
+                default -> color == null;
+            };
         }
 
         @Override

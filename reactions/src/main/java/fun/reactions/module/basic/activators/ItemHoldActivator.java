@@ -86,11 +86,10 @@ public class ItemHoldActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 this.item +
                 "; hand:" + hand +
                 ")";
-        return sb;
     }
 
     @Override

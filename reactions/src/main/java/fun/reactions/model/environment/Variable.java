@@ -1,6 +1,5 @@
 package fun.reactions.model.environment;
 
-import fun.reactions.util.function.FunctionalUtils;
 import fun.reactions.util.function.SafeSupplier;
 import org.jetbrains.annotations.NotNull;
 
@@ -129,13 +128,7 @@ public interface Variable {
         }
     }
 
-    class Lazy implements Variable {
-        private final SafeSupplier<String> getter;
-
-        public Lazy(@NotNull SafeSupplier<String> getter) {
-            this.getter = FunctionalUtils.asSafeCaching(getter);
-        }
-
+    record Lazy(@NotNull SafeSupplier<String> getter) implements Variable {
         @Override
         public @NotNull String get() {
             return getter.get();
@@ -143,7 +136,7 @@ public interface Variable {
 
         @Override
         public @NotNull Variable set(@NotNull String value) {
-           return new Simple(value);
+            return new Simple(value);
         }
 
         @Override

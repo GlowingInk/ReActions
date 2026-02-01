@@ -33,7 +33,7 @@ public class CuboidActivator extends Activator implements Locatable {
 
     public static CuboidActivator create(Logic base, Parameters param) {
         CuboidMode mode = CuboidMode.getByName(param.getString("mode", "ENTER"));
-        String world = param.getString("world", Bukkit.getWorlds().get(0).getName());
+        String world = param.getString("world", Bukkit.getWorlds().getFirst().getName());
         ImplicitPosition loc1 = ImplicitPosition.of(world, param.getInteger("loc1.x"), param.getInteger("loc1.y"), param.getInteger("loc1.z"));
         ImplicitPosition loc2 = ImplicitPosition.of(world, param.getInteger("loc2.x"), param.getInteger("loc2.y"), param.getInteger("loc2.z"));
         return new CuboidActivator(base, new Cuboid(loc1, loc2), mode);
@@ -52,24 +52,24 @@ public class CuboidActivator extends Activator implements Locatable {
         Player player = context.getPlayer();
         UUID id = player.getUniqueId();
         boolean inCuboid = cuboid.isInside(player.getLocation(), true);
-        switch (mode) {
-            case CHECK:
-                return inCuboid;
-            case ENTER:
+        return switch (mode) {
+            case CHECK -> inCuboid;
+            case ENTER -> {
                 if (inCuboid) {
-                    if (within.contains(id)) return false;
+                    if (within.contains(id)) yield false;
                     within.add(id);
-                    return true;
+                    yield true;
                 }
-                return false;
-            case LEAVE:
+                yield false;
+            }
+            case LEAVE -> {
                 if (!inCuboid && within.contains(id)) {
                     within.remove(id);
-                    return true;
+                    yield true;
                 }
-                return false;
-        }
-        return false;
+                yield false;
+            }
+        };
     }
 
     public boolean isLocatedAt(Location loc) {

@@ -102,12 +102,11 @@ public class MessageActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + this.type.name() +
                 " source:" + this.source.name() +
                 " mask:" + this.mask +
                 ")";
-        return sb;
     }
 
     public enum CheckType {
@@ -205,7 +204,7 @@ public class MessageActivator extends Activator {
             private final List<String> nums;
             private final List<String> ints;
 
-            public MessageInfo(String[] args) {
+            private MessageInfo(String[] args) {
                 if (args.length > 0) {
                     this.words = Arrays.asList(args);
                     this.nums = new ArrayList<>(0);

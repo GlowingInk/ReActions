@@ -27,7 +27,7 @@ public class SavingManager implements Listener, Saveable {
 
     @EventHandler
     public void onSave(WorldSaveEvent event) {
-        if (event.getWorld() == server.getWorlds().get(0)) {
+        if (event.getWorld() == server.getWorlds().getFirst()) {
             saveables.forEach(Saveable::save);
         }
     }

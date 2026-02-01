@@ -42,7 +42,7 @@ public class SafeEnumTest {
         );
     }
 
-    enum Something {
+    public enum Something {
         UWU, OWO, AWOO, YAY, NYA
     }
 }

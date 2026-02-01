@@ -235,7 +235,7 @@ public class ImplicitPosition implements BlockPosition, Parameterizable {
     public @NotNull Location toLocation(@NotNull Server server) {
         World world;
         if (worldName == null || (world = server.getWorld(worldName)) == null) {
-            world = server.getWorlds().get(0);
+            world = server.getWorlds().getFirst();
         }
         return toCenter().toLocation(world);
     }

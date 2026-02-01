@@ -35,7 +35,7 @@ public final class FunctionalUtils {
         private T value;
         private boolean cached;
 
-        public CachingSupplier(@NotNull Supplier<T> getter) {
+        private CachingSupplier(@NotNull Supplier<T> getter) {
             this.origin = getter;
         }
 
@@ -53,7 +53,7 @@ public final class FunctionalUtils {
         private final Supplier<T> origin;
         private T value;
 
-        public SafeCachingSupplier(@NotNull SafeSupplier<T> getter) {
+        private SafeCachingSupplier(@NotNull SafeSupplier<T> getter) {
             this.origin = getter;
         }
 
@@ -68,7 +68,7 @@ public final class FunctionalUtils {
         private R value;
         private boolean cached;
 
-        public CachingFunction(@NotNull Function<T, R> getter) {
+        private CachingFunction(@NotNull Function<T, R> getter) {
             this.origin = getter;
         }
 
@@ -86,7 +86,7 @@ public final class FunctionalUtils {
         private final SafeFunction<T, R> origin;
         private R value;
 
-        public SafeCachingFunction(@NotNull SafeFunction<T, R> getter) {
+        private SafeCachingFunction(@NotNull SafeFunction<T, R> getter) {
             this.origin = getter;
         }
 

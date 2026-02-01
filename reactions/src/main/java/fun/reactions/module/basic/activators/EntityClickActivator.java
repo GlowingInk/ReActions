@@ -57,10 +57,9 @@ public class EntityClickActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (entityType == null ? "-" : entityType.name()) +
                 ")";
-        return sb;
     }
 
     /**

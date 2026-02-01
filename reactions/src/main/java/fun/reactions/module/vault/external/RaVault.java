@@ -158,7 +158,7 @@ public final class RaVault {
      */
     public static String format(double amount, String worldName) {
         if (!isEconomyConnected()) return Double.toString(amount);
-        if (worldName.equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())) return Double.toString(amount);
+        if (worldName.equalsIgnoreCase(Bukkit.getWorlds().getFirst().getName())) return Double.toString(amount);
         return economy.format(amount);
     }
 

@@ -69,12 +69,11 @@ public class WeSelectionActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "minblocks:" + minBlocks +
                 "; maxblocks:" + maxBlocks +
                 "; type:" + typeSelection +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

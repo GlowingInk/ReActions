@@ -62,10 +62,10 @@ public class ModulesRegistry {
     }
 
     private void register(@NotNull Module module) {
-        platform.logger().info("Registering '" + module.getName() + "' module (by " + String.join(", ", module.getAuthors()) + ")");
+        platform.logger().info("Registering '{}' module (by {})", module.getName(), String.join(", ", module.getAuthors()));
         List<String> missingPlugins = checkPlugins(module);
         if (!missingPlugins.isEmpty()) {
-            platform.logger().warn("Module '" + module.getName() + "' cannot be registered because some plugins are missing: " + String.join(", ", missingPlugins));
+            platform.logger().warn("Module '{}' cannot be registered because some plugins are missing: {}", module.getName(), String.join(", ", missingPlugins));
             return;
         }
         module.preRegister(platform);

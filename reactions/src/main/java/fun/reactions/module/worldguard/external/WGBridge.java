@@ -74,7 +74,7 @@ public class WGBridge {
     }
 
     public static World getRegionWorld(String worldAndRegion) {
-        return getRegionWorld(Bukkit.getWorlds().get(0), worldAndRegion);
+        return getRegionWorld(Bukkit.getWorlds().getFirst(), worldAndRegion);
     }
 
     public static World getRegionWorld(World w, String worldAndRegion) {
@@ -231,7 +231,7 @@ public class WGBridge {
         String flagName;
         String valueName;
         if (parts.length == 3) {
-            world = Bukkit.getWorlds().get(0);
+            world = Bukkit.getWorlds().getFirst();
             regionName = parts[0];
             flagName = parts[1];
             valueName = parts[2];

@@ -12,13 +12,7 @@ import static java.lang.String.join;
 import static org.bukkit.ChatColor.COLOR_CHAR;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
-public class LoreAspect implements MetaAspect {
-    private final boolean regex;
-
-    public LoreAspect(boolean regex) {
-        this.regex = regex;
-    }
-
+public record LoreAspect(boolean regex) implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return regex

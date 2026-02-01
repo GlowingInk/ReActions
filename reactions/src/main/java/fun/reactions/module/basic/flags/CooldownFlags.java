@@ -33,14 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class CooldownFlags implements Flag, Aliased {
-
-    private final boolean global;
-
-    public CooldownFlags(boolean global) {
-        this.global = global;
-    }
-
+public record CooldownFlags(boolean global) implements Flag, Aliased {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

@@ -72,7 +72,7 @@ public class ActivatorsManager {
             try {
                 cfg.load(file);
             } catch (InvalidConfigurationException | IOException ex) {
-                logger.warn("Cannot load '" + file.getName() + "' file", ex);
+                logger.warn("Cannot load '{}' file", file.getName(), ex);
                 return;
             }
             String localGroup = file.getName().substring(0, file.getName().length() - 4);
@@ -91,12 +91,12 @@ public class ActivatorsManager {
             for (String typeStr : cfg.getKeys(false)) {
                 ActivatorType type = types.get(typeStr);
                 if (type == null) {
-                    logger.warn("Failed to load activators with the unknown type '" + typeStr + "' in the group '"+ group + "'");
+                    logger.warn("Failed to load activators with the unknown type '{}' in the group '{}'", typeStr, group);
                     // TODO Move failed activators to backup
                     continue;
                 }
                 if (!cfg.isConfigurationSection(typeStr)) {
-                    logger.warn("Failed to load activators with the type '" + typeStr + "' - isn't a section");
+                    logger.warn("Failed to load activators with the type '{}' - isn't a section", typeStr);
                     continue;
                 }
                 ConfigurationSection cfgType = cfg.getConfigurationSection(typeStr);
@@ -108,7 +108,7 @@ public class ActivatorsManager {
                     logic.load(cfgActivator);
                     Activator activator = type.loadActivator(logic, cfgActivator);
                     if (activator == null || !activator.isValid()) {
-                        logger.warn("Failed to load activator '" + name + "' in the group '" + group + "'");
+                        logger.warn("Failed to load activator '{}' in the group '{}'", name, group);
                         continue;
                     }
                     addActivator(activator, false);
@@ -135,7 +135,7 @@ public class ActivatorsManager {
         Logic logic = activator.getLogic();
         String name = logic.getName();
         if (activatorsNames.containsKey(name)) {
-            logger.warn("Failed to add activator '" + logic.getName() + "' - activator with this name already exists");
+            logger.warn("Failed to add activator '{}' - activator with this name already exists", logic.getName());
             return false;
         }
         Objects.requireNonNull(types.get(activator.getClass())).addActivator(activator);
@@ -184,7 +184,7 @@ public class ActivatorsManager {
         File file = new File(actsFolder, name.replace('/', File.separatorChar) + ".yml");
         if (activators.isEmpty()) {
             if (!file.delete()) {
-                logger.warn("Failed to delete empty group file '" + name + "'");
+                logger.warn("Failed to delete empty group file '{}'", name);
             }
             return;
         }
@@ -195,15 +195,13 @@ public class ActivatorsManager {
                 ConfigurationSection typeCfg = ConfigUtils.getSection(cfg, typeStr);
                 activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
             } catch (Exception ex) {
-                logger.error("Something went wrong during activator saving. " +
-                        activator.getLogic().getGroup() + "/" + activator.getLogic().getName() +
-                        " (" + activator.getLogic().getType() + ")", ex);
+                logger.error("Something went wrong during activator saving. {}/{} ({})", activator.getLogic().getGroup(), activator.getLogic().getName(), activator.getLogic().getType(), ex);
             }
         }
         try {
             cfg.save(file);
         } catch (IOException ex) {
-            logger.error("Failed to save group '" + name + "'", ex);
+            logger.error("Failed to save group '{}'", name, ex);
         }
     }
 

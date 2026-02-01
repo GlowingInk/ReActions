@@ -126,7 +126,7 @@ public final class RaProtocolLib { // FIXME: Probably stopped working ages ago
     }
 
     private static class ChatOutputListener extends PacketAdapter {
-        public ChatOutputListener() {
+        private ChatOutputListener() {
             super(ReActions.getPlugin(), PacketType.Play.Server.CHAT);
         }
 

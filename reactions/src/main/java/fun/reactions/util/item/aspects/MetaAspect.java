@@ -6,7 +6,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface MetaAspect {
+public interface MetaAspect { // TODO Rework to use DataComponents
     @NotNull String getName();
 
     @NotNull MetaAspect.Instance fromString(@NotNull String value);

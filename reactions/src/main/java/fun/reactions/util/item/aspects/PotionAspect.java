@@ -20,13 +20,7 @@ import java.util.Set;
 
 import static fun.reactions.util.RegistryUtils.searchRegistry;
 
-public class PotionAspect implements MetaAspect {
-    private final boolean base;
-
-    public PotionAspect(boolean base) {
-        this.base = base;
-    }
-
+public record PotionAspect(boolean base) implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return base
@@ -51,13 +45,13 @@ public class PotionAspect implements MetaAspect {
         return null;
     }
 
-    private static final class Effects implements MetaAspect.Instance { // TODO Particles, etc
+    private static final class Effects implements Instance { // TODO Particles, etc
         public static final Effects EMPTY = new Effects(List.of());
 
         private final Set<PotionEffect> effects;
         private final String effectsStr;
 
-        public Effects(@NotNull String value) {
+        private Effects(@NotNull String value) {
             this.effectsStr = value;
             String[] split = value.split(";");
             this.effects = new HashSet<>(split.length);
@@ -73,7 +67,7 @@ public class PotionAspect implements MetaAspect {
             }
         }
 
-        public Effects(@NotNull List<PotionEffect> effects) {
+        private Effects(@NotNull List<PotionEffect> effects) {
             if (effects.isEmpty()) {
                 this.effects = Set.of();
                 this.effectsStr = "";
@@ -119,16 +113,16 @@ public class PotionAspect implements MetaAspect {
         }
     }
 
-    private static final class Base implements MetaAspect.Instance {
+    private static final class Base implements Instance {
         private final PotionType potionType;
         private final String potionTypeStr;
 
-        public Base(@NotNull PotionType potionType) {
+        private Base(@NotNull PotionType potionType) {
             this.potionType = potionType;
             this.potionTypeStr = potionType.name();
         }
 
-        public Base(@NotNull String potionTypeStr) {
+        private Base(@NotNull String potionTypeStr) {
             this.potionTypeStr = potionTypeStr;
             if (potionTypeStr.isEmpty()) {
                 this.potionType = null;

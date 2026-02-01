@@ -86,10 +86,9 @@ public class RegionEnterActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "region:" + this.region +
                 ")";
-        return sb;
     }
 
     public static class Context extends RegionActivator.Context {

@@ -39,7 +39,7 @@ public class PvpFlag implements Flag, Activity.Personal { // TODO: Requires rewo
         String timeStr = params.getString("time", params.originValue());
         long delay = TimeUtils.parseTime(timeStr);
         if (delay == 0) return false;
-        return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").get(0).asLong()) < delay);
+        return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").getFirst().asLong()) < delay);
     }
 
     @Override

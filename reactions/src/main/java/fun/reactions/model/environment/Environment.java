@@ -65,7 +65,7 @@ public final class Environment {
     }
 
     public void warn(@NotNull String msg) {
-        platform.logger().warn(activatorName + " | " + msg);
+        platform.logger().warn("{} | {}", activatorName, msg);
     }
 
     public void warn(@NotNull Component msg) {

@@ -133,7 +133,7 @@ public class InventoryClickActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "name:" + this.inventoryName +
                 "; click:" + this.click.name() +
                 "; action:" + this.action.name() +
@@ -142,7 +142,6 @@ public class InventoryClickActivator extends Activator {
                 "; key:" + this.numberKey +
                 "; slot:" + this.slotStr +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

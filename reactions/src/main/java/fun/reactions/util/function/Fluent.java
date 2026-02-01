@@ -6,13 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Fluent<T> {
-    private final T obj;
-
-    private Fluent(@NotNull T obj) {
-        this.obj = obj;
-    }
-
+public record Fluent<T>(@NotNull T value) {
     public static <T> @NotNull T of(@NotNull T obj, @NotNull Consumer<T> funct) {
         funct.accept(obj);
         return obj;
@@ -23,20 +17,20 @@ public class Fluent<T> {
     }
 
     public @NotNull Fluent<T> then(@NotNull Consumer<T> funct) {
-        funct.accept(obj);
+        funct.accept(value);
         return this;
     }
 
     public <F> @NotNull Fluent<F> then(@NotNull SafeFunction<T, F> funct) {
-        return new Fluent<>(funct.apply(obj));
+        return new Fluent<>(funct.apply(value));
     }
 
     public <R> @Nullable R endUnsafe(@NotNull Function<T, R> funct) {
-        return funct.apply(obj);
+        return funct.apply(value);
     }
 
     public <R> @NotNull R end(@NotNull SafeFunction<T, R> funct) {
-        return funct.apply(obj);
+        return funct.apply(value);
     }
 
     public @NotNull T end(@NotNull Consumer<T> funct) {
@@ -44,6 +38,6 @@ public class Fluent<T> {
     }
 
     public @NotNull T end() {
-        return obj;
+        return value;
     }
 }

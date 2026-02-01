@@ -231,7 +231,7 @@ public final class LocationUtils { // TODO: Requires refactoring
         int z = minmax.get(0).getBlockZ() + Rng.nextInt(minmax.get(1).getBlockZ() - minmax.get(0).getBlockZ() + 1);
         List<Location> locations = new ArrayList<>();
         for (int y = minmax.get(0).getBlockY(); y <= minmax.get(1).getBlockY(); y++) {
-            locations.add(new Location(minmax.get(0).getWorld(), x, y, z));
+            locations.add(new Location(minmax.getFirst().getWorld(), x, y, z));
         }
         return getEmptyOrLandedLocations(locations, land);
     }

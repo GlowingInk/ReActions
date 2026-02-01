@@ -45,18 +45,15 @@ public class PotionRemoveAction implements Action { // TODO Allow to use player 
 
     private String removePotionEffect(Player player, String param) {
         String str = "";
-        if (param.equalsIgnoreCase("all") || param.equalsIgnoreCase("*"))
+        if (param.equalsIgnoreCase("all") || param.equalsIgnoreCase("*")) {
             for (PotionEffect pe : player.getActivePotionEffects()) player.removePotionEffect(pe.getType());
-        else {
-            String[] pefs = param.split(",");
-            if (pefs.length > 0) {
-                for (String pefStr : pefs) {
-                    PotionEffectType pef = PotionEffectType.getByName(pefStr);
-                    if (pef == null) continue;
-                    if (player.hasPotionEffect(pef)) {
-                        player.removePotionEffect(pef);
-                        str = str.isEmpty() ? pef.getName() : str + ", " + pef.getName();
-                    }
+        } else {
+            for (String pefStr : param.split(",")) {
+                PotionEffectType pef = PotionEffectType.getByName(pefStr); // TODO Outdated
+                if (pef == null) continue;
+                if (player.hasPotionEffect(pef)) {
+                    player.removePotionEffect(pef);
+                    str = str.isEmpty() ? pef.getName() : str + ", " + pef.getName();
                 }
             }
         }

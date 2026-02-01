@@ -48,7 +48,7 @@ public class BlockSetAction implements Action {
         if (loc == null) return false;
         Block b = loc.getBlock();
 
-        if (drop && !b.getType().isEmpty()) b.breakNaturally();
+        if (drop && !b.getType().isAir()) b.breakNaturally();
 
         b.setType(type, phys);
         return true;

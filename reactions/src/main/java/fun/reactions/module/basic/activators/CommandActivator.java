@@ -108,7 +108,7 @@ public class CommandActivator extends Activator {
                         command.equalsIgnoreCase(cs.command);
         } else {
             if (args.size() != cs.args.size() + 1) return false;
-            if (!args.get(0).equalsIgnoreCase(cs.label)) return false;
+            if (!args.getFirst().equalsIgnoreCase(cs.label)) return false;
             for (int i = 1; i <= cs.args.size(); i++) {
                 String arg = args.get(i);
                 if (arg.equals("*")) continue;
@@ -132,12 +132,11 @@ public class CommandActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "regex:" + this.useRegex +
                 "; command:" + this.command +
                 "; console:" + this.consoleAllowed +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {
