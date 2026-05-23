@@ -35,7 +35,8 @@ public final class ReaCreateSub extends RaCommandBase {
         return literal("create", this::help,
                 new ActivatorSub(platform).asNode(),
                 new LocationSub(platform).asNode(),
-                new MenuSub(platform).asNode()
+                new MenuSub(platform).asNode(),
+                new VariableSub(platform).asNode()
         );
     }
 
@@ -63,7 +64,14 @@ public final class ReaCreateSub extends RaCommandBase {
         }
 
         private void variable(@NotNull Parameters params, @NotNull CommandSender sender) {
-
+            String[] varName = params.getString("name").split(":");
+            platform.getPersistentVariables().setVariable(
+                    varName.length > 1 ? varName[0] : null,
+                    varName.length > 1 ? varName[1] : varName[0],
+                    params.getString("value")
+            );
+            sendPrefixed(sender, "Variable&a '" + escape(params.getString("name")) + "'&r was created with the value:\n"
+                    + escape(params.getString("value")));
         }
     }
 
@@ -110,7 +118,7 @@ public final class ReaCreateSub extends RaCommandBase {
         }
     }
 
-    private static class LocationSub extends RaCommandBase {
+    private static class LocationSub extends RaCommandBase { // TODO It's borked
         protected LocationSub(@NotNull ReActions.Platform platform) {
             super(platform);
         }
@@ -119,9 +127,9 @@ public final class ReaCreateSub extends RaCommandBase {
         public @NotNull Node asNode() {
             return literal("location",
                     stringArg("name", StringArgNode.Type.WORD, this::pointLocation,
-                            stringArg("world", StringArgNode.Type.WORD,
-                                    doubleArg("x", doubleArg("y", doubleArg("z", this::location, doubleArg("yaw", doubleArg("pitch", this::location)))))
-                            )
+                            stringArg("world", StringArgNode.Type.WORD, doubleArg("x", doubleArg("y", doubleArg("z", this::location,
+                                    doubleArg("yaw", doubleArg("pitch", this::location))))
+                            ))
                     )
             );
         }
@@ -147,6 +155,7 @@ public final class ReaCreateSub extends RaCommandBase {
             }
             RealPosition pos = RealPosition.fromParameters(params);
             LocationHolder.addTpLoc(params.getString("name"), pos);
+            LocationHolder.saveLocs();
             sendPrefixed(sender, "Location&a '" + escape(params.getString("name")) + "'&r&7 (" + pos + ")&r was created");
         }
     }

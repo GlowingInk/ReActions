@@ -25,7 +25,8 @@ public class ReaLocationSub extends RaCommandBase {
 
     @Override
     public @NotNull Node asNode() {
-        return literal("location", stringArg("name", StringArgNode.Type.WORD, this::help, // TODO Name suggestions
+        return literal("location", this::help,
+                        stringArg("name", StringArgNode.Type.WORD, this::help, // TODO Name suggestions
                         literal("info", this::info),
                         literal("delete", this::delete),
                         literal("tp", this::teleport, stringArg("player", StringArgNode.Type.OPTIONAL_GREEDY)),
@@ -35,7 +36,7 @@ public class ReaLocationSub extends RaCommandBase {
     }
 
     private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
-        sendHelp(sender, params, "location " + escape(params.getString("name")),
+        sendHelp(sender, params, "location " + escape(params.getString("name", "<name>")),
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
                 "tp", "[player]", "Teleport yourself or a &especified player",
