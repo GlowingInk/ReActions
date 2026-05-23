@@ -50,6 +50,7 @@ import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.Shoot;
 import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -135,8 +136,13 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
-        new ReactionsCommand(this).asNode(); // TODO That's a little awkward
-        new ExecCommand(this).asNode();
+
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            var registrar = commands.registrar();
+            registrar.register(new ReactionsCommand(this).asNode().asBrigadier());
+            registrar.register(new ExecCommand(this).asNode().asBrigadier());
+        });
+
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);

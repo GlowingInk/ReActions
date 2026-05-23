@@ -5,11 +5,9 @@ import fun.reactions.commands.RaCommandBase;
 import fun.reactions.commands.impl.sub.ReaActivatorSub;
 import fun.reactions.commands.impl.sub.ReaCreateSub;
 import fun.reactions.commands.impl.sub.ReaLocationSub;
-import fun.reactions.commands.nodes.Node;
+import fun.reactions.commands.nodes.CommandNode;
 import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.util.parameter.Parameters;
-import me.lucko.commodore.Commodore;
-import me.lucko.commodore.CommodoreProvider;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.jetbrains.annotations.NotNull;
@@ -21,18 +19,16 @@ import static fun.reactions.commands.nodes.LiteralNode.literal;
 import static fun.reactions.commands.nodes.StringArgNode.stringArg;
 
 public class ReactionsCommand extends RaCommandBase {
-    private final Commodore commodore;
     private final PluginCommand reactionsCommand;
 
     public ReactionsCommand(@NotNull ReActionsPlugin plugin) {
         super(plugin);
-        this.commodore = CommodoreProvider.getCommodore(plugin);
         this.reactionsCommand = Objects.requireNonNull(plugin.getCommand("reactions"));
     }
 
     @Override
-    public @NotNull Node asNode() {
-        return command(commodore, reactionsCommand, this::help,
+    public @NotNull CommandNode asNode() {
+        return command(reactionsCommand, this::help,
                     new ReaCreateSub(platform).asNode(),
                     new ReaActivatorSub(platform).asNode(),
                     new ReaLocationSub(platform).asNode(),

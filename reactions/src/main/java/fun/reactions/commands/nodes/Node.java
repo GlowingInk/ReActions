@@ -3,6 +3,7 @@ package fun.reactions.commands.nodes;
 import com.mojang.brigadier.tree.CommandNode;
 import fun.reactions.util.naming.Named;
 import fun.reactions.util.parameter.Parameters;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public interface Node extends Named {
 
     @NotNull List<String> suggestions(@NotNull String remaining);
 
-    @NotNull CommandNode<Object> asBrigadier();
+    @NotNull CommandNode<CommandSourceStack> asBrigadier();
 
     @FunctionalInterface
     interface Executor extends BiConsumer<Parameters, CommandSender> {}

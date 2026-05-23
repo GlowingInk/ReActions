@@ -3,15 +3,12 @@ package fun.reactions.commands.nodes;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class StringArgNode implements Node {
@@ -133,8 +130,8 @@ public class StringArgNode implements Node {
     }
 
     @Override
-    public @NotNull ArgumentCommandNode<Object, String> asBrigadier() {
-        var builder = RequiredArgumentBuilder.argument(name, type.get());
+    public @NotNull ArgumentCommandNode<CommandSourceStack, String> asBrigadier() {
+        var builder = RequiredArgumentBuilder.<CommandSourceStack, String>argument(name, type.get());
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }

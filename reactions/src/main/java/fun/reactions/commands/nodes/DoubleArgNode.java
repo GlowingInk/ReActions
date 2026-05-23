@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import fun.reactions.util.num.NumberUtils;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,8 +67,8 @@ public class DoubleArgNode implements Node {
     }
 
     @Override
-    public @NotNull ArgumentCommandNode<Object, Double> asBrigadier() {
-        var builder = RequiredArgumentBuilder.argument(name, range.asType());
+    public @NotNull ArgumentCommandNode<CommandSourceStack, Double> asBrigadier() {
+        var builder = RequiredArgumentBuilder.<CommandSourceStack, Double>argument(name, range.asType());
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }

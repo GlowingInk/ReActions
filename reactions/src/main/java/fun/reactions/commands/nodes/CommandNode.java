@@ -4,20 +4,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.commands.ComponentException;
 import fun.reactions.util.parameter.Parameters;
-import me.lucko.commodore.Commodore;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandNode implements Node, CommandExecutor, TabCompleter {
     private final String value;
@@ -30,14 +22,13 @@ public class CommandNode implements Node, CommandExecutor, TabCompleter {
         this.next = next;
     }
 
-    public static @NotNull CommandNode command(@NotNull Commodore commodore, @NotNull PluginCommand command, @NotNull Executor executor, @NotNull Node @NotNull ... next) {
+    public static @NotNull CommandNode command(@NotNull PluginCommand command, @NotNull Executor executor, @NotNull Node @NotNull ... next) {
         CommandNode node = new CommandNode(
                 command.getName(),
                 executor,
                 Arrays.asList(next)
         );
         command.setExecutor(node);
-        commodore.register(command, node.asBrigadier());
         return node;
     }
 
@@ -80,8 +71,8 @@ public class CommandNode implements Node, CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @NotNull LiteralCommandNode<Object> asBrigadier() {
-        LiteralArgumentBuilder<Object> builder = LiteralArgumentBuilder.literal(value);
+    public @NotNull LiteralCommandNode<CommandSourceStack> asBrigadier() {
+        LiteralArgumentBuilder<CommandSourceStack> builder = LiteralArgumentBuilder.literal(value);
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }
