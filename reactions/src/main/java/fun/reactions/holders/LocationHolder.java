@@ -25,7 +25,7 @@ package fun.reactions.holders;
 import fun.reactions.ReActions;
 import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
-import fun.reactions.util.collections.CaseInsensitiveMap;
+import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.location.position.RealPosition;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Location;
@@ -46,7 +46,7 @@ import java.util.Map;
 @Deprecated
 public final class LocationHolder {
     private static final Map<String, Location> locs = new HashMap<>();
-    private static final Map<String, RealPosition> tports = new CaseInsensitiveMap<>();
+    private static final Map<String, RealPosition> tports = CollectionUtils.caseInsensitiveLinkedMap();
 
     private LocationHolder() {}
 
