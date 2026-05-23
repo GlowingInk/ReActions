@@ -58,7 +58,7 @@ public final class RaWorldEdit {
         }
         if (r == null) return null;
         BlockVector3 v = r.getMinimumPoint();
-        return new org.bukkit.util.Vector(v.getX(), v.getY(), v.getZ());
+        return new org.bukkit.util.Vector(v.x(), v.y(), v.z());
     }
 
     public static org.bukkit.util.Vector getMaximumPoint(Player player) {
@@ -70,7 +70,7 @@ public final class RaWorldEdit {
         }
         if (r == null) return null;
         BlockVector3 v = r.getMaximumPoint();
-        return new org.bukkit.util.Vector(v.getX(), v.getY(), v.getZ());
+        return new org.bukkit.util.Vector(v.x(), v.y(), v.z());
     }
 
     public static Region getRegion(Player player) throws IncompleteRegionException {

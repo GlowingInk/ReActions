@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
@@ -37,7 +36,7 @@ public class PlayerPlaceholders implements Placeholder {
         Set<Material> nonSolid = EnumSet.noneOf(Material.class);
         for (Material mat : Material.values())
             if (mat.isBlock() && !mat.isCollidable()) nonSolid.add(mat);
-        NON_SOLID = Collections.unmodifiableSet(nonSolid);
+        NON_SOLID = Set.copyOf(nonSolid);
     }
 
     @Override

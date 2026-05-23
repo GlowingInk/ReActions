@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fun.reactions.util.TimeUtils.addOffset;
+import static fun.reactions.util.time.TimeUtils.addOffset;
 
 @Aliased.Names({"RUN", "EXEC"})
 public class ExecuteAction implements Action {

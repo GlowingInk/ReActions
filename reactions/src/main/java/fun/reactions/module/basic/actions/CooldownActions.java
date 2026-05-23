@@ -25,23 +25,16 @@ package fun.reactions.module.basic.actions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.time.CooldownManager;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 
-public class CooldownActions implements Action, Aliased {
-
-    private final boolean global;
-
-    public CooldownActions(boolean global) {
-        this.global = global;
-    }
-
+public record CooldownActions(boolean global) implements Action, Aliased {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -56,7 +49,7 @@ public class CooldownActions implements Action, Aliased {
             timeStr = params.getStringSafe("delay", () -> params.getString("time"));
             add = params.getBoolean("add", false);
         } else { // TODO Remove legacy format
-            String oldFormat = params.origin();
+            String oldFormat = params.originValue();
             if (oldFormat.contains("/")) {
                 String[] m = oldFormat.split("/");
                 if (m.length >= 2) {

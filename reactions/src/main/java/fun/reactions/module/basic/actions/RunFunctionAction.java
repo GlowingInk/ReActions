@@ -5,7 +5,6 @@ import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.basic.activators.FunctionActivator;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
@@ -16,30 +15,31 @@ public class RunFunctionAction implements Action {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         ActivatorsManager activators = env.getPlatform().getActivators();
-        String id = params.getString(params.findKey(Parameters.ORIGIN, "id", "activator", "exec"));
+        String id = params.getString(params.findKey(Parameters.ORIGIN_KEY, "id", "activator", "exec"));
         Activator activator = activators.getActivator(id);
         if (activator == null) {
-            Msg.logOnce("wrongact_" + id, "Failed to run FUNCTION activator " + id + ". Activator not found.");
+            env.warn("Failed to run FUNCTION activator " + id + ". Activator not found.");
             return false;
-        } else {
-            id = activator.getLogic().getName();
         }
+        id = activator.getLogic().getName();
         if (activator.getClass() != FunctionActivator.class) {
-            Msg.logOnce("wrongactype_" + id, "Failed to run FUNCTION activator " + id + ". Wrong activator type.");
+            env.warn("Failed to run FUNCTION activator " + id + ". Wrong activator type.");
             return false;
         }
-        try {
+        if (env.isDepthAllowed()) {
             activator.getLogic().execute(new Environment(
                     env.getPlatform(),
                     id,
                     env.getVariables(),
                     env.getPlayer(),
+                    env.getDepth() + 1,
                     env.isAsync()
             ));
-        } catch (StackOverflowError error) {
+        } else {
             env.getPlatform().logger().error(
-                    "RUN_FUNCTION action failed in '" + env.getActivatorName() + "' due to stack overflow. " +
-                    "Consider limiting the usage of looped FUNCTION actions or try using EXECUTE actions when possible."
+                    "RUN_FUNCTION action in '{}' was stopped at the depth '{}' to prevent stack overflow. " +
+                    "Consider limiting the usage of recursive RUN_FUNCTION actions and FUNCTION placeholders " +
+                    "or try using DELAYED_FUNCTION actions.", id, env.getDepth()
             );
             return false;
         }

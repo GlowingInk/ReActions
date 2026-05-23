@@ -26,20 +26,12 @@ import fun.reactions.ReActions;
 import fun.reactions.SQLManager;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public class SqlActions implements Action {
-    // TODO: More functionality like working with arrays
-    private final Type sqlType;
-
-    public SqlActions(Type sqlType) {
-        this.sqlType = sqlType;
-    }
-
+public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: More functionality like working with arrays
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -51,44 +43,44 @@ public class SqlActions implements Action {
             case SELECT -> { // SELECT to variable
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("select")) {
-                    Msg.logOnce("needselect" + query, "You need to use only \"SELECT\" query in SQL_SELECT action. Query: " + query);
+                    env.warn("You need to use only \"SELECT\" query in SQL_SELECT action. Query: " + query);
                     return false;
                 }
                 if (varName.isEmpty()) return false;
                 ReActions.getPersistentVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, env.getVariables().getString("sql_set")));
             }
             case INSERT -> { // INSERT
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("insert")) {
-                    Msg.logOnce("needinsert" + query, "You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
+                    env.warn("You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
                     return false;
                 }
                 SQLManager.executeUpdate(query, params);
             }
             case UPDATE -> { // UPDATE
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("update")) {
-                    Msg.logOnce("needupdate" + query, "You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
+                    env.warn("You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
                     return false;
                 }
                 SQLManager.executeUpdate(query, params);
             }
             case DELETE -> { // DELETE
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("delete")) {
-                    Msg.logOnce("needdelete" + query, "You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
+                    env.warn("You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
                     return false;
                 }
                 SQLManager.executeUpdate(query, params);
             }
             case SET -> { // SET
-                query = params.getString("query", params.origin()).trim();
+                query = params.getString("query", params.originValue()).trim();
                 if (query.isEmpty()) return false;
                 if (!query.toLowerCase(Locale.ROOT).startsWith("set")) {
-                    Msg.logOnce("needset" + query, "You need to use only \"SET\" query in SQL_SET action. Query: " + query);
+                    env.warn("You need to use only \"SET\" query in SQL_SET action. Query: " + query);
                     return false;
                 }
                 env.getVariables().set("SQL_SET", query);

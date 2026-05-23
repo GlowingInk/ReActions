@@ -26,12 +26,12 @@ import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Contract;
@@ -47,6 +47,10 @@ public final class Utils {
     private static final Pattern BYTE_COLOR = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
 
     private Utils() {}
+
+    public static boolean isKeySimilar(@NotNull Key key, @NotNull String keyStr) {
+        return key.value().equalsIgnoreCase(keyStr) || key.asString().equalsIgnoreCase(keyStr);
+    }
 
     /**
      * Play sound on location
@@ -83,9 +87,8 @@ public final class Utils {
             pitch = (float) params.getDouble("pitch", 1.0f);
             volume = (float) params.getDouble("volume", 1.0f);
         }
-        Sound sound = getEnum(sndstr, Sound.UI_BUTTON_CLICK); // TODO Custom sounds support
-        if (soundLoc != null) soundLoc.getWorld().playSound(soundLoc, sound, volume, pitch);
-        return sound.name();
+        if (soundLoc != null) soundLoc.getWorld().playSound(soundLoc, sndstr, volume, pitch);
+        return sndstr;
     }
 
     /**

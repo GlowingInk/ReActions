@@ -17,7 +17,7 @@ import java.util.OptionalInt;
 public class FlySpeedFlag implements Flag, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
-        OptionalInt paramsOpt = NumberUtils.parseInteger(paramsStr, Is.NATURAL);
+        OptionalInt paramsOpt = NumberUtils.parseInteger(paramsStr, Is.NON_NEGATIVE);
         if (paramsOpt.isEmpty()) return false;
         long flySpeed = Math.round(player.getFlySpeed() * 10);
         env.getVariables().set("flyspeed", Integer.toString((int) flySpeed));

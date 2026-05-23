@@ -1,6 +1,5 @@
 package fun.reactions.module.basic.actions;
 
-import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.model.environment.Variable;
@@ -8,15 +7,10 @@ import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.SimpleBindings;
-import javax.script.SimpleScriptContext;
+import javax.script.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +23,7 @@ import java.util.Map;
 @Aliased.Names({"IF_ELSE", "JS_CONDITION"})
 @Deprecated
 public class JsConditionalAction implements Action {
-    private static final List<String> POSSIBLE_ENGINES = List.of("graal.js", "rhino", "nashorn", "js", "javascript");
+    private static final List<String> POSSIBLE_ENGINES = List.of("graal.js", "js", "javascript", "rhino", "nashorn");
 
     private ScriptEngine engine = null;
     private boolean checked = false;
@@ -39,20 +33,21 @@ public class JsConditionalAction implements Action {
         return "JS_CONDITIONAL";
     }
 
-    private boolean engineCheck() {
+    private boolean engineCheck(@NotNull Environment env) {
         if (checked) return engine != null;
-        checked = true;
         ScriptEngine search = searchForEngine(new ScriptEngineManager());
         if (search == null) {
-            var registered = Bukkit.getServicesManager().getRegistration(ScriptEngineManager.class);
-            if (registered == null || (search = searchForEngine(registered.getProvider())) == null) {
-                ReActions.getLogger().warn("Couldn't find JS engine for JS_CONDITIONAL action.");
+            var registered = env.getPlatform().getServer().getServicesManager().getRegistration(ScriptEngineManager.class);
+            if (registered != null) {
+                search = searchForEngine(registered.getProvider());
             }
         }
-        return (engine = search) != null;
+        engine = search;
+        checked = true;
+        return engine != null;
     }
 
-    private ScriptEngine searchForEngine(ScriptEngineManager scriptsManager) {
+    private static ScriptEngine searchForEngine(ScriptEngineManager scriptsManager) {
         for (String engineName : POSSIBLE_ENGINES) {
             ScriptEngine engine = scriptsManager.getEngineByName(engineName);
             if (engine != null) return engine;
@@ -62,7 +57,14 @@ public class JsConditionalAction implements Action {
 
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
-        if (!engineCheck()) return false;
+        if (!engineCheck(env)) {
+            env.warn(
+                    "Couldn't find JS engine for JS_CONDITIONAL action. " +
+                    "The usage of JS_CONDITIONAL action is discouraged - when used " +
+                    "carelessly, can lead to server machine being hacked."
+            );
+            return false;
+        }
         Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         if (params.contains("if") && params.containsAny("then", "else")) {

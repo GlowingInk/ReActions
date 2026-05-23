@@ -31,10 +31,9 @@ public class LegacyPlaceholdersManager extends PlaceholdersManager {
         // If found at least one
         if (phMatcher.find()) {
             StringBuilder builder = new StringBuilder();
-            processIteration(builder, phMatcher, phPattern, env);
-            while (phMatcher.find()) {
+            do {
                 processIteration(builder, phMatcher, phPattern, env);
-            }
+            } while (phMatcher.find());
             return phMatcher.appendTail(builder).toString();
         }
         return text;

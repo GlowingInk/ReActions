@@ -36,30 +36,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 // TODO: Rewrite
-public class ItemFlags implements Flag, Activity.Personal {
-    private final Type flagType;
-
-    public ItemFlags(Type flagType) {
-        this.flagType = flagType;
-    }
-
+public record ItemFlags(@NotNull Type flagType) implements Flag, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         switch (flagType) {
-            case HAND:
+            case HAND -> {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 env.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
-                return VirtualItem.fromString(paramsStr).isSimilar(item);
-            case INVENTORY:
+                return VirtualItem.fromString(paramsStr).isSimilar(item); // TODO: Generalize those weird quirks
+            }
+            case INVENTORY -> {
                 return hasItemInInventory(env, player, paramsStr);
-            case WEAR:
+            }
+            case WEAR -> {
                 return isItemWeared(player, paramsStr);
-            case OFFHAND:
+            }
+            case OFFHAND -> {
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
                 env.getVariables().set("item_amount", String.valueOf(inOffhand.getAmount()));
                 return VirtualItem.fromString(paramsStr).isSimilar(inOffhand);
+            }
+            default -> {
+                return false;
+            }
         }
-        return false;
     }
 
     private boolean isItemWeared(Player player, String itemStr) {

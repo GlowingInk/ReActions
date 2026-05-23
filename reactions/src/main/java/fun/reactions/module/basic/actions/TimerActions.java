@@ -28,14 +28,7 @@ import fun.reactions.time.timers.TimersManager;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public class TimerActions implements Action {
-
-    private final boolean pauseTimer;
-
-    public TimerActions(boolean pauseTimer) {
-        this.pauseTimer = pauseTimer;
-    }
-
+public record TimerActions(boolean pauseTimer) implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -48,5 +41,4 @@ public class TimerActions implements Action {
     public @NotNull String getName() {
         return pauseTimer ? "TIMER_STOP" : "TIMER_RESUME";
     }
-
 }

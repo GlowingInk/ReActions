@@ -7,13 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class MapAspect implements MetaAspect { // TODO: MapView handling
-    private final boolean scale;
-
-    public MapAspect(boolean scale) {
-        this.scale = scale;
-    }
-
+public record MapAspect(boolean scale) implements MetaAspect { // TODO: MapView handling
     @Override
     public @NotNull String getName() {
         return scale

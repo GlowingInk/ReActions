@@ -17,7 +17,7 @@ public class WeSuperPickaxeAction implements Action, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        boolean isSP = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN, false));
+        boolean isSP = params.getBoolean("value", () -> params.getBoolean(Parameters.ORIGIN_KEY, false));
         if (params.contains("player")) {
             player = params.get("player", Bukkit::getPlayerExact);
         }

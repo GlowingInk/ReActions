@@ -67,7 +67,7 @@ public class SignSetAction implements Action {
         if (!clear.isEmpty()) {
             String[] ln = clear.split(",");
             for (String cl : ln) {
-                OptionalInt lineOpt = NumberUtils.parseInteger(cl, Is.NATURAL.and(v -> v <= 4));
+                OptionalInt lineOpt = NumberUtils.parseInteger(cl, Is.inRange(0, 4));
                 if (lineOpt.isEmpty()) continue;
                 sign.setLine(lineOpt.getAsInt(), "");
             }

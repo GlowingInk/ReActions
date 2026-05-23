@@ -1,18 +1,19 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.NumberUtils;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
+import static fun.reactions.util.RegistryUtils.getRegistry;
+import static fun.reactions.util.RegistryUtils.searchRegistry;
 import static fun.reactions.util.Utils.cutLast;
 
 @Aliased.Names({"enchants", "stored-enchantments", "stored-enchants"})
@@ -23,7 +24,7 @@ public class EnchantmentsAspect implements MetaAspect {
     }
 
     @Override
-    public @NotNull EnchantmentsAspect.EnchantmentsInst fromString(@NotNull String value) {
+    public @NotNull MetaAspect.Instance fromString(@NotNull String value) {
         if (value.isEmpty()) {
             return EnchantmentsInst.EMPTY;
         }
@@ -41,11 +42,8 @@ public class EnchantmentsAspect implements MetaAspect {
                 enchKey = enchValue.substring(0, index);
                 levelStr = enchValue.substring(index + 1);
             }
-            Enchantment enchantment = ItemUtils.searchByKey(enchKey, Enchantment::getByKey);
-            if (enchantment == null) {
-                enchantment = Enchantment.getByName(enchKey.toUpperCase(Locale.ROOT));
-                if (enchantment == null) continue;
-            }
+            Enchantment enchantment = searchRegistry(enchKey, getRegistry(RegistryKey.ENCHANTMENT));
+            if (enchantment == null) continue;
             int level = NumberUtils.asInteger(levelStr, 0);
             enchantments.put(enchantment, level > 0 ? level : null);
         }
@@ -53,7 +51,7 @@ public class EnchantmentsAspect implements MetaAspect {
     }
 
     @Override
-    public EnchantmentsInst fromItem(@NotNull ItemMeta meta) {
+    public MetaAspect.Instance fromItem(@NotNull ItemMeta meta) {
         Map<Enchantment, Integer> enchants =  meta instanceof EnchantmentStorageMeta enchantmentMeta
                 ? enchantmentMeta.getStoredEnchants()
                 : meta.getEnchants();

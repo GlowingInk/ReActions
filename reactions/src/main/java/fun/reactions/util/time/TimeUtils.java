@@ -20,7 +20,7 @@
  *
  */
 
-package fun.reactions.util;
+package fun.reactions.util.time;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -64,7 +64,7 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
     }
 
     public static String formatIngameTime() {
-        return formatIngameTime(Bukkit.getWorlds().get(0));
+        return formatIngameTime(Bukkit.getWorlds().getFirst());
     }
 
     public static String formatIngameTime(World world) {

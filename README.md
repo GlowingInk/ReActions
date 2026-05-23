@@ -1,39 +1,37 @@
 # ReActions
-[**Тема на RuBukkit**](http://rubukkit.org/threads/165857/) | [**Документация**](https://github.com/GlowingInk/ReActions/wiki) | [**Оригинал**](https://github.com/Redolith/ReActions)
+[**RuBukkit thread**](http://rubukkit.org/threads/165857/) | [**Documentation** (Russian)](https://github.com/GlowingInk/ReActions/wiki) | [**Original**](https://github.com/Redolith/ReActions)
+### [🇷🇺 Read in Russian](README-RU.md)
 
-The project is currently (still) in its early state and is not available on large platforms like SpigotMC. Because of 
-that, and as the most of project's users are Russian-speaking, this README file's language is Russian too. 
-[README-EN.md](README-EN.md) is still available.
-
-Плагин ReActions для Paper представляет собой инструмент обработки событий. Он позволяет проверять выполнение условий и,
-в зависимости от результата проверки, выполнять разные действия. Синтаксис плагина устроен донельзя просто:
+ReActions plugin for Paper is a tool to handle server events. It gives you an ability to check for specific flags, 
+and by its results, perform different actions. Syntax is unbelievable simple:
 ```yaml
-СОБЫТИЕ:
-  активатор:
-    условие-события: условие
+EVENT:
+  activator:
+    condition-check: condition
     flags:
-     - ПРОВЕРКА=тест
-     - ДРУГАЯ_ПРОВЕРКА=тест:значение
+     - FLAG=test
+     - ANOTHER_FLAG=test:value
     actions:
-     - ДЕЙСТВИЕ=делать:дело
+     - ACTION=do:something
     reactions:
-     - ДЕЙСТВИЕ=делать:{дело, если флаг не сработал}
-     - ДРУГОЕ_ДЕЙСТВИЕ=делать другое дело
+     - ACTION=do:{something, but if flag wasn't successful}
+     - ANOTHER_ACTION=do something else
 ```
 
-## Взять к себе
+## Get it
 
-Для компиляции плагина требуется Maven. Имея его на руках, достаточно войти в корневую папку проекта и ввести `mvn clean package`.
+To compile the plugin all you need is to have Maven. So, if you already have it, just execute `mvn clean package`.
 
-Последний стабильный релиз доступен во вкладке
-**[Releases ![Release](https://img.shields.io/github/release/GlowingInk/ReActions.svg)](https://github.com/GlowingInk/ReActions/releases/latest/)**
+You can get the latest stable release from the
+**[Releases ![Release](https://img.shields.io/github/release/GlowingInk/ReActions.svg)](https://github.com/GlowingInk/ReActions/releases/latest/)** tab.
 
-Готовый снапшот можно скачать из вкладки 
-**[Actions ![Snapshot](https://github.com/GlowingInk/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/GlowingInk/ReActions/actions)** 
+Latest snapshot is available in the
+**[Actions ![Snapshot](https://github.com/GlowingInk/ReActions/workflows/Java%20CI/badge.svg)](https://github.com/GlowingInk/ReActions/actions)** tab.
 
-## Лицензия
+## License
 
-Проект опубликован под лицензией [GPL v3](LICENSE.md).
+Project is published under [GPL v3](LICENSE.md).
 
-Кроме того, в проекте используется редактированная часть исходного кода 
-[Quartz Scheduler](https://github.com/quartz-scheduler/quartz) (класс `CronExpression`).
+Also, project contains some of edited code from [Quartz Scheduler](https://github.com/quartz-scheduler/quartz).
+
+## [Developed using IntelliJ IDEA by JetBrains](https://www.jetbrains.com/)

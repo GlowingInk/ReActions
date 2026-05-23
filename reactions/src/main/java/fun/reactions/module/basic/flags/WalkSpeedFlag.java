@@ -19,7 +19,7 @@ import java.util.OptionalInt;
 public class WalkSpeedFlag implements Flag, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
-        OptionalInt paramsOpt = NumberUtils.parseInteger(paramsStr, Is.NATURAL);
+        OptionalInt paramsOpt = NumberUtils.parseInteger(paramsStr, Is.NON_NEGATIVE);
         if (paramsOpt.isEmpty()) return false;
         long walkSpeed = Math.round(player.getWalkSpeed() * 10); // TODO: Why?
         env.getVariables().set("walkspeed", Long.toString(walkSpeed));

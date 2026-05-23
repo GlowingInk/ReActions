@@ -52,15 +52,14 @@ public class EntityClickActivator extends Activator {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("entity-type", entityType.name());
+        cfg.set("entity-type", entityType == null ? null : entityType.name());
     }
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (entityType == null ? "-" : entityType.name()) +
                 ")";
-        return sb;
     }
 
     /**

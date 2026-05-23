@@ -21,7 +21,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
             oldText = text;
             text = parseGradually(env, text);
         } while (!oldText.equals(text) && --limit > 0);
-        return unescapeSpecial(text);
+        return unescape(text);
     }
 
     private String parseGradually(@NotNull Environment env, @NotNull String text) {
@@ -68,9 +68,13 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                                 if (text.length() > index + 3 && text.charAt(index + 1) == '(') {
                                     String options = optionsSearch(text, index + 2);
                                     if (options != null) {
+                                        env.warn(
+                                                "Usage of %[placeholder](...) is not supported anymore. " +
+                                                "Consider using %[escape:...|placeholder] instead"
+                                        );
                                         index += options.length() + 2;
-                                        if (options.contains("prms")) processed = Parameters.escapeParameters(processed);
-                                        if (options.contains("phs")) processed = escapeSpecial(processed);
+                                        if (options.contains("prms")) processed = Parameters.escapeValue(processed);
+                                        if (options.contains("phs")) processed = escape(processed);
                                     }
                                 }
                                 builder.append(processed);
@@ -116,14 +120,14 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
         return matcher.appendTail(builder).toString();
     }
 
-    private static @NotNull String escapeSpecial(@NotNull String text) {
+    public static @NotNull String escape(@NotNull String text) {
         return text
                 .replace("\\", "\\\\")
                 .replace("%[", "\\%[")
                 .replace("]", "\\]");
     }
 
-    private static @NotNull String unescapeSpecial(@NotNull String text) {
+    public static @NotNull String unescape(@NotNull String text) {
         return text
                 .replace("\\\\", "\\")
                 .replace("\\%[", "%[")

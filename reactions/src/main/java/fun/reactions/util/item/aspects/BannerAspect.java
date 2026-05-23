@@ -1,6 +1,8 @@
 package fun.reactions.util.item.aspects;
 
+import fun.reactions.util.RegistryUtils;
 import fun.reactions.util.Utils;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -11,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static fun.reactions.util.RegistryUtils.getRegistry;
 
 public class BannerAspect implements MetaAspect {
     @Override
@@ -29,7 +33,7 @@ public class BannerAspect implements MetaAspect {
                 patternStr = patternStr.trim();
                 int index = patternStr.indexOf(':');
                 if (index == -1) continue;
-                PatternType type = Utils.getEnum(PatternType.class, patternStr.substring(0, index));
+                PatternType type = RegistryUtils.searchRegistry(patternStr.substring(0, index), getRegistry(RegistryKey.BANNER_PATTERN));
                 if (type == null) continue;
                 DyeColor color = Utils.getEnum(DyeColor.class, patternStr.substring(index + 1));
                 if (color == null) continue;

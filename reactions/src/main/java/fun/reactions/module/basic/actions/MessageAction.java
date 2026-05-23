@@ -24,10 +24,10 @@ package fun.reactions.module.basic.actions;
 
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +60,7 @@ public class MessageAction implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = Msg.colorize(params.getStringSafe("text", () -> hideSelectors(env, params.origin())));
+        String message = Msg.colorize(params.getStringSafe("text", () -> hideSelectors(env, params.originValue())));
         String annoymentTime = params.getString("hide");
         for (Player receiver : players) {
             if (showMessage(env, receiver, message, annoymentTime)) {
@@ -92,7 +92,7 @@ public class MessageAction implements Action {
         if (time == 0) return false;
         String key = "reactions-msg-" +/*.append(this.getActivatorName())*/message.hashCode();
         if (player.hasMetadata(key)) {
-            if ((player.getMetadata(key).get(0).asLong() - System.currentTimeMillis()) > 0)
+            if ((player.getMetadata(key).getFirst().asLong() - System.currentTimeMillis()) > 0)
                 return false;
         }
         player.setMetadata(key, new FixedMetadataValue(env.getPlatform().getPlugin(), System.currentTimeMillis() + time));

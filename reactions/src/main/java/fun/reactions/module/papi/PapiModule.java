@@ -22,7 +22,7 @@ public class PapiModule implements Module { // TODO To own jar
 
     @Override
     public void preRegister(@NotNull ReActions.Platform platform) {
-        new RaPapiExpansion().register();
+        new RaPapiExpansion(platform).register();
         this.papiPlugin = (PlaceholderAPIPlugin) Objects.requireNonNull(
                 platform.getServer().getPluginManager().getPlugin("PlaceholderAPI")
         );
@@ -30,7 +30,7 @@ public class PapiModule implements Module { // TODO To own jar
 
     @Override
     public @NotNull Collection<String> getAuthors() {
-        return List.of("fromgate", "MaxDikiy", "imDaniX");
+        return List.of("imDaniX");
     }
 
     @Override

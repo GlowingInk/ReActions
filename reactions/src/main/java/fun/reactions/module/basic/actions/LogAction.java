@@ -84,7 +84,7 @@ public class LogAction implements Action {
             boolean prefix = params.getBoolean("prefix", true);
             boolean color = params.getBoolean("color", false);
             String file = params.getString("file");
-            String message = params.getString("text", removeParams(env, params.origin()));
+            String message = params.getString("text", removeParams(env, params.originValue()));
             if (message.isEmpty()) return false;
             if (file.isEmpty()) {
                 if (prefix) {
@@ -93,7 +93,7 @@ public class LogAction implements Action {
             } else {
                 saveToFile(env, file, message);
             }
-        } else Msg.logMessage(params.origin());
+        } else Msg.logMessage(params.originValue());
 
         return true;
     }

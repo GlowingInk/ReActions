@@ -36,12 +36,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Aliased.Names("CMD")
@@ -85,7 +80,7 @@ public class CommandActivator extends Activator {
     }
 
     public static CommandActivator create(Logic base, Parameters param) {
-        String command = param.getString("command", param.origin());
+        String command = param.getString("command", param.originValue());
         boolean starts = param.getBoolean("starts", true);
         boolean useRegex = param.getBoolean("regex", false);
         boolean consoleAllowed = param.getBoolean("console", true);
@@ -113,7 +108,7 @@ public class CommandActivator extends Activator {
                         command.equalsIgnoreCase(cs.command);
         } else {
             if (args.size() != cs.args.size() + 1) return false;
-            if (!args.get(0).equalsIgnoreCase(cs.label)) return false;
+            if (!args.getFirst().equalsIgnoreCase(cs.label)) return false;
             for (int i = 1; i <= cs.args.size(); i++) {
                 String arg = args.get(i);
                 if (arg.equals("*")) continue;
@@ -137,12 +132,11 @@ public class CommandActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "regex:" + this.useRegex +
                 "; command:" + this.command +
                 "; console:" + this.consoleAllowed +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

@@ -1,7 +1,5 @@
-package fun.reactions.util;
+package fun.reactions.util.num;
 
-import fun.reactions.util.num.Is;
-import fun.reactions.util.num.NumberUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -16,10 +14,6 @@ public class NumberUtilsTest {
     public static Object[][] parseDoubleData() {
         return new Object[][]{
                 {"3.14", Is.POSITIVE, OptionalDouble.of(3.14)},
-                {"-5.0", Is.POSITIVE_NATURAL, OptionalDouble.empty()},
-                {"0.0", Is.NON_NEGATIVE, OptionalDouble.of(0.0)},
-                {"7", Is.INTEGER, OptionalDouble.of(7)},
-                {"3.14", Is.NATURAL, OptionalDouble.empty()},
                 {"abc", Is.NEGATIVE, OptionalDouble.empty()}
         };
     }

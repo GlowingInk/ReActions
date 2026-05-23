@@ -25,20 +25,21 @@ package fun.reactions.module.basic.flags;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class PvpFlag implements Flag, Activity.Personal { // TODO: Requires rework
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         if (!player.hasMetadata("reactions-pvp-time")) return false;
-        String timeStr = params.getString("time", params.origin());
+        String timeStr = params.getString("time", params.originValue());
         long delay = TimeUtils.parseTime(timeStr);
         if (delay == 0) return false;
-        return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").get(0).asLong()) < delay);
+        return ((System.currentTimeMillis() - player.getMetadata("reactions-pvp-time").getFirst().asLong()) < delay);
     }
 
     @Override

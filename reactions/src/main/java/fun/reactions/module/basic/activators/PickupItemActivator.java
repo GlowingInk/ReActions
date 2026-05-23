@@ -31,7 +31,7 @@ public class PickupItemActivator extends Activator {
     }
 
     public static PickupItemActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.origin());
+        String item = param.getString("item", param.originValue());
         return new PickupItemActivator(base, item);
     }
 
@@ -53,10 +53,9 @@ public class PickupItemActivator extends Activator {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "item:" + item +
                 ")";
-        return sb;
     }
 
     /**

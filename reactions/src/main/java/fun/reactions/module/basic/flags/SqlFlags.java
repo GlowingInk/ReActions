@@ -28,14 +28,7 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public class SqlFlags implements Flag {
-    // TODO: Make it safer
-    private final Type type;
-
-    public SqlFlags(Type type) {
-        this.type = type;
-    }
-
+public record SqlFlags(Type type) implements Flag { // TODO: Make it safer
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);

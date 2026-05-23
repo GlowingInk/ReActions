@@ -50,7 +50,7 @@ public class RegionLeaveActivator extends Activator implements Locatable {
     public String getRegion() {return this.region;}
 
     public static RegionLeaveActivator create(Logic base, Parameters param) {
-        String region = param.getString("region", param.origin());
+        String region = param.getString("region", param.originValue());
         return new RegionLeaveActivator(base, region);
     }
 
@@ -86,10 +86,9 @@ public class RegionLeaveActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "region:" + this.region +
                 ")";
-        return sb;
     }
 
     public static class Context extends RegionActivator.Context {

@@ -51,11 +51,6 @@ public class QuitActivator extends Activator {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
     public static class Context extends ActivationContext {
         public static final String QUIT_MESSAGE = "quit_message";
 

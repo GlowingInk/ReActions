@@ -20,7 +20,6 @@ import fun.reactions.util.message.Msg;
 import fun.reactions.util.message.RaDebug;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.mob.MobSpawn;
-import fun.reactions.util.num.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -46,7 +45,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.List;
-import java.util.Optional;
 
 import static fun.reactions.module.basic.ContextManager.*;
 import static fun.reactions.module.basic.ItemContextManager.triggerItemHold;
@@ -78,14 +76,14 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        Optional<Variables> optVars = triggerTeleport(
+        var optVars = triggerTeleport(
                 event.getPlayer(),
                 event.getCause(),
                 event.getTo());
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(TeleportActivator.Context.LOCATION_TO, LocationUtils::parseLocation).ifPresent(event::setTo);
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
+        vars.changed(TeleportActivator.Context.LOCATION_TO, LocationUtils::parseLocation).ifPresent(event::setTo);
     }
 
     @EventHandler
@@ -100,13 +98,13 @@ public class BukkitListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         // TODO: That's not really good solution
         try {
-            Optional<Variables> optVars = triggerMessage(event.getPlayer(),
+            var optVars = triggerMessage(event.getPlayer(),
                     MessageActivator.Source.CHAT_INPUT,
                     event.getMessage());
             if (optVars.isEmpty()) return;
             Variables vars = optVars.get();
-            vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-            vars.getChanged(MessageActivator.Context.MESSAGE).ifPresent(event::setMessage);
+            vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
+            vars.changedString(MessageActivator.Context.MESSAGE).ifPresent(event::setMessage);
             // TODO: setFormat
         } catch (IllegalStateException ignore) {
             Msg.logOnce("asyncchaterror", "Chat is in async thread. Because of that you should use " +
@@ -199,7 +197,7 @@ public class BukkitListener implements Listener {
         }
 
         if (event.getEntity().hasMetadata("ReActions-xp")) {
-            int xp = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-xp").get(0).asString());
+            int xp = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-xp").getFirst().asString());
             event.setDroppedExp(xp);
         }
 
@@ -208,12 +206,12 @@ public class BukkitListener implements Listener {
 
         triggerMobKill(killer, event.getEntity());
         if (event.getEntity().hasMetadata("ReActions-money") && RaVault.isEconomyConnected()) {
-            int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").get(0).asString());
+            int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").getFirst().asString());
             RaVault.creditAccount(killer.getName(), "", Double.toString(money), "");
             Msg.MSG_MOBBOUNTY.print(killer, 'e', '6', RaVault.format(money, ""), event.getEntity().getType().name());
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
-            String exec = event.getEntity().getMetadata("ReActions-activator").get(0).asString();
+            String exec = event.getEntity().getMetadata("ReActions-activator").getFirst().asString();
             triggerFunction(killer, exec, new Variables());
         }
 
@@ -223,25 +221,25 @@ public class BukkitListener implements Listener {
     public void onMobGrowl(PlayerAttacksEntityEvent event) {
         LivingEntity damager = event.getPlayer();
         if (!damager.hasMetadata("ReActions-growl")) return;
-        String growl = damager.getMetadata("ReActions-growl").get(0).asString();
+        String growl = damager.getMetadata("ReActions-growl").getFirst().asString();
         if (Utils.isStringEmpty(growl)) return;
         Utils.soundPlay(damager.getLocation(), growl);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMobDamageByPlayer(PlayerAttacksEntityEvent event) {
-        Optional<Variables> optVars = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getFinalDamage(), event.getCause());
+        var optVars = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getFinalDamage(), event.getCause());
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(MobDamageActivator.MobDamageContext.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
+        vars.changedDouble(MobDamageActivator.MobDamageContext.DAMAGE).ifPresent(event::setDamage);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamageByMob(EntityDamageByEntityEvent event) {
         LivingEntity damager = EntityUtils.getDamagerEntity(event);
         if (damager == null || !damager.hasMetadata("ReActions-dmg")) return;
-        double dmg = damager.getMetadata("ReActions-dmg").get(0).asDouble();
+        double dmg = damager.getMetadata("ReActions-dmg").getFirst().asDouble();
         if (dmg < 0) return;
         event.setDamage(event.getDamage() * dmg);
     }
@@ -253,32 +251,32 @@ public class BukkitListener implements Listener {
         String source;
         if (event instanceof EntityDamageByEntityEvent evdmg) {
             source = "ENTITY";
-            Optional<Variables> optVars = triggerDamageByMob(evdmg);;
+            var optVars = triggerDamageByMob(evdmg);
             if (optVars.isPresent()) {
                 Variables vars = optVars.get();
-                vars.getChanged(DamageActivator.Context.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
-                vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+                vars.changedDouble(DamageActivator.Context.DAMAGE).ifPresent(event::setDamage);
+                vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
             }
         } else if (event instanceof EntityDamageByBlockEvent evdmg) {
             source = "BLOCK";
             Block blockDamager = evdmg.getDamager();
             if (blockDamager != null) {
-                Optional<Variables> optVars = triggerDamageByBlock(evdmg, blockDamager);
+                var optVars = triggerDamageByBlock(evdmg, blockDamager);
                 if (optVars.isPresent()) {
                     Variables vars = optVars.get();
-                    vars.getChanged(DamageActivator.Context.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
-                    vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+                    vars.changedDouble(DamageActivator.Context.DAMAGE).ifPresent(event::setDamage);
+                    vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
                 }
             }
         } else {
             source = "OTHER";
         }
 
-        Optional<Variables> optVars = triggerDamage(event, source);
+        var optVars = triggerDamage(event, source);
         if (optVars.isPresent()) {
             Variables vars = optVars.get();
-            vars.getChanged(DamageActivator.Context.DAMAGE, NumberUtils::asDouble).ifPresent(event::setDamage);
-            vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+            vars.changedDouble(DamageActivator.Context.DAMAGE).ifPresent(event::setDamage);
+            vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
         }
     }
 
@@ -289,7 +287,7 @@ public class BukkitListener implements Listener {
         if (event.getEntityType() == EntityType.PLAYER) return;
         if (!(event.getEntity() instanceof LivingEntity le)) return;
         if (!le.hasMetadata("ReActions-cry")) return;
-        String cry = le.getMetadata("ReActions-cry").get(0).asString();
+        String cry = le.getMetadata("ReActions-cry").getFirst().asString();
         if (cry.isEmpty()) return;
         if (!(event instanceof EntityDamageByEntityEvent evdmg)) return;
         if (evdmg.getDamager() instanceof Projectile prj) {
@@ -361,21 +359,21 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        Optional<Variables> optVars = triggerInventoryClick(event);
+        var optVars = triggerInventoryClick(event);
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(InventoryClickActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
-        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
+        vars.changed(InventoryClickActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
-        Optional<Variables> optVars = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
+        var optVars = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::valueOf).ifPresent(event::setCancelled);
-        vars.getChanged(DropActivator.Context.PICKUP_DELAY, NumberUtils::asInteger).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
-        vars.getChanged(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
+        vars.changedInt(DropActivator.Context.PICKUP_DELAY).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
+        vars.changed(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -392,11 +390,11 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        Optional<Variables> optVars = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
+        var optVars = triggerBlockBreak(event.getPlayer(), event.getBlock(), event.isDropItems());
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.getChanged(BlockBreakActivator.Context.DO_DROP, Boolean::parseBoolean).ifPresent(event::setDropItems);
-        vars.getChanged(ActivationContext.CANCEL_EVENT, Boolean::parseBoolean).ifPresent(event::setCancelled);
+        vars.changedBoolean(BlockBreakActivator.Context.DO_DROP).ifPresent(event::setDropItems);
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -407,8 +405,8 @@ public class BukkitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         TemporaryOp.removeOp(event.getPlayer());
-        Optional<Variables> optVars = triggerQuit(event);
-        optVars.flatMap(variables -> variables.getChanged(QuitActivator.Context.QUIT_MESSAGE)).ifPresent(event::setQuitMessage);
+        var optVars = triggerQuit(event);
+        optVars.flatMap(variables -> variables.changedString(QuitActivator.Context.QUIT_MESSAGE)).ifPresent(event::setQuitMessage);
         MoveListener.removeLocation(event.getPlayer());
     }
 

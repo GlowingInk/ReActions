@@ -2,6 +2,7 @@ package fun.reactions.model.activity.flags;
 
 import com.google.common.base.Objects;
 import fun.reactions.model.activity.Activity;
+import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,11 @@ public interface Flag extends Activity {
 
         public boolean isInverted() {
             return inverted;
+        }
+
+        @Override
+        public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
+            return activity.proceed(env, paramsStr) != inverted;
         }
 
         @Override

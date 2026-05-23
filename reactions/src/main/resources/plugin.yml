@@ -1,9 +1,9 @@
 name: ReActions
-description: '${parent.description}'
-api-version: '1.19'
+description: '${project.parent.description}'
+api-version: '1.21'
 main: fun.reactions.ReActionsPlugin
 version: '${project.version}${build-suffix}'
-website: https://github.com/imDaniX/ReActions
+website: https://github.com/GlowingInk/ReActions
 authors:
   - fromgate
   - MaxDikiy

@@ -33,21 +33,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class CooldownFlags implements Flag, Aliased {
-
-    private final boolean global;
-
-    public CooldownFlags(boolean global) {
-        this.global = global;
-    }
-
+public record CooldownFlags(boolean global) implements Flag, Aliased {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = env.getPlayer();
         String playerName = this.global ? "" : (player != null ? player.getName() : "");
         long updateTime = 0;
-        String id = params.origin();
+        String id = params.originValue();
         if (params.contains("id")) {
             id = params.getString("id");
             updateTime = params.getTime(params.findKey("set-delay", "set-time", "set-cooldown"));

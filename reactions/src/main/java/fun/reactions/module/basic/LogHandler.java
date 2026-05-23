@@ -30,7 +30,9 @@ import java.util.logging.StreamHandler;
 public class LogHandler extends StreamHandler {
     @Override
     public void publish(LogRecord record) {
-        ContextManager.triggerMessage(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
+        try {
+            ContextManager.triggerMessage(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
+        } catch (Exception ignored) { }
         super.publish(record);
     }
 }

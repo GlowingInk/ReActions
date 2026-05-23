@@ -205,8 +205,8 @@ public final class MobSpawn { // TODO: Requires major refactoring
     private static void setMobHealth(LivingEntity e, double health) {
         if (health > 0) {
             if (health > e.getHealth())
-                e.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
-        } else health = e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+                e.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
+        } else health = e.getAttribute(Attribute.MAX_HEALTH).getBaseValue();
         e.setHealth(health);
     }
 
@@ -260,8 +260,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
             PotionEffectType pet = PotionEffectType.getByName(pef);
             if (pet == null) continue;
             if (ln.length == 2) {
-                OptionalInt levelOpt = NumberUtils.parseInteger(ln[1], Is.NATURAL);
-                if (levelOpt.isPresent()) level = levelOpt.getAsInt();
+                level = NumberUtils.parseInteger(ln[1], Is.NON_NEGATIVE).orElse(1);
             }
             PotionEffect pe = new PotionEffect(pet, PotionEffect.INFINITE_DURATION, level, true);
             e.addPotionEffect(pe);

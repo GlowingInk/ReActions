@@ -288,6 +288,6 @@ public class RealPosition implements FinePosition, Parameterizable {
     }
 
     private static @NotNull World getDefaultWorld(@NotNull Server server) {
-        return server.getWorlds().get(0);
+        return server.getWorlds().getFirst();
     }
 }

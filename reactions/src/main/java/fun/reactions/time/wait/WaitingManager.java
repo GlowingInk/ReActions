@@ -6,7 +6,7 @@ import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.save.Saveable;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.TimeUtils;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
@@ -18,8 +18,8 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static fun.reactions.util.TimeUtils.offsetUntil;
-import static fun.reactions.util.TimeUtils.timeToTicks;
+import static fun.reactions.util.time.TimeUtils.offsetUntil;
+import static fun.reactions.util.time.TimeUtils.timeToTicks;
 
 public class WaitingManager implements Saveable {
     private final ReActions.Platform rea;

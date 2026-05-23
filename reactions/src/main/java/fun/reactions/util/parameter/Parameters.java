@@ -1,13 +1,13 @@
 package fun.reactions.util.parameter;
 
-import fun.reactions.util.TimeUtils;
+import fun.reactions.util.RichOptional;
 import fun.reactions.util.Utils;
-import fun.reactions.util.collections.CaseInsensitiveMap;
-import fun.reactions.util.enums.TriBoolean;
+import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.function.SafeFunction;
 import fun.reactions.util.function.SafeSupplier;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.num.NumberUtils;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
@@ -20,27 +20,34 @@ import java.util.*;
 import java.util.function.*;
 import java.util.regex.Pattern;
 
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
+import static ink.glowing.text.InkyMessage.isEscapedAt;
+
 public class Parameters implements Parameterizable {
-    public static final String ORIGIN = " :";
-    public static final Parameters EMPTY = new Parameters("", "", new CaseInsensitiveMap<>(1));
-    private static final Pattern UNESCAPED = Pattern.compile("(?<!\\\\)[{}]");
+    public static final String ORIGIN_KEY = ": ";
+    public static final Parameters EMPTY = new Parameters("", "", caseInsensitiveLinkedMap(1));
+    private static final Pattern VALUE_ESCAPE = Pattern.compile("(?<!\\\\)[{}]");
+    private static final Pattern FULL_ESCAPE = Pattern.compile("[{}:\\\\]");
 
     private final String origin;
     private final Map<String, String> params;
 
     private String formatted;
     private Set<String> strictKeys;
-    private Integer hash;
 
     protected Parameters(@NotNull String origin, @NotNull Map<String, String> params) {
         this.origin = origin;
-        params.put(ORIGIN, origin);
+        params.put(ORIGIN_KEY, origin);
         this.params = Collections.unmodifiableMap(params);
     }
 
     protected Parameters(@NotNull String origin, @NotNull String formatted, @NotNull Map<String, String> params) {
         this(origin, params);
         this.formatted = formatted;
+    }
+
+    public static @NotNull String originKey() {
+        return ORIGIN_KEY;
     }
 
     public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg) {
@@ -80,7 +87,7 @@ public class Parameters implements Parameterizable {
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return EMPTY;
-        Map<String, String> params = new CaseInsensitiveMap<>(map);
+        Map<String, String> params = caseInsensitiveLinkedMap(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
     }
@@ -92,7 +99,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters fromString(final @NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = new CaseInsensitiveMap<>();
+        Map<String, String> params = caseInsensitiveLinkedMap();
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;
@@ -103,7 +110,7 @@ public class Parameters implements Parameterizable {
                 int next = i + 1;
                 if (next < str.length()) {
                     char n = str.charAt(next);
-                    if (n == '{' || n == '}' || (n == '\\' && next + 1 < str.length() && str.charAt(next + 1) == '}')) {
+                    if ("{}:\\".indexOf(n) != -1) {
                         if (state == IterationState.SPACE) {
                             bld = new StringBuilder();
                             state = IterationState.TEXT;
@@ -116,14 +123,14 @@ public class Parameters implements Parameterizable {
             }
             switch (state) {
                 case SPACE -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         continue;
                     }
                     bld = new StringBuilder().append(c);
                     state = IterationState.TEXT;
                 }
                 case TEXT -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         if (hasDefKey) {
                             params.put(defKey, bld.toString());
                         }
@@ -139,7 +146,7 @@ public class Parameters implements Parameterizable {
                     bld.append(c);
                 }
                 case COLON -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         state = IterationState.SPACE;
                         continue;
                     }
@@ -151,7 +158,7 @@ public class Parameters implements Parameterizable {
                     state = IterationState.PARAM;
                 }
                 case PARAM -> {
-                    if (c == ' ') {
+                    if (isEmptySpace(c)) {
                         state = IterationState.SPACE;
                         params.put(param, bld.toString());
                         continue;
@@ -183,18 +190,22 @@ public class Parameters implements Parameterizable {
         }
 
         return params.isEmpty()
-                ? new Parameters(str, new CaseInsensitiveMap<>(1))
+                ? new Parameters(str, caseInsensitiveLinkedMap(1))
                 : new Parameters(str, params);
     }
 
     private enum IterationState {
         SPACE, TEXT, COLON, PARAM, BR_PARAM
     }
+    
+    private static boolean isEmptySpace(char ch) {
+        return ch == ' ' || ch == '\n';
+    }
 
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
-        Map<String, String> params = new CaseInsensitiveMap<>(2);
+        Map<String, String> params = caseInsensitiveLinkedMap(2);
         params.put(key, value);
-        String escaped = escapeParameters(value);
+        String escaped = escapeValue(value);
         String origin;
         if (requiresBrackets(escaped, value)) {
             origin = key + ":{" + escaped + "}";
@@ -207,9 +218,9 @@ public class Parameters implements Parameterizable {
     public static @NotNull String formatMap(@NotNull Map<String, String> map) {
         StringBuilder bld = new StringBuilder();
         map.forEach((key, value) -> {
-            if (key.equals(ORIGIN)) return;
+            if (key.equals(ORIGIN_KEY)) return;
             bld.append(key).append(':');
-            String escaped = escapeParameters(value);
+            String escaped = escapeValue(value);
             if (requiresBrackets(escaped, value)) {
                 bld.append('{').append(escaped).append('}');
             } else {
@@ -222,10 +233,11 @@ public class Parameters implements Parameterizable {
 
     public static boolean requiresBrackets(@NotNull String escaped, @NotNull String value) {
         return value.length() >= 20 || escaped.length() != value.length() || value.isEmpty() ||
-                value.indexOf(' ') != -1 || value.indexOf(':') != -1 || value.charAt(0) == '{';
+                value.indexOf(' ') != -1 || value.indexOf('\n') != -1 || 
+                value.indexOf(':') != -1 || value.charAt(0) == '{';
     }
 
-    public static @NotNull String escapeParameters(@NotNull String str) {
+    public static @NotNull String escapeValue(@NotNull String str) {
         if (str.isEmpty()) return str;
         int brackets = 0;
         boolean escaped = false;
@@ -243,12 +255,24 @@ public class Parameters implements Parameterizable {
                 break;
             }
         }
-        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || str.charAt(str.length() - 2) != '\\')) {
+        if (str.charAt(str.length() - 1) == '\\' && (str.length() == 1 || !isEscapedAt(str, str.length() - 1))) {
             str += '\\';
         }
         return brackets != 0
-                ? UNESCAPED.matcher(str).replaceAll("\\\\$0")
+                ? VALUE_ESCAPE.matcher(str).replaceAll("\\\\$0")
                 : str;
+    }
+
+    public static @NotNull String escape(@NotNull String str) {
+        if (str.isEmpty()) return str;
+        return FULL_ESCAPE.matcher(str).replaceAll("\\\\$0");
+    }
+
+    public <R> @NotNull RichOptional<String, R> getOptional(@NotNull String key, @NotNull Function<String, R> converter) {
+        String value = params.get(key);
+        return value == null
+                ? RichOptional.ofNullable(key, null)
+                : RichOptional.of(key, converter.apply(value));
     }
 
     public <R> @Nullable R get(@NotNull String key, @NotNull Function<String, R> converter) {
@@ -278,6 +302,7 @@ public class Parameters implements Parameterizable {
         return value == null ? def.get() : value;
     }
 
+    @Contract(pure = true)
     public <R extends Enum<R>> @NotNull R getEnum(@NotNull String key, @NotNull R def) {
         String value = params.get(key);
         return value == null
@@ -285,11 +310,12 @@ public class Parameters implements Parameterizable {
                 : Utils.getEnum(value, def);
     }
 
+    @Contract(pure = true)
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz) {
         return get(key, (value) -> Utils.getEnum(clazz, value));
     }
 
-    @Contract("_, _, !null -> !null")
+    @Contract(value = "_, _, !null -> !null", pure = true)
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz, @Nullable R def) {
         return get(key, (value) -> Utils.getEnum(clazz, value, def));
     }
@@ -302,11 +328,12 @@ public class Parameters implements Parameterizable {
         return getSafe(key, (value) -> Utils.getEnum(clazz, value), def);
     }
 
+    @Contract(pure = true)
     public @NotNull String getString(@NotNull String key) {
         return getString(key, "");
     }
 
-    @Contract("_, !null -> !null")
+    @Contract(value = "_, !null -> !null", pure = true)
     public @Nullable String getString(@NotNull String key, @Nullable String def) {
         return params.getOrDefault(key, def);
     }
@@ -321,14 +348,17 @@ public class Parameters implements Parameterizable {
         return value == null ? def.get() : value;
     }
 
+    @Contract(pure = true)
     public @NotNull Parameters getParameters(@NotNull String key) {
         return fromString(getString(key));
     }
 
+    @Contract(pure = true)
     public double getDouble(@NotNull String key) {
         return getDouble(key, 0);
     }
 
+    @Contract(pure = true)
     public double getDouble(@NotNull String key, double def) {
         return NumberUtils.asDouble(params.get(key), def);
     }
@@ -337,10 +367,12 @@ public class Parameters implements Parameterizable {
         return NumberUtils.asDouble(params.get(key), def);
     }
 
+    @Contract(pure = true)
     public int getInteger(@NotNull String key) {
         return getInteger(key, 0);
     }
 
+    @Contract(pure = true)
     public int getInteger(@NotNull String key, int def) {
         return NumberUtils.asInteger(params.get(key), def);
     }
@@ -349,10 +381,12 @@ public class Parameters implements Parameterizable {
         return NumberUtils.asInteger(params.get(key), def);
     }
 
+    @Contract(pure = true)
     public boolean getBoolean(@NotNull String key) {
         return getBoolean(key, false);
     }
 
+    @Contract(pure = true)
     public boolean getBoolean(@NotNull String key, boolean def) {
         return getTriBoolean(key).asBoolean(def);
     }
@@ -361,32 +395,38 @@ public class Parameters implements Parameterizable {
         return getTriBoolean(key).asBoolean(def);
     }
 
+    @Contract(pure = true)
     public @NotNull TriBoolean getTriBoolean(@NotNull String key) {
         return getSafe(key, TriBoolean::byString);
     }
 
+    @Contract(pure = true)
     public long getTime(@NotNull String key) {
         return TimeUtils.parseTime(getString(key));
     }
 
+    @Contract(pure = true)
     public long getTime(@NotNull String key, long def) {
         String value = params.get(key);
         return value == null ? def : TimeUtils.parseTime(value);
     }
 
+    @Contract(pure = true)
     public long getTime(@NotNull String key, @NotNull String def) {
         return TimeUtils.parseTime(getString(key, def));
     }
 
+    @Contract(pure = true)
     public @NotNull Duration getDuration(@NotNull String key) {
         return getDuration(key, Duration.ZERO);
     }
 
-    @Contract("_, !null -> !null")
+    @Contract(value = "_, !null -> !null", pure = true)
     public @Nullable Duration getDuration(@NotNull String key, @Nullable Duration def) {
         return get(key, (str) -> Duration.ofMillis(TimeUtils.parseTime(str)), def);
     }
 
+    @Contract(pure = true)
     public @Unmodifiable @NotNull List<@NotNull String> keyedList(@NotNull String baseKey) {
         baseKey = baseKey.toLowerCase(Locale.ROOT);
         String numberedKey = baseKey + "1";
@@ -405,6 +445,7 @@ public class Parameters implements Parameterizable {
         }
     }
 
+    @Contract(pure = true)
     public void keyedListIterate(@NotNull String baseKey, @NotNull BiConsumer<String, Parameters> action) {
         baseKey = baseKey.toLowerCase(Locale.ROOT);
         String numberedKey = baseKey + "1";
@@ -419,14 +460,17 @@ public class Parameters implements Parameterizable {
         }
     }
 
+    @Contract(pure = true)
     public boolean contains(@NotNull String key) {
         return params.containsKey(key);
     }
 
+    @Contract(pure = true)
     public boolean containsEvery(@NotNull String @NotNull ... keys) {
         return containsEvery(Arrays.asList(keys));
     }
 
+    @Contract(pure = true)
     public boolean containsEvery(@NotNull Collection<@NotNull String> keys) {
         if (keys.size() > size()) return false;
         for (String key : keys) {
@@ -437,28 +481,32 @@ public class Parameters implements Parameterizable {
         return true;
     }
 
+    @Contract(pure = true)
     public boolean containsAny(@NotNull String @NotNull ... keys) {
         return findKeyUnsafe(keys) != null;
     }
 
+    @Contract(pure = true)
     public boolean containsAny(@NotNull Iterable<@NotNull String> keys) {
         return findKeyUnsafe(keys) != null;
     }
 
+    @Contract(pure = true)
     public @Nullable String findKeyUnsafe(@NotNull String @NotNull ... keys) {
         return findKeyUnsafe(Arrays.asList(keys));
     }
 
+    @Contract(pure = true)
     public @Nullable String findKeyUnsafe(@NotNull Iterable<@NotNull String> keys) {
         return findKey(null, keys);
     }
 
-    @Contract("!null, _ -> !null")
+    @Contract(value = "!null, _ -> !null", pure = true)
     public @Nullable String findKey(@Nullable String def, @NotNull String key) {
         return isEmpty() || !contains(key) ? def : key;
     }
 
-    @Contract("!null, _, _ -> !null")
+    @Contract(value = "!null, _, _ -> !null", pure = true)
     public @Nullable String findKey(@Nullable String def, @NotNull String key1, @NotNull String key2) {
         if (isEmpty()) return def;
         if (contains(key1)) return key1;
@@ -466,7 +514,7 @@ public class Parameters implements Parameterizable {
         return def;
     }
 
-    @Contract("!null, _, _, _ -> !null")
+    @Contract(value = "!null, _, _, _ -> !null", pure = true)
     public @Nullable String findKey(@Nullable String def, @NotNull String key1, @NotNull String key2, @NotNull String key3) {
         if (isEmpty()) return def;
         if (contains(key1)) return key1;
@@ -475,12 +523,12 @@ public class Parameters implements Parameterizable {
         return def;
     }
 
-    @Contract("!null, _ -> !null")
+    @Contract(value = "!null, _ -> !null", pure = true)
     public @Nullable String findKey(@Nullable String def, @NotNull String @NotNull ... keys) {
         return findKey(def, Arrays.asList(keys));
     }
 
-    @Contract("!null, _ -> !null")
+    @Contract(value = "!null, _ -> !null", pure = true)
     public @Nullable String findKey(@Nullable String def, @NotNull Iterable<@NotNull String> keys) {
         if (isEmpty()) return def;
         for (String key : keys) {
@@ -518,83 +566,80 @@ public class Parameters implements Parameterizable {
         return fromMap(updated);
     }
 
+    @Contract(pure = true)
     public @NotNull String originFormatted() {
         return formatted == null
                 ? (formatted = formatMap(params))
                 : formatted;
     }
 
-    public @NotNull String origin() {
+    @Contract(pure = true)
+    public @NotNull String originValue() {
         return origin;
     }
 
-    public @Unmodifiable @NotNull Set<String> keys() {
+    @Contract(pure = true)
+    public @Unmodifiable @NotNull Set<@NotNull String> keys() {
         if (this.strictKeys == null) {
             Set<String> keys = new HashSet<>(params.keySet());
-            keys.remove(ORIGIN);
+            keys.remove(ORIGIN_KEY);
             this.strictKeys = Collections.unmodifiableSet(keys);
         }
         return this.strictKeys;
     }
 
-    public @Unmodifiable @NotNull Set<String> keysFull() {
+    @Contract(pure = true)
+    public @Unmodifiable @NotNull Set<@NotNull String> keysFull() {
         return params.keySet();
     }
 
+    @Contract(pure = true)
     public @Unmodifiable @NotNull Map<String, String> originMap() {
         return params;
     }
 
     @Override
+    @Contract("-> this")
     public @NotNull Parameters asParameters() {
         return this;
     }
 
     public void forEach(@NotNull BiConsumer<@NotNull String, @NotNull String> action) {
         params.forEach((key, value) -> {
-            if (!ORIGIN.equals(key)) action.accept(key, value);
+            if (!ORIGIN_KEY.equals(key)) action.accept(key, value);
         });
     }
 
+    @Contract(pure = true)
     public boolean isEmpty() {
         return size() == 0;
     }
 
+    @Contract(pure = true)
     public int size() {
         return params.size() - 1;
     }
 
     @Override
     public int hashCode() {
-        if (this.hash == null) {
-            int hash = 1; // To skip (un)boxing on calculation
-            for (String key : keys()) {
-                hash = 31 * hash + key.toLowerCase(Locale.ROOT).hashCode() + getString(key).hashCode();
-            }
-            this.hash = hash;
-        }
-        return this.hash;
+        return origin.hashCode();
     }
 
     @Override
     @Contract("null -> false")
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj instanceof Parameters other) {
-            if (other.size() != size()) return false;
-            for (String key : keys()) {
-                if (!Objects.equals(getString(key), other.getString(key, null))) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+        return obj instanceof Parameters otherParams && (otherParams == this || otherParams.origin.equals(origin));
     }
 
     @Contract("null -> false")
-    public boolean equalsFull(@Nullable Parameters params) {
-        return params != null && (params == this || params.origin.equals(origin));
+    public boolean isSimilar(@Nullable Parameters other) {
+        if (other == null || other.size() != size()) return false;
+        for (String key : keys()) {
+            if (!Objects.equals(getString(key), other.getString(key, null))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

@@ -33,11 +33,11 @@ import fun.reactions.module.worldguard.activators.RegionEnterActivator;
 import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.BlockUtils;
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Switch;
@@ -326,7 +326,7 @@ public final class ContextManager {
 
     public static boolean isTimeToRaiseEvent(Player p, String id, int seconds, boolean repeat) {
         long curTime = System.currentTimeMillis();
-        long prevTime = p.hasMetadata("reactions-rchk-" + id) ? p.getMetadata("reactions-rchk-" + id).get(0).asLong() : 0;
+        long prevTime = p.hasMetadata("reactions-rchk-" + id) ? p.getMetadata("reactions-rchk-" + id).getFirst().asLong() : 0;
         boolean needUpdate = repeat || ((curTime - prevTime) >= (1000L * seconds));
         if (needUpdate) p.setMetadata("reactions-rchk-" + id, new FixedMetadataValue(ReActions.getPlugin(), curTime));
         return needUpdate;

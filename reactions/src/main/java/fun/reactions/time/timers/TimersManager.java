@@ -25,10 +25,9 @@ package fun.reactions.time.timers;
 import fun.reactions.ReActions;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.TimeUtils;
-import fun.reactions.util.collections.CaseInsensitiveMap;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,6 +36,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.*;
+
+import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
 public class TimersManager { // TODO Rework from scratch; maybe rework with WaitingManager
 	/*
@@ -140,7 +141,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     }
 
     public static Map<String, Timer> getIngameTimers() {
-        Map<String, Timer> ingameTimers = new CaseInsensitiveMap();
+        Map<String, Timer> ingameTimers = caseInsensitiveLinkedMap();
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (timer.isIngameTimer()) ingameTimers.put(key, timer);
@@ -149,7 +150,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     }
 
     public static Map<String, Timer> getServerTimers() {
-        Map<String, Timer> serverTimers = new CaseInsensitiveMap();
+        Map<String, Timer> serverTimers = caseInsensitiveLinkedMap();
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (!timer.isIngameTimer()) serverTimers.put(key, timer);
@@ -171,7 +172,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     public static void init() {
         currentIngameTime = "";
         timersIngame = new HashSet<>();
-        timers = new CaseInsensitiveMap();
+        timers = caseInsensitiveLinkedMap();
         load();
         initIngameTimer();
         initServerTimer();

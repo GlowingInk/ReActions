@@ -14,13 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FireworkAspect implements MetaAspect {
-    private final boolean effects;
-
-    public FireworkAspect(boolean effects) {
-        this.effects = effects;
-    }
-
+public record FireworkAspect(boolean effects) implements MetaAspect {
     @Override
     public @NotNull String getName() {
         return effects
@@ -76,7 +70,7 @@ public class FireworkAspect implements MetaAspect {
         private final String effectsStr;
         private final List<FireworkEffect> effects;
 
-        public EffectsInst(@NotNull String effectsStr) {
+        private EffectsInst(@NotNull String effectsStr) {
             this.effectsStr = effectsStr;
             List<String> split = ParametersUtils.splitSafely(effectsStr, ';');
             this.effects = new ArrayList<>(split.size());
@@ -110,7 +104,7 @@ public class FireworkAspect implements MetaAspect {
             }
         }
 
-        public EffectsInst(@NotNull List<FireworkEffect> effects) {
+        private EffectsInst(@NotNull List<FireworkEffect> effects) {
             this.effects = effects;
             if (effects.isEmpty()) {
                 effectsStr = "";

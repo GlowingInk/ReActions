@@ -66,7 +66,7 @@ public abstract class ActivationContext {
     @Contract(pure = true)
     public final @NotNull Environment createEnvironment(@NotNull ReActions.Platform platform, @NotNull String activatorName) {
         initialize();
-        return new Environment(platform, activatorName, variables, player);
+        return new Environment(platform, activatorName, variables, player, 0);
     }
 
     public final void initialize() {
@@ -100,6 +100,6 @@ public abstract class ActivationContext {
     }
 
     public boolean isCancelled() {
-        return variables != null && variables.getChanged(CANCEL_EVENT, Boolean::valueOf).orElse(false);
+        return variables != null && variables.changedBoolean(CANCEL_EVENT).orElse(false);
     }
 }

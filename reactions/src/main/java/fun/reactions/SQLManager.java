@@ -80,9 +80,9 @@ public final class SQLManager {
 
     public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
-        OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NATURAL);
+        OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NON_NEGATIVE);
         if (resultOpt.isPresent()) {
-            OptionalInt valueOpt = NumberUtils.parseInteger(value, Is.NATURAL);
+            OptionalInt valueOpt = NumberUtils.parseInteger(value, Is.NON_NEGATIVE);
             if (valueOpt.isPresent()) {
                 return resultOpt.getAsInt() == valueOpt.getAsInt();
             }
@@ -139,7 +139,7 @@ public final class SQLManager {
                 if (column > 0 && column <= columns) resultStr = result.getString(column);
             }
         } catch (SQLException e) {
-            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
+            ReActions.getLogger().error("Failed to execute SQL query: {}", query, e);
         }
         try {
             if (result != null) result.close();
@@ -163,7 +163,7 @@ public final class SQLManager {
             statement.executeUpdate(query);
             ok = true;
         } catch (SQLException e) {
-            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
+            ReActions.getLogger().error("Failed to execute SQL query: {}", query, e);
         }
         try {
             if (statement != null) statement.close();
@@ -192,7 +192,7 @@ public final class SQLManager {
             result = selectStmt.executeQuery(query);
             resultBool = result.next();
         } catch (SQLException e) {
-            ReActions.getLogger().error("Failed to execute SQL query: " + query, e);
+            ReActions.getLogger().error("Failed to execute SQL query: {}", query, e);
         }
         try {
             if (result != null) result.close();

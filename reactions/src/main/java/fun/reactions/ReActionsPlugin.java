@@ -47,6 +47,7 @@ import fun.reactions.selectors.SelectorsManager;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
+import fun.reactions.util.Shoot;
 import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -130,6 +131,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         pluginManager.registerEvents(new BukkitListener(), this);
         pluginManager.registerEvents(new RaListener(), this);
         pluginManager.registerEvents(userCommandsManager, this);
+        pluginManager.registerEvents(new Shoot.DamageListener(), this);
         MoveListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));

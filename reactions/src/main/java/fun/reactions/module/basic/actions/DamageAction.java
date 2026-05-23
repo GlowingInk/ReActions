@@ -27,7 +27,6 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
-import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +37,7 @@ public class DamageAction implements Action {
         Parameters params = Parameters.fromString(paramsStr);
         Player player = params.get("player", Bukkit::getPlayerExact, env.getPlayer()); // TODO Selectors
         if (player == null) return false;
-        double damage = params.getInteger("damage", () -> params.getInteger(Parameters.ORIGIN));
+        double damage = params.getInteger("damage", () -> params.getInteger(Parameters.ORIGIN_KEY));
         return damagePlayer(player, damage);
     }
 
@@ -52,7 +51,7 @@ public class DamageAction implements Action {
         if (damage > 0) {
             player.damage(damage);
         } else {
-            player.playEffect(EntityEffect.HURT);
+            player.playHurtAnimation(0);
         }
         return true;
     }

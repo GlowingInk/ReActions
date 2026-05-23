@@ -36,14 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class CommandActions implements Action, Aliased {
-
-    private final Type commandAs;
-
-    public CommandActions(Type commandAs) {
-        this.commandAs = commandAs;
-    }
-
+public record CommandActions(@NotNull Type commandAs) implements Action, Aliased {
     private static void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
         Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> {
             if (setOp) {

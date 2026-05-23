@@ -58,14 +58,14 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     public static MobClickActivator create(Logic base, Parameters param) {
-        String type = param.origin();
+        String type = param.originValue();
         String name = "";
         String location = "";
         if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name");
             location = param.getString("loc");
-        } else if (param.origin().contains("$")) {
+        } else if (param.originValue().contains("$")) {
             name = type.substring(0, type.indexOf('$'));
             type = type.substring(name.length() + 1);
         }
@@ -130,12 +130,11 @@ public class MobClickActivator extends Activator implements Locatable {
 
     @Override
     public String toString() {
-        String sb = super.toString() + " (" +
+        return super.toString() + " (" +
                 "type:" + (mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ROOT)) +
                 " name:" + (mobName.isEmpty() ? "-" : mobName) +
                 " loc:" + (mobLocation.isEmpty() ? "-" : mobLocation) +
                 ")";
-        return sb;
     }
 
     public static class Context extends ActivationContext {

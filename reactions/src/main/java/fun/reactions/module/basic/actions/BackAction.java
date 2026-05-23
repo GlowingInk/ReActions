@@ -34,7 +34,7 @@ public class BackAction implements Activity.Personal, Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        return PushBack.teleportToPrev(player, params.getInteger(Parameters.ORIGIN, 1));
+        return PushBack.teleportToPrev(player, params.getInteger(Parameters.ORIGIN_KEY, 1));
     }
 
     @Override

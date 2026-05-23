@@ -9,8 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Activity extends Named {
     boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
-    // TODO
-    default boolean isAsync() {
+    default boolean isAsync() { // TODO
         return true;
     }
 
@@ -34,6 +33,8 @@ public interface Activity extends Named {
             this.content = content;
             this.placeholders = content.indexOf('%') != -1;
         }
+
+        public abstract boolean proceed(@NotNull Environment env, @NotNull String paramsStr);
 
         public @NotNull A getActivity() {
             return activity;

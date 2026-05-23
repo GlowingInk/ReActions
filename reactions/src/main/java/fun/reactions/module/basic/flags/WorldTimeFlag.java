@@ -45,7 +45,7 @@ public class WorldTimeFlag implements Flag { // TODO Rework, support specific wo
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Player player = env.getPlayer();
         saveTempVar(env, paramsStr);
-        long currentTime = Bukkit.getWorlds().get(0).getTime();
+        long currentTime = Bukkit.getWorlds().getFirst().getTime();
         if (player != null) currentTime = player.getWorld().getTime();
 
         if (paramsStr.equalsIgnoreCase("day")) {

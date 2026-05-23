@@ -31,7 +31,7 @@ public class DropActivator extends Activator {
     }
 
     public static DropActivator create(Logic base, Parameters param) {
-        String itemStr = param.getString("item", param.origin());
+        String itemStr = param.getString("item", param.originValue());
         return new DropActivator(base, itemStr);
     }
 

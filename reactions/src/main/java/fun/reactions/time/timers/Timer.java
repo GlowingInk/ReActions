@@ -22,9 +22,9 @@
 
 package fun.reactions.time.timers;
 
-import fun.reactions.util.TimeUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import org.quartz.CronExpression;
 
 import java.text.ParseException;
@@ -63,7 +63,6 @@ public class Timer {
             } catch (ParseException e) {
                 Msg.logOnce(time, "Failed to parse cron format: " + time);
                 this.timeServer = null;
-                e.printStackTrace();
             }
         }
     }

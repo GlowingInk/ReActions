@@ -27,7 +27,7 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.enums.TriBoolean;
+import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
@@ -53,7 +53,7 @@ public class LeverActivator extends Activator implements Locatable {
 
     public static LeverActivator create(Logic base, Parameters params) {
         Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
-        TriBoolean state = params.getTriBoolean(params.findKey(Parameters.ORIGIN, "lever-state"));
+        TriBoolean state = params.getTriBoolean(params.findKey(Parameters.ORIGIN_KEY, "lever-state"));
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
             return new LeverActivator(base, state, ImplicitPosition.byLocation(targetBlock.getLocation()));
         } else {
