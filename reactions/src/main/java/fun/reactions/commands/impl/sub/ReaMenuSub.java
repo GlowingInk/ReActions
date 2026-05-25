@@ -9,7 +9,6 @@ import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommandBase;
 import fun.reactions.menu.InventoryMenu;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,7 +62,7 @@ public final class ReaMenuSub extends RaCommandBase {
     }
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
-        sendHelp(ctx, "menu " + escape(name),
+        sendHelp(ctx, "menu " + esc(name),
                 "create", "&e[<rows>&6 [<title>]&e]", "Create menu with optional&e rows&r count and&e title",
                 "open", "&e[<player>]", "Open a menu",
                 "delete", "", "Delete a menu"
@@ -71,13 +70,12 @@ public final class ReaMenuSub extends RaCommandBase {
     }
 
     private void createMenu(@NotNull CommandContext<CommandSourceStack> ctx, int rows, @Nullable String title) {
-        CommandSender sender = ctx.getSource().getSender();
         String name = StringArgumentType.getString(ctx, "name");
         if (InventoryMenu.containsMenu(name)) {
-            sendPrefixed(sender, "Menu&c '" + escape(name) + "'&r already exists");
+            sendPrefixed(ctx, "Menu&c '" + esc(name) + "'&r already exists");
             return;
         }
         InventoryMenu.add(name, rows, title);
-        sendPrefixed(sender, "Menu&a '" + escape(name) + "'&r was created");
+        sendPrefixed(ctx, "Menu&a '" + esc(name) + "'&r was created");
     }
 }

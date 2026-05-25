@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import ink.glowing.text.InkyMessage;
+import ink.glowing.text.placeholder.Placeholder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -14,7 +15,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import static ink.glowing.text.InkyMessage.inkyMessage;
+import static ink.glowing.text.placeholder.Placeholder.placeholder;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
 
@@ -29,10 +35,6 @@ public abstract class RaCommandBase {
     }
 
     public abstract @NotNull LiteralCommandNode<CommandSourceStack> asNode();
-
-    protected static void sendPrefixed(@NotNull CommandSender sender, @NotNull String message) {
-        sender.sendMessage(REA_PREFIX.append(inky(message)));
-    }
 
     protected static int sendHelp(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String command, @NotNull String... help) {
         CommandSender sender = ctx.getSource().getSender();
@@ -69,27 +71,61 @@ public abstract class RaCommandBase {
         return inkyMessage().deserialize(str);
     }
 
-    protected static @NotNull Component inky(@NotNull Object... objs) {
-        var inky = inkyMessage();
-        var text = text();
-        for (var obj : objs) {
-            text.append(inky.deserialize(String.valueOf(obj)));
+    protected static @NotNull Component inky(@NotNull String str, @NotNull Map<String, ?> placeholdersMap) {
+        List<Placeholder> placeholders = new ArrayList<>(placeholdersMap.size());
+        for (var entry : placeholdersMap.entrySet()) {
+            if (entry.getValue() instanceof Component comp) {
+                placeholders.add(placeholder(entry.getKey(), comp));
+            } else {
+                placeholders.add(placeholder(entry.getKey(), text(String.valueOf(entry.getValue()).replace('§', '&'))));
+
+            }
         }
-        return text.build();
+        return inkyMessage().deserialize(str, placeholders);
+    }
+
+    protected static void sendInky(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String str, @NotNull Map<String, ?> placeholdersMap) {
+        sendInky(ctx.getSource().getSender(), str, placeholdersMap);
+    }
+
+    protected static void sendInky(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String str) {
+        sendInky(ctx.getSource().getSender(), str);
+    }
+
+    protected static void sendInky(@NotNull CommandSender sender, @NotNull String str, @NotNull Map<String, ?> placeholdersMap) {
+        sender.sendMessage(inky(str, placeholdersMap));
     }
 
     protected static void sendInky(@NotNull CommandSender sender, @NotNull String str) {
-        sender.sendMessage(inkyMessage().deserialize(str));
+        sender.sendMessage(inky(str));
     }
 
-    protected static @NotNull String escape(@NotNull String str) {
+    protected static void sendPrefixed(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String message, @NotNull Map<String, ?> placeholdersMap) {
+        sendPrefixed(ctx.getSource().getSender(), message, placeholdersMap);
+    }
+
+    protected static void sendPrefixed(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String message) {
+        sendPrefixed(ctx.getSource().getSender(), message);
+    }
+
+    protected static void sendPrefixed(@NotNull CommandSender sender, @NotNull String message, @NotNull Map<String, ?> placeholdersMap) {
+        sender.sendMessage(REA_PREFIX.append(inky(message, placeholdersMap)));
+    }
+
+    protected static void sendPrefixed(@NotNull CommandSender sender, @NotNull String message) {
+        sender.sendMessage(REA_PREFIX.append(inky(message)));
+    }
+
+    protected static @NotNull String esc(@NotNull String str) {
         return InkyMessage.escape(str);
     }
 
+    @Deprecated // Throws into console, not player
     protected static void exception(@NotNull String message) throws ComponentException {
         throw new ComponentException(message);
     }
 
+    @Deprecated // Throws into console, not player
     protected static void exception(@NotNull Component message) throws ComponentException {
         throw new ComponentException(message);
     }

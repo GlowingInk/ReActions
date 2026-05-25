@@ -7,8 +7,9 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommandBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -21,33 +22,19 @@ public final class ReaVariableSub extends RaCommandBase {
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("variable")
                 .then(argument("name", StringArgumentType.word())
-                        .executes(ctx -> {
-                            help(ctx);
-                            return Command.SINGLE_SUCCESS;
-                        })
-                        .then(literal("show") // TODO
-                                /*.executes(ctx -> { show(ctx); return Command.SINGLE_SUCCESS; })*/)
-                        .then(literal("create")
-                                .executes(ctx -> {
-                                    createVariable(ctx, "");
-                                    return Command.SINGLE_SUCCESS;
-                                })
+                        .executes(this::help)
+                        .then(literal("show").executes(this::show))
+                        .then(literal("set")
+                                .executes(ctx -> setVariable(ctx, ""))
                                 .then(argument("value", StringArgumentType.greedyString())
-                                        .executes(ctx -> {
-                                            createVariable(ctx, StringArgumentType.getString(ctx, "value"));
-                                            return Command.SINGLE_SUCCESS;
-                                        })))
+                                        .executes(ctx -> setVariable(ctx, StringArgumentType.getString(ctx, "value")))))
                         .then(literal("delete") // TODO
-                                /*.executes(ctx -> { delete(ctx); return Command.SINGLE_SUCCESS; })*/)
-                        .then(literal("set") // TODO
-                                /*.executes(ctx -> { set(ctx, ""); return Command.SINGLE_SUCCESS; })*/
-                                .then(argument("value", StringArgumentType.greedyString()) // TODO
-                                        /*.executes(ctx -> { set(ctx, StringArgumentType.getString(ctx, "value")); return Command.SINGLE_SUCCESS; })*/)))
+                                /*.executes(ctx -> { delete(ctx); return Command.SINGLE_SUCCESS; })*/))
                 .build();
     }
 
-    private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
-        sendHelp(ctx, "variable " + escape(StringArgumentType.getString(ctx, "name")),
+    private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
+        return sendHelp(ctx, "variable " + esc(StringArgumentType.getString(ctx, "name")),
                 "create", "&e[value]", "Create variable with optional&e value",
                 "show", "", "Show a variable",
                 "delete", "", "Delete a variable",
@@ -55,8 +42,7 @@ public final class ReaVariableSub extends RaCommandBase {
         );
     }
 
-    private void createVariable(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String value) {
-        CommandSender sender = ctx.getSource().getSender();
+    private int setVariable(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String value) {
         String name = StringArgumentType.getString(ctx, "name");
         String[] varName = name.split(":");
         platform.getPersistentVariables().setVariable(
@@ -64,12 +50,16 @@ public final class ReaVariableSub extends RaCommandBase {
                 varName.length > 1 ? varName[1] : varName[0],
                 value
         );
-        sendPrefixed(sender, "Variable&a '" + escape(name) + "'&r was created with the value:\n" + escape(value));
+        sendPrefixed(ctx, "Variable&a '&{name}'&r was created with the value:\n&{value}", Map.of(
+                "name", name,
+                "value", value
+        ));
+        return  Command.SINGLE_SUCCESS;
     }
 
-    private void show(@NotNull CommandContext<CommandSourceStack> ctx) {
-        CommandSender sender = ctx.getSource().getSender();
+    private int show(@NotNull CommandContext<CommandSourceStack> ctx) {
         String value = platform.getPersistentVariables().getVariable(null, StringArgumentType.getString(ctx, "name"));
-        sender.sendMessage(value == null ? "" : value);
+        sendInky(ctx, value == null ? "" : esc(value)); // TODO Better message
+        return Command.SINGLE_SUCCESS;
     }
 }
