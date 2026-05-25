@@ -1,44 +1,53 @@
 package fun.reactions.commands.impl;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActionsPlugin;
 import fun.reactions.commands.RaCommandBase;
-import fun.reactions.commands.nodes.CommandNode;
-import fun.reactions.commands.nodes.StringArgNode;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
 
-import static fun.reactions.commands.nodes.CommandNode.command;
-import static fun.reactions.commands.nodes.StringArgNode.stringArg;
-
-public class ExecCommand extends RaCommandBase {
-    private final PluginCommand execCommand;
-
+public final class ExecCommand extends RaCommandBase {
     public ExecCommand(@NotNull ReActionsPlugin plugin) {
         super(plugin);
-        this.execCommand = Objects.requireNonNull(plugin.getCommand("exec"));
     }
 
-    @Override
-    public @NotNull CommandNode asNode() {
-        return command(execCommand, this::help,
-                stringArg("activator", StringArgNode.Type.WORD, this::activate,
-                        stringArg("parameters", StringArgNode.Type.OPTIONAL_GREEDY)
-                )
-        );
+    public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
+        return literal("exec")
+                .executes(ctx -> {
+                    help(ctx);
+                    return Command.SINGLE_SUCCESS;
+                })
+                .then(argument("activator", StringArgumentType.word())
+                        .executes(ctx -> {
+                            activate(ctx, "");
+                            return Command.SINGLE_SUCCESS;
+                        })
+                        .then(argument("parameters", StringArgumentType.greedyString())
+                                .executes(ctx -> {
+                                    activate(ctx, StringArgumentType.getString(ctx, "parameters"));
+                                    return Command.SINGLE_SUCCESS;
+                                })))
+                .build();
     }
 
-    private void help(Parameters params, CommandSender sender) {
-        sendHelp(sender, params, null, "",
+    private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
+        sendHelp(ctx,
                 "", "<activator> &e[player:<selector>] [delay:<time>]&r", "Execute FUNCTION &aactivator&r."
         );
     }
 
-    private void activate(Parameters params, CommandSender sender) {
-        ContextManager.triggerFunction(sender, params.getParameters("parameters").with("activator", params.getString("activator")));
+    private void activate(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
+        ContextManager.triggerFunction(
+                ctx.getSource().getSender(),
+                Parameters.fromString(rawParameters).with("activator", StringArgumentType.getString(ctx, "activator"))
+        );
     }
 }

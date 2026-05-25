@@ -1,68 +1,134 @@
 package fun.reactions.commands.impl;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActionsPlugin;
 import fun.reactions.commands.RaCommandBase;
 import fun.reactions.commands.impl.sub.ReaActivatorSub;
 import fun.reactions.commands.impl.sub.ReaCreateSub;
 import fun.reactions.commands.impl.sub.ReaLocationSub;
-import fun.reactions.commands.nodes.CommandNode;
-import fun.reactions.commands.nodes.StringArgNode;
-import fun.reactions.util.parameter.Parameters;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import fun.reactions.commands.impl.sub.ReaVariableSub;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
 
-import static fun.reactions.commands.nodes.CommandNode.command;
-import static fun.reactions.commands.nodes.LiteralNode.literal;
-import static fun.reactions.commands.nodes.StringArgNode.stringArg;
-
-public class ReactionsCommand extends RaCommandBase {
-    private final PluginCommand reactionsCommand;
-
+public final class ReactionsCommand extends RaCommandBase {
     public ReactionsCommand(@NotNull ReActionsPlugin plugin) {
         super(plugin);
-        this.reactionsCommand = Objects.requireNonNull(plugin.getCommand("reactions"));
     }
 
-    @Override
-    public @NotNull CommandNode asNode() {
-        return command(reactionsCommand, this::help,
-                    new ReaCreateSub(platform).asNode(),
-                    new ReaActivatorSub(platform).asNode(),
-                    new ReaLocationSub(platform).asNode(),
-                    literal("menu", (p, s) -> s.sendMessage("menu help"),
-                            stringArg("name", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("menu specific help"),
-                                    literal("title", stringArg("title", StringArgNode.Type.GREEDY, (p, s) -> s.sendMessage("set title"))),
-                                    literal("open", (p, s) -> s.sendMessage("menu open"),
-                                            stringArg("players", StringArgNode.Type.OPTIONAL_GREEDY, (p, s) -> s.sendMessage("menu open for others"))
-                                    ),
-                                    literal("delete", (p, s) -> s.sendMessage("menu delete"))
-                            )
-                    ),
-                    literal("list", (p, s) -> s.sendMessage("list help"),
-                            literal("activators", (p, s) -> s.sendMessage("list activators"),
-                                    stringArg("group", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("list activators " + p))
-                            ),
-                            literal("locations", (p, s) -> s.sendMessage("list locations"),
-                                    stringArg("world", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("list locations " + p))
-                            ),
-                            literal("menus", (p, s) -> s.sendMessage("list menus"))
-                    ),
-                    literal("reload", (p, s) -> s.sendMessage("reload all"),
-                            stringArg("options", StringArgNode.Type.WORD, (p, s) -> s.sendMessage("reload specific " + p))
-                    )
-            );
+    public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
+        return literal("reactions")
+                .executes(ctx -> {
+                    help(ctx);
+                    return Command.SINGLE_SUCCESS;
+                })
+                .then(new ReaCreateSub(platform).asNode())
+                .then(new ReaActivatorSub(platform).asNode())
+                .then(new ReaLocationSub(platform).asNode())
+                .then(new ReaVariableSub(platform).asNode())
+                .then(menuNode())
+                .then(listNode())
+                .then(reloadNode())
+                .build();
     }
 
-    private void help(@NotNull Parameters params, @NotNull CommandSender sender) {
-        sendHelp(sender, params, null,
+    private @NotNull LiteralCommandNode<CommandSourceStack> menuNode() {
+        return literal("menu")
+                .executes(ctx -> {
+                    ctx.getSource().getSender().sendMessage("menu help");
+                    return Command.SINGLE_SUCCESS;
+                })
+                .then(argument("name", StringArgumentType.word())
+                        .executes(ctx -> {
+                            ctx.getSource().getSender().sendMessage("menu specific help");
+                            return Command.SINGLE_SUCCESS;
+                        })
+                        .then(literal("title")
+                                .then(argument("title", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            ctx.getSource().getSender().sendMessage("set title");
+                                            return Command.SINGLE_SUCCESS;
+                                        })))
+                        .then(literal("open")
+                                .executes(ctx -> {
+                                    ctx.getSource().getSender().sendMessage("menu open");
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                                .then(argument("players", ArgumentTypes.players())
+                                        .executes(ctx -> {
+                                            ctx.getSource().getSender().sendMessage("menu open for others");
+                                            return Command.SINGLE_SUCCESS;
+                                        })))
+                        .then(literal("delete")
+                                .executes(ctx -> {
+                                    ctx.getSource().getSender().sendMessage("menu delete");
+                                    return Command.SINGLE_SUCCESS;
+                                })))
+                .build();
+    }
+
+    private @NotNull LiteralCommandNode<CommandSourceStack> listNode() {
+        return literal("list")
+                .executes(ctx -> {
+                    ctx.getSource().getSender().sendMessage("list help"); // TODO
+                    return Command.SINGLE_SUCCESS;
+                })
+                .then(literal("activators")
+                        .executes(ctx -> {
+                            ctx.getSource().getSender().sendMessage("list activators"); // TODO
+                            return Command.SINGLE_SUCCESS;
+                        })
+                        .then(argument("group", StringArgumentType.word())
+                                .executes(ctx -> {
+                                    ctx.getSource().getSender().sendMessage("list activators " + StringArgumentType.getString(ctx, "group")); // TODO
+                                    return Command.SINGLE_SUCCESS;
+                                })))
+                .then(literal("locations")
+                        .executes(ctx -> {
+                            ctx.getSource().getSender().sendMessage("list locations"); // TODO
+                            return Command.SINGLE_SUCCESS;
+                        })
+                        .then(argument("world", ArgumentTypes.world())
+                                .executes(ctx -> {
+                                    ctx.getSource().getSender().sendMessage("list locations " + ctx.getArgument("world", World.class).getName()); // TODO
+                                    return Command.SINGLE_SUCCESS;
+                                })))
+                .then(literal("menus")
+                        .executes(ctx -> {
+                            ctx.getSource().getSender().sendMessage("list menus"); // TODO
+                            return Command.SINGLE_SUCCESS;
+                        }))
+                .build();
+    }
+
+    private @NotNull LiteralCommandNode<CommandSourceStack> reloadNode() {
+        return literal("reload")
+                .executes(ctx -> {
+                    ctx.getSource().getSender().sendMessage("reload all");
+                    return Command.SINGLE_SUCCESS;
+                })
+                .then(argument("options", StringArgumentType.word())
+                        .executes(ctx -> {
+                            ctx.getSource().getSender().sendMessage("reload specific " + StringArgumentType.getString(ctx, "options"));
+                            return Command.SINGLE_SUCCESS;
+                        }))
+                .build();
+    }
+
+    private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
+        sendHelp(ctx,
                 "create", "&7(&aactivator&7|&alocation&7|&amenu&7)&e <name>", "Create a new &enamed &aobject",
                 "activator", "&a<name>", "Manage &anamed&r activator",
                 "location", "&a<name>", "Manage &anamed&r location",
                 "menu", "&a<name>", "Manage &anamed&r menu",
-                "variable", "&a<name>", "Manage &anamed&R variable",
+                "variable", "&a<name>", "Manage &anamed&r variable",
                 "list", "&7(&aactivators&7|&alocations&7|&amenus&7)", "List &aobjects", // TODO List activities
                 "reload", "", "Reload a plugin or its specific parts"
         );

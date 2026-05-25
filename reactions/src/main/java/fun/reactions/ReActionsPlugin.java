@@ -139,8 +139,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             var registrar = commands.registrar();
-            registrar.register(new ReactionsCommand(this).asNode().asBrigadier());
-            registrar.register(new ExecCommand(this).asNode().asBrigadier());
+            registrar.register(new ReactionsCommand(this).asNode());
+            registrar.register(new ExecCommand(this).asNode());
         });
 
         getServer().getScheduler().runTask(this, () -> {

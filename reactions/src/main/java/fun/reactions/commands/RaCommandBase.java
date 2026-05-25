@@ -1,9 +1,11 @@
 package fun.reactions.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
-import fun.reactions.commands.nodes.Node;
-import fun.reactions.util.parameter.Parameters;
 import ink.glowing.text.InkyMessage;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus;
@@ -11,7 +13,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static fun.reactions.commands.nodes.Node.LABEL_KEY;
 import static ink.glowing.text.InkyMessage.inkyMessage;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
@@ -26,15 +27,17 @@ public abstract class RaCommandBase {
         this.platform = platform;
     }
 
-    public abstract @NotNull Node asNode();
+    public abstract @NotNull LiteralCommandNode<CommandSourceStack> asNode();
 
     protected static void sendPrefixed(@NotNull CommandSender sender, @NotNull String message) {
         sender.sendMessage(REA_PREFIX.append(inky(message)));
     }
 
-    // subcommand, args, description
-    protected static void sendHelp(@NotNull CommandSender sender, @NotNull Parameters params, @Nullable String command, @NotNull String... help) {
-        String start = "/" + params.getString(LABEL_KEY) + (command != null ? " " + command : "");
+    protected static int sendHelp(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String command, @NotNull String... help) {
+        CommandSender sender = ctx.getSource().getSender();
+        String label = ctx.getRootNode().getName(); // TODO Actual label from ctx.getInput()?
+
+        String start = "/" + label + (command != null ? " " + command : "");
         sender.sendMessage("");
         sendInky(sender, "&6&l" + start + " ...");
         for (int i = 0; i + 2 < help.length; i += 3) {
@@ -50,6 +53,7 @@ public abstract class RaCommandBase {
         }
         sender.sendMessage("");
         sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type in chat!");
+        return Command.SINGLE_SUCCESS;
     }
 
     protected static @NotNull Component inky(@NotNull String str) {
