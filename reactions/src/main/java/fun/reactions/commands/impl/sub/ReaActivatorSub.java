@@ -10,10 +10,13 @@ import fun.reactions.commands.RaCommandBase;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
+import fun.reactions.model.activators.type.ActivatorType;
+import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
+import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -31,11 +34,13 @@ import static net.kyori.adventure.text.Component.text;
 public final class ReaActivatorSub extends RaCommandBase {
     private final ActivatorsManager activators;
     private final ActivitiesRegistry activities;
+    private final ActivatorTypesRegistry types;
 
     public ReaActivatorSub(@NotNull ReActions.Platform platform) {
         super(platform);
         this.activators = platform.getActivators();
         this.activities = platform.getActivities();
+        this.types = platform.getActivatorTypes();
     }
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
@@ -48,6 +53,23 @@ public final class ReaActivatorSub extends RaCommandBase {
                             return builder.buildFuture();
                         })
                         .executes(this::help)
+                        .then(literal("create")
+                                .then(argument("type", StringArgumentType.word())
+                                        .suggests((ctx, builder) -> {
+                                            types.getTypeNames().stream()
+                                                    .filter(s -> s.startsWith(builder.getRemaining()))
+                                                    .forEach(builder::suggest);
+                                            return builder.buildFuture();
+                                        })
+                                        .executes(ctx -> {
+                                            createActivator(ctx, "");
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                        .then(argument("parameters", StringArgumentType.greedyString())
+                                                .executes(ctx -> {
+                                                    createActivator(ctx, StringArgumentType.getString(ctx, "parameters"));
+                                                    return Command.SINGLE_SUCCESS;
+                                                }))))
                         .then(literal("info").executes(this::info))
                         .then(literal("delete").executes(this::deletePrompt)
                                 .then(literal("confirm").executes(this::delete)))
@@ -82,6 +104,7 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         return sendHelp(ctx, "activator " + getActivator(ctx).getLogic().getName(),
+                "create", "&a<type>&e [<parameters...>]", "Create this activator with specified&a type&r and&e parameters",
                 "info", "", "Get info about an activator",
                 "move", "&a<group>", "Move activator into another group",
                 "delete", "[confirm]", "Delete an activator",
@@ -89,6 +112,28 @@ public final class ReaActivatorSub extends RaCommandBase {
                 "reaction", "...", "Manage activator reactions",
                 "flag", "...", "Manage activator flags"
         );
+    }
+
+    private void createActivator(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
+        CommandSender sender = ctx.getSource().getSender();
+        String name = StringArgumentType.getString(ctx, "name");
+        String typeName = StringArgumentType.getString(ctx, "type");
+        if (activators.getActivator(name) != null) {
+            sendPrefixed(sender, "Activator&c '" + escape(name) + "'&r already exists");
+            return;
+        }
+        ActivatorType type = ensure(types.get(typeName),
+                "Activator type&c '" + escape(typeName) + "'&r doesn't exist");
+        Activator activator = ensure(
+                type.createActivator(
+                        new Logic(platform, type.getName(), name),
+                        Parameters.fromString(rawParameters)
+                ),
+                "Failed to create activator&c!"
+        );
+        activators.addActivator(activator, true);
+        sendPrefixed(sender, "Activator&a '" + escape(activator.getLogic().getName())
+                + "'&r of type&a '" + escape(activator.getLogic().getType()) + "'&r was created");
     }
 
     private int info(@NotNull CommandContext<CommandSourceStack> ctx) {
