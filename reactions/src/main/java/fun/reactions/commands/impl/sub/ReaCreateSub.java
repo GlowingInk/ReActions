@@ -58,7 +58,7 @@ public final class ReaCreateSub extends RaCommandBase {
         public @NotNull Node asNode() {
             return literal("variable",
                     stringArg("name", StringArgNode.Type.WORD,
-                            stringArg("type", StringArgNode.Type.OPTIONAL_GREEDY)
+                            stringArg("type", StringArgNode.Type.OPTIONAL_GREEDY, this::variable)
                     )
             );
         }

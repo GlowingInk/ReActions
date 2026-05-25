@@ -1,10 +1,10 @@
 package fun.reactions.commands.nodes;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.commands.ComponentException;
 import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +72,7 @@ public class CommandNode implements Node, CommandExecutor, TabCompleter {
 
     @Override
     public @NotNull LiteralCommandNode<CommandSourceStack> asBrigadier() {
-        LiteralArgumentBuilder<CommandSourceStack> builder = LiteralArgumentBuilder.literal(value);
+        var builder = Commands.literal(value);
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }

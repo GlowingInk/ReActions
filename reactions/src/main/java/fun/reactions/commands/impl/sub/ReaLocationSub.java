@@ -27,10 +27,10 @@ public class ReaLocationSub extends RaCommandBase {
     public @NotNull Node asNode() {
         return literal("location", this::help,
                         stringArg("name", StringArgNode.Type.WORD, this::help, // TODO Name suggestions
-                        literal("info", this::info),
-                        literal("delete", this::delete),
-                        literal("tp", this::teleport, stringArg("player", StringArgNode.Type.OPTIONAL_GREEDY)),
-                        literal("move", this::move, stringArg("location", StringArgNode.Type.OPTIONAL_GREEDY)) // TODO Better location
+                                literal("info", this::info),
+                                literal("delete", this::delete),
+                                literal("tp", this::teleport, stringArg("player", StringArgNode.Type.OPTIONAL_GREEDY)),
+                                literal("move", this::move, stringArg("location", StringArgNode.Type.OPTIONAL_GREEDY)) // TODO Better location
                 )
         );
     }

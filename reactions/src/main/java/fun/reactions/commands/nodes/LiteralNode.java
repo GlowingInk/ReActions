@@ -1,8 +1,8 @@
 package fun.reactions.commands.nodes;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +73,7 @@ public class LiteralNode implements Node {
 
     @Override
     public @NotNull LiteralCommandNode<CommandSourceStack> asBrigadier() {
-        LiteralArgumentBuilder<CommandSourceStack> builder = LiteralArgumentBuilder.literal(value);
+        var builder = Commands.literal(value);
         for (Node piece : next) {
             builder = builder.then(piece.asBrigadier());
         }
