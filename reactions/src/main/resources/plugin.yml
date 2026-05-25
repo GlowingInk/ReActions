@@ -9,12 +9,4 @@ authors:
   - MaxDikiy
   - imDaniX
 softdepend: [ProtocolLib]
-commands:
-  reactions:
-    aliases: [ra,rea,react]
-    description: Main command of ReActions
-    usage: /<command> help
-  exec:
-    aliases: [run]
-    description: Execute EXEC-activator
-    usage: /<command> <ActivatorId> [player:<PlayerSelector>] [delay:<Time>]
+

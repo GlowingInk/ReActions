@@ -8,6 +8,7 @@ import ink.glowing.text.InkyMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,10 @@ public abstract class RaCommandBase {
 
     protected static int sendHelp(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String command, @NotNull String... help) {
         CommandSender sender = ctx.getSource().getSender();
-        String label = ctx.getRootNode().getName(); // TODO Actual label from ctx.getInput()?
+        String label = ctx.getInput().indexOf(' ') == -1
+                ? ctx.getInput()
+                : ctx.getInput().substring(0, ctx.getInput().indexOf(' '));
+        boolean isPlayer = sender instanceof Player;
 
         String start = "/" + label + (command != null ? " " + command : "");
         sender.sendMessage("");
@@ -45,14 +49,19 @@ public abstract class RaCommandBase {
             String args = help[i + 1];
             String description = help[i + 2];
 
-            Component message = inky("  " + subcommand + " " + args)
-                    .clickEvent(suggestCommand(start + " " + subcommand + " "))
-                    .hoverEvent(inky(description));
-
-            sender.sendMessage(message);
+            if (isPlayer) {
+                Component message = inky("  " + subcommand + " " + args)
+                        .clickEvent(suggestCommand(start + " " + subcommand + " "))
+                        .hoverEvent(inky(description));
+                sender.sendMessage(message);
+            } else {
+                sendInky(sender, "  &7" + subcommand + " " + args + "&r &8-&r &7" + description);
+            }
         }
         sender.sendMessage("");
-        sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type in chat!");
+        if (isPlayer) {
+            sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type in chat!");
+        }
         return Command.SINGLE_SUCCESS;
     }
 

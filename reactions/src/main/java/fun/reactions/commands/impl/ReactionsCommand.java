@@ -123,7 +123,7 @@ public final class ReactionsCommand extends RaCommandBase {
     }
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
-        sendHelp(ctx,
+        sendHelp(ctx, null,
                 "create", "&7(&aactivator&7|&alocation&7|&amenu&7)&e <name>", "Create a new &enamed &aobject",
                 "activator", "&a<name>", "Manage &anamed&r activator",
                 "location", "&a<name>", "Manage &anamed&r location",

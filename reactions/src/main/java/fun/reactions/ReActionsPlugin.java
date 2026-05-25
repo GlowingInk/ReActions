@@ -59,6 +59,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivitiesRegistry activitiesRegistry;
     private ActivatorTypesRegistry typesRegistry;
@@ -139,7 +141,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             var registrar = commands.registrar();
-            registrar.register(new ReactionsCommand(this).asNode());
+            registrar.register(new ReactionsCommand(this).asNode(), List.of("rea", "ra"));
             registrar.register(new ExecCommand(this).asNode());
         });
 
