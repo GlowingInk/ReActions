@@ -37,7 +37,7 @@ public class JsConditionalAction implements Action {
         if (checked) return engine != null;
         ScriptEngine search = searchForEngine(new ScriptEngineManager());
         if (search == null) {
-            var registered = env.getPlatform().getServer().getServicesManager().getRegistration(ScriptEngineManager.class);
+            var registered = env.getServer().getServicesManager().getRegistration(ScriptEngineManager.class);
             if (registered != null) {
                 search = searchForEngine(registered.getProvider());
             }

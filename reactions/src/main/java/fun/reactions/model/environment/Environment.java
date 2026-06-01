@@ -2,6 +2,7 @@ package fun.reactions.model.environment;
 
 import fun.reactions.ReActions;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,10 @@ public final class Environment {
 
     public @NotNull ReActions.Platform getPlatform() {
         return platform;
+    }
+
+    public @NotNull Server getServer() {
+        return platform.getServer();
     }
 
     public @NotNull String getActivatorName() {
