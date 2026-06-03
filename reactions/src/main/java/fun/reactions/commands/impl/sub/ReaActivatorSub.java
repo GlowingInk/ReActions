@@ -224,7 +224,7 @@ public final class ReaActivatorSub extends RaCommandBase {
         List<? extends Activity.Stored<?>> list = getActivityList(activator, selection);
         int index = IntegerArgumentType.getInteger(ctx, "index");
         if (index < 0 || index >= list.size()) {
-            exception("There's no &c" + selection + "&r under index &c" + index + "&r.");
+            sendPrefixed(ctx, "There's no &c" + selection + "&r under index &c" + index + "&r.");
             return Command.SINGLE_SUCCESS;
         }
         Activity.Stored<?> activity = list.remove(index);
@@ -247,19 +247,20 @@ public final class ReaActivatorSub extends RaCommandBase {
     private <T extends Activity.Stored<?>> void activityMoveList(
             @NotNull CommandContext<CommandSourceStack> ctx,
             ActivitySelection selection,
-            List<T> list) {
+            List<T> list
+    ) {
         int from = IntegerArgumentType.getInteger(ctx, "from");
         if (from < 0 || from >= list.size()) {
-            exception("There's no &c" + selection + "&r with index &c" + from + "&r.");
+            sendPrefixed(ctx, "There's no &c" + selection + "&r with index &c" + from + "&r.");
             return;
         }
         int to = IntegerArgumentType.getInteger(ctx, "to");
         if (to < 0 || to >= list.size()) {
-            exception("There's no &c" + selection + "&r with index &c" + to + "&r.");
+            sendPrefixed(ctx, "There's no &c" + selection + "&r with index &c" + to + "&r.");
             return;
         }
         if (from == to) {
-            exception("You can't move &c" + selection + "&r onto itself.");
+            sendPrefixed(ctx, "You can't move &c" + selection + "&r onto itself.");
             return;
         }
         if (to > from) to--;

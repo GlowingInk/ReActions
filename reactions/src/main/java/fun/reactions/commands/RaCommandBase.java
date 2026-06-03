@@ -120,43 +120,12 @@ public abstract class RaCommandBase {
         return InkyMessage.escape(str);
     }
 
-    @Deprecated // Throws into console, not player
-    protected static void exception(@NotNull String message) throws ComponentException {
-        throw new ComponentException(message);
-    }
-
-    @Deprecated // Throws into console, not player
-    protected static void exception(@NotNull Component message) throws ComponentException {
-        throw new ComponentException(message);
-    }
-
     @Contract("null, _ -> fail")
+    @Deprecated // Throws into console, not player
     protected static <T> @NotNull T ensure(@Nullable T obj, @NotNull String message) {
         if (obj != null) {
             return obj;
         }
         throw new ComponentException(REA_PREFIX.append(inky(message)));
-    }
-
-    @Contract("null, _ -> fail")
-    protected static <T> @NotNull T ensure(@Nullable T obj, @NotNull Component message) {
-        if (obj != null) {
-            return obj;
-        }
-        throw new ComponentException(REA_PREFIX.append(message));
-    }
-
-    @Contract("false, _ -> fail")
-    protected static void ensure(boolean v, @NotNull String message) {
-        if (!v) {
-            throw new ComponentException(REA_PREFIX.append(inky(message)));
-        }
-    }
-
-    @Contract("false, _ -> fail")
-    protected static void ensure(boolean v, @NotNull Component message) {
-        if (!v) {
-            throw new ComponentException(REA_PREFIX.append(message));
-        }
     }
 }
