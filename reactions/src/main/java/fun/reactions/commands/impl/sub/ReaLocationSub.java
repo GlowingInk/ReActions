@@ -141,6 +141,9 @@ public final class ReaLocationSub extends RaCommandBase {
     private void info(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         RealPosition loc = getLocation(ctx);
+        if (loc == null) { // TODO
+            return;
+        }
         sendInky(ctx, "Location '&{name}':\n  World: &{world}\n  Coordinates: &{x}, &{y}, &{z}\n  Head: &{yaw}, &{pitch}", Map.of( // TODO Better message
                 "name", name,
                 "world", loc.worldName(),
@@ -154,13 +157,18 @@ public final class ReaLocationSub extends RaCommandBase {
 
     private void delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        getLocation(ctx);
+        if (getLocation(ctx) == null) { // TODO
+            return;
+        }
         LocationHolder.removeTpLoc(name);
         sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was deleted.");
     }
 
     private void teleport(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) throws CommandSyntaxException {
         RealPosition loc = getLocation(ctx);
+        if (loc == null) { // TODO
+            return;
+        }
         CommandSender sender = ctx.getSource().getSender();
         Player player = resolver != null
                 ? resolver.resolve(ctx.getSource()).getFirst()
@@ -195,8 +203,12 @@ public final class ReaLocationSub extends RaCommandBase {
         sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was moved.");
     }
 
-    private @NotNull RealPosition getLocation(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private @Nullable RealPosition getLocation(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        return ensure(LocationHolder.getTpPosition(name), "Location &c'" + esc(name) + "'&r doesn't exist!");
+        var tpPos =  LocationHolder.getTpPosition(name);
+        if (tpPos == null) {
+            sendInky(ctx, "Location &c'" + esc(name) + "'&r doesn't exist!");
+        }
+        return tpPos;
     }
 }

@@ -1,6 +1,5 @@
 package fun.reactions.commands.impl.sub;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -21,6 +20,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 import static net.kyori.adventure.text.Component.text;
@@ -64,12 +65,12 @@ public final class ReaActivatorSub extends RaCommandBase {
                                         })
                                         .executes(ctx -> {
                                             createActivator(ctx, "");
-                                            return Command.SINGLE_SUCCESS;
+                                            return SINGLE_SUCCESS;
                                         })
                                         .then(argument("parameters", StringArgumentType.greedyString()) // TODO Distant future: provide params
                                                 .executes(ctx -> {
                                                     createActivator(ctx, StringArgumentType.getString(ctx, "parameters"));
-                                                    return Command.SINGLE_SUCCESS;
+                                                    return SINGLE_SUCCESS;
                                                 }))))
                         .then(literal("info").executes(this::info))
                         .then(literal("delete").executes(this::deletePrompt)
@@ -104,7 +105,7 @@ public final class ReaActivatorSub extends RaCommandBase {
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
-        return sendHelp(ctx, "activator " + getActivator(ctx).getLogic().getName(),
+        return sendHelp(ctx, "activator " + ctx.getArgument("name", String.class),
                 "create", "&a<type>&e [<parameters...>]", "Create this activator with specified&a type&r and&e parameters",
                 "info", "", "Get info about an activator",
                 "move", "&a<group>", "Move activator into another group",
@@ -122,14 +123,19 @@ public final class ReaActivatorSub extends RaCommandBase {
             sendPrefixed(ctx, "Activator&c '" + esc(name) + "'&r already exists");
             return;
         }
-        ActivatorType type = ensure(types.get(typeName), "Activator type&c '" + esc(typeName) + "'&r doesn't exist");
-        Activator activator = ensure(
-                type.createActivator(
-                        new Logic(platform, type.getName(), name),
-                        Parameters.fromString(rawParameters)
-                ),
-                "Failed to create activator&c!"
+        ActivatorType type = types.get(typeName);
+        if (type == null) {
+            sendInky(ctx, "Activator type&c '" + esc(typeName) + "'&r doesn't exist");
+            return;
+        }
+        Activator activator = type.createActivator(
+                new Logic(platform, type.getName(), name),
+                Parameters.fromString(rawParameters)
         );
+        if (activator == null) {
+            sendInky(ctx, "Failed to create activator&c!");
+            return;
+        }
         activators.addActivator(activator, true);
         sendPrefixed(ctx, "Activator&a '&{name}'&r of type&a '&{type}'&r was created", Map.of(
                 "name", activator.getLogic().getName(),
@@ -140,6 +146,9 @@ public final class ReaActivatorSub extends RaCommandBase {
     private int info(@NotNull CommandContext<CommandSourceStack> ctx) {
         CommandSender sender = ctx.getSource().getSender();
         Activator activator = getActivator(ctx);
+        if (activator == null) { // TODO
+            return SINGLE_SUCCESS;
+        }
         Logic logic = activator.getLogic();
         sender.sendMessage("");
         sender.sendMessage(text()
@@ -148,7 +157,7 @@ public final class ReaActivatorSub extends RaCommandBase {
         sendActivityInfo(sender, logic.getFlags(), "&aFlags:", true);
         sendActivityInfo(sender, logic.getActions(), "&aActions:", false);
         sendActivityInfo(sender, logic.getReactions(), "&aReactions:", false);
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private void sendActivityInfo(CommandSender sender, List<? extends Activity.Stored<?>> storeds, String title, boolean isFlag) {
@@ -171,21 +180,24 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int deletePrompt(@NotNull CommandContext<CommandSourceStack> ctx) {
         sendPrefixed(ctx, "Add confirm to the end of a command.");
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         Activator activator = getActivator(ctx);
+        if (activator == null) { // TODO
+            return SINGLE_SUCCESS;
+        }
         String activatorName = activator.getLogic().getName();
         activators.removeActivator(activatorName);
         sendPrefixed(ctx, "Activator &a'&{name}'&r was successfully removed.", Map.of("name", activatorName));
         saveActivator(activator);
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int activityHelp(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection) {
         Activator activator = getActivator(ctx);
-        return sendHelp(ctx, "activator " + esc(activator.getLogic().getName()) + " " + selection,
+        return sendHelp(ctx, "activator " + esc(ctx.getArgument("name", String.class)) + " " + selection,
                 "add", "<type> &e[parameters...]", "Add &a" + selection + "&r to an activator",
                 "remove", "<index>", "Remove &a" + selection + "&r from an activator",
                 "move", "<from> <to>", "Move &a" + selection + "&r to another index"
@@ -194,11 +206,18 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int activityAdd(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection, String parameters) {
         Activator activator = getActivator(ctx);
+        if (activator == null) { // TODO
+            return SINGLE_SUCCESS;
+        }
         String type = StringArgumentType.getString(ctx, "type");
         if (selection == ActivitySelection.FLAG) {
             boolean inverted = type.startsWith("!");
             String flagType = inverted ? type.substring(1) : type;
-            Flag flag = ensure(activities.getFlag(flagType), "Flag &c'" + type + "'&r doesn't exist.");
+            Flag flag = activities.getFlag(flagType);
+            if (flag == null) {
+                sendInky(ctx, "Flag &c'" + type + "'&r doesn't exist.");
+                return  SINGLE_SUCCESS;
+            }
             activator.getLogic().getFlags().add(new Flag.Stored(flag, parameters, inverted));
             sendPrefixed(ctx, "&{selection} &{nameFormatted}&r was successfully added.", Map.of( // TODO Hover for params
                     "selection", selection.asStart,
@@ -208,7 +227,11 @@ public final class ReaActivatorSub extends RaCommandBase {
             var target = selection == ActivitySelection.ACTION
                     ? activator.getLogic().getActions()
                     : activator.getLogic().getReactions();
-            Action action = ensure(activities.getAction(type), "Action &c'" + type + "'&r doesn't exist.");
+            Action action = activities.getAction(type);
+            if (action == null) {
+                sendInky(ctx, "Action &c'" + type + "'&r doesn't exist.");
+                return SINGLE_SUCCESS;
+            }
             target.add(new Action.Stored(action, parameters));
             sendPrefixed(ctx, "&{selection} &{name}&r was successfully added.", Map.of( // TODO Hover for params
                     "selection", selection.asStart,
@@ -216,16 +239,19 @@ public final class ReaActivatorSub extends RaCommandBase {
             ));
         }
         saveActivator(activator);
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int activityRemove(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection) {
         Activator activator = getActivator(ctx);
+        if (activator == null) { // TODO
+            return SINGLE_SUCCESS;
+        }
         List<? extends Activity.Stored<?>> list = getActivityList(activator, selection);
         int index = IntegerArgumentType.getInteger(ctx, "index");
         if (index < 0 || index >= list.size()) {
             sendPrefixed(ctx, "There's no &c" + selection + "&r under index &c" + index + "&r.");
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         Activity.Stored<?> activity = list.remove(index);
         sendPrefixed(ctx, "Successfully removed &{type} &a&{name}&r at index &a&{index}&r.", Map.of( // TODO Hover for params
@@ -234,14 +260,17 @@ public final class ReaActivatorSub extends RaCommandBase {
                 "index", index
         ));
         saveActivator(activator);
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int activityMove(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection) {
         Activator activator = getActivator(ctx);
+        if (activator == null) {
+            return SINGLE_SUCCESS;
+        }
         activityMoveList(ctx, selection, getActivityList(activator, selection));
         saveActivator(activator);
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private <T extends Activity.Stored<?>> void activityMoveList(
@@ -276,9 +305,13 @@ public final class ReaActivatorSub extends RaCommandBase {
         };
     }
 
-    private @NotNull Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private @Nullable Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        return ensure(activators.getActivator(name), "Activator &c'" + esc(name) + "'&r doesn't exist!");
+        var activator = activators.getActivator(name);
+        if (activator == null) {
+            sendInky(ctx, "Activator &c'" + esc(name) + "'&r doesn't exist!");
+        }
+        return activator;
     }
 
     private void saveActivator(@NotNull Activator activator) {

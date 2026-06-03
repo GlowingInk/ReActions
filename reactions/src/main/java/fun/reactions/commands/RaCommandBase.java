@@ -11,7 +11,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,14 +117,5 @@ public abstract class RaCommandBase {
 
     protected static @NotNull String esc(@NotNull String str) {
         return InkyMessage.escape(str);
-    }
-
-    @Contract("null, _ -> fail")
-    @Deprecated // Throws into console, not player
-    protected static <T> @NotNull T ensure(@Nullable T obj, @NotNull String message) {
-        if (obj != null) {
-            return obj;
-        }
-        throw new ComponentException(REA_PREFIX.append(inky(message)));
     }
 }
