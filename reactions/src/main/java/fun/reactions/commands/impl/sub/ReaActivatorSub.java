@@ -1,11 +1,16 @@
 package fun.reactions.commands.impl.sub;
 
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import fun.reactions.commands.RaCommandBase;
+import fun.reactions.commands.RegistryArgument;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
@@ -20,20 +25,23 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
+import static fun.reactions.commands.RegistryArgument.registryArgument;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 import static net.kyori.adventure.text.Component.text;
 
+@SuppressWarnings("SameReturnValue")
 public final class ReaActivatorSub extends RaCommandBase {
+    private static final DynamicCommandExceptionType UNKNOWN_ACTIVATOR = new DynamicCommandExceptionType(
+            name -> new LiteralMessage("Activator '" + name + "' doesn't exist!")
+    );
+
     private final ActivatorsManager activators;
     private final ActivitiesRegistry activities;
     private final ActivatorTypesRegistry types;
@@ -45,111 +53,120 @@ public final class ReaActivatorSub extends RaCommandBase {
         this.types = platform.getActivatorTypes();
     }
 
+    @Override
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
+        var actionArg = registryArgument(activities::getAction, activities::getActionsTypesNames);
+
         return literal("activator")
                 .then(argument("name", StringArgumentType.word())
                         .suggests((_, builder) -> {
+                            String remaining = builder.getRemaining();
                             activators.getActivatorNames().stream()
-                                    .filter(s -> s.startsWith(builder.getRemaining()))
+                                    .filter(s -> s.startsWith(remaining))
                                     .forEach(builder::suggest);
                             return builder.buildFuture();
                         })
                         .executes(this::help)
                         .then(literal("create")
-                                .then(argument("type", StringArgumentType.word())
-                                        .suggests((_, builder) -> {
-                                            types.getTypeNames().stream()
-                                                    .filter(s -> s.startsWith(builder.getRemaining()))
-                                                    .forEach(builder::suggest);
-                                            return builder.buildFuture();
-                                        })
-                                        .executes(ctx -> {
-                                            createActivator(ctx, "");
-                                            return SINGLE_SUCCESS;
-                                        })
-                                        .then(argument("parameters", StringArgumentType.greedyString()) // TODO Distant future: provide params
-                                                .executes(ctx -> {
-                                                    createActivator(ctx, StringArgumentType.getString(ctx, "parameters"));
-                                                    return SINGLE_SUCCESS;
-                                                }))))
+                                .then(argument("type", registryArgument(types::get, types::getTypeNames))
+                                        .executes(ctx -> create(ctx, ""))
+                                        .then(argument("parameters", StringArgumentType.greedyString())
+                                                .executes(ctx -> create(ctx, StringArgumentType.getString(ctx, "parameters"))))))
                         .then(literal("info").executes(this::info))
-                        .then(literal("delete").executes(this::deletePrompt)
+                        .then(literal("delete")
+                                .executes(this::deletePrompt)
                                 .then(literal("confirm").executes(this::delete)))
-                        .then(activityNode(ActivitySelection.ACTION, activities::getActionsTypesNames))
-                        .then(activityNode(ActivitySelection.REACTION, activities::getActionsTypesNames))
-                        .then(activityNode(ActivitySelection.FLAG, activities::getFlagsTypesNames)))
+                        .then(actionActivityNode(ActivitySelection.ACTION, actionArg))
+                        .then(actionActivityNode(ActivitySelection.REACTION, actionArg))
+                        .then(flagActivityNode()))
                 .build();
     }
 
-    private @NotNull LiteralCommandNode<CommandSourceStack> activityNode(@NotNull ActivitySelection type, @NotNull Supplier<Collection<String>> suggests) {
-        return literal(type.name().toLowerCase(Locale.ROOT))
-                .executes(ctx -> activityHelp(ctx, type))
+    private @NotNull LiteralCommandNode<CommandSourceStack> actionActivityNode(
+            @NotNull ActivitySelection selection,
+            @NotNull RegistryArgument<Action> actionArg
+    ) {
+        var node = literal(selection.lower)
+                .executes(ctx -> activityHelp(ctx, selection))
+                .then(literal("add")
+                        .then(argument("type", actionArg)
+                                .executes(ctx -> actionAdd(ctx, selection, ""))
+                                .then(argument("parameters", StringArgumentType.greedyString())
+                                        .executes(ctx -> actionAdd(ctx, selection, StringArgumentType.getString(ctx, "parameters"))))));
+        return appendRemoveMoveNodes(node, selection).build();
+    }
+
+    private @NotNull LiteralCommandNode<CommandSourceStack> flagActivityNode() {
+        var node = literal(ActivitySelection.FLAG.lower)
+                .executes(ctx -> activityHelp(ctx, ActivitySelection.FLAG))
                 .then(literal("add")
                         .then(argument("type", StringArgumentType.word())
                                 .suggests((_, builder) -> {
-                                    suggests.get().stream()
-                                            .filter(s -> s.startsWith(builder.getRemaining()))
+                                    String remaining = builder.getRemaining();
+                                    activities.getFlagsTypesNames().stream()
+                                            .filter(s -> s.startsWith(remaining))
                                             .forEach(builder::suggest);
                                     return builder.buildFuture();
                                 })
-                                .executes(ctx -> activityAdd(ctx, type, ""))
+                                .executes(ctx -> flagAdd(ctx, ""))
                                 .then(argument("parameters", StringArgumentType.greedyString())
-                                        .executes(ctx -> activityAdd(ctx, type, StringArgumentType.getString(ctx, "parameters"))))))
+                                        .executes(ctx -> flagAdd(ctx, StringArgumentType.getString(ctx, "parameters"))))));
+        return appendRemoveMoveNodes(node, ActivitySelection.FLAG).build();
+    }
+
+    private @NotNull LiteralArgumentBuilder<CommandSourceStack> appendRemoveMoveNodes(
+            @NotNull LiteralArgumentBuilder<CommandSourceStack> builder,
+            @NotNull ActivitySelection selection
+    ) {
+        return builder
                 .then(literal("remove")
-                        .then(argument("index", IntegerArgumentType.integer(1)).executes(ctx -> activityRemove(ctx, type))))
+                        .then(argument("index", IntegerArgumentType.integer(1))
+                                .executes(ctx -> activityRemove(ctx, selection))))
                 .then(literal("move")
                         .then(argument("from", IntegerArgumentType.integer(1))
                                 .then(argument("to", IntegerArgumentType.integer(1))
-                                        .executes(ctx -> activityMove(ctx, type)))))
-                .build();
+                                        .executes(ctx -> activityMove(ctx, selection)))));
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         return sendHelp(ctx, "activator " + ctx.getArgument("name", String.class),
-                "create", "&a<type>&e [<parameters...>]", "Create this activator with specified&a type&r and&e parameters",
-                "info", "", "Get info about an activator",
-                "move", "&a<group>", "Move activator into another group",
-                "delete", "[confirm]", "Delete an activator",
+                "create", "&a<type> &e[<parameters...>]", "Create this activator with the given &atype&r and &eparameters",
+                "info", "", "Show info about this activator",
+                "move", "&a<group>", "Move this activator into another group",
+                "delete", "[confirm]", "Delete this activator",
                 "action", "...", "Manage activator actions",
                 "reaction", "...", "Manage activator reactions",
                 "flag", "...", "Manage activator flags"
         );
     }
 
-    private void createActivator(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
+    private int create(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
         String name = StringArgumentType.getString(ctx, "name");
-        String typeName = StringArgumentType.getString(ctx, "type");
         if (activators.getActivator(name) != null) {
-            sendPrefixed(ctx, "Activator&c '" + esc(name) + "'&r already exists");
-            return;
+            sendPrefixed(ctx, "Activator &c'" + esc(name) + "'&r already exists.");
+            return SINGLE_SUCCESS;
         }
-        ActivatorType type = types.get(typeName);
-        if (type == null) {
-            sendInky(ctx, "Activator type&c '" + esc(typeName) + "'&r doesn't exist");
-            return;
-        }
+        ActivatorType type = ctx.getArgument("type", ActivatorType.class);
         Activator activator = type.createActivator(
                 new Logic(platform, type.getName(), name),
                 Parameters.fromString(rawParameters)
         );
         if (activator == null) {
-            sendInky(ctx, "Failed to create activator&c!");
-            return;
+            sendPrefixed(ctx, "Failed to create activator&c!");
+            return SINGLE_SUCCESS;
         }
         activators.addActivator(activator, true);
-        sendPrefixed(ctx, "Activator&a '&{name}'&r of type&a '&{type}'&r was created", Map.of(
+        sendPrefixed(ctx, "Activator &a'&{name}'&r of type &a'&{type}'&r was created.", Map.of(
                 "name", activator.getLogic().getName(),
                 "type", activator.getLogic().getType()
         ));
+        return SINGLE_SUCCESS;
     }
 
-    private int info(@NotNull CommandContext<CommandSourceStack> ctx) {
-        CommandSender sender = ctx.getSource().getSender();
+    private int info(@NotNull CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Activator activator = getActivator(ctx);
-        if (activator == null) { // TODO
-            return SINGLE_SUCCESS;
-        }
         Logic logic = activator.getLogic();
+        CommandSender sender = ctx.getSource().getSender();
         sender.sendMessage("");
         sender.sendMessage(text()
                 .append(inky("&7" + logic.getGroup() + "/&6&l" + logic.getName()))
@@ -160,144 +177,153 @@ public final class ReaActivatorSub extends RaCommandBase {
         return SINGLE_SUCCESS;
     }
 
-    private void sendActivityInfo(CommandSender sender, List<? extends Activity.Stored<?>> storeds, String title, boolean isFlag) {
+    private void sendActivityInfo(
+            @NotNull CommandSender sender,
+            @NotNull List<? extends Activity.Stored<?>> storeds,
+            @NotNull String title,
+            boolean isFlag
+    ) {
         if (storeds.isEmpty()) return;
         sendInky(sender, title);
         for (int i = 0; i < storeds.size(); i++) {
-            Activity.Stored<?> storedActivity = storeds.get(i);
-            Activity activity = storedActivity.getActivity();
-            Component text;
-            if (isFlag && storedActivity instanceof Flag.Stored storedFlag) {
-                text = inky(" &7" + (i + 1) + (storedFlag.isInverted() ? " &c&l!&r" : " "));
-            } else {
-                text = inky(" &7" + (i + 1) + " ");
-            }
-            sender.sendMessage(text
+            Activity.Stored<?> stored = storeds.get(i);
+            Activity activity = stored.getActivity();
+            Component prefix = (isFlag && stored instanceof Flag.Stored storedFlag)
+                    ? inky(" &7" + (i + 1) + (storedFlag.isInverted() ? " &c&l!&r" : " "))
+                    : inky(" &7" + (i + 1) + " ");
+            sender.sendMessage(prefix
                     .append(inky("&e" + activity.getName() + " &7= &r"))
-                    .append(text(storedActivity.getContent())));
+                    .append(text(stored.getContent())));
         }
     }
 
     private int deletePrompt(@NotNull CommandContext<CommandSourceStack> ctx) {
-        sendPrefixed(ctx, "Add confirm to the end of a command.");
+        sendPrefixed(ctx, "Append &econfirm&r to the command to proceed.");
         return SINGLE_SUCCESS;
     }
 
-    private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private int delete(@NotNull CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Activator activator = getActivator(ctx);
-        if (activator == null) { // TODO
-            return SINGLE_SUCCESS;
-        }
-        String activatorName = activator.getLogic().getName();
-        activators.removeActivator(activatorName);
-        sendPrefixed(ctx, "Activator &a'&{name}'&r was successfully removed.", Map.of("name", activatorName));
+        String name = activator.getLogic().getName();
+        activators.removeActivator(name);
         saveActivator(activator);
+        sendPrefixed(ctx, "Activator &a'&{name}'&r was successfully removed.", Map.of("name", name));
         return SINGLE_SUCCESS;
     }
 
-    private int activityHelp(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection) {
-        Activator activator = getActivator(ctx);
+    private int activityHelp(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull ActivitySelection selection) {
         return sendHelp(ctx, "activator " + esc(ctx.getArgument("name", String.class)) + " " + selection,
-                "add", "<type> &e[parameters...]", "Add &a" + selection + "&r to an activator",
-                "remove", "<index>", "Remove &a" + selection + "&r from an activator",
-                "move", "<from> <to>", "Move &a" + selection + "&r to another index"
+                "add", "<type> &e[parameters...]", "Add a &a" + selection + "&r to the activator",
+                "remove", "<index>", "Remove the &a" + selection + "&r at the given index",
+                "move", "<from> <to>", "Move a &a" + selection + "&r to another index"
         );
     }
 
-    private int activityAdd(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection, String parameters) {
+    private int actionAdd(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull ActivitySelection selection,
+            @NotNull String parameters
+    ) throws CommandSyntaxException {
         Activator activator = getActivator(ctx);
-        if (activator == null) { // TODO
-            return SINGLE_SUCCESS;
-        }
-        String type = StringArgumentType.getString(ctx, "type");
-        if (selection == ActivitySelection.FLAG) {
-            boolean inverted = type.startsWith("!");
-            String flagType = inverted ? type.substring(1) : type;
-            Flag flag = activities.getFlag(flagType);
-            if (flag == null) {
-                sendInky(ctx, "Flag &c'" + type + "'&r doesn't exist.");
-                return  SINGLE_SUCCESS;
-            }
-            activator.getLogic().getFlags().add(new Flag.Stored(flag, parameters, inverted));
-            sendPrefixed(ctx, "&{selection} &{nameFormatted}&r was successfully added.", Map.of( // TODO Hover for params
-                    "selection", selection.asStart,
-                    "nameFormatted", inky((inverted ? "&6&l!&r&a" : "&a") + flag.getName())
-            ));
-        } else {
-            var target = selection == ActivitySelection.ACTION
-                    ? activator.getLogic().getActions()
-                    : activator.getLogic().getReactions();
-            Action action = activities.getAction(type);
-            if (action == null) {
-                sendInky(ctx, "Action &c'" + type + "'&r doesn't exist.");
-                return SINGLE_SUCCESS;
-            }
-            target.add(new Action.Stored(action, parameters));
-            sendPrefixed(ctx, "&{selection} &{name}&r was successfully added.", Map.of( // TODO Hover for params
-                    "selection", selection.asStart,
-                    "name", action.getName()
-            ));
-        }
+        Action action = ctx.getArgument("type", Action.class);
+        var target = selection == ActivitySelection.ACTION
+                ? activator.getLogic().getActions()
+                : activator.getLogic().getReactions();
+        target.add(new Action.Stored(action, parameters));
         saveActivator(activator);
+        sendPrefixed(ctx, "&{selection} &a&{name}&r was successfully added.", Map.of(
+                "selection", selection.asStart,
+                "name", action.getName()
+        ));
         return SINGLE_SUCCESS;
     }
 
-    private int activityRemove(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection) {
+    private int flagAdd(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String parameters
+    ) throws CommandSyntaxException {
         Activator activator = getActivator(ctx);
-        if (activator == null) { // TODO
+        String rawType = StringArgumentType.getString(ctx, "type");
+        boolean inverted = rawType.startsWith("!");
+        String flagType = inverted ? rawType.substring(1) : rawType;
+        Flag flag = activities.getFlag(flagType);
+        if (flag == null) {
+            sendPrefixed(ctx, "Flag &c'" + esc(flagType) + "'&r doesn't exist.");
             return SINGLE_SUCCESS;
         }
+        activator.getLogic().getFlags().add(new Flag.Stored(flag, parameters, inverted));
+        saveActivator(activator);
+        sendPrefixed(ctx, "&{selection} &{nameFormatted}&r was successfully added.", Map.of(
+                "selection", ActivitySelection.FLAG.asStart,
+                "nameFormatted", inky((inverted ? "&6&l!&r&a" : "&a") + flag.getName())
+        ));
+        return SINGLE_SUCCESS;
+    }
+
+    private int activityRemove(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull ActivitySelection selection
+    ) throws CommandSyntaxException {
+        Activator activator = getActivator(ctx);
         List<? extends Activity.Stored<?>> list = getActivityList(activator, selection);
         int index = IntegerArgumentType.getInteger(ctx, "index");
-        if (index < 0 || index >= list.size()) {
-            sendPrefixed(ctx, "There's no &c" + selection + "&r under index &c" + index + "&r.");
+        if (index > list.size()) {
+            sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + index + "&r.");
             return SINGLE_SUCCESS;
         }
-        Activity.Stored<?> activity = list.remove(index);
-        sendPrefixed(ctx, "Successfully removed &{type} &a&{name}&r at index &a&{index}&r.", Map.of( // TODO Hover for params
-                "type", selection.lower,
-                "name", activity.getActivity().getName(),
-                "index", index
+        Activity.Stored<?> removed = list.remove(index - 1);
+        saveActivator(activator);
+        sendPrefixed(ctx, "Removed &a" + selection + "&r &a'&{name}'&r at index &a" + index + "&r.", Map.of(
+                "name", removed.getActivity().getName()
         ));
-        saveActivator(activator);
         return SINGLE_SUCCESS;
     }
 
-    private int activityMove(@NotNull CommandContext<CommandSourceStack> ctx, ActivitySelection selection) {
-        Activator activator = getActivator(ctx);
-        if (activator == null) {
-            return SINGLE_SUCCESS;
-        }
-        activityMoveList(ctx, selection, getActivityList(activator, selection));
-        saveActivator(activator);
-        return SINGLE_SUCCESS;
-    }
-
-    private <T extends Activity.Stored<?>> void activityMoveList(
+    private int activityMove(
             @NotNull CommandContext<CommandSourceStack> ctx,
-            ActivitySelection selection,
-            List<T> list
-    ) {
+            @NotNull ActivitySelection selection
+    ) throws CommandSyntaxException {
+        Activator activator = getActivator(ctx);
         int from = IntegerArgumentType.getInteger(ctx, "from");
-        if (from < 0 || from >= list.size()) {
-            sendPrefixed(ctx, "There's no &c" + selection + "&r with index &c" + from + "&r.");
+        int to = IntegerArgumentType.getInteger(ctx, "to");
+        doMove(getActivityList(activator, selection), selection, ctx, from, to);
+        saveActivator(activator);
+        return SINGLE_SUCCESS;
+    }
+
+    /**
+     * Generic helper so the wildcard in {@code List<? extends Activity.Stored<?>>} is
+     * captured as {@code T}, letting us pass the result of {@code remove} back to {@code add}.
+     */
+    private <T extends Activity.Stored<?>> void doMove(
+            @NotNull List<T> list,
+            @NotNull ActivitySelection selection,
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            int from, int to
+    ) {
+        if (from > list.size()) {
+            sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + from + "&r.");
             return;
         }
-        int to = IntegerArgumentType.getInteger(ctx, "to");
-        if (to < 0 || to >= list.size()) {
-            sendPrefixed(ctx, "There's no &c" + selection + "&r with index &c" + to + "&r.");
+        if (to > list.size()) {
+            sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + to + "&r.");
             return;
         }
         if (from == to) {
-            sendPrefixed(ctx, "You can't move &c" + selection + "&r onto itself.");
+            sendPrefixed(ctx, "Cannot move &c" + selection + "&r onto itself.");
             return;
         }
-        if (to > from) to--;
-        list.add(to, list.remove(from));
-        sendPrefixed(ctx, "Successfully moved &a" + selection + "&r.");
+        int fromIdx = from - 1;
+        int toIdx = to - 1;
+        if (toIdx > fromIdx) toIdx--;
+        list.add(toIdx, list.remove(fromIdx));
+        sendPrefixed(ctx, "Moved &a" + selection + "&r from index &a" + from + "&r to &a" + to + "&r.");
     }
 
-    private @NotNull List<? extends Activity.Stored<?>> getActivityList(@NotNull Activator activator, @NotNull ActivitySelection selection) {
+    private @NotNull List<? extends Activity.Stored<?>> getActivityList(
+            @NotNull Activator activator,
+            @NotNull ActivitySelection selection
+    ) {
         return switch (selection) {
             case FLAG -> activator.getLogic().getFlags();
             case ACTION -> activator.getLogic().getActions();
@@ -305,12 +331,14 @@ public final class ReaActivatorSub extends RaCommandBase {
         };
     }
 
-    private @Nullable Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx) {
+    /**
+     * Resolves the activator by name or throws a {@link CommandSyntaxException}.
+     */
+    private @NotNull Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx)
+            throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
-        var activator = activators.getActivator(name);
-        if (activator == null) {
-            sendInky(ctx, "Activator &c'" + esc(name) + "'&r doesn't exist!");
-        }
+        Activator activator = activators.getActivator(name);
+        if (activator == null) throw UNKNOWN_ACTIVATOR.create(name);
         return activator;
     }
 
@@ -321,8 +349,8 @@ public final class ReaActivatorSub extends RaCommandBase {
     private enum ActivitySelection {
         REACTION, ACTION, FLAG;
 
-        private final String lower;
-        private final String asStart;
+        final String lower;
+        final String asStart;
 
         ActivitySelection() {
             this.lower = name().toLowerCase(Locale.ROOT);
