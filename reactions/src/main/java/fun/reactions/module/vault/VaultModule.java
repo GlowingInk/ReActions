@@ -26,6 +26,11 @@ public class VaultModule implements Module {
     }
 
     @Override
+    public boolean isImportant() {
+        return false;
+    }
+
+    @Override
     public void preRegister(@NotNull ReActions.Platform platform) {
         RaVault.init();
     }

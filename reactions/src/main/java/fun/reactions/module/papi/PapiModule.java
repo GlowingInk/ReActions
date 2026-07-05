@@ -16,6 +16,11 @@ public class PapiModule implements Module { // TODO To own jar
     private PlaceholderAPIPlugin papiPlugin;
 
     @Override
+    public boolean isImportant() {
+        return false;
+    }
+
+    @Override
     public @NotNull Collection<String> requiredPlugins() {
         return List.of("PlaceholderAPI");
     }

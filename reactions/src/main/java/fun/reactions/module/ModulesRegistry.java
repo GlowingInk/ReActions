@@ -65,7 +65,12 @@ public class ModulesRegistry {
         platform.logger().info("Registering '{}' module (by {})", module.getName(), String.join(", ", module.getAuthors()));
         List<String> missingPlugins = checkPlugins(module);
         if (!missingPlugins.isEmpty()) {
-            platform.logger().warn("Module '{}' cannot be registered because some plugins are missing: {}", module.getName(), String.join(", ", missingPlugins));
+            if (module.isImportant()) {
+                platform.logger().warn(
+                        "Module '{}' cannot be registered because some of its plugins are missing: {}",
+                        module.getName(), String.join(", ", missingPlugins)
+                );
+            }
             return;
         }
         module.preRegister(platform);
@@ -81,9 +86,9 @@ public class ModulesRegistry {
     private @NotNull List<String> checkPlugins(@NotNull Module module) {
         List<String> missingPlugins = new ArrayList<>(0);
         PluginManager pluginManager = platform.getServer().getPluginManager();
-        for (String str : module.requiredPlugins()) {
-            if (!pluginManager.isPluginEnabled(str)) {
-                missingPlugins.add(str);
+        for (String pluginName : module.requiredPlugins()) {
+            if (!pluginManager.isPluginEnabled(pluginName)) {
+                missingPlugins.add(pluginName);
             }
         }
         return missingPlugins;
