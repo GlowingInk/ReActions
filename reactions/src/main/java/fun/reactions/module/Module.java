@@ -13,9 +13,12 @@ import java.util.Collection;
 import java.util.List;
 
 public interface Module extends Named {
-
     default @NotNull Collection<@NotNull String> requiredPlugins() {
         return List.of();
+    }
+
+    default boolean isImportant() {
+        return true;
     }
 
     default void preRegister(@NotNull ReActions.Platform platform) { }

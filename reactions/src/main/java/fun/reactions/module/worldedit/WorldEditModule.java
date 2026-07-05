@@ -27,6 +27,11 @@ public class WorldEditModule implements Module { // TODO: Actions with WorldEdit
     }
 
     @Override
+    public boolean isImportant() {
+        return false;
+    }
+
+    @Override
     public void preRegister(ReActions.@NotNull Platform platform) {
         RaWorldEdit.init();
     }

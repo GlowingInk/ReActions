@@ -37,7 +37,7 @@ public class OnlineCountFlag implements Flag {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         OptionalInt countOpt = NumberUtils.parseInteger(paramsStr, Is.POSITIVE);
-        return countOpt.isPresent() && env.getPlatform().getServer().getOnlinePlayers().size() >= countOpt.getAsInt();
+        return countOpt.isPresent() && env.getServer().getOnlinePlayers().size() >= countOpt.getAsInt();
     }
 
     @Override
