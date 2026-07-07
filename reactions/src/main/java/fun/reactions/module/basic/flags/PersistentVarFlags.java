@@ -38,12 +38,12 @@ import java.util.regex.PatternSyntaxException;
 public record PersistentVarFlags(@NotNull Type flagType, boolean personal) implements Flag, Aliased {
     @Override
     public @NotNull String getName() {
-        return (personal ? "PLAYER_VAR_" : "VAR_") + flagType;
+        return (personal ? "PLAYER_VAR_" : "GLOBAL_VAR_") + flagType;
     }
 
     @Override
     public @NotNull Collection<String> getAliases() {
-        return List.of((personal ? "VAR_PLAYER_" : "GLOBAL_VAR_") + flagType);
+        return List.of((personal ? "VAR_PLAYER_" : "VAR_") + flagType);
     }
 
 
