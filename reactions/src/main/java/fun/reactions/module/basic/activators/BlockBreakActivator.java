@@ -117,7 +117,7 @@ public class BlockBreakActivator extends Activator implements Locatable {
                     "blocklocation", lazy(() -> LocationUtils.locationToString(loc)),
                     "block_x", lazy(() -> Integer.toString(loc.getBlockX())),
                     "block_y", lazy(() -> Integer.toString(loc.getBlockY())),
-                    "block_z", lazy(() -> Integer.toString(loc.getBlockY())),
+                    "block_z", lazy(() -> Integer.toString(loc.getBlockZ())),
                     "block_world", simple(loc.getWorld().getName()),
                     "blocktype", simple(block.getType()),
                     "block", simple(block.getType()) // FIXME Why there is a copy?
