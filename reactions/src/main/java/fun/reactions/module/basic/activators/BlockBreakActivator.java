@@ -9,6 +9,7 @@ import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -18,8 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.property;
-import static fun.reactions.model.environment.Variable.simple;
+import static fun.reactions.model.environment.Variable.*;
 
 /**
  * @author MaxDikiy
@@ -110,10 +110,15 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
+            Location loc = block.getLocation();
             return Map.of(
                     CANCEL_EVENT, property(false),
                     DO_DROP, property(dropItems),
-                    "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
+                    "blocklocation", lazy(() -> LocationUtils.locationToString(loc)),
+                    "block_x", lazy(() -> Integer.toString(loc.getBlockX())),
+                    "block_y", lazy(() -> Integer.toString(loc.getBlockY())),
+                    "block_z", lazy(() -> Integer.toString(loc.getBlockY())),
+                    "block_world", simple(loc.getWorld().getName()),
                     "blocktype", simple(block.getType()),
                     "block", simple(block.getType()) // FIXME Why there is a copy?
             );

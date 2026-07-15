@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+import static fun.reactions.model.environment.Variable.lazy;
 import static fun.reactions.model.environment.Variable.simple;
 
 /**
@@ -131,9 +132,14 @@ public class DamageByBlockActivator extends Activator implements Locatable {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = super.prepareVariables();
-            vars.put("blocklocation", simple(LocationUtils.locationToString(blockDamager.getLocation())));
-            vars.put("blocktype", Variable.simple(blockDamager.getType()));
-            vars.put("block", Variable.simple(blockDamager.getType())); // FIXME Why there is a copy?
+            Location loc = blockDamager.getLocation();
+            vars.put("blocklocation", lazy(() -> LocationUtils.locationToString(loc)));
+            vars.put("block_x", lazy(() -> Integer.toString(loc.getBlockX())));
+            vars.put("block_y", lazy(() -> Integer.toString(loc.getBlockY())));
+            vars.put("block_z", lazy(() -> Integer.toString(loc.getBlockZ())));
+            vars.put("block_world", simple(loc.getWorld().getName()));
+            vars.put("blocktype", simple(blockDamager.getType()));
+            vars.put("block", simple(blockDamager.getType())); // FIXME Why there is a copy?
             return vars;
         }
     }
