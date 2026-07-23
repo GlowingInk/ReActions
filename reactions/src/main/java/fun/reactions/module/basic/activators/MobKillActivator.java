@@ -122,7 +122,8 @@ public class MobKillActivator extends Activator {
                     "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
                     "mobkiller", Variable.simple(player == null ? "" : player.getName()),
                     "mobtype", Variable.simple(entity.getType()),
-                    "mobname", simple(EntityUtils.getEntityDisplayName(entity))
+                    "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
+                    "spawn_reason", simple(entity.getEntitySpawnReason())
             );
         }
     }
