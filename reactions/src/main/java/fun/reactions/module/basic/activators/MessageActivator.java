@@ -137,7 +137,7 @@ public class MessageActivator extends Activator {
         ALL,
         CHAT_INPUT,
         CONSOLE_INPUT,
-        CHAT_OUTPUT,
+        CHAT_OUTPUT, // TODO Doesn't work; should probably just be removed
         LOG_OUTPUT;
         //ANSWER;
 
@@ -193,9 +193,9 @@ public class MessageActivator extends Activator {
                 vars.put("num" + j, Variable.lazy(() -> msgInfo.get().nums.size() > index ? msgInfo.get().nums.get(index) : ""));
                 vars.put("int" + j, Variable.lazy(() -> msgInfo.get().ints.size() > index ? msgInfo.get().ints.get(index) : ""));
             }
-            vars.put("word-count", Variable.lazy(() -> String.valueOf(msgInfo.get().words.size())));
-            vars.put("num-count", Variable.lazy(() -> String.valueOf(msgInfo.get().nums.size())));
-            vars.put("int-count", Variable.lazy(() -> String.valueOf(msgInfo.get().ints.size())));
+            vars.put("word-count", Variable.lazy(() -> Integer.toString(msgInfo.get().words.size())));
+            vars.put("num-count", Variable.lazy(() -> Integer.toString(msgInfo.get().nums.size())));
+            vars.put("int-count", Variable.lazy(() -> Integer.toString(msgInfo.get().ints.size())));
             return vars;
         }
 
