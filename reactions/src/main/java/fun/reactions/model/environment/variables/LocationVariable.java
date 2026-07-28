@@ -52,12 +52,12 @@ public final class LocationVariable extends ComputedVariable {
     @Override
     protected @Nullable Variable computeChild(@NotNull String key) {
         return switch (key) {
-            case "x" -> Variable.simple(Integer.toString(location.getBlockX()));
-            case "y" -> Variable.simple(Integer.toString(location.getBlockY()));
-            case "z" -> Variable.simple(Integer.toString(location.getBlockZ()));
-            case "world" -> Variable.simple(location.getWorld().getName());
-            case "yaw" -> Variable.simple(Float.toString(location.getYaw()));
-            case "pitch" -> Variable.simple(Float.toString(location.getPitch()));
+            case "x" -> Variable.value(Integer.toString(location.getBlockX()));
+            case "y" -> Variable.value(Integer.toString(location.getBlockY()));
+            case "z" -> Variable.value(Integer.toString(location.getBlockZ()));
+            case "world" -> Variable.value(location.getWorld().getName());
+            case "yaw" -> Variable.value(Float.toString(location.getYaw()));
+            case "pitch" -> Variable.value(Float.toString(location.getPitch()));
             default -> null;
         };
     }

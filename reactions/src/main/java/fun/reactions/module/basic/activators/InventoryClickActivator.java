@@ -179,18 +179,18 @@ public class InventoryClickActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            Variable itemVar = item == null ? Variable.simple(VirtualItem.asString(null)) : new ItemVariable(item);
+            Variable itemVar = item == null ? Variable.value(VirtualItem.asString(null)) : new ItemVariable(item);
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
+                    CANCEL_EVENT, Variable.value(false),
                     ITEM, itemVar,
-                    "name", Variable.simple(inventoryName),
-                    "click", Variable.simple(clickType),
-                    "action", Variable.simple(action),
-                    "slottype", Variable.simple(slotType),
-                    "inventory", Variable.simple(inventoryType),
-                    "key", Variable.simple(numberKey + 1),
-                    "itemkey", numberKey > -1 ? Variable.lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : Variable.simple(""),
-                    "slot", Variable.simple(slot)
+                    "name", Variable.value(inventoryName),
+                    "click", Variable.value(clickType),
+                    "action", Variable.value(action),
+                    "slottype", Variable.value(slotType),
+                    "inventory", Variable.value(inventoryType),
+                    "key", Variable.value(numberKey + 1),
+                    "itemkey", numberKey > -1 ? Variable.lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : Variable.value(""),
+                    "slot", Variable.value(slot)
             );
         }
 

@@ -172,32 +172,16 @@ public interface Variable {
      * A plain, untracked string variable - {@link #changed()} stays empty until it's explicitly
      * {@link #set}.
      */
-    static @NotNull Variable simple(@NotNull String value) {
+    static @NotNull Variable value(@NotNull String value) {
         return of(value, false);
     }
 
-    static @NotNull Variable simple(@NotNull Enum<?> value) {
-        return simple(value.name());
+    static @NotNull Variable value(@NotNull Enum<?> value) {
+        return value(value.name());
     }
 
-    static @NotNull Variable simple(@NotNull Object value) {
-        return simple(value.toString());
-    }
-
-    /**
-     * Same as {@link #simple}; the separate name only documents intent at the call site - typically
-     * a value a listener may later check via {@link #changed()} to see if an action overrode it.
-     */
-    static @NotNull Variable property(@NotNull String value) {
-        return of(value, false);
-    }
-
-    static @NotNull Variable property(@NotNull Enum<?> value) {
-        return property(value.name());
-    }
-
-    static @NotNull Variable property(@NotNull Object value) {
-        return property(value.toString());
+    static @NotNull Variable value(@NotNull Object value) {
+        return value(value.toString());
     }
 
     /**

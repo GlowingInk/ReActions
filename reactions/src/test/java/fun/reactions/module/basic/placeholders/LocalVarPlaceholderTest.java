@@ -31,9 +31,9 @@ public class LocalVarPlaceholderTest {
         vars.set("block_x", "1");
 
         StructVariable location = new StructVariable("here", new HashMap<>());
-        location.putChild("world", Variable.simple("world"));
+        location.putChild("world", Variable.value("world"));
         StructVariable block = new StructVariable("STONE", new HashMap<>());
-        block.putChild("x", Variable.simple("1"));
+        block.putChild("x", Variable.value("1"));
         block.putChild("location", location);
         vars.setVariable("block", block);
 

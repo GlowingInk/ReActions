@@ -28,8 +28,8 @@ public class ComputedVariableTest {
         protected @Nullable Variable computeChild(@NotNull String key) {
             computeCount[0]++;
             return switch (key) {
-                case "a" -> Variable.simple("1");
-                case "b" -> Variable.simple("2");
+                case "a" -> Variable.value("1");
+                case "b" -> Variable.value("2");
                 default -> null;
             };
         }
@@ -69,7 +69,7 @@ public class ComputedVariableTest {
     @Test
     public void forkIsolatesOverriddenChildrenTest() {
         TestVariable var = new TestVariable();
-        var.putChild("a", Variable.simple("overridden"));
+        var.putChild("a", Variable.value("overridden"));
 
         Variable forked = var.fork();
         assertNotSame(forked, var);

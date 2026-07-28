@@ -65,7 +65,7 @@ public final class StructVariable extends TrackedVariable {
                     key,
                     section.isConfigurationSection(key)
                             ? read(Objects.requireNonNull(section.getConfigurationSection(key)))
-                            : Variable.simple(section.getString(key, ""))
+                            : Variable.value(section.getString(key, ""))
             );
         }
         return new StructVariable(self, children);
@@ -74,7 +74,7 @@ public final class StructVariable extends TrackedVariable {
     public static @NotNull StructVariable ofFlat(@NotNull String self, @NotNull Parameters params) {
         Map<String, Variable> children = new HashMap<>(params.keys().size());
         for (String key : params.keys()) {
-            children.put(key, Variable.simple(params.getString(key)));
+            children.put(key, Variable.value(params.getString(key)));
         }
         return new StructVariable(self, children);
     }
@@ -82,7 +82,7 @@ public final class StructVariable extends TrackedVariable {
     public static @NotNull Variable fromParameters(@NotNull Parameters params) {
         String self = params.getString("value", "");
         if (!params.contains("children")) {
-            return Variable.simple(self);
+            return Variable.value(self);
         }
         Parameters childParams = params.getParameters("children");
         Map<String, Variable> children = new HashMap<>(childParams.keys().size());
@@ -99,7 +99,7 @@ public final class StructVariable extends TrackedVariable {
         Set<String> keys = new HashSet<>(params.keys());
         keys.removeIf(key -> key.equalsIgnoreCase("value"));
         if (keys.isEmpty()) {
-            return Variable.simple(self);
+            return Variable.value(self);
         }
         Map<String, Variable> children = new HashMap<>(keys.size());
         for (String key : keys) {

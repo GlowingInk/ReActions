@@ -100,11 +100,11 @@ public class DamageActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put(DAMAGE, Variable.property(damage));
-            vars.put("final_damage", Variable.simple(finalDamage));
-            vars.put("cause", Variable.simple(cause));
-            vars.put("source", Variable.simple(source));
+            vars.put(CANCEL_EVENT, Variable.value(false));
+            vars.put(DAMAGE, Variable.value(damage));
+            vars.put("final_damage", Variable.value(finalDamage));
+            vars.put("cause", Variable.value(cause));
+            vars.put("source", Variable.value(source));
             return vars;
         }
     }

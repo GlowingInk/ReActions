@@ -76,7 +76,7 @@ public class TeleportActivator extends Activator {
         protected @NotNull Map<String, Variable> prepareVariables() {
             LocationVariable locationTo = new LocationVariable(to);
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
+                    CANCEL_EVENT, Variable.value(false),
                     LOCATION_TO, new ReferenceVariable(locationTo),
                     "location_to", locationTo
             );

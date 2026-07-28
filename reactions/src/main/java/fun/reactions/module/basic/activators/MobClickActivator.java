@@ -43,8 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.simple;
-
 public class MobClickActivator extends Activator implements Locatable {
     // TODO: EntityType
     private final String mobType;
@@ -154,10 +152,10 @@ public class MobClickActivator extends Activator implements Locatable {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
-                    "mobtype", Variable.simple(entity.getType()),
-                    "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
+                    CANCEL_EVENT, Variable.value(false),
+                    "moblocation", Variable.value(LocationUtils.locationToString(entity.getLocation())),
+                    "mobtype", Variable.value(entity.getType()),
+                    "mobname", Variable.value(EntityUtils.getEntityDisplayName(entity)),
                     "entity", new EntityVariable(entity)
             );
         }

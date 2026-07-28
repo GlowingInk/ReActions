@@ -41,8 +41,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.simple;
-
 public class MobKillActivator extends Activator {
     // TODO: EntityType
     private final String mobType;
@@ -119,12 +117,12 @@ public class MobKillActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
-                    "mobkiller", Variable.simple(player == null ? "" : player.getName()),
-                    "mobtype", Variable.simple(entity.getType()),
-                    "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
-                    "spawn_reason", simple(entity.getEntitySpawnReason()),
+                    CANCEL_EVENT, Variable.value(false),
+                    "moblocation", Variable.value(LocationUtils.locationToString(entity.getLocation())),
+                    "mobkiller", Variable.value(player == null ? "" : player.getName()),
+                    "mobtype", Variable.value(entity.getType()),
+                    "mobname", Variable.value(EntityUtils.getEntityDisplayName(entity)),
+                    "spawn_reason", Variable.value(entity.getEntitySpawnReason()),
                     "entity", new EntityVariable(entity)
             );
         }

@@ -38,8 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.simple;
-
 public class DeathActivator extends Activator {
 
     private final DeathCause deathCause;
@@ -94,10 +92,10 @@ public class DeathActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put("cause", simple(cause.name()));
+            vars.put("cause", Variable.value(cause.name()));
             if (killer != null) {
-                vars.put("killer-type", Variable.simple(killer.getType()));
-                vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
+                vars.put("killer-type", Variable.value(killer.getType()));
+                vars.put("killer-name", Variable.value(EntityUtils.getEntityDisplayName(killer)));
                 vars.put("killer", new EntityVariable(killer));
             }
             return vars;

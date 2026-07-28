@@ -116,7 +116,7 @@ public class ItemHoldActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
+            vars.put("hand", Variable.value(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
             if (item != null) {
                 vars.put("item", new ItemVariable(item));
                 vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));

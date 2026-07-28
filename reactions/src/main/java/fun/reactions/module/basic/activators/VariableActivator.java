@@ -105,9 +105,9 @@ public class VariableActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    "var-id", Variable.simple(variableId),
-                    "var-old", Variable.simple(oldValue),
-                    "var-new", Variable.simple(newValue)
+                    "var-id", Variable.value(variableId),
+                    "var-old", Variable.value(oldValue),
+                    "var-new", Variable.value(newValue)
             );
         }
     }

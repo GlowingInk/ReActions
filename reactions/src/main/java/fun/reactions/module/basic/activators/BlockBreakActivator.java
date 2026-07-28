@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.property;
+import static fun.reactions.model.environment.Variable.value;
 
 /**
  * @author MaxDikiy
@@ -111,8 +111,8 @@ public class BlockBreakActivator extends Activator implements Locatable {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>(BlockVariable.flatVars(block));
-            vars.put(CANCEL_EVENT, property(false));
-            vars.put(DO_DROP, property(dropItems));
+            vars.put(CANCEL_EVENT, value(false));
+            vars.put(DO_DROP, value(dropItems));
             return vars;
         }
     }

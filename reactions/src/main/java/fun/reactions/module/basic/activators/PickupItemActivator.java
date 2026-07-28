@@ -18,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.simple;
-
 /**
  * @author MaxDikiy
  * @since 04/09/2017
@@ -87,10 +85,10 @@ public class PickupItemActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    PICKUP_DELAY, Variable.property(pickupDelay),
+                    CANCEL_EVENT, Variable.value(false),
+                    PICKUP_DELAY, Variable.value(pickupDelay),
                     ITEM, new ItemVariable(item),
-                    "droplocation", simple(LocationUtils.locationToString(dropLoc)),
+                    "droplocation", Variable.value(LocationUtils.locationToString(dropLoc)),
                     "drop_location", new LocationVariable(dropLoc)
             );
         }

@@ -114,7 +114,7 @@ public class LeverActivator extends Activator implements Locatable {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            return Map.of(CANCEL_EVENT, Variable.property(false));
+            return Map.of(CANCEL_EVENT, Variable.value(false));
         }
     }
 }

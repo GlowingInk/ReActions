@@ -40,20 +40,20 @@ public final class EntityVariable extends ComputedVariable {
     @Override
     protected @Nullable Variable computeChild(@NotNull String key) {
         return switch (key) {
-            case "x" -> Variable.simple(Integer.toString(entity.getLocation().getBlockX()));
-            case "y" -> Variable.simple(Integer.toString(entity.getLocation().getBlockY()));
-            case "z" -> Variable.simple(Integer.toString(entity.getLocation().getBlockZ()));
-            case "world" -> Variable.simple(entity.getWorld().getName());
-            case "type" -> Variable.simple(entity.getType());
-            case "spawn_reason" -> Variable.simple(entity.getEntitySpawnReason());
-            case "name" -> Variable.simple(EntityUtils.getEntityDisplayName(entity));
+            case "x" -> Variable.value(Integer.toString(entity.getLocation().getBlockX()));
+            case "y" -> Variable.value(Integer.toString(entity.getLocation().getBlockY()));
+            case "z" -> Variable.value(Integer.toString(entity.getLocation().getBlockZ()));
+            case "world" -> Variable.value(entity.getWorld().getName());
+            case "type" -> Variable.value(entity.getType());
+            case "spawn_reason" -> Variable.value(entity.getEntitySpawnReason());
+            case "name" -> Variable.value(EntityUtils.getEntityDisplayName(entity));
             case "origin" -> {
                 Location origin = entity.getOrigin();
                 yield origin == null ? null : new LocationVariable(origin);
             }
             case "location" -> new LocationVariable(entity.getLocation());
-            case "uuid", "id" -> Variable.simple(entity.getUniqueId());
-            case "network_id" -> Variable.simple(entity.getEntityId());
+            case "uuid", "id" -> Variable.value(entity.getUniqueId());
+            case "network_id" -> Variable.value(entity.getEntityId());
             default -> null;
         };
     }

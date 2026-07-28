@@ -21,7 +21,7 @@ public class VariablesTest {
     @Test
     public void changedTracksExplicitSetsOnlyTest() {
         Map<String, Variable> seed = new HashMap<>();
-        seed.put("cancel_event", Variable.property(false));
+        seed.put("cancel_event", Variable.value(false));
         Variables vars = new Variables(seed);
 
         assertTrue(vars.changedBoolean("cancel_event").isEmpty());
@@ -41,7 +41,7 @@ public class VariablesTest {
     }
 
     @Test
-    public void readConfigurationKeepsFlatVariablesAsSimpleTest() throws Exception {
+    public void configurationFlatVariablesAsValueTest() throws Exception {
         var cfg = new YamlConfiguration();
         cfg.loadFromString("key: value\nother: 5\n");
 
@@ -51,7 +51,7 @@ public class VariablesTest {
     }
 
     @Test
-    public void writeThenReadConfigurationRoundTripsStructuredVariablesTest() {
+    public void configurationStructuredVariablesTest() {
         Variables vars = new Variables();
         vars.set("plain", "value");
         StructVariable block = new StructVariable("STONE", new HashMap<>());

@@ -12,7 +12,7 @@ public class ReferenceVariableTest {
     @Test
     public void delegatesAndMutatesBothWaysTest() {
         StructVariable target = new StructVariable("here", new HashMap<>());
-        target.putChild("x", Variable.simple("1"));
+        target.putChild("x", Variable.value("1"));
         ReferenceVariable ref = new ReferenceVariable(target);
 
         assertEquals(ref.get(), "here");

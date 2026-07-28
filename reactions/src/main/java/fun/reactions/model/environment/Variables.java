@@ -39,7 +39,7 @@ public class Variables {
         for (String key : keys) {
             Variable var = cfg.isConfigurationSection(key)
                     ? StructVariable.read(Objects.requireNonNull(cfg.getConfigurationSection(key)))
-                    : Variable.simple(cfg.getString(key, ""));
+                    : Variable.value(cfg.getString(key, ""));
             vars.put(key, var);
         }
         return new Variables(vars, false);
@@ -70,7 +70,7 @@ public class Variables {
         Set<String> keys = params.keys();
         Map<String, Variable> vars = caseInsensitiveMap(keys.size());
         for (String key : keys) {
-            vars.put(key, Variable.simple(params.getString(key)));
+            vars.put(key, Variable.value(params.getString(key)));
         }
         return new Variables(vars, false);
     }

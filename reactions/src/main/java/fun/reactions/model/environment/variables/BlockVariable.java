@@ -20,8 +20,8 @@ public final class BlockVariable extends ComputedVariable {
                 "block_x", Variable.lazy(() -> Integer.toString(block.getX())),
                 "block_y", Variable.lazy(() -> Integer.toString(block.getY())),
                 "block_z", Variable.lazy(() -> Integer.toString(block.getZ())),
-                "block_world", Variable.simple(block.getWorld().getName()),
-                "blocktype", Variable.simple(block.getType()),
+                "block_world", Variable.value(block.getWorld().getName()),
+                "blocktype", Variable.value(block.getType()),
                 "block", new BlockVariable(block)
         );
     }
@@ -52,11 +52,11 @@ public final class BlockVariable extends ComputedVariable {
     @Override
     protected @Nullable Variable computeChild(@NotNull String key) {
         return switch (key) {
-            case "x" -> Variable.simple(Integer.toString(block.getX()));
-            case "y" -> Variable.simple(Integer.toString(block.getY()));
-            case "z" -> Variable.simple(Integer.toString(block.getZ()));
-            case "world" -> Variable.simple(block.getWorld().getName());
-            case "type" -> Variable.simple(block.getType());
+            case "x" -> Variable.value(Integer.toString(block.getX()));
+            case "y" -> Variable.value(Integer.toString(block.getY()));
+            case "z" -> Variable.value(Integer.toString(block.getZ()));
+            case "world" -> Variable.value(block.getWorld().getName());
+            case "type" -> Variable.value(block.getType());
             case "location" -> new LocationVariable(block);
             default -> null;
         };

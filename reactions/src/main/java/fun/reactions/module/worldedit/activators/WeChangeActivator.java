@@ -19,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.simple;
-
 /**
  * @author MaxDikiy
  * @since 17/10/2017
@@ -97,9 +95,9 @@ public class WeChangeActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "blocktype", Variable.simple(blockType),
-                    "blocklocation", simple(LocationUtils.locationToString(location)),
+                    CANCEL_EVENT, Variable.value(false),
+                    "blocktype", Variable.value(blockType),
+                    "blocklocation", Variable.value(LocationUtils.locationToString(location)),
                     "block_location", new LocationVariable(location)
             );
         }

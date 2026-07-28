@@ -164,11 +164,11 @@ public class SignActivator extends Activator {
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
             for (int i = 0; i < signLines.length; i++) {
-                vars.put("sign_line" + (i + 1), Variable.simple(signLines[i]));
+                vars.put("sign_line" + (i + 1), Variable.value(signLines[i]));
             }
-            vars.put("sign_loc", Variable.simple(LocationUtils.locationToString(location)));
+            vars.put("sign_loc", Variable.value(LocationUtils.locationToString(location)));
             vars.put("sign_location", new LocationVariable(location));
-            vars.put("click", Variable.simple(leftClick ? "left" : "right"));
+            vars.put("click", Variable.value(leftClick ? "left" : "right"));
             return vars;
         }
     }

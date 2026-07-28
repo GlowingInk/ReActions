@@ -181,8 +181,8 @@ public class MessageActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put(MESSAGE, Variable.property(message));
+            vars.put(CANCEL_EVENT, Variable.value(false));
+            vars.put(MESSAGE, Variable.value(message));
             String[] words = message.split(" ");
             Supplier<MessageInfo> msgInfo = FunctionalUtils.asSafeCaching(() -> new MessageInfo(words));
             for (int i = 0; i < words.length; i++) {

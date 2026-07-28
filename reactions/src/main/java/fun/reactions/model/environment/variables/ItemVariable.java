@@ -33,8 +33,8 @@ public final class ItemVariable implements Variable, Parameterizable {
     public @Nullable Variable child(@NotNull String key) {
         if (struct == null) {
             Variable fastPath = switch (key.toLowerCase(Locale.ROOT)) {
-                case "type" -> Variable.simple(item.getType());
-                case "amount" -> Variable.simple(Integer.toString(item.getAmount()));
+                case "type" -> Variable.value(item.getType());
+                case "amount" -> Variable.value(Integer.toString(item.getAmount()));
                 default -> null;
             };
             if (fastPath != null) return fastPath;

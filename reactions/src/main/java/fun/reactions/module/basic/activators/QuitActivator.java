@@ -68,7 +68,7 @@ public class QuitActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            return Map.of(QUIT_MESSAGE, Variable.property(quitMessage));
+            return Map.of(QUIT_MESSAGE, Variable.value(quitMessage));
         }
     }
 }

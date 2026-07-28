@@ -41,8 +41,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.simple;
-
 public class RespawnActivator extends Activator {
 
     private final DeathCause deathCause;
@@ -103,10 +101,10 @@ public class RespawnActivator extends Activator {
             LocationVariable respawnLocation = new LocationVariable(respawnLoc);
             vars.put(RESPAWN_LOCATION, new ReferenceVariable(respawnLocation));
             vars.put("respawn_location", respawnLocation);
-            vars.put("cause", simple(deathCause));
+            vars.put("cause", Variable.value(deathCause));
             if (killer != null) {
-                vars.put("killer-type", Variable.simple(killer.getType()));
-                vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
+                vars.put("killer-type", Variable.value(killer.getType()));
+                vars.put("killer-name", Variable.value(EntityUtils.getEntityDisplayName(killer)));
                 vars.put("killer", new EntityVariable(killer));
             }
             return vars;

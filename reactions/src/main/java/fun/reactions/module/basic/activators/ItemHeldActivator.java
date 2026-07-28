@@ -109,9 +109,9 @@ public class ItemHeldActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put("slotnew", Variable.simple(newSlot + 1));
-            vars.put("slotprev", Variable.simple(previousSlot + 1));
+            vars.put(CANCEL_EVENT, Variable.value(false));
+            vars.put("slotnew", Variable.value(newSlot + 1));
+            vars.put("slotprev", Variable.value(previousSlot + 1));
             if (newItem != null) {
                 ItemVariable itemNew = new ItemVariable(newItem);
                 vars.put("itemnew", new ReferenceVariable(itemNew));

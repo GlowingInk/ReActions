@@ -145,7 +145,7 @@ public class BlockClickActivator extends Activator implements Locatable {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>(BlockVariable.flatVars(block));
-            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put(CANCEL_EVENT, Variable.value(false));
             return vars;
         }
     }

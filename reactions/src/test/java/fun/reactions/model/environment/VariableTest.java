@@ -45,7 +45,7 @@ public class VariableTest {
 
     @Test
     public void changedTracksExplicitSetsOnlyTest() {
-        for (Variable fresh : new Variable[] {Variable.simple("a"), Variable.property("a")}) {
+        for (Variable fresh : new Variable[] {Variable.value("a"), Variable.value("a")}) {
             assertTrue(fresh.changed().isEmpty());
             assertEquals(fresh.set("b").changed(), Optional.of("b"));
         }
@@ -71,10 +71,10 @@ public class VariableTest {
             assertEquals(Parameters.fromString(params.getString("z")).getString("w"), "1");
         }
 
-        assertTrue(Variable.simple("STONE").asParameters().isEmpty());
+        assertTrue(Variable.value("STONE").asParameters().isEmpty());
 
         StructVariable shadowed = new StructVariable("here", new HashMap<>());
-        shadowed.putChild("self", Variable.simple("shadowed"));
+        shadowed.putChild("self", Variable.value("shadowed"));
         assertNotEquals(shadowed.resolve("self"), "shadowed"); // never returns a real child's raw value
         assertEquals(shadowed.child("self").get(), "shadowed"); // direct child access still works though
     }

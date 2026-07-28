@@ -129,8 +129,8 @@ public class DoorActivator extends Activator implements Locatable {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "door_loc", Variable.simple(LocationUtils.locationToString(doorBlock)),
+                    CANCEL_EVENT, Variable.value(false),
+                    "door_loc", Variable.value(LocationUtils.locationToString(doorBlock)),
                     "door_location", new LocationVariable(doorBlock)
             );
         }
