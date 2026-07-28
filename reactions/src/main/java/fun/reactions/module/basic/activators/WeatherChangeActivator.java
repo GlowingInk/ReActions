@@ -74,9 +74,9 @@ public class WeatherChangeActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "world", Variable.simple(world),
-                    "weather", Variable.simple(raining ? "RAINING" : "CLEAR")
+                    CANCEL_EVENT, Variable.value(false),
+                    "world", Variable.value(world),
+                    "weather", Variable.value(raining ? "RAINING" : "CLEAR")
             );
         }
 

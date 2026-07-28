@@ -70,8 +70,8 @@ public class FlightActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "flight", Variable.simple(flying)
+                    CANCEL_EVENT, Variable.value(false),
+                    "flight", Variable.value(flying)
             );
         }
     }

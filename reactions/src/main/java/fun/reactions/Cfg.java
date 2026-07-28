@@ -23,7 +23,7 @@ public class Cfg {
     public static boolean playerMoveTaskUse = false;
     public static int playerMoveTaskTick = 5;
     public static boolean altOperator = false; // experimental, disabled by default
-    public static boolean modernPlaceholders = false;
+    public static boolean modernPlaceholders = true;
     public static boolean parseBookPages = false;
 
     public static void save(FileConfiguration config) {

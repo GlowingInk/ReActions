@@ -20,7 +20,6 @@
  *
  */
 
-
 package fun.reactions.module.basic.activators;
 
 import fun.reactions.model.Logic;
@@ -162,23 +161,23 @@ public class CommandActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put(CANCEL_EVENT, Variable.value(false));
             String[] start = label.split(":", 2);
             if (start.length == 1) {
-                vars.put("prefix", Variable.simple(start[0]));
-                vars.put("label", Variable.simple(start[0]));
+                vars.put("prefix", Variable.value(start[0]));
+                vars.put("label", Variable.value(start[0]));
             } else {
-                vars.put("prefix", Variable.simple(start[0]));
-                vars.put("label", Variable.simple(start[1]));
+                vars.put("prefix", Variable.value(start[0]));
+                vars.put("label", Variable.value(start[1]));
             }
             vars.put("args", Variable.lazy(() -> String.join(" ", args)));
             vars.put("args0", Variable.lazy(() -> String.join(" ", args)));
-            vars.put("command", Variable.simple(command));
-            vars.put("argscount", Variable.simple(args.size()));
-            vars.put("arg0", Variable.simple(label));
+            vars.put("command", Variable.value(command));
+            vars.put("argscount", Variable.value(args.size()));
+            vars.put("arg0", Variable.value(label));
             for (int i = 0; i < args.size(); i++) {
                 int j = i + 1;
-                vars.put("arg" + j, Variable.simple(args.get(i)));
+                vars.put("arg" + j, Variable.value(args.get(i)));
                 int index = i;
                 vars.put("args" + j, Variable.lazy(() -> String.join(" ", args.subList(index, args.size()))));
             }

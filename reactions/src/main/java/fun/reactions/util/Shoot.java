@@ -114,12 +114,12 @@ public final class Shoot {
         if (player == null && param.getBoolean("playeronly", true)) return;
         param = param.with("player", player == null ? "~null" : player.getName());
         Map<String, Variable> vars = new HashMap<>();
-        vars.put("targettype", Variable.simple(target.getType()));
-        vars.put("targetname", Variable.simple(EntityUtils.getEntityDisplayName(target)));
-        vars.put("targetloc", Variable.simple(LocationUtils.locationToString(target.getLocation())));
+        vars.put("targettype", Variable.value(target.getType()));
+        vars.put("targetname", Variable.value(EntityUtils.getEntityDisplayName(target)));
+        vars.put("targetloc", Variable.value(LocationUtils.locationToString(target.getLocation())));
         if (shooter != null) {
-            vars.put("shooter", Variable.simple(shooter.getName()));
-            vars.put("shooterloc", Variable.simple(LocationUtils.locationToString(shooter.getLocation())));
+            vars.put("shooter", Variable.value(shooter.getName()));
+            vars.put("shooterloc", Variable.value(LocationUtils.locationToString(shooter.getLocation())));
         }
         ContextManager.triggerFunction(shooter, param, new Variables(vars));
     }

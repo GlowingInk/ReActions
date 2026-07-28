@@ -4,6 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -14,8 +15,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-
-import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * @author MaxDikiy
@@ -83,9 +82,10 @@ public class EntityClickActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "entitytype", Variable.simple(entity.getType()),
-                    "entity_name", simple(EntityUtils.getEntityDisplayName(entity))
+                    CANCEL_EVENT, Variable.value(false),
+                    "entitytype", Variable.value(entity.getType()),
+                    "entity_name", Variable.value(EntityUtils.getEntityDisplayName(entity)),
+                    "entity", new EntityVariable(entity)
             );
         }
     }

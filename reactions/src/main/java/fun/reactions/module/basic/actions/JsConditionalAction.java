@@ -97,7 +97,7 @@ public class JsConditionalAction implements Action {
         if (!param.containsAny("activator", "exec")) return false;
         param = param.with("player", p == null ? "~null" : p.getName());
         Map<String, Variable> vars = new HashMap<>();
-        vars.put("condition", Variable.simple(condition));
+        vars.put("condition", Variable.value(condition));
         ContextManager.triggerFunction(p, param, new Variables(vars));
         return true;
     }

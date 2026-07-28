@@ -5,8 +5,8 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.BlockVariable;
 import fun.reactions.util.item.ItemUtils;
-import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -16,10 +16,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.property;
-import static fun.reactions.model.environment.Variable.simple;
+import static fun.reactions.model.environment.Variable.value;
 
 /**
  * @author MaxDikiy
@@ -110,13 +110,10 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            return Map.of(
-                    CANCEL_EVENT, property(false),
-                    DO_DROP, property(dropItems),
-                    "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
-                    "blocktype", simple(block.getType()),
-                    "block", simple(block.getType()) // FIXME Why there is a copy?
-            );
+            Map<String, Variable> vars = new HashMap<>(BlockVariable.flatVars(block));
+            vars.put(CANCEL_EVENT, value(false));
+            vars.put(DO_DROP, value(dropItems));
+            return vars;
         }
     }
 }

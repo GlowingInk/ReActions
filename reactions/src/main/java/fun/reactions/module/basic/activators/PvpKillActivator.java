@@ -66,7 +66,7 @@ public class PvpKillActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            return Map.of("targetplayer", Variable.simple(killedPlayer.getName()));
+            return Map.of("targetplayer", Variable.value(killedPlayer.getName()));
         }
     }
 }

@@ -4,6 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
+import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -15,8 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-
-import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * @author MaxDikiy
@@ -85,10 +85,11 @@ public class PickupItemActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    PICKUP_DELAY, Variable.property(pickupDelay),
-                    ITEM, Variable.lazy(() -> VirtualItem.asString(item)),
-                    "droplocation", simple(LocationUtils.locationToString(dropLoc))
+                    CANCEL_EVENT, Variable.value(false),
+                    PICKUP_DELAY, Variable.value(pickupDelay),
+                    ITEM, new ItemVariable(item),
+                    "droplocation", Variable.value(LocationUtils.locationToString(dropLoc)),
+                    "drop_location", new LocationVariable(dropLoc)
             );
         }
     }

@@ -92,13 +92,13 @@ public class WeSelectionActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
+            vars.put(CANCEL_EVENT, Variable.value(false));
             if (selection.isValid()) {
-                vars.put("seltype", Variable.simple(selection.selType()));
+                vars.put("seltype", Variable.value(selection.selType()));
                 World world = selection.world();
-                vars.put("world", Variable.simple((world != null) ? world.getName() : ""));
-                vars.put("selblocks", Variable.simple(selection.area()));
-                vars.put("region", Variable.simple(selection.region()));
+                vars.put("world", Variable.value((world != null) ? world.getName() : ""));
+                vars.put("selblocks", Variable.value(selection.area()));
+                vars.put("region", Variable.value(selection.region()));
             }
             return vars;
         }

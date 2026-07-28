@@ -39,8 +39,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class LocationUtils { // TODO: Requires refactoring
     public static final int CHUNK_BITS = 4;
@@ -238,7 +240,7 @@ public final class LocationUtils { // TODO: Requires refactoring
 
     public static String locationToStringFormatted(Location loc) {
         if (loc == null) return "";
-        DecimalFormat fmt = new DecimalFormat("####0.##");
+        DecimalFormat fmt = new DecimalFormat("####0.##", DecimalFormatSymbols.getInstance(Locale.ROOT));
         String lstr = loc.toString();
         try {
             lstr = "[" + loc.getWorld().getName() + "] " + fmt.format(loc.getX()) + ", " + fmt.format(loc.getY()) + ", " + fmt.format(loc.getZ());

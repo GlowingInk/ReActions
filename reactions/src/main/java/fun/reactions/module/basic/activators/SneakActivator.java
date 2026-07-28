@@ -69,7 +69,7 @@ public class SneakActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            return Map.of("sneak", Variable.simple(sneaking));
+            return Map.of("sneak", Variable.value(sneaking));
         }
     }
 }

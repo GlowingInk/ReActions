@@ -5,6 +5,7 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.BlockVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
@@ -19,8 +20,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-
-import static fun.reactions.model.environment.Variable.simple;
 
 /**
  * @author MaxDikiy
@@ -131,9 +130,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = super.prepareVariables();
-            vars.put("blocklocation", simple(LocationUtils.locationToString(blockDamager.getLocation())));
-            vars.put("blocktype", Variable.simple(blockDamager.getType()));
-            vars.put("block", Variable.simple(blockDamager.getType())); // FIXME Why there is a copy?
+            vars.putAll(BlockVariable.flatVars(blockDamager));
             return vars;
         }
     }

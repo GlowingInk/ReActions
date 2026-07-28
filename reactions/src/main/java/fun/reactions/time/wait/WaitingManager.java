@@ -207,9 +207,7 @@ public class WaitingManager implements Saveable {
             Variables vars = task.variables();
             if (!vars.isEmpty()) {
                 var varsCfg = taskCfg.createSection("variables");
-                for (String varKey : vars.keys()) {
-                    varsCfg.set(varKey, vars.getString(varKey));
-                }
+                vars.writeConfiguration(varsCfg);
             }
         }
         Runnable saveRun = () -> ConfigUtils.saveConfig(

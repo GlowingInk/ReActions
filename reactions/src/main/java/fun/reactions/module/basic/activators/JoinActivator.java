@@ -55,7 +55,7 @@ public class JoinActivator extends Activator {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("join-state", firstJoin.name());
+        cfg.set("first-join", firstJoin.name());
     }
 
     @Override

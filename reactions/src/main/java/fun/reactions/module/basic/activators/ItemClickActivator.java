@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
 import fun.reactions.util.enums.HandType;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
@@ -99,10 +100,10 @@ public class ItemClickActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
+            vars.put(CANCEL_EVENT, Variable.value(false));
+            vars.put("hand", Variable.value(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
             if (item != null) {
-                vars.put("item", Variable.lazy(() -> VirtualItem.asString(item)));
+                vars.put("item", new ItemVariable(item));
                 vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
             }
             return vars;

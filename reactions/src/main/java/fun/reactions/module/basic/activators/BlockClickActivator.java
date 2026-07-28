@@ -27,6 +27,7 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.BlockVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.item.ItemUtils;
@@ -40,9 +41,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import static fun.reactions.model.environment.Variable.simple;
 
 // TODO Add Hand
 public class BlockClickActivator extends Activator implements Locatable {
@@ -144,12 +144,9 @@ public class BlockClickActivator extends Activator implements Locatable {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "blocklocation", simple(LocationUtils.locationToString(block.getLocation())),
-                    "blocktype", simple(block.getType()),
-                    "block", simple(block.getType()) // FIXME Why there is a copy?
-            );
+            Map<String, Variable> vars = new HashMap<>(BlockVariable.flatVars(block));
+            vars.put(CANCEL_EVENT, Variable.value(false));
+            return vars;
         }
     }
 }

@@ -78,8 +78,8 @@ public class GameModeActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    "gamemode", Variable.simple(gameMode)
+                    CANCEL_EVENT, Variable.value(false),
+                    "gamemode", Variable.value(gameMode)
             );
         }
     }

@@ -26,12 +26,14 @@ import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 public class BasicModule implements Module {
     private LogHandler logHandler;
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void postRegister(@NotNull ReActions.Platform platform) {
         logHandler = new LogHandler();
         platform.getServer().getLogger().addHandler(logHandler);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void onDisable(@NotNull ReActions.Platform platform) {
         platform.getServer().getLogger().removeHandler(logHandler);

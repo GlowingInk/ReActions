@@ -137,7 +137,7 @@ public class MessageActivator extends Activator {
         ALL,
         CHAT_INPUT,
         CONSOLE_INPUT,
-        CHAT_OUTPUT,
+        CHAT_OUTPUT, // TODO Doesn't work; should probably just be removed
         LOG_OUTPUT;
         //ANSWER;
 
@@ -181,8 +181,8 @@ public class MessageActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(CANCEL_EVENT, Variable.property(false));
-            vars.put(MESSAGE, Variable.property(message));
+            vars.put(CANCEL_EVENT, Variable.value(false));
+            vars.put(MESSAGE, Variable.value(message));
             String[] words = message.split(" ");
             Supplier<MessageInfo> msgInfo = FunctionalUtils.asSafeCaching(() -> new MessageInfo(words));
             for (int i = 0; i < words.length; i++) {
@@ -193,9 +193,9 @@ public class MessageActivator extends Activator {
                 vars.put("num" + j, Variable.lazy(() -> msgInfo.get().nums.size() > index ? msgInfo.get().nums.get(index) : ""));
                 vars.put("int" + j, Variable.lazy(() -> msgInfo.get().ints.size() > index ? msgInfo.get().ints.get(index) : ""));
             }
-            vars.put("word-count", Variable.lazy(() -> String.valueOf(msgInfo.get().words.size())));
-            vars.put("num-count", Variable.lazy(() -> String.valueOf(msgInfo.get().nums.size())));
-            vars.put("int-count", Variable.lazy(() -> String.valueOf(msgInfo.get().ints.size())));
+            vars.put("word-count", Variable.lazy(() -> Integer.toString(msgInfo.get().words.size())));
+            vars.put("num-count", Variable.lazy(() -> Integer.toString(msgInfo.get().nums.size())));
+            vars.put("int-count", Variable.lazy(() -> Integer.toString(msgInfo.get().ints.size())));
             return vars;
         }
 

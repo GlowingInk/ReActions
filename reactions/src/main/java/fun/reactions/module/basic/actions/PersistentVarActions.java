@@ -35,6 +35,26 @@ import java.util.List;
 
 public record PersistentVarActions(@NotNull Type actionType, boolean personal) implements Action, Aliased {
     @Override
+    public @NotNull String getName() {
+        return switch (actionType) {
+            case SET -> personal ? "PLAYER_VAR" : "GLOBAL_VAR";
+            case CLEAR -> personal ? "PLAYER_VAR_CLEAR" : "GLOBAL_VAR_CLEAR";
+            case INCREASE -> personal ? "PLAYER_VAR_INC" : "GLOBAL_VAR_INC";
+            case DECREASE -> personal ? "PLAYER_VAR_DEC" : "GLOBAL_VAR_DEC";
+        };
+    }
+
+    @Override
+    public @NotNull Collection<@NotNull String> getAliases() {
+        return switch (actionType) {
+            case SET -> personal ? List.of("VAR_PLAYER_SET", "PLAYER_VAR_SET") : List.of("VAR_SET", "GLOBAL_VAR_SET");
+            case CLEAR -> List.of(personal ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR");
+            case INCREASE -> List.of(personal ? "VAR_PLAYER_INC" : "VAR_INC");
+            case DECREASE -> List.of(personal ? "VAR_PLAYER_DEC" : "VAR_DEC");
+        };
+    }
+
+    @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) { // TODO: There's a lot of room for improvements
         Parameters params = Parameters.fromString(paramsStr);
         String playerName = (env.getPlayer() != null && this.personal) ? env.getPlayer().getName() : "";
@@ -76,26 +96,6 @@ public record PersistentVarActions(@NotNull Type actionType, boolean personal) i
             }
         }
         return true;
-    }
-
-    @Override
-    public @NotNull String getName() {
-        return switch (actionType) {
-            case SET -> personal ? "PLAYER_VAR" : "GLOBAL_VAR";
-            case CLEAR -> personal ? "PLAYER_VAR_CLEAR" : "GLOBAL_VAR_CLEAR";
-            case INCREASE -> personal ? "PLAYER_VAR_INC" : "GLOBAL_VAR_INC";
-            case DECREASE -> personal ? "PLAYER_VAR_DEC" : "GLOBAL_VAR_DEC";
-        };
-    }
-
-    @Override
-    public @NotNull Collection<@NotNull String> getAliases() {
-        return switch (actionType) {
-            case SET -> personal ? List.of("VAR_PLAYER_SET", "PLAYER_VAR_SET") : List.of("VAR_SET", "GLOBAL_VAR_SET");
-            case CLEAR -> List.of(personal ? "VAR_PLAYER_CLEAR" : "VAR_CLEAR");
-            case INCREASE -> List.of(personal ? "VAR_PLAYER_INC" : "VAR_INC");
-            case DECREASE -> List.of(personal ? "VAR_PLAYER_DEC" : "VAR_DEC");
-        };
     }
 
     public enum Type {

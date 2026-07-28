@@ -4,6 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.SafeEnum;
 import fun.reactions.util.item.VirtualItem;
@@ -178,17 +179,18 @@ public class InventoryClickActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
+            Variable itemVar = item == null ? Variable.value(VirtualItem.asString(null)) : new ItemVariable(item);
             return Map.of(
-                    CANCEL_EVENT, Variable.property(false),
-                    ITEM, Variable.lazy(() -> VirtualItem.asString(item)),
-                    "name", Variable.simple(inventoryName),
-                    "click", Variable.simple(clickType),
-                    "action", Variable.simple(action),
-                    "slottype", Variable.simple(slotType),
-                    "inventory", Variable.simple(inventoryType),
-                    "key", Variable.simple(numberKey + 1),
-                    "itemkey", numberKey > -1 ? Variable.lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : Variable.simple(""),
-                    "slot", Variable.simple(slot)
+                    CANCEL_EVENT, Variable.value(false),
+                    ITEM, itemVar,
+                    "name", Variable.value(inventoryName),
+                    "click", Variable.value(clickType),
+                    "action", Variable.value(action),
+                    "slottype", Variable.value(slotType),
+                    "inventory", Variable.value(inventoryType),
+                    "key", Variable.value(numberKey + 1),
+                    "itemkey", numberKey > -1 ? Variable.lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : Variable.value(""),
+                    "slot", Variable.value(slot)
             );
         }
 
