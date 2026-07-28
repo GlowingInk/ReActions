@@ -55,9 +55,9 @@ public abstract class ComputedVariable extends TrackedVariable {
     public @NotNull Variable fork() {
         ComputedVariable forked = copy();
         if (childrenCache != null) {
-            forked.childrenCache();
+            var forkedCache = forked.childrenCache();
             for (var entry : childrenCache.entrySet()) {
-                forked.childrenCache.put(entry.getKey(), entry.getValue().fork());
+                forkedCache.put(entry.getKey(), entry.getValue().fork());
             }
         }
         return forked;
