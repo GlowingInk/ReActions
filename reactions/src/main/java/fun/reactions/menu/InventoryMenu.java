@@ -64,6 +64,21 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
         return true;
     }
 
+    public static boolean addFromInventory(String id, Inventory inventory, String title) {
+        if (containsMenu(id)) return false;
+        VirtualInventory vi = new VirtualInventory(inventory.getSize(), title);
+        List<String> slots = vi.getSlots();
+        ItemStack[] contents = inventory.getContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
+            if (item == null || item.getType().isAir()) continue;
+            slots.set(i, VirtualItem.asString(item));
+        }
+        putMenu(id, vi);
+        save();
+        return true;
+    }
+
     public static boolean set(String id, Parameters params) {
         if (!containsMenu(id)) return false;
         VirtualInventory vi = getMenu(id);

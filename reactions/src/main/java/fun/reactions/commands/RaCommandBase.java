@@ -64,7 +64,7 @@ public abstract class RaCommandBase {
     }
 
     protected static int promptForName(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String subcommand) {
-        sendPrefixed(ctx, "&eType in a &6" + subcommand + "&e name to continue.");
+        sendPrefixed(ctx, "Type in a " + subcommand + "&e name&r to continue.");
         return Command.SINGLE_SUCCESS;
     }
 
