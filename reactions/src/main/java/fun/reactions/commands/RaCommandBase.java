@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static ink.glowing.text.InkyMessage.inkyMessage;
@@ -87,7 +88,44 @@ public abstract class RaCommandBase {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static @NotNull String rootLabel(@NotNull CommandContext<CommandSourceStack> ctx) {
+    protected static int sendPage(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String command,
+            @NotNull String title,
+            @NotNull List<String> lines,
+            int page
+    ) {
+        CommandSender sender = ctx.getSource().getSender();
+        if (lines.isEmpty()) {
+            sendPrefixed(sender, "No " + title.toLowerCase(Locale.ROOT) + " found.");
+            return Command.SINGLE_SUCCESS;
+        }
+
+        int linesPerPage = sender instanceof Player ? 15 : lines.size();
+        int totalPages = (lines.size() + linesPerPage - 1) / linesPerPage;
+        int current = Math.clamp(page, 1, totalPages);
+        int from = (current - 1) * linesPerPage;
+        int to = Math.min(from + linesPerPage, lines.size());
+
+        sender.sendMessage("");
+        sendInky(sender, "&6&l" + title + "&7 (" + current + "/" + totalPages + "):");
+        for (String line : lines.subList(from, to)) {
+            sendInky(sender, "  " + line);
+        }
+        if (totalPages > 1 && sender instanceof Player) {
+            String start = "/" + rootLabel(ctx) + " " + command + " ";
+            String prev = current > 1
+                    ? "&[&a« Prev](click:run " + start + (current - 1) + ")"
+                    : "&7« Prev";
+            String next = current < totalPages
+                    ? "&[&aNext »](click:run " + start + (current + 1) + ")"
+                    : "&7Next »";
+            sendInky(sender, "  " + prev + " &7[&f" + current + "&7/&f" + totalPages + "&7]&r " + next);
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    protected static @NotNull String rootLabel(@NotNull CommandContext<CommandSourceStack> ctx) {
         return ctx.getInput().indexOf(' ') == -1
                 ? ctx.getInput()
                 : ctx.getInput().substring(0, ctx.getInput().indexOf(' '));

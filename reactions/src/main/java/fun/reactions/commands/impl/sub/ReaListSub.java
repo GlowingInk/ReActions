@@ -1,0 +1,112 @@
+package fun.reactions.commands.impl.sub;
+
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import fun.reactions.ReActions;
+import fun.reactions.commands.RaCommandBase;
+import fun.reactions.holders.LocationHolder;
+import fun.reactions.menu.InventoryMenu;
+import fun.reactions.model.Logic;
+import fun.reactions.model.activators.Activator;
+import fun.reactions.util.location.position.RealPosition;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
+
+public final class ReaListSub extends RaCommandBase {
+    public ReaListSub(@NotNull ReActions.Platform platform) {
+        super(platform);
+    }
+
+    public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
+        return literal("list")
+                .executes(this::listHelp)
+                .then(literal("activators")
+                        .executes(ctx -> listActivators(ctx, null, 1))
+                        .then(argument("group", StringArgumentType.word())
+                                .suggests((_, builder) -> {
+                                    String remaining = builder.getRemaining();
+                                    if ("*".startsWith(remaining)) builder.suggest("*");
+                                    platform.getActivators().getGroupNames().stream()
+                                            .filter(s -> s.startsWith(remaining))
+                                            .forEach(builder::suggest);
+                                    return builder.buildFuture();
+                                })
+                                .executes(ctx -> listActivators(ctx, filterArg(ctx, "group"), 1))
+                                .then(argument("page", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> listActivators(ctx, filterArg(ctx, "group"), IntegerArgumentType.getInteger(ctx, "page"))))))
+                .then(literal("locations")
+                        .executes(ctx -> listLocations(ctx, null, 1))
+                        .then(argument("world", StringArgumentType.word())
+                                .suggests((_, builder) -> {
+                                    String remaining = builder.getRemaining();
+                                    if ("*".startsWith(remaining)) builder.suggest("*");
+                                    platform.getServer().getWorlds().stream()
+                                            .map(World::getName)
+                                            .filter(s -> s.startsWith(remaining))
+                                            .forEach(builder::suggest);
+                                    return builder.buildFuture();
+                                })
+                                .executes(ctx -> listLocations(ctx, filterArg(ctx, "world"), 1))
+                                .then(argument("page", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> listLocations(ctx, filterArg(ctx, "world"), IntegerArgumentType.getInteger(ctx, "page"))))))
+                .then(literal("menus")
+                        .executes(ctx -> listMenus(ctx, 1))
+                        .then(argument("page", IntegerArgumentType.integer(1))
+                                .executes(ctx -> listMenus(ctx, IntegerArgumentType.getInteger(ctx, "page")))))
+                .build();
+    }
+
+    private int listHelp(@NotNull CommandContext<CommandSourceStack> ctx) {
+        return sendHelp(ctx, "list",
+                "activators", "&e[<group>|*] &6[<page>]", "List all activators, optionally filtered by&e group",
+                "locations", "&e[<world>|*] &6[<page>]", "List all locations, optionally filtered by&e world",
+                "menus", "&6[<page>]", "List all menus"
+        );
+    }
+
+    private int listActivators(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String group, int page) {
+        Collection<Activator> found = group != null
+                ? platform.getActivators().search().byGroup(group)
+                : platform.getActivators().search().all();
+        List<String> lines = new ArrayList<>();
+        for (Activator activator : found) {
+            Logic logic = activator.getLogic();
+            lines.add("&7" + esc(logic.getGroup()) + "/&6" + esc(logic.getName()) + "&e (" + esc(logic.getType()) + ")");
+        }
+        return sendPage(ctx, "list activators " + esc(group == null ? "*" : group), "Activators", lines, page);
+    }
+
+    private int listLocations(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String world, int page) {
+        List<String> lines = new ArrayList<>();
+        for (String name : LocationHolder.getTpLocNames()) {
+            RealPosition pos = LocationHolder.getTpPosition(name);
+            if (pos == null || (world != null && !pos.worldName().equalsIgnoreCase(world))) continue;
+            lines.add("&6" + esc(name) + "&7 (" + esc(pos.toString()) + ")");
+        }
+        return sendPage(ctx, "list locations " + esc(world == null ? "*" : world), "Locations", lines, page);
+    }
+
+    private int listMenus(@NotNull CommandContext<CommandSourceStack> ctx, int page) {
+        List<String> lines = new ArrayList<>();
+        for (String name : InventoryMenu.getMenuNames()) {
+            lines.add("&6" + esc(name));
+        }
+        return sendPage(ctx, "list menus", "Menus", lines, page);
+    }
+
+    private static @Nullable String filterArg(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String arg) {
+        String value = StringArgumentType.getString(ctx, arg);
+        return value.equals("*") ? null : value;
+    }
+}

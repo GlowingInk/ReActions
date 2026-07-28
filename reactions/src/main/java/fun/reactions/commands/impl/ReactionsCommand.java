@@ -6,13 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActionsPlugin;
 import fun.reactions.commands.RaCommandBase;
-import fun.reactions.commands.impl.sub.ReaActivatorSub;
-import fun.reactions.commands.impl.sub.ReaLocationSub;
-import fun.reactions.commands.impl.sub.ReaMenuSub;
-import fun.reactions.commands.impl.sub.ReaVariableSub;
+import fun.reactions.commands.impl.sub.*;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
@@ -33,42 +28,8 @@ public final class ReactionsCommand extends RaCommandBase {
                 .then(new ReaLocationSub(platform).asNode())
                 .then(new ReaVariableSub(platform).asNode())
                 .then(new ReaMenuSub(platform).asNode())
-                .then(listNode())
+                .then(new ReaListSub(platform).asNode())
                 .then(reloadNode())
-                .build();
-    }
-
-    private @NotNull LiteralCommandNode<CommandSourceStack> listNode() {
-        return literal("list")
-                .executes(ctx -> {
-                    ctx.getSource().getSender().sendMessage("list help"); // TODO
-                    return Command.SINGLE_SUCCESS;
-                })
-                .then(literal("activators")
-                        .executes(ctx -> {
-                            ctx.getSource().getSender().sendMessage("list activators"); // TODO
-                            return Command.SINGLE_SUCCESS;
-                        })
-                        .then(argument("group", StringArgumentType.word())
-                                .executes(ctx -> {
-                                    ctx.getSource().getSender().sendMessage("list activators " + StringArgumentType.getString(ctx, "group")); // TODO
-                                    return Command.SINGLE_SUCCESS;
-                                })))
-                .then(literal("locations")
-                        .executes(ctx -> {
-                            ctx.getSource().getSender().sendMessage("list locations"); // TODO
-                            return Command.SINGLE_SUCCESS;
-                        })
-                        .then(argument("world", ArgumentTypes.world())
-                                .executes(ctx -> {
-                                    ctx.getSource().getSender().sendMessage("list locations " + ctx.getArgument("world", World.class).getName()); // TODO
-                                    return Command.SINGLE_SUCCESS;
-                                })))
-                .then(literal("menus")
-                        .executes(ctx -> {
-                            ctx.getSource().getSender().sendMessage("list menus"); // TODO
-                            return Command.SINGLE_SUCCESS;
-                        }))
                 .build();
     }
 
