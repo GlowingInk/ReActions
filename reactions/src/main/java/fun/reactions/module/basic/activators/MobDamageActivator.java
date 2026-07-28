@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
@@ -152,7 +153,8 @@ public class MobDamageActivator extends Activator {
                     "mobdamager", Variable.simple(player == null ? "" : player.getName()),
                     "mobtype", Variable.simple(entity.getType()),
                     "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
-                    "cause", Variable.simple(cause)
+                    "cause", Variable.simple(cause),
+                    "entity", new EntityVariable(entity)
             );
         }
     }

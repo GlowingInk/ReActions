@@ -4,6 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
+import fun.reactions.model.environment.variables.ReferenceVariable;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
@@ -111,12 +113,16 @@ public class ItemHeldActivator extends Activator {
             vars.put("slotnew", Variable.simple(newSlot + 1));
             vars.put("slotprev", Variable.simple(previousSlot + 1));
             if (newItem != null) {
-                vars.put("itemnew", Variable.lazy(() -> VirtualItem.asString(newItem)));
+                ItemVariable itemNew = new ItemVariable(newItem);
+                vars.put("itemnew", new ReferenceVariable(itemNew));
                 vars.put("itemnew-str", Variable.lazy(() -> ItemUtils.toDisplayString(newItem)));
+                vars.put("item_new", itemNew);
             }
             if (previousItem != null) {
-                vars.put("itemprev", Variable.lazy(() -> VirtualItem.asString(previousItem)));
+                ItemVariable itemPrev = new ItemVariable(previousItem);
+                vars.put("itemprev", new ReferenceVariable(itemPrev));
                 vars.put("itemprev-str", Variable.lazy(() -> ItemUtils.toDisplayString(previousItem)));
+                vars.put("item_prev", itemPrev);
             }
             return vars;
         }

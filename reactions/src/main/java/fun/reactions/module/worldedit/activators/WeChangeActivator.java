@@ -4,6 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
@@ -98,7 +99,8 @@ public class WeChangeActivator extends Activator {
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
                     "blocktype", Variable.simple(blockType),
-                    "blocklocation", simple(LocationUtils.locationToString(location))
+                    "blocklocation", simple(LocationUtils.locationToString(location)),
+                    "block_location", new LocationVariable(location)
             );
         }
 

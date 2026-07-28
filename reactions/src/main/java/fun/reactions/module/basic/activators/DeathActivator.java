@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -97,6 +98,7 @@ public class DeathActivator extends Activator {
             if (killer != null) {
                 vars.put("killer-type", Variable.simple(killer.getType()));
                 vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
+                vars.put("killer", new EntityVariable(killer));
             }
             return vars;
         }

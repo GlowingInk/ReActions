@@ -27,6 +27,7 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
@@ -156,7 +157,8 @@ public class MobClickActivator extends Activator implements Locatable {
                     CANCEL_EVENT, Variable.property(false),
                     "moblocation", simple(LocationUtils.locationToString(entity.getLocation())),
                     "mobtype", Variable.simple(entity.getType()),
-                    "mobname", simple(EntityUtils.getEntityDisplayName(entity))
+                    "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
+                    "entity", new EntityVariable(entity)
             );
         }
     }

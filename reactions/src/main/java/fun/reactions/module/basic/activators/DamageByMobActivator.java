@@ -4,6 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -152,8 +153,9 @@ public class DamageByMobActivator extends Activator {
             Map<String, Variable> vars =  super.prepareVariables();
             vars.put("damagerlocation", Variable.simple(LocationUtils.locationToString(damager.getLocation())));
             vars.put("damagertype", Variable.simple(damager.getType()));
-            vars.put("entitytype", Variable.simple(damager.getType())); // FIXME Why there is a copy?
+            vars.put("entitytype", Variable.simple(damager.getType()));
             vars.put("damagername", Variable.simple(EntityUtils.getEntityDisplayName(damager)));
+            vars.put("entity", new EntityVariable(damager));
             return vars;
         }
     }

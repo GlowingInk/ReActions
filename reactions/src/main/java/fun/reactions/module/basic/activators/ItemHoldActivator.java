@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.HandType;
 import fun.reactions.util.item.ItemUtils;
@@ -117,7 +118,7 @@ public class ItemHoldActivator extends Activator {
             Map<String, Variable> vars = new HashMap<>();
             vars.put("hand", Variable.simple(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
             if (item != null) {
-                vars.put("item", Variable.lazy(() -> VirtualItem.asString(item)));
+                vars.put("item", new ItemVariable(item));
                 vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
             }
             return vars;

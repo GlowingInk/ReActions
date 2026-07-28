@@ -26,8 +26,10 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
+import fun.reactions.model.environment.variables.LocationVariable;
+import fun.reactions.model.environment.variables.ReferenceVariable;
 import fun.reactions.util.enums.DeathCause;
-import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
@@ -39,7 +41,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fun.reactions.model.environment.Variable.property;
 import static fun.reactions.model.environment.Variable.simple;
 
 public class RespawnActivator extends Activator {
@@ -99,11 +100,14 @@ public class RespawnActivator extends Activator {
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
-            vars.put(RESPAWN_LOCATION, property(LocationUtils.locationToString(respawnLoc)));
+            LocationVariable respawnLocation = new LocationVariable(respawnLoc);
+            vars.put(RESPAWN_LOCATION, new ReferenceVariable(respawnLocation));
+            vars.put("respawn_location", respawnLocation);
             vars.put("cause", simple(deathCause));
             if (killer != null) {
                 vars.put("killer-type", Variable.simple(killer.getType()));
                 vars.put("killer-name", simple(EntityUtils.getEntityDisplayName(killer)));
+                vars.put("killer", new EntityVariable(killer));
             }
             return vars;
         }

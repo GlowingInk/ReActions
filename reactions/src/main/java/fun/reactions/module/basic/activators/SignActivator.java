@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.location.LocationUtils;
@@ -43,8 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static fun.reactions.model.environment.Variable.simple;
 
 // TODO Add Hand
 public class SignActivator extends Activator {
@@ -167,7 +166,8 @@ public class SignActivator extends Activator {
             for (int i = 0; i < signLines.length; i++) {
                 vars.put("sign_line" + (i + 1), Variable.simple(signLines[i]));
             }
-            vars.put("sign_loc", simple(LocationUtils.locationToString(location)));
+            vars.put("sign_loc", Variable.simple(LocationUtils.locationToString(location)));
+            vars.put("sign_location", new LocationVariable(location));
             vars.put("click", Variable.simple(leftClick ? "left" : "right"));
             return vars;
         }

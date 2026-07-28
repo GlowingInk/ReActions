@@ -4,8 +4,9 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.LocationVariable;
+import fun.reactions.model.environment.variables.ReferenceVariable;
 import fun.reactions.util.Utils;
-import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
@@ -15,8 +16,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-
-import static fun.reactions.model.environment.Variable.property;
 
 @Aliased.Names("TP")
 public class TeleportActivator extends Activator {
@@ -75,9 +74,11 @@ public class TeleportActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
+            LocationVariable locationTo = new LocationVariable(to);
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
-                    LOCATION_TO, property(LocationUtils.locationToString(to))
+                    LOCATION_TO, new ReferenceVariable(locationTo),
+                    "location_to", locationTo
             );
         }
     }

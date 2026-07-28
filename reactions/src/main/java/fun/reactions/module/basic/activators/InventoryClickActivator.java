@@ -4,6 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.SafeEnum;
 import fun.reactions.util.item.VirtualItem;
@@ -178,9 +179,10 @@ public class InventoryClickActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
+            Variable itemVar = item == null ? Variable.simple(VirtualItem.asString(null)) : new ItemVariable(item);
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
-                    ITEM, Variable.lazy(() -> VirtualItem.asString(item)),
+                    ITEM, itemVar,
                     "name", Variable.simple(inventoryName),
                     "click", Variable.simple(clickType),
                     "action", Variable.simple(action),

@@ -4,6 +4,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -85,7 +86,8 @@ public class EntityClickActivator extends Activator {
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
                     "entitytype", Variable.simple(entity.getType()),
-                    "entity_name", simple(EntityUtils.getEntityDisplayName(entity))
+                    "entity_name", simple(EntityUtils.getEntityDisplayName(entity)),
+                    "entity", new EntityVariable(entity)
             );
         }
     }

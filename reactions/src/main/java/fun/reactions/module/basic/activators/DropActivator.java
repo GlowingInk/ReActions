@@ -4,6 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
+import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -78,8 +80,9 @@ public class DropActivator extends Activator {
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
                     PICKUP_DELAY, Variable.property(pickupDelay),
-                    ITEM, Variable.lazy(() -> VirtualItem.asString(item)),
-                    "droplocation", simple(LocationUtils.locationToString(player.getLocation()))
+                    ITEM, new ItemVariable(item),
+                    "droplocation", simple(LocationUtils.locationToString(player.getLocation())),
+                    "drop_location", new LocationVariable(player.getLocation())
             );
         }
     }

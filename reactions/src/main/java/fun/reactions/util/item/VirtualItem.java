@@ -127,23 +127,19 @@ public final class VirtualItem implements Parameterizable {
         return asParameters().getString(aspectName, null);
     }
 
-    @Contract(pure = true)
+    @Contract(value = "_ -> new", pure = true)
     public @NotNull ItemStack affect(@NotNull ItemStack item) {
-        return affect(item, true);
-    }
-
-    @Contract("_, true -> new")
-    public @NotNull ItemStack affect(@NotNull ItemStack item, boolean clone) {
-        if (clone) {
-            item = item.clone();
-        }
         if (type != null) {
-            if (type.isEmpty()) {
-                item.setType(Material.AIR);
+            if (type.isAir()) {
+                item = item.withType(Material.AIR);
                 return item;
             } else if (type.isItem() && item.getType() != type) {
-                item.setType(type);
+                item = item.withType(type);
+            } else {
+                item = item.clone();
             }
+        } else {
+            item = item.clone();
         }
         if (amount > 0) {
             item.setAmount(amount);
@@ -184,7 +180,7 @@ public final class VirtualItem implements Parameterizable {
                 return null;
             } else {
                 ItemStack genItem = new ItemStack(type);
-                if (!type.isEmpty()) {
+                if (!type.isAir()) {
                     genItem.setAmount(Math.max(amount, 1));
                     if (!aspects.isEmpty()) {
                         ItemMeta meta = genItem.getItemMeta();
@@ -241,8 +237,8 @@ public final class VirtualItem implements Parameterizable {
      * @return is compared item conforms this item's type and aspects
      */
     public boolean isSimilar(@Nullable ItemStack compared, AmountCheck amountCheck) {
-        if (compared == null || compared.getType().isEmpty()) {
-            return amount == 0 || (type != null && type.isEmpty());
+        if (compared == null || compared.isEmpty()) {
+            return amount == 0 || (type != null && type.isAir());
         }
         if (type != null && compared.getType() != type) {
             return false;
@@ -271,7 +267,7 @@ public final class VirtualItem implements Parameterizable {
     }
 
     private static @NotNull VirtualItem fromItemStack(@Nullable ItemStack item, boolean clone) {
-        if (item == null || item.getType().isEmpty()) {
+        if (item == null || item.isEmpty()) {
             return VirtualItem.AIR;
         }
         if (clone) {

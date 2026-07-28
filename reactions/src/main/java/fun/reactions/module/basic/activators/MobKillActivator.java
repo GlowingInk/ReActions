@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
@@ -123,7 +124,8 @@ public class MobKillActivator extends Activator {
                     "mobkiller", Variable.simple(player == null ? "" : player.getName()),
                     "mobtype", Variable.simple(entity.getType()),
                     "mobname", simple(EntityUtils.getEntityDisplayName(entity)),
-                    "spawn_reason", simple(entity.getEntitySpawnReason())
+                    "spawn_reason", simple(entity.getEntitySpawnReason()),
+                    "entity", new EntityVariable(entity)
             );
         }
     }

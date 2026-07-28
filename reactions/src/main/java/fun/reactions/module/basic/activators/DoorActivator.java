@@ -27,6 +27,7 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.util.BlockUtils;
 import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.location.LocationUtils;
@@ -105,8 +106,6 @@ public class DoorActivator extends Activator implements Locatable {
     }
 
     public static class Context extends ActivationContext {
-        public static final String DOOR_LOCATION = "door_loc";
-
         private final Block doorBlock;
 
         public Context(Player p, Block block) {
@@ -131,7 +130,8 @@ public class DoorActivator extends Activator implements Locatable {
         protected @NotNull Map<String, Variable> prepareVariables() {
             return Map.of(
                     CANCEL_EVENT, Variable.property(false),
-                    DOOR_LOCATION, Variable.simple(LocationUtils.locationToString(doorBlock))
+                    "door_loc", Variable.simple(LocationUtils.locationToString(doorBlock)),
+                    "door_location", new LocationVariable(doorBlock)
             );
         }
     }
