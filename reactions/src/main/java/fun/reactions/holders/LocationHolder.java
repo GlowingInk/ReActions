@@ -37,10 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // TODO Refactor
 @Deprecated
@@ -94,6 +91,10 @@ public final class LocationHolder {
 
     public static int sizeTpLoc() {
         return tports.size();
+    }
+
+    public static @NotNull Set<String> getTpLocNames() {
+        return Collections.unmodifiableSet(tports.keySet());
     }
 
     public static boolean addTpLoc(String id, RealPosition loc) {

@@ -37,7 +37,14 @@ public final class ReaLocationSub extends RaCommandBase {
         return literal("location")
                 .executes(ctx -> promptForName(ctx, "location"))
                 .then(argument("name", StringArgumentType.word())
-                        .executes(this::nameHelp) // TODO Name suggestions
+                        .suggests((_, builder) -> {
+                            String remaining = builder.getRemaining();
+                            LocationHolder.getTpLocNames().stream()
+                                    .filter(s -> s.startsWith(remaining))
+                                    .forEach(builder::suggest);
+                            return builder.buildFuture();
+                        })
+                        .executes(this::nameHelp)
                         .then(literal("create")
                                 .executes(ctx -> {
                                     createLocation(ctx);
@@ -143,23 +150,21 @@ public final class ReaLocationSub extends RaCommandBase {
     private void info(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         RealPosition loc = getLocation(ctx);
-        if (loc == null) { // TODO Message
+        if (loc == null) {
             return;
         }
-        sendInky(ctx, "Location '&{name}':\n  World: &{world}\n  Coordinates: &{x}, &{y}, &{z}\n  Head: &{yaw}, &{pitch}", Map.of( // TODO Better message
-                "name", name,
-                "world", loc.worldName(),
-                "x", loc.x(),
-                "y", loc.y(),
-                "z", loc.z(),
-                "yaw", loc.yaw(),
-                "pitch", loc.pitch()
-        ));
+        CommandSender sender = ctx.getSource().getSender();
+        sender.sendMessage("");
+        sender.sendMessage(inky("&6&l" + esc(name)));
+        sendInky(sender, "  &7World&r: &f" + loc.worldName());
+        sendInky(sender, "  &7Position&r: &f" + loc.x() + " " + loc.y() + " " + loc.z());
+        sendInky(sender, "  &7Head&r: &f" + loc.yaw() + " " + loc.pitch());
+        sendInky(sender, "&[  &eClick here to copy location](click:copy " + esc(loc.toString()) + ")(hover:text &7" + esc(loc.toString()) + ")");
     }
 
     private void delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (getLocation(ctx) == null) { // TODO Message
+        if (getLocation(ctx) == null) {
             return;
         }
         LocationHolder.removeTpLoc(name);
@@ -168,7 +173,7 @@ public final class ReaLocationSub extends RaCommandBase {
 
     private void teleport(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) throws CommandSyntaxException {
         RealPosition loc = getLocation(ctx);
-        if (loc == null) { // TODO Message
+        if (loc == null) {
             return;
         }
         CommandSender sender = ctx.getSource().getSender();
@@ -189,14 +194,14 @@ public final class ReaLocationSub extends RaCommandBase {
         if (resolver != null) {
             Entity executor = ctx.getSource().getExecutor();
             if (executor == null) {
-                sendPrefixed(ctx, "Console not allowed."); // TODO Better message
+                sendPrefixed(ctx, "Only a player or entity can &especify a position&r, since a &aworld&r can't be inferred otherwise.");
                 return;
             }
             FinePosition finePos = resolver.resolve(ctx.getSource());
             pos = RealPosition.byLocation(new Location(executor.getWorld(), finePos.x(), finePos.y(), finePos.z()));
         } else {
             if (!(ctx.getSource().getExecutor() instanceof Entity entity)) {
-                sendPrefixed(ctx, "Console not allowed."); // TODO Better message
+                sendPrefixed(ctx, "You must &especify a position&r when running this as console.");
                 return;
             }
             pos = RealPosition.byLocation(entity.getLocation());
