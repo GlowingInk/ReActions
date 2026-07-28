@@ -35,15 +35,9 @@ public final class ReaLocationSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("location")
-                .executes(ctx -> {
-                    help(ctx, "<name>");
-                    return Command.SINGLE_SUCCESS;
-                })
+                .executes(ctx -> promptForName(ctx, "location"))
                 .then(argument("name", StringArgumentType.word())
-                        .executes(ctx -> {
-                            help(ctx, StringArgumentType.getString(ctx, "name"));
-                            return Command.SINGLE_SUCCESS;
-                        }) // TODO Name suggestions
+                        .executes(this::nameHelp) // TODO Name suggestions
                         .then(literal("create")
                                 .executes(ctx -> {
                                     createLocation(ctx);
@@ -90,8 +84,16 @@ public final class ReaLocationSub extends RaCommandBase {
                                         .executes(ctx -> {
                                             move(ctx, ctx.getArgument("position", FinePositionResolver.class));
                                             return Command.SINGLE_SUCCESS;
-                                        }))))
-                .build();
+                                        })))).build();
+    }
+
+    private int nameHelp(@NotNull CommandContext<CommandSourceStack> ctx) {
+        String name = StringArgumentType.getString(ctx, "name");
+        if (LocationHolder.getTpLoc(name) == null) {
+            return suggestCreate(ctx, "location " + name, "Location", name, "create");
+        }
+        help(ctx, name);
+        return Command.SINGLE_SUCCESS;
     }
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
@@ -132,7 +134,7 @@ public final class ReaLocationSub extends RaCommandBase {
         }
         LocationHolder.addTpLoc(name, pos);
         LocationHolder.saveLocs();
-        sendPrefixed(ctx, "Location&a '&{name}'&r&7 (&{pos})&r was created", Map.of( // TODO Move pos to hover
+        sendPrefixed(ctx, "Location&a '&{name}'&r&7 (&{pos})&r was created", Map.of(
                 "name", name,
                 "pos", pos.toString()
         ));
@@ -141,7 +143,7 @@ public final class ReaLocationSub extends RaCommandBase {
     private void info(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         RealPosition loc = getLocation(ctx);
-        if (loc == null) { // TODO
+        if (loc == null) { // TODO Message
             return;
         }
         sendInky(ctx, "Location '&{name}':\n  World: &{world}\n  Coordinates: &{x}, &{y}, &{z}\n  Head: &{yaw}, &{pitch}", Map.of( // TODO Better message
@@ -157,7 +159,7 @@ public final class ReaLocationSub extends RaCommandBase {
 
     private void delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (getLocation(ctx) == null) { // TODO
+        if (getLocation(ctx) == null) { // TODO Message
             return;
         }
         LocationHolder.removeTpLoc(name);
@@ -166,7 +168,7 @@ public final class ReaLocationSub extends RaCommandBase {
 
     private void teleport(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) throws CommandSyntaxException {
         RealPosition loc = getLocation(ctx);
-        if (loc == null) { // TODO
+        if (loc == null) { // TODO Message
             return;
         }
         CommandSender sender = ctx.getSource().getSender();

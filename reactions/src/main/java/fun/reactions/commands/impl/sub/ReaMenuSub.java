@@ -22,15 +22,9 @@ public final class ReaMenuSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("menu")
-                .executes(ctx -> {
-                    help(ctx, "<name>");
-                    return Command.SINGLE_SUCCESS;
-                })
+                .executes(ctx -> promptForName(ctx, "menu"))
                 .then(argument("name", StringArgumentType.word())
-                        .executes(ctx -> {
-                            help(ctx, StringArgumentType.getString(ctx, "name"));
-                            return Command.SINGLE_SUCCESS;
-                        }) // TODO Name suggestions
+                        .executes(this::nameHelp) // TODO Name suggestions
                         .then(literal("create")
                                 .executes(ctx -> {
                                     createMenu(ctx, 3, null);
@@ -59,6 +53,15 @@ public final class ReaMenuSub extends RaCommandBase {
                                     return Command.SINGLE_SUCCESS;
                                 })))
                 .build();
+    }
+
+    private int nameHelp(@NotNull CommandContext<CommandSourceStack> ctx) {
+        String name = StringArgumentType.getString(ctx, "name");
+        if (!InventoryMenu.containsMenu(name)) {
+            return suggestCreate(ctx, "menu " + name, "Menu", name, "create");
+        }
+        help(ctx, name);
+        return Command.SINGLE_SUCCESS;
     }
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {

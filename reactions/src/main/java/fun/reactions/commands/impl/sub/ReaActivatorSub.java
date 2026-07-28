@@ -58,6 +58,7 @@ public final class ReaActivatorSub extends RaCommandBase {
         var actionArg = registryArgument(activities::getAction, activities::getActionsTypesNames);
 
         return literal("activator")
+                .executes(ctx -> promptForName(ctx, "activator"))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((_, builder) -> {
                             String remaining = builder.getRemaining();
@@ -129,7 +130,11 @@ public final class ReaActivatorSub extends RaCommandBase {
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
-        return sendHelp(ctx, "activator " + ctx.getArgument("name", String.class),
+        String name = ctx.getArgument("name", String.class);
+        if (activators.getActivator(name) == null) {
+            return suggestCreate(ctx, "activator " + name, "Activator", name, "create");
+        }
+        return sendHelp(ctx, "activator " + name,
                 "create", "&a<type> &e[<parameters...>]", "Create this activator with the given &atype&r and &eparameters",
                 "info", "", "Show info about this activator",
                 "move", "&a<group>", "Move this activator into another group",
@@ -334,8 +339,7 @@ public final class ReaActivatorSub extends RaCommandBase {
     /**
      * Resolves the activator by name or throws a {@link CommandSyntaxException}.
      */
-    private @NotNull Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx)
-            throws CommandSyntaxException {
+    private @NotNull Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
         Activator activator = activators.getActivator(name);
         if (activator == null) throw UNKNOWN_ACTIVATOR.create(name);

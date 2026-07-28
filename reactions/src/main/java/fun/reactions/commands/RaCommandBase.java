@@ -37,12 +37,9 @@ public abstract class RaCommandBase {
 
     protected static int sendHelp(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String command, @NotNull String... help) {
         CommandSender sender = ctx.getSource().getSender();
-        String label = ctx.getInput().indexOf(' ') == -1
-                ? ctx.getInput()
-                : ctx.getInput().substring(0, ctx.getInput().indexOf(' '));
         boolean isPlayer = sender instanceof Player;
 
-        String start = "/" + label + (command != null ? " " + command : "");
+        String start = "/" + rootLabel(ctx) + (command != null ? " " + command : "");
         sender.sendMessage("");
         sendInky(sender, "&6&l" + start + " ...");
         for (int i = 0; i + 2 < help.length; i += 3) {
@@ -64,6 +61,36 @@ public abstract class RaCommandBase {
             sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type in chat!");
         }
         return Command.SINGLE_SUCCESS;
+    }
+
+    protected static int promptForName(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String subcommand) {
+        sendPrefixed(ctx, "&eType in a &6" + subcommand + "&e name to continue.");
+        return Command.SINGLE_SUCCESS;
+    }
+
+    protected static int suggestCreate(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String command,
+            @NotNull String itemLabel,
+            @NotNull String name,
+            @NotNull String createSubcommand
+    ) {
+        CommandSender sender = ctx.getSource().getSender();
+        String start = "/" + rootLabel(ctx) + " " + command + " " + createSubcommand + " ";
+
+        sendPrefixed(sender, itemLabel + " &c'" + esc(name) + "'&r doesn't exist.");
+        if (sender instanceof Player) {
+            sendInky(sender, "&[  &aClick here to create it](click:suggest " + start + ")(hover:text &7" + start.trim() + ")");
+        } else {
+            sendInky(sender, "  &7Use &a" + command + " " + createSubcommand + "&r to create it.");
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static @NotNull String rootLabel(@NotNull CommandContext<CommandSourceStack> ctx) {
+        return ctx.getInput().indexOf(' ') == -1
+                ? ctx.getInput()
+                : ctx.getInput().substring(0, ctx.getInput().indexOf(' '));
     }
 
     protected static @NotNull Component inky(@NotNull String str) {

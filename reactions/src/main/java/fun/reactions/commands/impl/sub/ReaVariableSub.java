@@ -21,6 +21,7 @@ public final class ReaVariableSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("variable")
+                .executes(ctx -> promptForName(ctx, "variable"))
                 .then(argument("name", StringArgumentType.word())
                         .executes(this::help)
                         .then(literal("show").executes(this::show))
@@ -34,7 +35,11 @@ public final class ReaVariableSub extends RaCommandBase {
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
-        return sendHelp(ctx, "variable " + esc(StringArgumentType.getString(ctx, "name")),
+        String name = StringArgumentType.getString(ctx, "name");
+        if (platform.getPersistentVariables().getVariable(null, name) == null) {
+            return suggestCreate(ctx, "variable " + name, "Variable", name, "set");
+        }
+        return sendHelp(ctx, "variable " + esc(name),
                 "create", "&e[value]", "Create variable with optional&e value",
                 "show", "", "Show a variable",
                 "delete", "", "Delete a variable",
