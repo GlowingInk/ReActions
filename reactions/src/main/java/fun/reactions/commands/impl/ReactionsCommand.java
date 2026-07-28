@@ -1,7 +1,6 @@
 package fun.reactions.commands.impl;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActionsPlugin;
@@ -10,7 +9,6 @@ import fun.reactions.commands.impl.sub.*;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
 
-import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
 public final class ReactionsCommand extends RaCommandBase {
@@ -29,21 +27,7 @@ public final class ReactionsCommand extends RaCommandBase {
                 .then(new ReaVariableSub(platform).asNode())
                 .then(new ReaMenuSub(platform).asNode())
                 .then(new ReaListSub(platform).asNode())
-                .then(reloadNode())
-                .build();
-    }
-
-    private @NotNull LiteralCommandNode<CommandSourceStack> reloadNode() {
-        return literal("reload")
-                .executes(ctx -> {
-                    ctx.getSource().getSender().sendMessage("reload all"); // TODO
-                    return Command.SINGLE_SUCCESS;
-                })
-                .then(argument("options", StringArgumentType.word())
-                        .executes(ctx -> {
-                            ctx.getSource().getSender().sendMessage("reload specific " + StringArgumentType.getString(ctx, "options")); // TODO
-                            return Command.SINGLE_SUCCESS;
-                        }))
+                .then(new ReaReloadSub(platform).asNode())
                 .build();
     }
 
