@@ -4,14 +4,13 @@ import fun.reactions.ReActions;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
+import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,13 +20,14 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
 
 public class InventoryMenu implements Listener { // TODO Requires major refactoring
 
-    private static final Map<String, VirtualInventory> menu = new HashMap<>();
+    private static final Map<String, VirtualInventory> menu = CollectionUtils.caseInsensitiveLinkedMap();
     private static Variables vars;
 
     public static void init(ReActions.Platform platform) {
@@ -93,7 +93,13 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
     }
 
     public static boolean remove(String id) {
-        return menu.remove(id) != null;
+        if (menu.remove(id.toLowerCase(Locale.ROOT)) == null) return false;
+        save();
+        return true;
+    }
+
+    public static @NotNull Set<String> getMenuNames() {
+        return Collections.unmodifiableSet(menu.keySet());
     }
 
     private static List<String> getActivators(Parameters param) {
@@ -171,31 +177,6 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
 
     public static boolean containsMenu(String id) {
         return menu.containsKey(id.toLowerCase(Locale.ROOT));
-    }
-
-    public static void printMenu(CommandSender sender, String id) {
-        if (containsMenu(id)) {
-            VirtualInventory vi = getMenu(id);
-            Msg.printMSG(sender, "msg_menuinfotitle", 'e', '6', id, vi.getSize(), vi.getTitle());
-            for (int i = 0; i < vi.getSize(); i++) {
-                String exec = vi.getActivators().get(i);
-                String slot = vi.getSlots().get(i);
-                if (exec.isEmpty() && slot.isEmpty()) continue;
-                slot = itemToString(slot);
-                Msg.printMSG(sender, "msg_menuinfoslot", i + 1, exec.isEmpty() ? "N/A" : exec, slot.isEmpty() ? "AIR" : slot);
-            }
-        } else Msg.printMSG(sender, "msg_menuidfail", id);
-    }
-
-    public static void printMenuList(CommandSender sender, int pageNum, String mask) {
-        int linesPerPage = (sender instanceof Player) ? 15 : 10000;
-        List<String> menuList = new ArrayList<>();
-        for (String id : menu.keySet()) {
-            if (mask.isEmpty() || id.toLowerCase(Locale.ROOT).contains(mask.toLowerCase(Locale.ROOT))) {
-                menuList.add(id + " : " + getMenu(id).getTitle());
-            }
-        }
-        Msg.printPage(sender, menuList, Msg.MSG_MENULIST, pageNum, linesPerPage);
     }
 
     private static String itemToString(String itemStr) {
