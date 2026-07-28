@@ -35,7 +35,8 @@ public interface Variable {
     };
 
     /**
-     * Current string value of this variable, e.g. the value shown for a bare {@code %[local:key]%}.
+     * Current string value of this variable, e.g. the value shown for a bare
+     * {@code %[key:param]}/{@code %[local:key:param]}.
      */
     @NotNull String get();
 
