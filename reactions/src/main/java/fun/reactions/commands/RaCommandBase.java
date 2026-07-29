@@ -2,6 +2,7 @@ package fun.reactions.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import ink.glowing.text.InkyMessage;
@@ -14,11 +15,9 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static ink.glowing.text.InkyMessage.inkyMessage;
 import static ink.glowing.text.placeholder.Placeholder.placeholder;
@@ -87,6 +86,50 @@ public abstract class RaCommandBase {
             sendInky(sender, "  &7Use &a" + command + " " + createSubcommand + "&r to create it.");
         }
         return Command.SINGLE_SUCCESS;
+    }
+
+    protected static int nameHelp(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String type,
+            @NotNull String itemLabel,
+            @NotNull String name,
+            boolean exists,
+            @NotNull String createSubcommand,
+            @NotNull String... help
+    ) {
+        if (!exists) {
+            return suggestCreate(ctx, type + " " + name, itemLabel, name, createSubcommand);
+        }
+        return sendHelp(ctx, type + " " + esc(name), help);
+    }
+
+    protected static void sendNotFound(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String itemLabel, @NotNull String name) {
+        sendPrefixed(ctx, itemLabel + " &c'" + esc(name) + "'&r doesn't exist!");
+    }
+
+    protected static void sendAlreadyExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String itemLabel, @NotNull String name) {
+        sendPrefixed(ctx, itemLabel + " &c'" + esc(name) + "'&r already exists.");
+    }
+
+    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names) {
+        return (_, builder) -> {
+            String remaining = builder.getRemaining();
+            names.get().stream()
+                    .filter(s -> s.startsWith(remaining))
+                    .forEach(builder::suggest);
+            return builder.buildFuture();
+        };
+    }
+
+    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNamesOrAll(@NotNull Supplier<? extends Collection<String>> names) {
+        return (_, builder) -> {
+            String remaining = builder.getRemaining();
+            if ("*".startsWith(remaining)) builder.suggest("*");
+            names.get().stream()
+                    .filter(s -> s.startsWith(remaining))
+                    .forEach(builder::suggest);
+            return builder.buildFuture();
+        };
     }
 
     protected static int sendPage(

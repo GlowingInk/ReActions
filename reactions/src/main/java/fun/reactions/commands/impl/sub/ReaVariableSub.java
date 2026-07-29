@@ -31,9 +31,9 @@ public final class ReaVariableSub extends RaCommandBase {
                                 .executes(this::show))
                         .then(literal("set")
                                 .requires(permission("reactions.variable.edit"))
-                                .executes(ctx -> setVariable(ctx, ""))
+                                .executes(ctx -> set(ctx, ""))
                                 .then(argument("value", StringArgumentType.greedyString())
-                                        .executes(ctx -> setVariable(ctx, StringArgumentType.getString(ctx, "value")))))
+                                        .executes(ctx -> set(ctx, StringArgumentType.getString(ctx, "value")))))
                         .then(literal("delete")
                                 .requires(permission("reactions.variable.edit"))
                                 .executes(this::delete)))
@@ -42,17 +42,15 @@ public final class ReaVariableSub extends RaCommandBase {
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name)) == null) {
-            return suggestCreate(ctx, "variable " + name, "Variable", name, "set");
-        }
-        return sendHelp(ctx, "variable " + esc(name),
+        boolean exists = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name)) != null;
+        return nameHelp(ctx, "variable", "Variable", name, exists, "set",
                 "show", "", "Show a variable",
                 "set", "[value]", "Set variable to a &especified value",
                 "delete", "", "Delete a variable"
         );
     }
 
-    private int setVariable(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String value) {
+    private int set(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String value) {
         String name = StringArgumentType.getString(ctx, "name");
         platform.getPersistentVariables().setVariable(playerOf(name), varNameOf(name), value);
         sendPrefixed(ctx, "Variable&a '&{name}'&r was created with the value:\n&{value}", Map.of(
@@ -66,7 +64,7 @@ public final class ReaVariableSub extends RaCommandBase {
         String name = StringArgumentType.getString(ctx, "name");
         String value = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name));
         if (value == null) {
-            sendInky(ctx, "Variable &c'" + esc(name) + "'&r doesn't exist!");
+            sendNotFound(ctx, "Variable", name);
             return Command.SINGLE_SUCCESS;
         }
         sendPrefixed(ctx, "Variable &a'&{name}'&r&7:\n&{value}", Map.of(
@@ -79,7 +77,7 @@ public final class ReaVariableSub extends RaCommandBase {
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         if (!platform.getPersistentVariables().removeVariable(playerOf(name), varNameOf(name))) {
-            sendInky(ctx, "Variable &c'" + esc(name) + "'&r doesn't exist!");
+            sendNotFound(ctx, "Variable", name);
             return Command.SINGLE_SUCCESS;
         }
         sendPrefixed(ctx, "Variable &a'" + esc(name) + "'&r was deleted.");

@@ -36,28 +36,22 @@ public final class ReaMenuSub extends RaCommandBase {
                 .requires(permission("reactions.menu"))
                 .executes(ctx -> promptForName(ctx, "menu"))
                 .then(argument("name", StringArgumentType.word())
-                        .suggests((_, builder) -> {
-                            String remaining = builder.getRemaining();
-                            InventoryMenu.getMenuNames().stream()
-                                    .filter(s -> s.startsWith(remaining))
-                                    .forEach(builder::suggest);
-                            return builder.buildFuture();
-                        })
-                        .executes(this::nameHelp)
+                        .suggests(suggestNames(InventoryMenu::getMenuNames))
+                        .executes(this::help)
                         .then(literal("create")
                                 .requires(permission("reactions.menu.edit"))
                                 .executes(ctx -> {
-                                    createMenu(ctx, 3, null);
+                                    create(ctx, 3, null);
                                     return Command.SINGLE_SUCCESS;
                                 })
                                 .then(argument("rows", IntegerArgumentType.integer(1, 6))
                                         .executes(ctx -> {
-                                            createMenu(ctx, IntegerArgumentType.getInteger(ctx, "rows"), null);
+                                            create(ctx, IntegerArgumentType.getInteger(ctx, "rows"), null);
                                             return Command.SINGLE_SUCCESS;
                                         })
                                         .then(argument("title", StringArgumentType.greedyString())
                                                 .executes(ctx -> {
-                                                    createMenu(ctx,
+                                                    create(ctx,
                                                             IntegerArgumentType.getInteger(ctx, "rows"),
                                                             StringArgumentType.getString(ctx, "title"));
                                                     return Command.SINGLE_SUCCESS;
@@ -77,17 +71,9 @@ public final class ReaMenuSub extends RaCommandBase {
                 .build();
     }
 
-    private int nameHelp(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!InventoryMenu.containsMenu(name)) {
-            return suggestCreate(ctx, "menu " + name, "Menu", name, "create");
-        }
-        help(ctx, name);
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private void help(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
-        sendHelp(ctx, "menu " + esc(name),
+        return nameHelp(ctx, "menu", "Menu", name, InventoryMenu.containsMenu(name), "create",
                 "create", "&e[<rows>&6 [<title>]&e]", "Create menu with optional&e rows&r count and&e title",
                 "create chest", "&e[<title>]", "Create menu from your currently open&e container",
                 "open", "&e[<player>]", "Open a menu",
@@ -95,10 +81,10 @@ public final class ReaMenuSub extends RaCommandBase {
         );
     }
 
-    private void createMenu(@NotNull CommandContext<CommandSourceStack> ctx, int rows, @Nullable String title) {
+    private void create(@NotNull CommandContext<CommandSourceStack> ctx, int rows, @Nullable String title) {
         String name = StringArgumentType.getString(ctx, "name");
         if (InventoryMenu.containsMenu(name)) {
-            sendPrefixed(ctx, "Menu&c '" + esc(name) + "'&r already exists");
+            sendAlreadyExists(ctx, "Menu", name);
             return;
         }
         InventoryMenu.add(name, rows, title);
@@ -108,7 +94,7 @@ public final class ReaMenuSub extends RaCommandBase {
     private int createFromChest(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String title) {
         String name = StringArgumentType.getString(ctx, "name");
         if (InventoryMenu.containsMenu(name)) {
-            sendPrefixed(ctx, "Menu&c '" + esc(name) + "'&r already exists");
+            sendAlreadyExists(ctx, "Menu", name);
             return Command.SINGLE_SUCCESS;
         }
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
@@ -127,7 +113,7 @@ public final class ReaMenuSub extends RaCommandBase {
 
     private int open(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!checkMenuExists(ctx, name)) return Command.SINGLE_SUCCESS;
+        if (!menuExists(ctx, name)) return Command.SINGLE_SUCCESS;
 
         CommandSender sender = ctx.getSource().getSender();
         Player player = resolver != null
@@ -147,16 +133,16 @@ public final class ReaMenuSub extends RaCommandBase {
 
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!checkMenuExists(ctx, name)) return Command.SINGLE_SUCCESS;
+        if (!menuExists(ctx, name)) return Command.SINGLE_SUCCESS;
 
         InventoryMenu.remove(name);
         sendPrefixed(ctx, "Menu &a'" + esc(name) + "'&r was deleted.");
         return Command.SINGLE_SUCCESS;
     }
 
-    private boolean checkMenuExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
+    private boolean menuExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
         if (InventoryMenu.containsMenu(name)) return true;
-        sendInky(ctx, "Menu &c'" + esc(name) + "'&r doesn't exist!");
+        sendNotFound(ctx, "Menu", name);
         return false;
     }
 }

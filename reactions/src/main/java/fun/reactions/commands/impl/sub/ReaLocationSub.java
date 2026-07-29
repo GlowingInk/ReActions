@@ -38,30 +38,24 @@ public final class ReaLocationSub extends RaCommandBase {
                 .requires(permission("reactions.location"))
                 .executes(ctx -> promptForName(ctx, "location"))
                 .then(argument("name", StringArgumentType.word())
-                        .suggests((_, builder) -> {
-                            String remaining = builder.getRemaining();
-                            LocationHolder.getTpLocNames().stream()
-                                    .filter(s -> s.startsWith(remaining))
-                                    .forEach(builder::suggest);
-                            return builder.buildFuture();
-                        })
-                        .executes(this::nameHelp)
+                        .suggests(suggestNames(LocationHolder::getTpLocNames))
+                        .executes(this::help)
                         .then(literal("create")
                                 .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
-                                    createLocation(ctx);
+                                    create(ctx);
                                     return Command.SINGLE_SUCCESS;
                                 })
                                 .then(argument("world", ArgumentTypes.world())
                                         .then(argument("position", ArgumentTypes.finePosition(false))
                                                 .executes(ctx -> {
-                                                    createLocation(ctx, false);
+                                                    create(ctx, false);
                                                     return Command.SINGLE_SUCCESS;
                                                 })
                                                 .then(argument("yaw", DoubleArgumentType.doubleArg())
                                                         .then(argument("pitch", DoubleArgumentType.doubleArg())
                                                                 .executes(ctx -> {
-                                                                    createLocation(ctx, true);
+                                                                    create(ctx, true);
                                                                     return Command.SINGLE_SUCCESS;
                                                                 }))))))
                         .then(literal("info")
@@ -100,17 +94,9 @@ public final class ReaLocationSub extends RaCommandBase {
                                         })))).build();
     }
 
-    private int nameHelp(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (LocationHolder.getTpLoc(name) == null) {
-            return suggestCreate(ctx, "location " + name, "Location", name, "create");
-        }
-        help(ctx, name);
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private void help(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
-        sendHelp(ctx, "location " + esc(name),
+        return nameHelp(ctx, "location", "Location", name, LocationHolder.getTpLoc(name) != null, "create",
                 "create", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Create location here or at&e specified coordinates",
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
@@ -119,16 +105,16 @@ public final class ReaLocationSub extends RaCommandBase {
         );
     }
 
-    private void createLocation(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private void create(@NotNull CommandContext<CommandSourceStack> ctx) {
         Entity executor = ctx.getSource().getExecutor();
         if (executor == null) {
             sendPrefixed(ctx, "You must be an entity or a command block to perform this command");
             return;
         }
-        createLocation(ctx, RealPosition.byLocation(executor.getLocation()));
+        create(ctx, RealPosition.byLocation(executor.getLocation()));
     }
 
-    private void createLocation(@NotNull CommandContext<CommandSourceStack> ctx, boolean withRotation) throws CommandSyntaxException {
+    private void create(@NotNull CommandContext<CommandSourceStack> ctx, boolean withRotation) throws CommandSyntaxException {
         World world = ctx.getArgument("world", World.class);
         FinePosition pos = ctx.getArgument("position", FinePositionResolver.class).resolve(ctx.getSource());
         Location loc = new Location(
@@ -136,13 +122,13 @@ public final class ReaLocationSub extends RaCommandBase {
                 withRotation ? (float) DoubleArgumentType.getDouble(ctx, "yaw") : 0f,
                 withRotation ? (float) DoubleArgumentType.getDouble(ctx, "pitch") : 0f
         );
-        createLocation(ctx, RealPosition.byLocation(loc));
+        create(ctx, RealPosition.byLocation(loc));
     }
 
-    private void createLocation(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull RealPosition pos) {
+    private void create(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull RealPosition pos) {
         String name = StringArgumentType.getString(ctx, "name");
         if (LocationHolder.getTpLoc(name) != null) {
-            sendPrefixed(ctx, "Location&c '" + esc(name) + "'&r already exists");
+            sendAlreadyExists(ctx, "Location", name);
             return;
         }
         LocationHolder.addTpLoc(name, pos);
@@ -220,7 +206,7 @@ public final class ReaLocationSub extends RaCommandBase {
         String name = StringArgumentType.getString(ctx, "name");
         var tpPos =  LocationHolder.getTpPosition(name);
         if (tpPos == null) {
-            sendInky(ctx, "Location &c'" + esc(name) + "'&r doesn't exist!");
+            sendNotFound(ctx, "Location", name);
         }
         return tpPos;
     }

@@ -31,19 +31,12 @@ public final class ReaListSub extends RaCommandBase {
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("list")
                 .requires(permission("reactions.list"))
-                .executes(this::listHelp)
+                .executes(this::help)
                 .then(literal("activators")
                         .requires(permission("reactions.activator.view"))
                         .executes(ctx -> listActivators(ctx, null, 1))
                         .then(argument("group", StringArgumentType.word())
-                                .suggests((_, builder) -> {
-                                    String remaining = builder.getRemaining();
-                                    if ("*".startsWith(remaining)) builder.suggest("*");
-                                    platform.getActivators().getGroupNames().stream()
-                                            .filter(s -> s.startsWith(remaining))
-                                            .forEach(builder::suggest);
-                                    return builder.buildFuture();
-                                })
+                                .suggests(suggestNamesOrAll(() -> platform.getActivators().getGroupNames()))
                                 .executes(ctx -> listActivators(ctx, filterArg(ctx, "group"), 1))
                                 .then(argument("page", IntegerArgumentType.integer(1))
                                         .executes(ctx -> listActivators(ctx, filterArg(ctx, "group"), IntegerArgumentType.getInteger(ctx, "page"))))))
@@ -51,15 +44,7 @@ public final class ReaListSub extends RaCommandBase {
                         .requires(permission("reactions.location.view"))
                         .executes(ctx -> listLocations(ctx, null, 1))
                         .then(argument("world", StringArgumentType.word())
-                                .suggests((_, builder) -> {
-                                    String remaining = builder.getRemaining();
-                                    if ("*".startsWith(remaining)) builder.suggest("*");
-                                    platform.getServer().getWorlds().stream()
-                                            .map(World::getName)
-                                            .filter(s -> s.startsWith(remaining))
-                                            .forEach(builder::suggest);
-                                    return builder.buildFuture();
-                                })
+                                .suggests(suggestNamesOrAll(() -> platform.getServer().getWorlds().stream().map(World::getName).toList()))
                                 .executes(ctx -> listLocations(ctx, filterArg(ctx, "world"), 1))
                                 .then(argument("page", IntegerArgumentType.integer(1))
                                         .executes(ctx -> listLocations(ctx, filterArg(ctx, "world"), IntegerArgumentType.getInteger(ctx, "page"))))))
@@ -71,7 +56,7 @@ public final class ReaListSub extends RaCommandBase {
                 .build();
     }
 
-    private int listHelp(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         return sendHelp(ctx, "list",
                 "activators", "&e[<group>|*] &6[<page>]", "List all activators, optionally filtered by&e group",
                 "locations", "&e[<world>|*] &6[<page>]", "List all locations, optionally filtered by&e world",

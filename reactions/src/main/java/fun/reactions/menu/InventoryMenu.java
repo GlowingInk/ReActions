@@ -5,12 +5,9 @@ import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.collections.CollectionUtils;
-import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -192,15 +189,6 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
 
     public static boolean containsMenu(String id) {
         return menu.containsKey(id.toLowerCase(Locale.ROOT));
-    }
-
-    private static String itemToString(String itemStr) {
-        if (itemStr.isEmpty()) return "AIR";
-        ItemStack item = VirtualItem.asItemStack(itemStr);
-        if (item == null || item.getType() == Material.AIR) return "AIR";
-        String returnStr = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
-        String itemTypeData = item.getType().name() + (ItemUtils.getDurability(item) == 0 ? "" : ":" + ItemUtils.getDurability(item)) + (item.getAmount() == 1 ? "" : "*" + item.getAmount());
-        return ChatColor.stripColor(returnStr.isEmpty() ? itemTypeData : returnStr + "[" + itemTypeData + "]");
     }
 
     @EventHandler

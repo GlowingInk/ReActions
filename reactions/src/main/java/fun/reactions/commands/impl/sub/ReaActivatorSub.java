@@ -61,13 +61,7 @@ public final class ReaActivatorSub extends RaCommandBase {
                 .requires(permission("reactions.activator"))
                 .executes(ctx -> promptForName(ctx, "activator"))
                 .then(argument("name", StringArgumentType.word())
-                        .suggests((_, builder) -> {
-                            String remaining = builder.getRemaining();
-                            activators.getActivatorNames().stream()
-                                    .filter(s -> s.startsWith(remaining))
-                                    .forEach(builder::suggest);
-                            return builder.buildFuture();
-                        })
+                        .suggests(suggestNames(activators::getActivatorNames))
                         .executes(this::help)
                         .then(literal("create")
                                 .requires(permission("reactions.activator.edit"))
@@ -109,13 +103,7 @@ public final class ReaActivatorSub extends RaCommandBase {
                 .then(literal("add")
                         .requires(permission("reactions.activator.edit"))
                         .then(argument("type", StringArgumentType.word())
-                                .suggests((_, builder) -> {
-                                    String remaining = builder.getRemaining();
-                                    activities.getFlagsTypesNames().stream()
-                                            .filter(s -> s.startsWith(remaining))
-                                            .forEach(builder::suggest);
-                                    return builder.buildFuture();
-                                })
+                                .suggests(suggestNames(activities::getFlagsTypesNames))
                                 .executes(ctx -> flagAdd(ctx, ""))
                                 .then(argument("parameters", StringArgumentType.greedyString())
                                         .executes(ctx -> flagAdd(ctx, StringArgumentType.getString(ctx, "parameters"))))));
@@ -140,13 +128,10 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = ctx.getArgument("name", String.class);
-        if (activators.getActivator(name) == null) {
-            return suggestCreate(ctx, "activator " + name, "Activator", name, "create");
-        }
-        return sendHelp(ctx, "activator " + name,
+        return nameHelp(ctx, "activator", "Activator", name, activators.getActivator(name) != null, "create",
                 "create", "&a<type> &e[<parameters...>]", "Create this activator with the given &atype&r and &eparameters",
                 "info", "", "Show info about this activator",
-                "move", "&a<group>", "Move this activator into another group",
+                "move", "&a<group>", "Move this activator into another &agroup",
                 "delete", "[confirm]", "Delete this activator",
                 "action", "...", "Manage activator actions",
                 "reaction", "...", "Manage activator reactions",
@@ -157,7 +142,7 @@ public final class ReaActivatorSub extends RaCommandBase {
     private int create(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
         String name = StringArgumentType.getString(ctx, "name");
         if (activators.getActivator(name) != null) {
-            sendPrefixed(ctx, "Activator &c'" + esc(name) + "'&r already exists.");
+            sendAlreadyExists(ctx, "Activator", name);
             return SINGLE_SUCCESS;
         }
         ActivatorType type = ctx.getArgument("type", ActivatorType.class);
