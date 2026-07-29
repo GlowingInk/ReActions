@@ -35,6 +35,7 @@ public final class ReaLocationSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("location")
+                .requires(permission("reactions.location"))
                 .executes(ctx -> promptForName(ctx, "location"))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((_, builder) -> {
@@ -46,6 +47,7 @@ public final class ReaLocationSub extends RaCommandBase {
                         })
                         .executes(this::nameHelp)
                         .then(literal("create")
+                                .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
                                     createLocation(ctx);
                                     return Command.SINGLE_SUCCESS;
@@ -63,16 +65,19 @@ public final class ReaLocationSub extends RaCommandBase {
                                                                     return Command.SINGLE_SUCCESS;
                                                                 }))))))
                         .then(literal("info")
+                                .requires(permission("reactions.location.view"))
                                 .executes(ctx -> {
                                     info(ctx);
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(literal("delete")
+                                .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
                                     delete(ctx);
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(literal("tp")
+                                .requires(permission("reactions.location.use"))
                                 .executes(ctx -> {
                                     teleport(ctx, null);
                                     return Command.SINGLE_SUCCESS;
@@ -83,6 +88,7 @@ public final class ReaLocationSub extends RaCommandBase {
                                             return Command.SINGLE_SUCCESS;
                                         })))
                         .then(literal("move")
+                                .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
                                     move(ctx, null);
                                     return Command.SINGLE_SUCCESS;

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static ink.glowing.text.InkyMessage.inkyMessage;
 import static ink.glowing.text.placeholder.Placeholder.placeholder;
@@ -123,6 +124,10 @@ public abstract class RaCommandBase {
             sendInky(sender, "  " + prev + " &7[&f" + current + "&7/&f" + totalPages + "&7]&r " + next);
         }
         return Command.SINGLE_SUCCESS;
+    }
+
+    protected static @NotNull Predicate<CommandSourceStack> permission(@NotNull String permission) {
+        return source -> source.getSender().hasPermission(permission);
     }
 
     protected static @NotNull String rootLabel(@NotNull CommandContext<CommandSourceStack> ctx) {

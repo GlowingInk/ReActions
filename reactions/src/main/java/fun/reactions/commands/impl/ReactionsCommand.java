@@ -18,6 +18,7 @@ public final class ReactionsCommand extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("reactions")
+                .requires(permission("reactions"))
                 .executes(ctx -> {
                     help(ctx);
                     return Command.SINGLE_SUCCESS;

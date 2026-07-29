@@ -58,6 +58,7 @@ public final class ReaActivatorSub extends RaCommandBase {
         var actionArg = registryArgument(activities::getAction, activities::getActionsTypesNames);
 
         return literal("activator")
+                .requires(permission("reactions.activator"))
                 .executes(ctx -> promptForName(ctx, "activator"))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((_, builder) -> {
@@ -69,12 +70,16 @@ public final class ReaActivatorSub extends RaCommandBase {
                         })
                         .executes(this::help)
                         .then(literal("create")
+                                .requires(permission("reactions.activator.edit"))
                                 .then(argument("type", registryArgument(types::get, types::getTypeNames))
                                         .executes(ctx -> create(ctx, ""))
                                         .then(argument("parameters", StringArgumentType.greedyString())
                                                 .executes(ctx -> create(ctx, StringArgumentType.getString(ctx, "parameters"))))))
-                        .then(literal("info").executes(this::info))
+                        .then(literal("info")
+                                .requires(permission("reactions.activator.view"))
+                                .executes(this::info))
                         .then(literal("delete")
+                                .requires(permission("reactions.activator.edit"))
                                 .executes(this::deletePrompt)
                                 .then(literal("confirm").executes(this::delete)))
                         .then(actionActivityNode(ActivitySelection.ACTION, actionArg))
@@ -90,6 +95,7 @@ public final class ReaActivatorSub extends RaCommandBase {
         var node = literal(selection.lower)
                 .executes(ctx -> activityHelp(ctx, selection))
                 .then(literal("add")
+                        .requires(permission("reactions.activator.edit"))
                         .then(argument("type", actionArg)
                                 .executes(ctx -> actionAdd(ctx, selection, ""))
                                 .then(argument("parameters", StringArgumentType.greedyString())
@@ -101,6 +107,7 @@ public final class ReaActivatorSub extends RaCommandBase {
         var node = literal(ActivitySelection.FLAG.lower)
                 .executes(ctx -> activityHelp(ctx, ActivitySelection.FLAG))
                 .then(literal("add")
+                        .requires(permission("reactions.activator.edit"))
                         .then(argument("type", StringArgumentType.word())
                                 .suggests((_, builder) -> {
                                     String remaining = builder.getRemaining();
@@ -121,9 +128,11 @@ public final class ReaActivatorSub extends RaCommandBase {
     ) {
         return builder
                 .then(literal("remove")
+                        .requires(permission("reactions.activator.edit"))
                         .then(argument("index", IntegerArgumentType.integer(1))
                                 .executes(ctx -> activityRemove(ctx, selection))))
                 .then(literal("move")
+                        .requires(permission("reactions.activator.edit"))
                         .then(argument("from", IntegerArgumentType.integer(1))
                                 .then(argument("to", IntegerArgumentType.integer(1))
                                         .executes(ctx -> activityMove(ctx, selection)))));

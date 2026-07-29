@@ -21,6 +21,7 @@ public final class ExecCommand extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("exec")
+                .requires(permission("reactions.exec"))
                 .executes(ctx -> {
                     help(ctx);
                     return Command.SINGLE_SUCCESS;

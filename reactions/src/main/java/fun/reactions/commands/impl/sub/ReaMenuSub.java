@@ -33,6 +33,7 @@ public final class ReaMenuSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("menu")
+                .requires(permission("reactions.menu"))
                 .executes(ctx -> promptForName(ctx, "menu"))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((_, builder) -> {
@@ -44,6 +45,7 @@ public final class ReaMenuSub extends RaCommandBase {
                         })
                         .executes(this::nameHelp)
                         .then(literal("create")
+                                .requires(permission("reactions.menu.edit"))
                                 .executes(ctx -> {
                                     createMenu(ctx, 3, null);
                                     return Command.SINGLE_SUCCESS;
@@ -65,10 +67,12 @@ public final class ReaMenuSub extends RaCommandBase {
                                         .then(argument("title", StringArgumentType.greedyString())
                                                 .executes(ctx -> createFromChest(ctx, StringArgumentType.getString(ctx, "title"))))))
                         .then(literal("open")
+                                .requires(permission("reactions.menu.use"))
                                 .executes(ctx -> open(ctx, null))
                                 .then(argument("player", ArgumentTypes.player())
                                         .executes(ctx -> open(ctx, ctx.getArgument("player", PlayerSelectorArgumentResolver.class)))))
                         .then(literal("delete")
+                                .requires(permission("reactions.menu.edit"))
                                 .executes(this::delete)))
                 .build();
     }

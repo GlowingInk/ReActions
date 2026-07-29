@@ -10,3 +10,126 @@ authors:
   - imDaniX
 softdepend: [ProtocolLib]
 
+permissions:
+  reactions:
+    description: Use the /reactions command
+    default: op
+
+  reactions.exec:
+    description: Execute FUNCTION activators (/exec)
+    default: op
+
+  reactions.activator:
+    description: Manage activators (/reactions activator)
+    default: op
+    children:
+      reactions: true
+      reactions.activator.view: true
+  reactions.activator.view:
+    description: View activator info and list activators (/reactions activator <name> info, /reactions list activators)
+    default: op
+  reactions.activator.edit:
+    description: Create, delete and edit activators (including their actions, reactions and flags)
+    default: op
+    children:
+      reactions.activator: true
+
+  reactions.location:
+    description: Manage locations (/reactions location)
+    default: op
+    children:
+      reactions: true
+      reactions.location.view: true
+      reactions.location.use: true
+  reactions.location.view:
+    description: View location info and list locations (/reactions location <name> info, /reactions list locations)
+    default: op
+  reactions.location.use:
+    description: Teleport to a location (/reactions location <name> tp)
+    default: op
+  reactions.location.edit:
+    description: Create, delete and move locations
+    default: op
+    children:
+      reactions.location: true
+
+  reactions.menu:
+    description: Manage menus (/reactions menu)
+    default: op
+    children:
+      reactions: true
+      reactions.menu.view: true
+      reactions.menu.use: true
+  reactions.menu.view:
+    description: List menus (/reactions list menus)
+    default: op
+  reactions.menu.use:
+    description: Open a menu (/reactions menu <name> open)
+    default: op
+  reactions.menu.edit:
+    description: Create and delete menus
+    default: op
+    children:
+      reactions.menu: true
+
+  reactions.variable:
+    description: Manage variables (/reactions variable)
+    default: op
+    children:
+      reactions: true
+      reactions.variable.view: true
+  reactions.variable.view:
+    description: Show variables (/reactions variable <name> show)
+    default: op
+  reactions.variable.edit:
+    description: Set and delete variables
+    default: op
+    children:
+      reactions.variable: true
+
+  reactions.list:
+    description: List activators, locations and menus (/reactions list)
+    default: op
+    children:
+      reactions: true
+
+  reactions.reload:
+    description: Reload the plugin (/reactions reload)
+    default: op
+    children:
+      reactions: true
+  reactions.reload.activators:
+    description: Reload activators
+    default: op
+    children:
+      reactions.reload: true
+  reactions.reload.locations:
+    description: Reload locations
+    default: op
+    children:
+      reactions.reload: true
+  reactions.reload.config:
+    description: Reload the plugin configuration
+    default: op
+    children:
+      reactions.reload: true
+  reactions.reload.cooldowns:
+    description: Reload cooldowns
+    default: op
+    children:
+      reactions.reload: true
+  reactions.reload.variables:
+    description: Reload persistent variables
+    default: op
+    children:
+      reactions.reload: true
+  reactions.reload.timers:
+    description: Reload timers
+    default: op
+    children:
+      reactions.reload: true
+  reactions.reload.menus:
+    description: Reload menus
+    default: op
+    children:
+      reactions.reload: true

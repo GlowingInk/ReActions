@@ -30,8 +30,10 @@ public final class ReaListSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("list")
+                .requires(permission("reactions.list"))
                 .executes(this::listHelp)
                 .then(literal("activators")
+                        .requires(permission("reactions.activator.view"))
                         .executes(ctx -> listActivators(ctx, null, 1))
                         .then(argument("group", StringArgumentType.word())
                                 .suggests((_, builder) -> {
@@ -46,6 +48,7 @@ public final class ReaListSub extends RaCommandBase {
                                 .then(argument("page", IntegerArgumentType.integer(1))
                                         .executes(ctx -> listActivators(ctx, filterArg(ctx, "group"), IntegerArgumentType.getInteger(ctx, "page"))))))
                 .then(literal("locations")
+                        .requires(permission("reactions.location.view"))
                         .executes(ctx -> listLocations(ctx, null, 1))
                         .then(argument("world", StringArgumentType.word())
                                 .suggests((_, builder) -> {
@@ -61,6 +64,7 @@ public final class ReaListSub extends RaCommandBase {
                                 .then(argument("page", IntegerArgumentType.integer(1))
                                         .executes(ctx -> listLocations(ctx, filterArg(ctx, "world"), IntegerArgumentType.getInteger(ctx, "page"))))))
                 .then(literal("menus")
+                        .requires(permission("reactions.menu.view"))
                         .executes(ctx -> listMenus(ctx, 1))
                         .then(argument("page", IntegerArgumentType.integer(1))
                                 .executes(ctx -> listMenus(ctx, IntegerArgumentType.getInteger(ctx, "page")))))

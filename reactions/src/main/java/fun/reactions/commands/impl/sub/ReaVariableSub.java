@@ -22,15 +22,21 @@ public final class ReaVariableSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("variable")
+                .requires(permission("reactions.variable"))
                 .executes(ctx -> promptForName(ctx, "variable"))
                 .then(argument("name", StringArgumentType.word())
                         .executes(this::help)
-                        .then(literal("show").executes(this::show))
+                        .then(literal("show")
+                                .requires(permission("reactions.variable.view"))
+                                .executes(this::show))
                         .then(literal("set")
+                                .requires(permission("reactions.variable.edit"))
                                 .executes(ctx -> setVariable(ctx, ""))
                                 .then(argument("value", StringArgumentType.greedyString())
                                         .executes(ctx -> setVariable(ctx, StringArgumentType.getString(ctx, "value")))))
-                        .then(literal("delete").executes(this::delete)))
+                        .then(literal("delete")
+                                .requires(permission("reactions.variable.edit"))
+                                .executes(this::delete)))
                 .build();
     }
 

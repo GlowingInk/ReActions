@@ -14,6 +14,7 @@ import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public final class ReaReloadSub extends RaCommandBase {
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("reload")
+                .requires(permission("reactions.reload"))
                 .executes(this::reloadAll)
                 .then(argument("targets", StringArgumentType.greedyString())
                         .suggests(this::suggestTargets)
@@ -43,20 +45,26 @@ public final class ReaReloadSub extends RaCommandBase {
     }
 
     private int reloadAll(@NotNull CommandContext<CommandSourceStack> ctx) {
-        doReloadActivators();
-        doReloadLocations();
-        doReloadConfig();
-        doReloadCooldowns();
-        doReloadVariables();
-        doReloadTimers();
-        doReloadMenus();
-        sendPrefixed(ctx, "Reloaded &aeverything&r.");
+        CommandSender sender = ctx.getSource().getSender();
+        List<String> done = new ArrayList<>();
+        List<String> denied = new ArrayList<>();
+        for (String target : TARGETS) {
+            if (!sender.hasPermission(permissionFor(target))) {
+                denied.add(target);
+                continue;
+            }
+            runTarget(target);
+            done.add(target);
+        }
+        reportResult(ctx, done, denied, List.of());
         return SINGLE_SUCCESS;
     }
 
     private int reloadTargets(@NotNull CommandContext<CommandSourceStack> ctx) {
+        CommandSender sender = ctx.getSource().getSender();
         String raw = StringArgumentType.getString(ctx, "targets");
         List<String> done = new ArrayList<>();
+        List<String> denied = new ArrayList<>();
         List<String> unknown = new ArrayList<>();
         for (String segment : raw.split("&")) {
             String trimmed = segment.trim();
@@ -64,56 +72,48 @@ public final class ReaReloadSub extends RaCommandBase {
             String[] parts = trimmed.split("\\s+", 2);
             String keyword = parts[0].toLowerCase(Locale.ROOT);
             String arg = parts.length > 1 ? parts[1].trim() : "";
-            switch (keyword) {
-                case "activators" -> {
-                    if (arg.isEmpty()) {
-                        doReloadActivators();
-                        done.add("activators");
-                    } else {
-                        doReloadActivatorGroup(arg);
-                        done.add("activators " + arg);
-                    }
-                }
-                case "locations" -> {
-                    doReloadLocations();
-                    done.add("locations");
-                }
-                case "config" -> {
-                    doReloadConfig();
-                    done.add("config");
-                }
-                case "cooldowns" -> {
-                    doReloadCooldowns();
-                    done.add("cooldowns");
-                }
-                case "variables" -> {
-                    doReloadVariables();
-                    done.add("variables");
-                }
-                case "timers" -> {
-                    doReloadTimers();
-                    done.add("timers");
-                }
-                case "menus" -> {
-                    doReloadMenus();
-                    done.add("menus");
-                }
-                default -> unknown.add(parts[0]);
+            if (!TARGETS.contains(keyword)) {
+                unknown.add(parts[0]);
+                continue;
+            }
+            if (!sender.hasPermission(permissionFor(keyword))) {
+                denied.add(keyword);
+                continue;
+            }
+            if (keyword.equals("activators") && !arg.isEmpty()) {
+                doReloadActivatorGroup(arg);
+                done.add("activators " + arg);
+            } else {
+                runTarget(keyword);
+                done.add(keyword);
             }
         }
+        reportResult(ctx, done, denied, unknown);
+        return SINGLE_SUCCESS;
+    }
+
+    private void reportResult(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull List<String> done,
+            @NotNull List<String> denied,
+            @NotNull List<String> unknown
+    ) {
         if (!done.isEmpty()) {
             sendPrefixed(ctx, "Reloaded &a" + String.join("&r, &a", done.stream().map(ReaReloadSub::esc).toList()) + "&r.");
+        }
+        for (String d : denied) {
+            sendInky(ctx, "No permission to reload &c'" + esc(d) + "'&r.");
         }
         for (String u : unknown) {
             sendInky(ctx, "Unknown reload target &c'" + esc(u) + "'&r.");
         }
-        return SINGLE_SUCCESS;
     }
 
     private @NotNull CompletableFuture<Suggestions> suggestTargets(
             @NotNull CommandContext<CommandSourceStack> ctx,
             @NotNull SuggestionsBuilder builder
     ) {
+        CommandSender sender = ctx.getSource().getSender();
         String remaining = builder.getRemaining();
         int lastAmp = remaining.lastIndexOf('&');
         String before = lastAmp == -1 ? "" : remaining.substring(0, lastAmp + 1);
@@ -127,7 +127,9 @@ public final class ReaReloadSub extends RaCommandBase {
             SuggestionsBuilder segBuilder = builder.createOffset(trimmedStartAbs);
             String wordSoFar = trimmedSegment.toLowerCase(Locale.ROOT);
             for (String target : TARGETS) {
-                if (!used.contains(target) && target.startsWith(wordSoFar)) segBuilder.suggest(target);
+                if (!used.contains(target) && sender.hasPermission(permissionFor(target)) && target.startsWith(wordSoFar)) {
+                    segBuilder.suggest(target);
+                }
             }
             return segBuilder.buildFuture();
         }
@@ -158,6 +160,22 @@ public final class ReaReloadSub extends RaCommandBase {
             used.add(trimmed.split("\\s+", 2)[0].toLowerCase(Locale.ROOT));
         }
         return used;
+    }
+
+    private static @NotNull String permissionFor(@NotNull String target) {
+        return "reactions.reload." + target;
+    }
+
+    private void runTarget(@NotNull String target) {
+        switch (target) {
+            case "activators" -> doReloadActivators();
+            case "locations" -> doReloadLocations();
+            case "config" -> doReloadConfig();
+            case "cooldowns" -> doReloadCooldowns();
+            case "variables" -> doReloadVariables();
+            case "timers" -> doReloadTimers();
+            case "menus" -> doReloadMenus();
+        }
     }
 
     private void doReloadActivators() {
