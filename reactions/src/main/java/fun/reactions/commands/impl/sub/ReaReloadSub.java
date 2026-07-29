@@ -102,10 +102,10 @@ public final class ReaReloadSub extends RaCommandBase {
             sendPrefixed(ctx, "Reloaded &a" + String.join("&r, &a", done.stream().map(ReaReloadSub::esc).toList()) + "&r.");
         }
         for (String d : denied) {
-            sendInky(ctx, "No permission to reload &c'" + esc(d) + "'&r.");
+            sendPrefixed(ctx, "No permission to reload &c'" + esc(d) + "'&r.");
         }
         for (String u : unknown) {
-            sendInky(ctx, "Unknown reload target &c'" + esc(u) + "'&r.");
+            sendPrefixed(ctx, "Unknown reload target &c'" + esc(u) + "'&r.");
         }
     }
 

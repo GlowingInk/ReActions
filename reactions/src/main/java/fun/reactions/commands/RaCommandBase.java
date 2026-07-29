@@ -69,25 +69,6 @@ public abstract class RaCommandBase {
         return Command.SINGLE_SUCCESS;
     }
 
-    protected static int suggestCreate(
-            @NotNull CommandContext<CommandSourceStack> ctx,
-            @NotNull String command,
-            @NotNull String itemLabel,
-            @NotNull String name,
-            @NotNull String createSubcommand
-    ) {
-        CommandSender sender = ctx.getSource().getSender();
-        String start = "/" + rootLabel(ctx) + " " + command + " " + createSubcommand + " ";
-
-        sendPrefixed(sender, itemLabel + " &c'" + esc(name) + "'&r doesn't exist.");
-        if (sender instanceof Player) {
-            sendInky(sender, "&[  &aClick here to create it](click:suggest " + start + ")(hover:text &7" + start.trim() + ")");
-        } else {
-            sendInky(sender, "  &7Use &a" + command + " " + createSubcommand + "&r to create it.");
-        }
-        return Command.SINGLE_SUCCESS;
-    }
-
     protected static int nameHelp(
             @NotNull CommandContext<CommandSourceStack> ctx,
             @NotNull String type,
@@ -98,7 +79,16 @@ public abstract class RaCommandBase {
             @NotNull String... help
     ) {
         if (!exists) {
-            return suggestCreate(ctx, type + " " + name, itemLabel, name, createSubcommand);
+            CommandSender sender = ctx.getSource().getSender();
+            String start = "/" + rootLabel(ctx) + " " + type + " " + name + " " + createSubcommand;
+
+            sendPrefixed(sender, itemLabel + " &c'" + esc(name) + "'&r doesn't exist.");
+            if (sender instanceof Player) {
+                sendInky(sender, "&[  &aClick here to create it](click:suggest " + start + " )(hover:text &7" + start + ")");
+            } else {
+                sendInky(sender, "  &7Use &a" + start + "&r to create it.");
+            }
+            return Command.SINGLE_SUCCESS;
         }
         return sendHelp(ctx, type + " " + esc(name), help);
     }

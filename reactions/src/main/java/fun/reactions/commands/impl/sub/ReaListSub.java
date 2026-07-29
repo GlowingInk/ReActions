@@ -13,6 +13,7 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.util.location.position.RealPosition;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +72,8 @@ public final class ReaListSub extends RaCommandBase {
         List<String> lines = new ArrayList<>();
         for (Activator activator : found) {
             Logic logic = activator.getLogic();
-            lines.add("&7" + esc(logic.getGroup()) + "/&6" + esc(logic.getName()) + "&e (" + esc(logic.getType()) + ")");
+            String display = "&7" + esc(logic.getGroup()) + "/&6" + esc(logic.getName()) + "&e (" + esc(logic.getType()) + ")";
+            lines.add(listLine(ctx, display, "activator " + logic.getName()));
         }
         return sendPage(ctx, "list activators " + esc(group == null ? "*" : group), "Activators", lines, page);
     }
@@ -81,7 +83,8 @@ public final class ReaListSub extends RaCommandBase {
         for (String name : LocationHolder.getTpLocNames()) {
             RealPosition pos = LocationHolder.getTpPosition(name);
             if (pos == null || (world != null && !pos.worldName().equalsIgnoreCase(world))) continue;
-            lines.add("&6" + esc(name) + "&7 (" + esc(pos.toString()) + ")");
+            String display = "&6" + esc(name) + "&7 (" + esc(pos.toString()) + ")";
+            lines.add(listLine(ctx, display, "location " + name));
         }
         return sendPage(ctx, "list locations " + esc(world == null ? "*" : world), "Locations", lines, page);
     }
@@ -89,7 +92,7 @@ public final class ReaListSub extends RaCommandBase {
     private int listMenus(@NotNull CommandContext<CommandSourceStack> ctx, int page) {
         List<String> lines = new ArrayList<>();
         for (String name : InventoryMenu.getMenuNames()) {
-            lines.add("&6" + esc(name));
+            lines.add(listLine(ctx, "&6" + esc(name), "menu " + name));
         }
         return sendPage(ctx, "list menus", "Menus", lines, page);
     }
@@ -97,5 +100,11 @@ public final class ReaListSub extends RaCommandBase {
     private static @Nullable String filterArg(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String arg) {
         String value = StringArgumentType.getString(ctx, arg);
         return value.equals("*") ? null : value;
+    }
+
+    private static @NotNull String listLine(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String display, @NotNull String command) {
+        if (!(ctx.getSource().getSender() instanceof Player)) return display;
+        String start = "/" + rootLabel(ctx) + " " + command + " ";
+        return "&[" + display + "](click:suggest " + start + ")(hover:text &7" + start.trim() + ")";
     }
 }
