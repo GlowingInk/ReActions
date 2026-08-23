@@ -45,6 +45,7 @@ public final class ExecCommand extends RaCommandBase {
         );
     }
 
+    // TODO Local vars
     private void activate(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
         ContextManager.triggerFunction(
                 ctx.getSource().getSender(),

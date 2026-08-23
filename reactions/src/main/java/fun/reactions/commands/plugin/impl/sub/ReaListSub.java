@@ -29,7 +29,7 @@ public final class ReaListSub extends RaCommandBase {
         super(platform);
     }
 
-    public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
+    public @NotNull LiteralCommandNode<CommandSourceStack> asNode() { // TODO Nearby locs/activators
         return literal("list")
                 .requires(permission("reactions.list"))
                 .executes(this::help)

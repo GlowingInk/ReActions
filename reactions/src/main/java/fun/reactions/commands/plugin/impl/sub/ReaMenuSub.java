@@ -75,7 +75,7 @@ public final class ReaMenuSub extends RaCommandBase {
         String name = StringArgumentType.getString(ctx, "name");
         return nameHelp(ctx, "menu", "Menu", name, InventoryMenu.containsMenu(name), "create",
                 "create", "&e[<rows>&6 [<title>]&e]", "Create menu with optional&e rows&r count and&e title",
-                "create chest", "&e[<title>]", "Create menu from your currently open&e container",
+                "create chest", "&e[<title>]", "Create menu from your currently targeted&e chest",
                 "open", "&e[<player>]", "Open a menu",
                 "delete", "", "Delete a menu"
         );
@@ -103,7 +103,7 @@ public final class ReaMenuSub extends RaCommandBase {
         }
         Block target = player.getTargetBlockExact(6);
         if (target == null || !(target.getState() instanceof Container container)) {
-            sendPrefixed(ctx, "You must be&a looking at&r a chest (or other container) to do this.");
+            sendPrefixed(ctx, "You must be&a looking at&r a chest to do this.");
             return Command.SINGLE_SUCCESS;
         }
         InventoryMenu.addFromInventory(name, container.getInventory(), title);
