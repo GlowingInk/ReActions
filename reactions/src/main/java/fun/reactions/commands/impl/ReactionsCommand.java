@@ -34,11 +34,11 @@ public final class ReactionsCommand extends RaCommandBase {
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
         sendHelp(ctx, null,
-                "activator", "&a<name>", "Manage &anamed&r activator",
-                "location", "&a<name>", "Manage &anamed&r location",
-                "menu", "&a<name>", "Manage &anamed&r menu",
-                "variable", "&a<name>", "Manage &anamed&r variable",
-                "list", "&7(&aactivators&7|&alocations&7|&amenus&7)", "List &aobjects", // TODO List activities
+                "activator", "&a<name>", "Manage&a named&r activator",
+                "location", "&a<name>", "Manage&a named&r location",
+                "menu", "&a<name>", "Manage&a named&r menu",
+                "variable", "&a<name>", "Manage&a named&r variable",
+                "list", "&7(&aactivators&7|&alocations&7|&amenus&7)", "List&a objects", // TODO List activities
                 "reload", "", "Reload a plugin or its specific parts"
         );
     }

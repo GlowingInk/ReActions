@@ -36,7 +36,7 @@ public final class ReaMenuSub extends RaCommandBase {
                 .requires(permission("reactions.menu"))
                 .executes(ctx -> promptForName(ctx, "menu"))
                 .then(argument("name", StringArgumentType.word())
-                        .suggests(suggestNames(InventoryMenu::getMenuNames))
+                        .suggests(suggestNames(InventoryMenu::getMenuNames, false))
                         .executes(this::help)
                         .then(literal("create")
                                 .requires(permission("reactions.menu.edit"))
@@ -103,7 +103,7 @@ public final class ReaMenuSub extends RaCommandBase {
         }
         Block target = player.getTargetBlockExact(6);
         if (target == null || !(target.getState() instanceof Container container)) {
-            sendPrefixed(ctx, "You must be &alooking at&r a chest (or other container) to do this.");
+            sendPrefixed(ctx, "You must be&a looking at&r a chest (or other container) to do this.");
             return Command.SINGLE_SUCCESS;
         }
         InventoryMenu.addFromInventory(name, container.getInventory(), title);

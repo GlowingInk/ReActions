@@ -101,20 +101,10 @@ public abstract class RaCommandBase {
         sendPrefixed(ctx, itemLabel + " &c'" + esc(name) + "'&r already exists.");
     }
 
-    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names) {
+    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names, boolean star) {
         return (_, builder) -> {
             String remaining = builder.getRemaining();
-            names.get().stream()
-                    .filter(s -> s.startsWith(remaining))
-                    .forEach(builder::suggest);
-            return builder.buildFuture();
-        };
-    }
-
-    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNamesOrAll(@NotNull Supplier<? extends Collection<String>> names) {
-        return (_, builder) -> {
-            String remaining = builder.getRemaining();
-            if ("*".startsWith(remaining)) builder.suggest("*");
+            if (star && "*".startsWith(remaining)) builder.suggest("*");
             names.get().stream()
                     .filter(s -> s.startsWith(remaining))
                     .forEach(builder::suggest);
@@ -164,9 +154,10 @@ public abstract class RaCommandBase {
     }
 
     protected static @NotNull String rootLabel(@NotNull CommandContext<CommandSourceStack> ctx) {
-        return ctx.getInput().indexOf(' ') == -1
+        int spaceAt = ctx.getInput().indexOf(' ');
+        return spaceAt == -1
                 ? ctx.getInput()
-                : ctx.getInput().substring(0, ctx.getInput().indexOf(' '));
+                : ctx.getInput().substring(0, spaceAt);
     }
 
     protected static @NotNull Component inky(@NotNull String str) {

@@ -45,7 +45,7 @@ public final class ReaVariableSub extends RaCommandBase {
         boolean exists = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name)) != null;
         return nameHelp(ctx, "variable", "Variable", name, exists, "set",
                 "show", "", "Show a variable",
-                "set", "[value]", "Set variable to a &especified value",
+                "set", "[value]", "Set variable to a&e specified value",
                 "delete", "", "Delete a variable"
         );
     }

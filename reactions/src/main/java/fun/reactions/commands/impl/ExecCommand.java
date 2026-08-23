@@ -41,7 +41,7 @@ public final class ExecCommand extends RaCommandBase {
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
         sendHelp(ctx,
-                "", "<activator> &e[player:<selector>] [delay:<time>]&r", "Execute FUNCTION &aactivator&r."
+                "", "<activator> &e[player:<selector>] [delay:<time>]&r", "Execute FUNCTION&a activator&r."
         );
     }
 

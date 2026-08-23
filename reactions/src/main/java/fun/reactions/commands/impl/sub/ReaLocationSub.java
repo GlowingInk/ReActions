@@ -38,7 +38,7 @@ public final class ReaLocationSub extends RaCommandBase {
                 .requires(permission("reactions.location"))
                 .executes(ctx -> promptForName(ctx, "location"))
                 .then(argument("name", StringArgumentType.word())
-                        .suggests(suggestNames(LocationHolder::getTpLocNames))
+                        .suggests(suggestNames(LocationHolder::getTpLocNames, false))
                         .executes(this::help)
                         .then(literal("create")
                                 .requires(permission("reactions.location.edit"))
@@ -100,8 +100,8 @@ public final class ReaLocationSub extends RaCommandBase {
                 "create", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Create location here or at&e specified coordinates",
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
-                "tp", "[player]", "Teleport yourself or a &especified player",
-                "move", "[position]", "Move location to yourself or onto &especified position"
+                "tp", "[player]", "Teleport yourself or a&e specified player",
+                "move", "[position]", "Move location to yourself or onto&e specified position"
         );
     }
 
@@ -186,14 +186,14 @@ public final class ReaLocationSub extends RaCommandBase {
         if (resolver != null) {
             Entity executor = ctx.getSource().getExecutor();
             if (executor == null) {
-                sendPrefixed(ctx, "Only a player or entity can &especify a position&r, since a &aworld&r can't be inferred otherwise.");
+                sendPrefixed(ctx, "Only a player or entity can&e specify a position&r, since a&a world&r can't be inferred otherwise.");
                 return;
             }
             FinePosition finePos = resolver.resolve(ctx.getSource());
             pos = RealPosition.byLocation(new Location(executor.getWorld(), finePos.x(), finePos.y(), finePos.z()));
         } else {
             if (!(ctx.getSource().getExecutor() instanceof Entity entity)) {
-                sendPrefixed(ctx, "You must &especify a position&r when running this as console.");
+                sendPrefixed(ctx, "You must&e specify a position&r when running this as console.");
                 return;
             }
             pos = RealPosition.byLocation(entity.getLocation());
