@@ -128,7 +128,7 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = ctx.getArgument("name", String.class);
-        return nameHelp(ctx, "activator", "Activator", name, activators.getActivator(name) != null, "create",
+        return sendHelp(ctx, "activator", name, activators.getActivator(name) != null, "create",
                 "create", "&a<type> &e[<parameters...>]", "Create this activator with the given&a type&r and&e parameters",
                 "info", "", "Show info about this activator",
                 "move", "&a<group>", "Move this activator into another&a group",

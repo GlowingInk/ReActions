@@ -317,4 +317,10 @@ public final class Utils {
             return null;
         }
     }
+
+    public static @NotNull String upperFirst(@NotNull String str) {
+        return str.isEmpty()
+                ? str
+                : str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1);
+    }
 }

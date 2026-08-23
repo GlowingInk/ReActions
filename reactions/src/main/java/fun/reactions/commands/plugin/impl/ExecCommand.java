@@ -1,6 +1,5 @@
 package fun.reactions.commands.plugin.impl;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -11,6 +10,7 @@ import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
 
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
@@ -24,17 +24,17 @@ public final class ExecCommand extends RaCommandBase {
                 .requires(permission("reactions.exec"))
                 .executes(ctx -> {
                     help(ctx);
-                    return Command.SINGLE_SUCCESS;
+                    return SINGLE_SUCCESS;
                 })
                 .then(argument("activator", StringArgumentType.word())
                         .executes(ctx -> {
                             activate(ctx, "");
-                            return Command.SINGLE_SUCCESS;
+                            return SINGLE_SUCCESS;
                         })
                         .then(argument("parameters", StringArgumentType.greedyString())
                                 .executes(ctx -> {
                                     activate(ctx, StringArgumentType.getString(ctx, "parameters"));
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 })))
                 .build();
     }

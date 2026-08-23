@@ -1,6 +1,5 @@
 package fun.reactions.commands.plugin.impl.sub;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -23,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
@@ -42,19 +42,21 @@ public final class ReaMenuSub extends RaCommandBase {
                                 .requires(permission("reactions.menu.edit"))
                                 .executes(ctx -> {
                                     create(ctx, 3, null);
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 })
                                 .then(argument("rows", IntegerArgumentType.integer(1, 6))
                                         .executes(ctx -> {
                                             create(ctx, IntegerArgumentType.getInteger(ctx, "rows"), null);
-                                            return Command.SINGLE_SUCCESS;
+                                            return SINGLE_SUCCESS;
                                         })
                                         .then(argument("title", StringArgumentType.greedyString())
                                                 .executes(ctx -> {
-                                                    create(ctx,
+                                                    create(
+                                                            ctx,
                                                             IntegerArgumentType.getInteger(ctx, "rows"),
-                                                            StringArgumentType.getString(ctx, "title"));
-                                                    return Command.SINGLE_SUCCESS;
+                                                            StringArgumentType.getString(ctx, "title")
+                                                    );
+                                                    return SINGLE_SUCCESS;
                                                 })))
                                 .then(literal("chest")
                                         .executes(ctx -> createFromChest(ctx, null))
@@ -73,7 +75,7 @@ public final class ReaMenuSub extends RaCommandBase {
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        return nameHelp(ctx, "menu", "Menu", name, InventoryMenu.containsMenu(name), "create",
+        return sendHelp(ctx, "menu", name, InventoryMenu.containsMenu(name), "create",
                 "create", "&e[<rows>&6 [<title>]&e]", "Create menu with optional&e rows&r count and&e title",
                 "create chest", "&e[<title>]", "Create menu from your currently targeted&e chest",
                 "open", "&e[<player>]", "Open a menu",
@@ -95,25 +97,25 @@ public final class ReaMenuSub extends RaCommandBase {
         String name = StringArgumentType.getString(ctx, "name");
         if (InventoryMenu.containsMenu(name)) {
             sendAlreadyExists(ctx, "Menu", name);
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
             sendPrefixed(ctx, "Only a player can create a menu from a chest.");
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         Block target = player.getTargetBlockExact(6);
         if (target == null || !(target.getState() instanceof Container container)) {
             sendPrefixed(ctx, "You must be&a looking at&r a chest to do this.");
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         InventoryMenu.addFromInventory(name, container.getInventory(), title);
         sendPrefixed(ctx, "Menu&a '" + esc(name) + "'&r was created from the targeted chest");
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int open(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!menuExists(ctx, name)) return Command.SINGLE_SUCCESS;
+        if (!menuExists(ctx, name)) return SINGLE_SUCCESS;
 
         CommandSender sender = ctx.getSource().getSender();
         Player player = resolver != null
@@ -121,23 +123,23 @@ public final class ReaMenuSub extends RaCommandBase {
                 : (sender instanceof Player pl ? pl : null);
         if (player == null) {
             sendPrefixed(sender, "Couldn't find selected player");
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         InventoryMenu.createAndOpenInventory(player, Parameters.fromMap(Map.of("menu", name)), new Variables());
         sendPrefixed(sender, "Menu &a'&{name}'&r was opened for &a&{player}&r.", Map.of(
                 "name", name,
                 "player", player.getName()
         ));
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!menuExists(ctx, name)) return Command.SINGLE_SUCCESS;
+        if (!menuExists(ctx, name)) return SINGLE_SUCCESS;
 
         InventoryMenu.remove(name);
         sendPrefixed(ctx, "Menu &a'" + esc(name) + "'&r was deleted.");
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private boolean menuExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {

@@ -1,6 +1,5 @@
 package fun.reactions.commands.plugin;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -19,6 +18,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
+import static fun.reactions.util.Utils.upperFirst;
 import static ink.glowing.text.InkyMessage.inkyMessage;
 import static ink.glowing.text.placeholder.Placeholder.placeholder;
 import static net.kyori.adventure.text.Component.text;
@@ -61,18 +62,17 @@ public abstract class RaCommandBase {
         if (isPlayer) {
             sendInky(sender, "&[&eⓘ &7Hover on commands to see the description](hover:text ... and click on them to type in chat!");
         }
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
-    protected static int promptForName(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String subcommand) {
-        sendPrefixed(ctx, "Type in a " + subcommand + "&e name&r to continue.");
-        return Command.SINGLE_SUCCESS;
+    protected static int promptForName(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String object) {
+        sendPrefixed(ctx, "Type in a " + object + "&e name&r to continue.");
+        return SINGLE_SUCCESS;
     }
 
-    protected static int nameHelp(
+    protected static int sendHelp(
             @NotNull CommandContext<CommandSourceStack> ctx,
-            @NotNull String type,
-            @NotNull String itemLabel,
+            @NotNull String object,
             @NotNull String name,
             boolean exists,
             @NotNull String createSubcommand,
@@ -80,25 +80,25 @@ public abstract class RaCommandBase {
     ) {
         if (!exists) {
             CommandSender sender = ctx.getSource().getSender();
-            String start = "/" + rootLabel(ctx) + " " + type + " " + name + " " + createSubcommand;
+            String start = "/" + rootLabel(ctx) + " " + object + " " + name + " " + createSubcommand;
 
-            sendPrefixed(sender, itemLabel + " &c'" + esc(name) + "'&r doesn't exist.");
+            sendPrefixed(sender, upperFirst(object) + " &c'" + esc(name) + "'&r doesn't exist.");
             if (sender instanceof Player) {
                 sendInky(sender, "&[  &aClick here to create it](click:suggest " + start + " )(hover:text &7" + start + ")");
             } else {
                 sendInky(sender, "  &7Use &a" + start + "&r to create it.");
             }
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
-        return sendHelp(ctx, type + " " + esc(name), help);
+        return sendHelp(ctx, object + " " + esc(name), help);
     }
 
-    protected static void sendNotFound(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String itemLabel, @NotNull String name) {
-        sendPrefixed(ctx, itemLabel + " &c'" + esc(name) + "'&r doesn't exist!");
+    protected static void sendNotFound(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String object, @NotNull String name) {
+        sendPrefixed(ctx, object + " &c'" + esc(name) + "'&r doesn't exist.");
     }
 
-    protected static void sendAlreadyExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String itemLabel, @NotNull String name) {
-        sendPrefixed(ctx, itemLabel + " &c'" + esc(name) + "'&r already exists.");
+    protected static void sendAlreadyExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String object, @NotNull String name) {
+        sendPrefixed(ctx, object + " &c'" + esc(name) + "'&r already exists.");
     }
 
     protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names, boolean star) {
@@ -122,7 +122,7 @@ public abstract class RaCommandBase {
         CommandSender sender = ctx.getSource().getSender();
         if (lines.isEmpty()) {
             sendPrefixed(sender, "No " + title.toLowerCase(Locale.ROOT) + " found.");
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
 
         int linesPerPage = sender instanceof Player ? 15 : lines.size();
@@ -146,7 +146,7 @@ public abstract class RaCommandBase {
                     : "&7Next »";
             sendInky(sender, "  " + prev + " &7[&f" + current + "&7/&f" + totalPages + "&7]&r " + next);
         }
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     protected static @NotNull Predicate<CommandSourceStack> permission(@NotNull String permission) {

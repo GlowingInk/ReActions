@@ -1,6 +1,5 @@
 package fun.reactions.commands.plugin.impl.sub;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
@@ -43,7 +43,7 @@ public final class ReaVariableSub extends RaCommandBase {
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         boolean exists = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name)) != null;
-        return nameHelp(ctx, "variable", "Variable", name, exists, "set",
+        return sendHelp(ctx, "variable", name, exists, "set",
                 "show", "", "Show a variable",
                 "set", "[value]", "Set variable to a&e specified value",
                 "delete", "", "Delete a variable"
@@ -57,7 +57,7 @@ public final class ReaVariableSub extends RaCommandBase {
                 "name", name,
                 "value", value
         ));
-        return  Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int show(@NotNull CommandContext<CommandSourceStack> ctx) {
@@ -65,23 +65,23 @@ public final class ReaVariableSub extends RaCommandBase {
         String value = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name));
         if (value == null) {
             sendNotFound(ctx, "Variable", name);
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         sendPrefixed(ctx, "Variable &a'&{name}'&r&7:\n&{value}", Map.of(
                 "name", name,
                 "value", value
         ));
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         if (!platform.getPersistentVariables().removeVariable(playerOf(name), varNameOf(name))) {
             sendNotFound(ctx, "Variable", name);
-            return Command.SINGLE_SUCCESS;
+            return SINGLE_SUCCESS;
         }
         sendPrefixed(ctx, "Variable &a'" + esc(name) + "'&r was deleted.");
-        return Command.SINGLE_SUCCESS;
+        return SINGLE_SUCCESS;
     }
 
     private static @Nullable String playerOf(@NotNull String name) {

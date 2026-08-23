@@ -26,7 +26,7 @@ import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
 public final class ReaReloadSub extends RaCommandBase {
-    private static final List<String> TARGETS = List.of(
+    private static final Set<String> TARGETS = Set.of(
             "activators", "locations", "config", "cooldowns", "variables", "timers", "menus"
     );
 

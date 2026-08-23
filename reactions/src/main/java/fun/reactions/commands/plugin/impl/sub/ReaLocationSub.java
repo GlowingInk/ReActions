@@ -1,6 +1,5 @@
 package fun.reactions.commands.plugin.impl.sub;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
@@ -44,59 +44,59 @@ public final class ReaLocationSub extends RaCommandBase {
                                 .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
                                     create(ctx);
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 })
                                 .then(argument("world", ArgumentTypes.world())
                                         .then(argument("position", ArgumentTypes.finePosition(false))
                                                 .executes(ctx -> {
                                                     create(ctx, false);
-                                                    return Command.SINGLE_SUCCESS;
+                                                    return SINGLE_SUCCESS;
                                                 })
                                                 .then(argument("yaw", DoubleArgumentType.doubleArg())
                                                         .then(argument("pitch", DoubleArgumentType.doubleArg())
                                                                 .executes(ctx -> {
                                                                     create(ctx, true);
-                                                                    return Command.SINGLE_SUCCESS;
+                                                                    return SINGLE_SUCCESS;
                                                                 }))))))
                         .then(literal("info")
                                 .requires(permission("reactions.location.view"))
                                 .executes(ctx -> {
                                     info(ctx);
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 }))
                         .then(literal("delete")
                                 .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
                                     delete(ctx);
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 }))
                         .then(literal("tp")
                                 .requires(permission("reactions.location.use"))
                                 .executes(ctx -> {
                                     teleport(ctx, null);
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 })
                                 .then(argument("player", ArgumentTypes.player())
                                         .executes(ctx -> {
                                             teleport(ctx, ctx.getArgument("player", PlayerSelectorArgumentResolver.class));
-                                            return Command.SINGLE_SUCCESS;
+                                            return SINGLE_SUCCESS;
                                         })))
                         .then(literal("move")
                                 .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
                                     move(ctx, null);
-                                    return Command.SINGLE_SUCCESS;
+                                    return SINGLE_SUCCESS;
                                 })
                                 .then(argument("position", ArgumentTypes.finePosition(false))
                                         .executes(ctx -> {
                                             move(ctx, ctx.getArgument("position", FinePositionResolver.class));
-                                            return Command.SINGLE_SUCCESS;
+                                            return SINGLE_SUCCESS;
                                         })))).build();
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        return nameHelp(ctx, "location", "Location", name, LocationHolder.getTpLoc(name) != null, "create",
+        return sendHelp(ctx, "location", name, LocationHolder.getTpLoc(name) != null, "create",
                 "create", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Create location here or at&e specified coordinates",
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
