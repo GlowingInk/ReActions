@@ -1,11 +1,11 @@
-package fun.reactions.commands.impl;
+package fun.reactions.commands.plugin.impl;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActionsPlugin;
-import fun.reactions.commands.RaCommandBase;
+import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.command.brigadier.CommandSourceStack;

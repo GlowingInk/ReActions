@@ -1,4 +1,4 @@
-package fun.reactions.commands.impl.sub;
+package fun.reactions.commands.plugin.impl.sub;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -9,8 +9,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
-import fun.reactions.commands.RaCommandBase;
-import fun.reactions.commands.RegistryArgument;
+import fun.reactions.commands.plugin.RaCommandBase;
+import fun.reactions.commands.plugin.RegistryArgument;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
-import static fun.reactions.commands.RegistryArgument.registryArgument;
+import static fun.reactions.commands.plugin.RegistryArgument.registryArgument;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 import static net.kyori.adventure.text.Component.text;
@@ -290,10 +290,6 @@ public final class ReaActivatorSub extends RaCommandBase {
         return SINGLE_SUCCESS;
     }
 
-    /**
-     * Generic helper so the wildcard in {@code List<? extends Activity.Stored<?>>} is
-     * captured as {@code T}, letting us pass the result of {@code remove} back to {@code add}.
-     */
     private <T extends Activity.Stored<?>> void doMove(
             @NotNull List<T> list,
             @NotNull ActivitySelection selection,
@@ -330,9 +326,6 @@ public final class ReaActivatorSub extends RaCommandBase {
         };
     }
 
-    /**
-     * Resolves the activator by name or throws a {@link CommandSyntaxException}.
-     */
     private @NotNull Activator getActivator(@NotNull CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
         Activator activator = activators.getActivator(name);

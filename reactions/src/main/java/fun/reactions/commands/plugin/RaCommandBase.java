@@ -1,4 +1,4 @@
-package fun.reactions.commands;
+package fun.reactions.commands.plugin;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;

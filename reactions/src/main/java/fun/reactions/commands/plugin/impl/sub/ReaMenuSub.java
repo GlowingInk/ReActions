@@ -1,4 +1,4 @@
-package fun.reactions.commands.impl.sub;
+package fun.reactions.commands.plugin.impl.sub;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
-import fun.reactions.commands.RaCommandBase;
+import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.util.parameter.Parameters;

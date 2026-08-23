@@ -22,8 +22,8 @@
 
 package fun.reactions;
 
-import fun.reactions.commands.impl.ExecCommand;
-import fun.reactions.commands.impl.ReactionsCommand;
+import fun.reactions.commands.plugin.impl.ExecCommand;
+import fun.reactions.commands.plugin.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.MoveListener;
