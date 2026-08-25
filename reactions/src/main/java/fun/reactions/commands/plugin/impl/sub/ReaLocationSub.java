@@ -115,7 +115,7 @@ public final class ReaLocationSub extends RaCommandBase {
     private void create(@NotNull CommandContext<CommandSourceStack> ctx) {
         Entity executor = ctx.getSource().getExecutor();
         if (executor == null) {
-            sendPrefixed(ctx, "You must be an entity or a command block to perform this command");
+            sendPrefixed(ctx, "You must be an entity or a command block to perform this command.");
             return;
         }
         create(ctx, RealPosition.byLocation(executor.getLocation()));
@@ -139,7 +139,7 @@ public final class ReaLocationSub extends RaCommandBase {
         }
         LocationHolder.addTpLoc(name, pos);
         LocationHolder.saveLocs();
-        sendPrefixed(ctx, "Location&a '&{name}'&r&7 (&{pos})&r was created", Map.of(
+        sendPrefixed(ctx, "Location&a '&{name}'&r&7 (&{pos})&r was created.", Map.of(
                 "name", name,
                 "pos", pos.toString()
         ));
@@ -182,7 +182,7 @@ public final class ReaLocationSub extends RaCommandBase {
             player.teleport(loc.toLocation(platform.getServer()));
             sendPrefixed(sender, "Teleported to location &a'&{name}'&r.", Map.of("name", StringArgumentType.getString(ctx, "name")));
         } else {
-            sendPrefixed(sender, "Couldn't find selected player");
+            sendPrefixed(sender, "Couldn't find selected player.");
         }
     }
 

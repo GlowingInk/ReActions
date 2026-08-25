@@ -90,7 +90,7 @@ public final class ReaMenuSub extends RaCommandBase {
             return;
         }
         InventoryMenu.add(name, rows, title);
-        sendPrefixed(ctx, "Menu&a '" + esc(name) + "'&r was created");
+        sendPrefixed(ctx, "Menu&a '" + esc(name) + "'&r was created.");
     }
 
     private int createFromChest(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String title) {
@@ -109,7 +109,7 @@ public final class ReaMenuSub extends RaCommandBase {
             return SINGLE_SUCCESS;
         }
         InventoryMenu.addFromInventory(name, container.getInventory(), title);
-        sendPrefixed(ctx, "Menu&a '" + esc(name) + "'&r was created from the targeted chest");
+        sendPrefixed(ctx, "Menu&a '" + esc(name) + "'&r was created from the targeted chest.");
         return SINGLE_SUCCESS;
     }
 
