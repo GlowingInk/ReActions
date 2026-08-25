@@ -212,7 +212,7 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int activityHelp(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull ActivitySelection selection) {
         return sendHelp(ctx, "activator " + esc(ctx.getArgument("name", String.class)) + " " + selection,
-                "add", "<type> &e[parameters...]", "Add a &a" + selection + "&r to the activator",
+                "add", "<type> &e[<parameters...>]", "Add a &a" + selection + "&r to the activator",
                 "remove", "<index>", "Remove the &a" + selection + "&r at the given index",
                 "move", "<from> <to>", "Move a &a" + selection + "&r to another index"
         );
