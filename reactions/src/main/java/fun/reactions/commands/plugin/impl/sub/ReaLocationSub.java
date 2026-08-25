@@ -107,8 +107,8 @@ public final class ReaLocationSub extends RaCommandBase {
                 "create", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Create location here or at&e specified coordinates",
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
-                "tp", "[player]", "Teleport yourself or a&e specified player",
-                "move", "[position]", "Move location to yourself or onto&e specified position"
+                "tp", "&e[player]", "Teleport yourself or a&e specified player",
+                "move", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Move location to yourself or onto&e specified position"
         );
     }
 
