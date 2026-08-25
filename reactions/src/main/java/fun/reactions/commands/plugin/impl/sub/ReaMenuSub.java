@@ -115,7 +115,7 @@ public final class ReaMenuSub extends RaCommandBase {
 
     private int open(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!menuExists(ctx, name)) return SINGLE_SUCCESS;
+        if (isMenuMissing(ctx, name)) return SINGLE_SUCCESS;
 
         CommandSender sender = ctx.getSource().getSender();
         Player player = resolver != null
@@ -135,16 +135,16 @@ public final class ReaMenuSub extends RaCommandBase {
 
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (!menuExists(ctx, name)) return SINGLE_SUCCESS;
+        if (isMenuMissing(ctx, name)) return SINGLE_SUCCESS;
 
         InventoryMenu.remove(name);
         sendPrefixed(ctx, "Menu &a'" + esc(name) + "'&r was deleted.");
         return SINGLE_SUCCESS;
     }
 
-    private boolean menuExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
-        if (InventoryMenu.containsMenu(name)) return true;
+    private boolean isMenuMissing(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name) {
+        if (InventoryMenu.containsMenu(name)) return false;
         sendNotFound(ctx, "Menu", name);
-        return false;
+        return true;
     }
 }

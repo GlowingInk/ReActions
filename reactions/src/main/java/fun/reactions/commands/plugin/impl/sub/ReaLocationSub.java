@@ -1,6 +1,7 @@
 package fun.reactions.commands.plugin.impl.sub;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,7 +15,6 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.FinePositionResolver;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import io.papermc.paper.math.FinePosition;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -84,14 +84,21 @@ public final class ReaLocationSub extends RaCommandBase {
                         .then(literal("move")
                                 .requires(permission("reactions.location.edit"))
                                 .executes(ctx -> {
-                                    move(ctx, null);
+                                    move(ctx);
                                     return SINGLE_SUCCESS;
                                 })
-                                .then(argument("position", ArgumentTypes.finePosition(false))
-                                        .executes(ctx -> {
-                                            move(ctx, ctx.getArgument("position", FinePositionResolver.class));
-                                            return SINGLE_SUCCESS;
-                                        })))).build();
+                                .then(argument("world", ArgumentTypes.world())
+                                        .then(argument("position", ArgumentTypes.finePosition(false))
+                                                .executes(ctx -> {
+                                                    move(ctx, false);
+                                                    return SINGLE_SUCCESS;
+                                                })
+                                                .then(argument("yaw", DoubleArgumentType.doubleArg())
+                                                        .then(argument("pitch", DoubleArgumentType.doubleArg())
+                                                                .executes(ctx -> {
+                                                                    move(ctx, true);
+                                                                    return SINGLE_SUCCESS;
+                                                                }))))))).build();
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
@@ -117,12 +124,11 @@ public final class ReaLocationSub extends RaCommandBase {
     private void create(@NotNull CommandContext<CommandSourceStack> ctx, boolean withRotation) throws CommandSyntaxException {
         World world = ctx.getArgument("world", World.class);
         FinePosition pos = ctx.getArgument("position", FinePositionResolver.class).resolve(ctx.getSource());
-        Location loc = new Location(
-                world, pos.x(), pos.y(), pos.z(),
-                withRotation ? (float) DoubleArgumentType.getDouble(ctx, "yaw") : 0f,
-                withRotation ? (float) DoubleArgumentType.getDouble(ctx, "pitch") : 0f
-        );
-        create(ctx, RealPosition.byLocation(loc));
+        create(ctx, RealPosition.of(
+                world.getName(), pos.x(), pos.y(), pos.z(),
+                withRotation ? FloatArgumentType.getFloat(ctx, "yaw") : 0f,
+                withRotation ? FloatArgumentType.getFloat(ctx, "pitch") : 0f
+        ));
     }
 
     private void create(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull RealPosition pos) {
@@ -180,25 +186,26 @@ public final class ReaLocationSub extends RaCommandBase {
         }
     }
 
-    private void move(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable FinePositionResolver resolver) throws CommandSyntaxException {
+    private void move(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        RealPosition pos;
-        if (resolver != null) {
-            Entity executor = ctx.getSource().getExecutor();
-            if (executor == null) {
-                sendPrefixed(ctx, "Only a player or entity can&e specify a position&r, since a&a world&r can't be inferred otherwise.");
-                return;
-            }
-            FinePosition finePos = resolver.resolve(ctx.getSource());
-            pos = RealPosition.byLocation(new Location(executor.getWorld(), finePos.x(), finePos.y(), finePos.z()));
-        } else {
-            if (!(ctx.getSource().getExecutor() instanceof Entity entity)) {
-                sendPrefixed(ctx, "You must&e specify a position&r when running this as console.");
-                return;
-            }
-            pos = RealPosition.byLocation(entity.getLocation());
+        if (!(ctx.getSource().getExecutor() instanceof Entity entity)) {
+            sendPrefixed(ctx, "You must&e specify a position&r when running as non-player.");
+            return;
         }
+        RealPosition pos = RealPosition.byLocation(entity.getLocation());
         LocationHolder.addTpLoc(name, pos);
+        sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was moved.");
+    }
+
+    private void move(@NotNull CommandContext<CommandSourceStack> ctx, boolean withRotation) throws CommandSyntaxException {
+        String name = StringArgumentType.getString(ctx, "name");
+        World world = ctx.getArgument("world", World.class);
+        FinePosition pos = ctx.getArgument("position", FinePositionResolver.class).resolve(ctx.getSource());
+        LocationHolder.addTpLoc(name, RealPosition.of(
+                world.getName(), pos.x(), pos.y(), pos.z(),
+                withRotation ? FloatArgumentType.getFloat(ctx, "yaw") : 0f,
+                withRotation ? FloatArgumentType.getFloat(ctx, "pitch") : 0f
+        ));
         sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was moved.");
     }
 
