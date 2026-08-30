@@ -53,7 +53,7 @@ public final class ReaVariableSub extends RaCommandBase {
     private int set(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String value) {
         String name = StringArgumentType.getString(ctx, "name");
         platform.getPersistentVariables().setVariable(playerOf(name), varNameOf(name), value);
-        sendPrefixed(ctx, "Variable&a '&{name}'&r was created with the value:\n&{value}", Map.of(
+        sendPrefixed(ctx, "Variable&a '&{name}'&r was created with the value:&r\n&{value}", Map.of(
                 "name", name,
                 "value", value
         ));
@@ -67,7 +67,7 @@ public final class ReaVariableSub extends RaCommandBase {
             sendNotFound(ctx, "Variable", name);
             return SINGLE_SUCCESS;
         }
-        sendPrefixed(ctx, "Variable &a'&{name}'&r&7:\n&{value}", Map.of(
+        sendPrefixed(ctx, "Variable &a'&{name}'&r:\n&{value}", Map.of(
                 "name", name,
                 "value", value
         ));

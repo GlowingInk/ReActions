@@ -37,7 +37,7 @@ public final class ReactionsCommand extends RaCommandBase {
                 "activator", "&a<name>", "Manage&a named&r activator",
                 "location", "&a<name>", "Manage&a named&r location",
                 "menu", "&a<name>", "Manage&a named&r menu",
-                // TODO Timers
+                "timer", "&a<name>", "Manage&a named&r timer",
                 "variable", "&a<name>", "Manage&a named&r variable",
                 "list", "&7(&aactivators&7|&alocations&7|&amenus&7)", "List&a objects",
                 // TODO List activities, placeholders, selectors and whatnot

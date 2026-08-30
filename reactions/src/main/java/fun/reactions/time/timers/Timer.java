@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Timer {
+public class Timer { // TODO World is missing? tf
 
     private boolean paused;
 

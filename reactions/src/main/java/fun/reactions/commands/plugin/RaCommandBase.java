@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static fun.reactions.util.Utils.upperFirst;
@@ -99,6 +100,17 @@ public abstract class RaCommandBase {
 
     protected static void sendAlreadyExists(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String object, @NotNull String name) {
         sendPrefixed(ctx, object + " &c'" + esc(name) + "'&r already exists.");
+    }
+
+    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNamesItr(@NotNull Supplier<? extends Iterable<String>> names, boolean star) {
+        return (_, builder) -> {
+            String remaining = builder.getRemaining();
+            if (star && "*".startsWith(remaining)) builder.suggest("*");
+            StreamSupport.stream(names.get().spliterator(), false)
+                    .filter(s -> s.startsWith(remaining))
+                    .forEach(builder::suggest);
+            return builder.buildFuture();
+        };
     }
 
     protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names, boolean star) {
