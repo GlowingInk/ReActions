@@ -104,11 +104,11 @@ public final class ReaLocationSub extends RaCommandBase {
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         return sendHelp(ctx, "location", name, LocationHolder.getTpLoc(name) != null, "create",
-                "create", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Create location here or at specified&e coordinates",
+                "create", "&a[<world> <x> <y> <z>&e [<yaw> <pitch>]&a]", "Create location here or at specified&a coordinates",
                 "info", "", "Get info about a location",
                 "delete", "", "Delete a location",
-                "tp", "&e[player]", "Teleport yourself or a specified&e player",
-                "move", "&e[<world> <x> <y> <z>&6 [<yaw> <pitch>]&e]", "Move location to yourself or onto specified&e coordinates"
+                "tp", "&a[player]", "Teleport yourself or a specified&a player",
+                "move", "&a[<world> <x> <y> <z>&e [<yaw> <pitch>]&a]", "Move location to yourself or onto specified&a coordinates"
         );
     }
 

@@ -181,7 +181,7 @@ public final class ReaActivatorSub extends RaCommandBase {
             @NotNull List<? extends Activity.Stored<?>> storeds,
             @NotNull String title,
             boolean isFlag
-    ) {
+    ) { // TODO Edit/delete and stuff
         if (storeds.isEmpty()) return;
         sendInky(sender, title);
         for (int i = 0; i < storeds.size(); i++) {

@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -103,21 +104,18 @@ public abstract class RaCommandBase {
     }
 
     protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNamesItr(@NotNull Supplier<? extends Iterable<String>> names, boolean star) {
-        return (_, builder) -> {
-            String remaining = builder.getRemaining();
-            if (star && "*".startsWith(remaining)) builder.suggest("*");
-            StreamSupport.stream(names.get().spliterator(), false)
-                    .filter(s -> s.startsWith(remaining))
-                    .forEach(builder::suggest);
-            return builder.buildFuture();
-        };
+        return _suggestNames(() -> StreamSupport.stream(names.get().spliterator(), false), star);
     }
 
     protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names, boolean star) {
+        return _suggestNames(() -> names.get().stream(), star);
+    }
+
+    private static @NotNull SuggestionProvider<CommandSourceStack> _suggestNames(@NotNull Supplier<Stream<String>> names, boolean star) {
         return (_, builder) -> {
             String remaining = builder.getRemaining();
-            if (star && "*".startsWith(remaining)) builder.suggest("*");
-            names.get().stream()
+            if (star && "_".startsWith(remaining)) builder.suggest("_");
+            names.get()
                     .filter(s -> s.startsWith(remaining))
                     .forEach(builder::suggest);
             return builder.buildFuture();

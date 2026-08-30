@@ -54,13 +54,14 @@ public final class ReaListSub extends RaCommandBase {
                         .executes(ctx -> listMenus(ctx, 1))
                         .then(argument("page", IntegerArgumentType.integer(1))
                                 .executes(ctx -> listMenus(ctx, IntegerArgumentType.getInteger(ctx, "page")))))
+                // TODO Timers
                 .build();
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         return sendHelp(ctx, "list",
-                "activators", "&e[<group>|*] &6[<page>]", "List all activators, optionally filtered by&e group",
-                "locations", "&e[<world>|*] &6[<page>]", "List all locations, optionally filtered by&e world",
+                "activators", "&a[<group>|_] &e[<page>]", "List all activators, optionally filtered by&a group",
+                "locations", "&a[<world>|_] &e[<page>]", "List all locations, optionally filtered by&a world",
                 "menus", "&6[<page>]", "List all menus"
         );
     }

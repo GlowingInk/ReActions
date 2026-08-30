@@ -65,8 +65,8 @@ public class ReaTimerSub extends RaCommandBase {
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         return sendHelp(ctx, "timer", name, TimersManager.isTimerExists(name), "create",
-                "create", "ingame &e<activator> &6<time> &o[<paused>]", "Create in-game timer using&6 in-game time&r that runs&e activator",
-                "create", "server &e<activator> &6<cron> &o[<paused>]", "Create server timer using&e cron syntax&r that runs&e activator",
+                "create", "ingame &a<activator> &e<time> &6[<paused>]", "Create in-game timer using&e in-game time&r that runs&a activator",
+                "create", "server &a<activator> &e<cron> &6[<paused>]", "Create server timer using&e cron syntax&r that runs&a activator",
                 "info", "", "Get info about a timer",
                 "pause", "", "Pause a timer",
                 "resume", "", "Unpause a timer",
@@ -120,7 +120,7 @@ public class ReaTimerSub extends RaCommandBase {
         if (isTimerMissing(ctx, name)) return SINGLE_SUCCESS;
 
         TimersManager.setPause(name, paused);
-        sendPrefixed(ctx, "Timer&a '" + esc(name) + "'&r was" + (paused ? "&c paused" : "&a resumed") + "&r.");
+        sendPrefixed(ctx, "Timer&a '" + esc(name) + "'&r was" + (paused ? "&e paused" : "&a resumed") + "&r.");
         return SINGLE_SUCCESS;
     }
 

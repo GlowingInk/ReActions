@@ -60,7 +60,7 @@ public final class ReaReloadSub extends RaCommandBase {
         return SINGLE_SUCCESS;
     }
 
-    private int reloadTargets(@NotNull CommandContext<CommandSourceStack> ctx) {
+    private int reloadTargets(@NotNull CommandContext<CommandSourceStack> ctx) { // TODO Amount reloaded
         CommandSender sender = ctx.getSource().getSender();
         String raw = StringArgumentType.getString(ctx, "targets");
         List<String> done = new ArrayList<>();

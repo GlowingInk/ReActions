@@ -27,9 +27,7 @@ import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.location.position.RealPosition;
-import fun.reactions.util.message.Msg;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -37,7 +35,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 // TODO Refactor
 @Deprecated
@@ -105,13 +106,5 @@ public final class LocationHolder {
 
     public static boolean removeTpLoc(String id) {
         return tports.remove(id) != null;
-    }
-
-    public static void printLocList(CommandSender sender, int pageNum, int linesPerPage) {
-        List<String> locList = new ArrayList<>();
-        for (String loc : tports.keySet()) {
-            locList.add("&3" + loc + " &a" + tports.get(loc).toString());
-        }
-        Msg.printPage(sender, locList, Msg.MSG_LISTLOC, pageNum, linesPerPage, true);
     }
 }

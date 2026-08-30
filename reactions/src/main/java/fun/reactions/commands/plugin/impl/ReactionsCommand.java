@@ -26,6 +26,7 @@ public final class ReactionsCommand extends RaCommandBase {
                 .then(new ReaActivatorSub(platform).asNode())
                 .then(new ReaLocationSub(platform).asNode())
                 .then(new ReaVariableSub(platform).asNode())
+                .then(new ReaTimerSub(platform).asNode())
                 .then(new ReaMenuSub(platform).asNode())
                 .then(new ReaListSub(platform).asNode())
                 .then(new ReaReloadSub(platform).asNode())
@@ -39,7 +40,7 @@ public final class ReactionsCommand extends RaCommandBase {
                 "menu", "&a<name>", "Manage&a named&r menu",
                 "timer", "&a<name>", "Manage&a named&r timer",
                 "variable", "&a<name>", "Manage&a named&r variable",
-                "list", "&7(&aactivators&7|&alocations&7|&amenus&7)", "List&a objects",
+                "list", "&7(&aactivators&7|&alocations&7|&amenus&7|&atimers&7)", "List&a objects",
                 // TODO List activities, placeholders, selectors and whatnot
                 "reload", "", "Reload a plugin or its specific parts"
         );

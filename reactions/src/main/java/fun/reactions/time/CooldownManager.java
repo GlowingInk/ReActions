@@ -25,18 +25,14 @@ package fun.reactions.time;
 import fun.reactions.ReActions;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.time.TimeUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Set;
-import java.util.TreeSet;
 
 public final class CooldownManager { // TODO Requires refactoring
     private static final DateFormat HH_MM_SS = new SimpleDateFormat("HH:mm:ss");
@@ -96,18 +92,6 @@ public final class CooldownManager { // TODO Requires refactoring
 
     public static void setPersonalCooldown(String playerName, String id, long delayTime, boolean add) {
         setCooldown(playerName + "." + id, delayTime, add);
-    }
-
-    public static void printCooldownList(CommandSender sender, int pageNum, int linePerPage) {
-        Set<String> lst = new TreeSet<>();
-        for (String key : cooldowns.keySet()) {
-            long delayTime = cooldowns.getLong(key);
-            if (delayTime < System.currentTimeMillis()) continue;
-            String[] ln = key.split("\\.", 2);
-            if (ln.length != 2) continue;
-            lst.add("[" + ln[0] + "] " + ln[1] + ": " + TimeUtils.formatTime(cooldowns.getLong(key)));
-        }
-        Msg.printPage(sender, lst, Msg.MSG_LISTDELAY, pageNum, linePerPage, true);
     }
 
     public static String[] getStringTime(String playerName, String id) {
