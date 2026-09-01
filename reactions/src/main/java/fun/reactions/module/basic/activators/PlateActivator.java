@@ -27,11 +27,11 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.BlockUtils;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -51,7 +51,7 @@ public class PlateActivator extends Activator implements Locatable {
 
     public static PlateActivator create(Logic base, Parameters params) {
         Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
-        if (targetBlock != null && BlockUtils.isPlate(targetBlock)) {
+        if (targetBlock != null && Tag.PRESSURE_PLATES.isTagged(targetBlock.getType())) {
             return new PlateActivator(base, ImplicitPosition.byLocation(targetBlock.getLocation()));
         } else {
             return new PlateActivator(base, params.getSafe("location", ImplicitPosition::byString));
