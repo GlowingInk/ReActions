@@ -22,7 +22,8 @@
 
 package fun.reactions;
 
-import fun.reactions.commands.Commander;
+import fun.reactions.commands.plugin.impl.ExecCommand;
+import fun.reactions.commands.plugin.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.MoveListener;
@@ -49,6 +50,7 @@ import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.Shoot;
 import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -56,6 +58,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivitiesRegistry activitiesRegistry;
@@ -108,7 +112,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onEnable() {
-        // TODO Why...
+        // TODO god why
         Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
 
         this.savingManager = new SavingManager(this);
@@ -118,7 +122,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         getDataFolder().mkdirs();
 
-        Commander.init(this);
         TimersManager.init();
         CooldownManager.load();
         if (!Cfg.playerSelfVarFile) variablesManager.load();
@@ -135,6 +138,13 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         MoveListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
+
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            var registrar = commands.registrar();
+            registrar.register(new ReactionsCommand(this).asNode(), List.of("rea", "ra"));
+            registrar.register(new ExecCommand(this).asNode());
+        });
+
         getServer().getScheduler().runTask(this, () -> {
             modulesRegistry.registerPluginDepended();
             activatorsManager.loadGroup("", false);

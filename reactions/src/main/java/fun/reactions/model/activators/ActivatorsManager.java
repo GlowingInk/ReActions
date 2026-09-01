@@ -172,6 +172,10 @@ public class ActivatorsManager {
         return Collections.unmodifiableCollection(activatorsNames.keySet());
     }
 
+    public @NotNull @UnmodifiableView Collection<String> getGroupNames() {
+        return Collections.unmodifiableCollection(activatorsGroups.keySet());
+    }
+
     public boolean saveGroup(@NotNull String name) {
         Set<Activator> activators = activatorsGroups.get(name);
         if (activators == null) return false;

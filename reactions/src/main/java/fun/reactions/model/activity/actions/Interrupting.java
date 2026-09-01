@@ -11,7 +11,7 @@ import java.util.List;
 public interface Interrupting {
     /**
      * This method will be called after {@link Action#proceed(Environment, String)} if it returned {@code true}
-     * @param actions List of actions that were stopped
+     * @param remaining List of actions that were stopped
      */
-    void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Action.Stored> actions);
+    void stop(@NotNull Environment env, @NotNull String params, @NotNull List<Action.Stored> remaining);
 }
