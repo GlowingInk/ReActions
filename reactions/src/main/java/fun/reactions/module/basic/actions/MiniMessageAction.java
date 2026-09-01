@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
-@Aliased.Names({"MINI", "MMSG"})
+@Aliased.Names({"MINI", "MMSG", "MINIM"})
 public class MiniMessageAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
