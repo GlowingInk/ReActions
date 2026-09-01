@@ -76,9 +76,9 @@ public final class ReaMenuSub extends RaCommandBase {
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         return sendHelp(ctx, "menu", name, InventoryMenu.containsMenu(name), "create",
-                "create", "&e[<rows>&6 [<title>]&e]", "Create menu with optional&e rows&r count and&e title",
-                "create chest", "&e[<title>]", "Create menu from your currently targeted&e chest",
-                "open", "&e[<player>]", "Open a menu",
+                "create", "&a[<rows>&e [<title>]&a]", "Create menu with optional&e rows&r count and&e title",
+                "create chest", "&a[<title>]", "Create menu from your currently targeted&e chest",
+                "open", "&a[<player>]", "Open a menu",
                 "delete", "", "Delete a menu"
         );
     }

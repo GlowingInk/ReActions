@@ -62,7 +62,7 @@ public final class ReaListSub extends RaCommandBase {
         return sendHelp(ctx, "list",
                 "activators", "&a[<group>|_] &e[<page>]", "List all activators, optionally filtered by&a group",
                 "locations", "&a[<world>|_] &e[<page>]", "List all locations, optionally filtered by&a world",
-                "menus", "&6[<page>]", "List all menus"
+                "menus", "&a[<page>]", "List all menus"
         );
     }
 
