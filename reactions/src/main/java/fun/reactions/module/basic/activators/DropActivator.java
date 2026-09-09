@@ -14,6 +14,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -25,18 +26,18 @@ public class DropActivator extends Activator {
 
     private final VirtualItem item;
 
-    private DropActivator(Logic base, String itemStr) {
+    private DropActivator(Logic base, @Nullable String itemStr) {
         super(base);
         this.item = VirtualItem.fromString(itemStr);
     }
 
     public static DropActivator create(Logic base, Parameters param) {
-        String itemStr = param.getString("item", param.originValue());
+        String itemStr = param.getString("item", param.originValue().isEmpty() ? null : param.originValue());
         return new DropActivator(base, itemStr);
     }
 
     public static DropActivator load(Logic base, ConfigurationSection cfg) {
-        String itemStr = cfg.getString("item", "");
+        String itemStr = cfg.getString("item");
         return new DropActivator(base, itemStr);
     }
 

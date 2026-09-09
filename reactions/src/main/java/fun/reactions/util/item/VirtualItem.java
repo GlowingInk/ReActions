@@ -17,23 +17,54 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public final class VirtualItem implements Parameterizable {
+public class VirtualItem implements Parameterizable {
     private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z\\d_]+)(?::(\\d{1,9}))?(?:\\*(\\d{1,9}))?");
 
     /**
      * A VirtualItem that accepts only null or air ItemStacks
      */
     public static final VirtualItem AIR = new VirtualItem(Material.AIR, -1, List.of(), Parameters.singleton("type", "AIR"));
+
     /**
      * A VirtualItem that accepts any ItemStacks but null or air
      */
     public static final VirtualItem ANY = new VirtualItem(null, -1, List.of(), Parameters.EMPTY);
+
+    // TODO Special MetaAspects for NOTHING and EVERYTHING
+    /**
+     * A VirtualItem that accepts everything
+     */
+    public static final VirtualItem EVERYTHING = new VirtualItem(null, -1, List.of(new MetaAspect.Instance() {
+        @Override
+        public void apply(@NotNull ItemMeta meta) { }
+
+        @Override
+        public boolean isSimilar(@NotNull ItemMeta meta) {
+            return true;
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return "everything";
+        }
+
+        @Override
+        public @NotNull String asString() {
+            return "true";
+        }
+    }), Parameters.singleton("everything", "true")) {
+        @Override
+        public boolean isSimilar(@Nullable ItemStack compared, @NotNull AmountCheck amountCheck) {
+            return true;
+        }
+    };
+
     /**
      * A VirtualItem that accepts nothing
      */
-    public static final VirtualItem INVALID = new VirtualItem(null, -1, List.of(new MetaAspect.Instance() {
+    public static final VirtualItem NOTHING = new VirtualItem(null, -1, List.of(new MetaAspect.Instance() {
         @Override
-        public void apply(@NotNull ItemMeta meta) {}
+        public void apply(@NotNull ItemMeta meta) { }
 
         @Override
         public boolean isSimilar(@NotNull ItemMeta meta) {
@@ -42,14 +73,19 @@ public final class VirtualItem implements Parameterizable {
 
         @Override
         public @NotNull String getName() {
-            return "invalid";
+            return "nothing";
         }
 
         @Override
         public @NotNull String asString() {
             return "true";
         }
-    }), Parameters.singleton("invalid", "true"));
+    }), Parameters.singleton("nothing", "true")) {
+        @Override
+        public boolean isSimilar(@Nullable ItemStack compared) {
+            return false;
+        }
+    };
 
     private static final Map<String, MetaAspect> ASPECTS_BY_NAME = new LinkedHashMap<>(); // TODO: Registry
     private static final List<MetaAspect> ASPECTS = new ArrayList<>();
@@ -236,7 +272,7 @@ public final class VirtualItem implements Parameterizable {
      * @param amountCheck type of amount checking
      * @return is compared item conforms this item's type and aspects
      */
-    public boolean isSimilar(@Nullable ItemStack compared, AmountCheck amountCheck) {
+    public boolean isSimilar(@Nullable ItemStack compared, @NotNull AmountCheck amountCheck) {
         if (compared == null || compared.isEmpty()) {
             return amount == 0 || (type != null && type.isAir());
         }
@@ -251,8 +287,8 @@ public final class VirtualItem implements Parameterizable {
         }
         return switch (amountCheck) {
             case SKIP -> true;
-            case EQUAL -> amount == compared.getAmount();
-            case SATISFIES -> amount <= compared.getAmount();
+            case EQUAL -> amount == -1 || amount == compared.getAmount();
+            case SATISFIES -> amount == -1 || amount <= compared.getAmount();
         };
     }
 
@@ -296,12 +332,15 @@ public final class VirtualItem implements Parameterizable {
     }
 
     @Contract(pure = true)
-    public static @NotNull VirtualItem fromString(@NotNull String paramsStr) {
-        return fromParameters(Parameters.fromString(paramsStr));
+    public static @NotNull VirtualItem fromString(@Nullable String paramsStr) {
+        return paramsStr == null
+                ? EVERYTHING
+                : fromParameters(Parameters.fromString(paramsStr));
     }
 
     @Contract(pure = true)
-    public static @NotNull VirtualItem fromParameters(@NotNull Parameters params) {
+    public static @NotNull VirtualItem fromParameters(@Nullable Parameters params) {
+        if (params == null) return VirtualItem.EVERYTHING;
         if (params.isEmpty()) return VirtualItem.ANY;
         List<MetaAspect.Instance> aspects = new ArrayList<>();
         Material type = null;
@@ -314,9 +353,15 @@ public final class VirtualItem implements Parameterizable {
                 case Parameters.ORIGIN_KEY: {
                     continue;
                 }
-                case "invalid": {
+                case "everything": {
                     if (params.getBoolean(key)) {
-                        return INVALID;
+                        return EVERYTHING;
+                    }
+                    break;
+                }
+                case "nothing", "invalid": {
+                    if (params.getBoolean(key)) {
+                        return NOTHING;
                     }
                     break;
                 }
@@ -324,7 +369,7 @@ public final class VirtualItem implements Parameterizable {
                     Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
                     if (!matcher.matches()) break;
                     type = ItemUtils.getMaterial(matcher.group(1));
-                    if (type == null) return VirtualItem.INVALID;
+                    if (type == null) return VirtualItem.NOTHING;
                     if (matcher.group(2) != null) {
                         aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
                     }
@@ -335,7 +380,7 @@ public final class VirtualItem implements Parameterizable {
                 }
                 case "type": {
                     type = params.get(key, ItemUtils::getMaterial);
-                    if (type == null) return VirtualItem.INVALID;
+                    if (type == null) return VirtualItem.NOTHING;
                     break;
                 }
                 case "amount": {

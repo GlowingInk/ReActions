@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class InventoryClickActivator extends Activator {
     private final VirtualItem item;
 
     private InventoryClickActivator(Logic base, String inventoryName, ClickType click, InventoryAction action,
-                                    InventoryType inventory, SlotType slotType, String numberKey, String slotStr, String itemStr) {
+                                    InventoryType inventory, SlotType slotType, String numberKey, String slotStr, @Nullable String itemStr) {
         super(base);
         this.inventoryName = inventoryName;
         this.click = new SafeEnum<>(click);
@@ -88,7 +89,7 @@ public class InventoryClickActivator extends Activator {
         SlotType slotType = param.getEnum("slotType", SlotType.class);
         String numberKey = getNumberKeyByName(param.getString("key", "ANY"));
         String slotStr = getSlotByName(param.getString("slot", "ANY"));
-        String itemStr = param.getString("item");
+        String itemStr = param.getString("item", null);
         return new InventoryClickActivator(base, inventoryName, click, action, inventory, slotType, numberKey, slotStr, itemStr);
     }
 
@@ -100,7 +101,7 @@ public class InventoryClickActivator extends Activator {
         SlotType slotType = Utils.getEnum(SlotType.class, cfg.getString("slot-type", ""));
         String numberKey = cfg.getString("key", "");
         String slotStr = cfg.getString("slot", "");
-        String itemStr = cfg.getString("item", "");
+        String itemStr = cfg.getString("item");
         return new InventoryClickActivator(base, inventoryName, click, action, inventory, slotType, numberKey, slotStr, itemStr);
     }
 

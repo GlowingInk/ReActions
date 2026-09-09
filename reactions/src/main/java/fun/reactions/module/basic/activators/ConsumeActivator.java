@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,20 +47,20 @@ public class ConsumeActivator extends Activator {
     private final VirtualItem item;
     private final HandType hand;
 
-    private ConsumeActivator(Logic base, String item, HandType hand) {
+    private ConsumeActivator(Logic base, @Nullable String item, HandType hand) {
         super(base);
         this.item = VirtualItem.fromString(item);
         this.hand = hand;
     }
 
     public static ConsumeActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.originValue());
+        String item = param.getString("item", param.originValue().isEmpty() ? null : param.originValue());
         HandType hand = param.get("hand", HandType::getByName);
         return new ConsumeActivator(base, item, hand);
     }
 
     public static ConsumeActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item", "");
+        String item = cfg.getString("item");
         HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
         return new ConsumeActivator(base, item, hand);
     }
