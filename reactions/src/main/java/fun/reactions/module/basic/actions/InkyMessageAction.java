@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static ink.glowing.text.InkyMessage.inkyMessage;
 
-@Aliased.Names({"RESPOND", "RESPONSE", "INKY", "IMSG"})
+@Aliased.Names({"RESPOND", "RESPONSE", "INKY", "INKYM", "IMSG"})
 public class InkyMessageAction implements Action {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {

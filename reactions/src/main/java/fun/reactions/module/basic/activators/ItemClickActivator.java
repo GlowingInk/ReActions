@@ -36,6 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,20 +45,20 @@ public class ItemClickActivator extends Activator {
     private final VirtualItem item;
     private final HandType hand;
 
-    private ItemClickActivator(Logic base, String item, HandType hand) {
+    private ItemClickActivator(Logic base, @Nullable String item, HandType hand) {
         super(base);
         this.item = VirtualItem.fromString(item);
         this.hand = hand;
     }
 
     public static ItemClickActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.originValue());
+        String item = param.getString("item", param.originValue().isEmpty() ? null : param.originValue());
         HandType hand = param.getSafe("hand", HandType::getByName);
         return new ItemClickActivator(base, item, hand);
     }
 
     public static ItemClickActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item", "");
+        String item = cfg.getString("item", null);
         HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
         return new ItemClickActivator(base, item, hand);
     }

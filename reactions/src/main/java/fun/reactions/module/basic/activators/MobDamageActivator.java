@@ -38,6 +38,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class MobDamageActivator extends Activator {
     private final String mobType;
     private final VirtualItem item;
 
-    private MobDamageActivator(Logic base, String type, String name, String item) {
+    private MobDamageActivator(Logic base, String type, String name, @Nullable String item) {
         super(base);
         this.mobType = type;
         this.mobName = name;
@@ -62,7 +63,7 @@ public class MobDamageActivator extends Activator {
         if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name");
-            itemStr = param.getString("item");
+            itemStr = param.getString("item", null);
         } else if (param.originValue().contains("$")) {
             name = type.substring(0, type.indexOf('$'));
             type = type.substring(name.length() + 1);
@@ -73,7 +74,7 @@ public class MobDamageActivator extends Activator {
     public static MobDamageActivator load(Logic base, ConfigurationSection cfg) {
         String type = cfg.getString("mob-type", "");
         String name = cfg.getString("mob-name", "");
-        String itemStr = cfg.getString("item", "");
+        String itemStr = cfg.getString("item");
         return new MobDamageActivator(base, type, name, itemStr);
     }
 

@@ -15,6 +15,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -25,18 +26,18 @@ import java.util.Map;
 public class PickupItemActivator extends Activator {
     private final VirtualItem item;
 
-    private PickupItemActivator(Logic base, String item) {
+    private PickupItemActivator(Logic base, @Nullable String item) {
         super(base);
         this.item = VirtualItem.fromString(item);
     }
 
     public static PickupItemActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.originValue());
+        String item = param.getString("item", param.originValue().isEmpty() ? null : param.originValue());
         return new PickupItemActivator(base, item);
     }
 
     public static PickupItemActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item", "");
+        String item = cfg.getString("item");
         return new PickupItemActivator(base, item);
     }
 
