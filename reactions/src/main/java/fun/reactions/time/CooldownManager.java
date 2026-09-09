@@ -67,6 +67,10 @@ public final class CooldownManager { // TODO Requires refactoring
         }
     }
 
+    public static int size() {
+        return cooldowns.size();
+    }
+
     public static boolean checkCooldown(String id, long updateTime) {
         if (id.indexOf('.') == -1) id = "global." + id;
         long delay = cooldowns.getOrDefault(id, -1);

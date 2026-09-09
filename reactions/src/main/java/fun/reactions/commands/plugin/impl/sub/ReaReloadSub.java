@@ -53,14 +53,13 @@ public final class ReaReloadSub extends RaCommandBase {
                 denied.add(target);
                 continue;
             }
-            runTarget(target);
-            done.add(target);
+            done.add(describeTarget(target, runTarget(target)));
         }
         reportResult(ctx, done, denied, List.of());
         return SINGLE_SUCCESS;
     }
 
-    private int reloadTargets(@NotNull CommandContext<CommandSourceStack> ctx) { // TODO Amount reloaded
+    private int reloadTargets(@NotNull CommandContext<CommandSourceStack> ctx) {
         CommandSender sender = ctx.getSource().getSender();
         String raw = StringArgumentType.getString(ctx, "targets");
         List<String> done = new ArrayList<>();
@@ -81,15 +80,35 @@ public final class ReaReloadSub extends RaCommandBase {
                 continue;
             }
             if (keyword.equals("activators") && !arg.isEmpty()) {
-                doReloadActivatorGroup(arg);
-                done.add("activators " + arg);
+                int amount = doReloadActivatorGroup(arg);
+                int groups = countGroupsUnder(arg);
+                done.add("activators " + esc(arg) + describeAmount(amount, groups));
             } else {
-                runTarget(keyword);
-                done.add(keyword);
+                done.add(describeTarget(keyword, runTarget(keyword)));
             }
         }
         reportResult(ctx, done, denied, unknown);
         return SINGLE_SUCCESS;
+    }
+
+    private @NotNull String describeTarget(@NotNull String target, int amount) {
+        if (target.equals("activators")) {
+            return target + describeAmount(amount, platform.getActivators().getGroupNames().size());
+        }
+        return amount < 0 ? target : target + " (&e" + amount + "&r)";
+    }
+
+    private static @NotNull String describeAmount(int amount, int groups) {
+        return " (&e" + amount + "&r in &e" + groups + "&r group" + (groups == 1 ? "" : "s") + ")";
+    }
+
+    private int countGroupsUnder(@NotNull String rawGroup) {
+        String group = rawGroup.replaceAll("[/\\\\]", File.separator);
+        int count = 0;
+        for (String g : platform.getActivators().getGroupNames()) {
+            if (g.equals(group) || g.startsWith(group + File.separator)) count++;
+        }
+        return count;
     }
 
     private void reportResult(
@@ -99,7 +118,7 @@ public final class ReaReloadSub extends RaCommandBase {
             @NotNull List<String> unknown
     ) {
         if (!done.isEmpty()) {
-            sendPrefixed(ctx, "Reloaded &a" + String.join("&r, &a", done.stream().map(ReaReloadSub::esc).toList()) + "&r.");
+            sendPrefixed(ctx, "Reloaded &a" + String.join("&r, &a", done) + "&r.");
         }
         for (String d : denied) {
             sendPrefixed(ctx, "No permission to reload &c'" + esc(d) + "'&r.");
@@ -166,8 +185,8 @@ public final class ReaReloadSub extends RaCommandBase {
         return "reactions.reload." + target;
     }
 
-    private void runTarget(@NotNull String target) {
-        switch (target) {
+    private int runTarget(@NotNull String target) {
+        return switch (target) {
             case "activators" -> doReloadActivators();
             case "locations" -> doReloadLocations();
             case "config" -> doReloadConfig();
@@ -175,45 +194,54 @@ public final class ReaReloadSub extends RaCommandBase {
             case "variables" -> doReloadVariables();
             case "timers" -> doReloadTimers();
             case "menus" -> doReloadMenus();
-        }
+            default -> -1;
+        };
     }
 
-    private void doReloadActivators() {
+    private int doReloadActivators() {
         platform.getActivators().clearActivators();
-        platform.getActivators().loadGroup("", false);
+        int amount = platform.getActivators().loadGroup("", false);
         RaWorldGuard.updateRegionCache();
+        return amount;
     }
 
-    private void doReloadActivatorGroup(@NotNull String rawGroup) {
+    private int doReloadActivatorGroup(@NotNull String rawGroup) {
         String group = rawGroup.replaceAll("[/\\\\]", File.separator);
-        platform.getActivators().loadGroup(group, true);
+        int amount = platform.getActivators().loadGroup(group, true);
         RaWorldGuard.updateRegionCache();
+        return amount;
     }
 
-    private void doReloadLocations() {
+    private int doReloadLocations() {
         LocationHolder.loadLocs();
+        return LocationHolder.sizeTpLoc();
     }
 
-    private void doReloadConfig() {
+    private int doReloadConfig() {
         platform.getPlugin().reloadConfig();
         Cfg.load(platform.getPlugin().getConfig());
         platform.getCommands().reload();
+        return -1;
     }
 
-    private void doReloadCooldowns() {
+    private int doReloadCooldowns() {
         CooldownManager.load();
+        return CooldownManager.size();
     }
 
-    private void doReloadVariables() {
+    private int doReloadVariables() {
         if (!Cfg.playerSelfVarFile) platform.getPersistentVariables().load();
         else platform.getPersistentVariables().loadVars();
+        return platform.getPersistentVariables().size();
     }
 
-    private void doReloadTimers() {
+    private int doReloadTimers() {
         TimersManager.init();
+        return TimersManager.getIngameTimers().size() + TimersManager.getServerTimers().size();
     }
 
-    private void doReloadMenus() {
+    private int doReloadMenus() {
         InventoryMenu.load();
+        return InventoryMenu.getMenuNames().size();
     }
 }

@@ -50,12 +50,14 @@ public class ActivatorsManager {
         activatorsGroups = new HashMap<>();
     }
 
-    public void loadGroup(@NotNull String group, boolean clear) {
+    public int loadGroup(@NotNull String group, boolean clear) {
         actsFolder.mkdirs();
-        loadGroupsRecursively(actsFolder, group, clear, false);
+        int[] loaded = {0};
+        loadGroupsRecursively(actsFolder, group, clear, false, loaded);
+        return loaded[0];
     }
 
-    private void loadGroupsRecursively(@NotNull File file, @NotNull String group, boolean clear, boolean useGroup) {
+    private void loadGroupsRecursively(@NotNull File file, @NotNull String group, boolean clear, boolean useGroup, int @NotNull [] loaded) {
         if (!file.exists()) return;
 
         if (file.isDirectory()) {
@@ -65,7 +67,7 @@ public class ActivatorsManager {
                         : group + File.separator + file.getName();
             }
             for (File inner : CollectionUtils.emptyOnNull(file.listFiles())) {
-                loadGroupsRecursively(inner, group, clear, true);
+                loadGroupsRecursively(inner, group, clear, true, loaded);
             }
         } else if (file.getName().endsWith(".yml")) {
             FileConfiguration cfg = new YamlConfiguration();
@@ -112,6 +114,7 @@ public class ActivatorsManager {
                         continue;
                     }
                     addActivator(activator, false);
+                    loaded[0]++;
                 }
             }
         }

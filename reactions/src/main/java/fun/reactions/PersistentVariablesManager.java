@@ -50,6 +50,10 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         this.vars = caseInsensitiveLinkedMap();
     }
 
+    public int size() {
+        return vars.size();
+    }
+
     public @Nullable String getVariable(@Nullable String player, @NotNull String var) {
         return vars.get(formatId(player, var));
     }
