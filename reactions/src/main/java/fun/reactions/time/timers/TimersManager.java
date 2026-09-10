@@ -76,8 +76,8 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     private static Map<String, Timer> timers;
     private static Set<String> timersIngame;
 
-    public static boolean addTimer(String name, Parameters params) {
-        return addTimer(null, name, params, false);
+    public static CreateResult addTimer(String name, Parameters params) {
+        return addTimer(name, params, false);
     }
 
     public static void listTimers(CommandSender sender, int pageNum) {
@@ -110,34 +110,38 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         return true;
     }
 
-    public static boolean addTimer(CommandSender sender, String name, Parameters params, boolean save) {
-        if (name.isEmpty()) return false;
+    public static CreateResult addTimer(String name, Parameters params, boolean save) {
+        if (name.isEmpty()) return CreateResult.ERROR_NAME_MISSING;
         if (timers.containsKey(name)) {
-            Msg.MSG_TIMEREXIST.print(sender, name);
-            return false;
+            return CreateResult.ERROR_EXISTS;
         }
         if (params.isEmpty()) {
-            Msg.MSG_TIMERNEEDPARAMS.print(sender);
-            return false;
+            return CreateResult.ERROR_PARAMETERS_MISSING;
         }
         if (params.getString("activator", "").isEmpty()) {
-            Msg.MSG_TIMERNEEDACTIVATOR.print(sender);
-            return false;
+            return CreateResult.ERROR_ACTIVATOR_MISSING;
         }
         if (!params.contains("timer-type")) {
-            Msg.MSG_TIMERNEEDTYPE.print(sender);
-            return false;
+            return CreateResult.ERROR_TYPE_MISSING;
         }
         if (!params.contains("time")) {
-            Msg.MSG_TIMERNEEDTIME.print(sender);
-            return false;
+            return CreateResult.ERROR_TYPE_MISSING;
         }
         Timer timer = new Timer(params);
         timers.put(name, timer);
         updateIngameTimers();
         if (save) save();
-        if (sender != null) Msg.MSG_TIMERADDED.print(sender, name);
-        return true;
+        return CreateResult.SUCCESS;
+    }
+
+    public enum CreateResult {
+        SUCCESS,
+        ERROR_NAME_MISSING,
+        ERROR_EXISTS,
+        ERROR_PARAMETERS_MISSING,
+        ERROR_ACTIVATOR_MISSING,
+        ERROR_TYPE_MISSING,
+        ERROR_TIME_MISSING
     }
 
     public static Map<String, Timer> getIngameTimers() {
@@ -212,7 +216,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         File file = new File(ReActions.getPlugin().getDataFolder() + File.separator + "timers.yml");
         if (ConfigUtils.loadConfig(cfg, file, "Failed to load timers configuration file"))
             for (String timerType : cfg.getKeys(false)) {
-                if (!(timerType.equalsIgnoreCase("INGAME") || timerType.equalsIgnoreCase("SERVER"))) continue;
+                if (!(timerType.equalsIgnoreCase("INGAME") || timerType.equalsIgnoreCase("SERVER"))) continue; // TODO Log
                 ConfigurationSection cs = cfg.getConfigurationSection(timerType);
                 if (cs == null) continue;
                 for (String timerId : cs.getKeys(false)) {
@@ -224,7 +228,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
                         if (!csParams.isString(param)) continue;
                         params.put(param, csParams.getString(param));
                     }
-                    addTimer(timerId, Parameters.fromMap(params));
+                    addTimer(timerId, Parameters.fromMap(params)); // TODO Log
                 }
             }
     }

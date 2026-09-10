@@ -70,6 +70,7 @@ public class EscapePlaceholder implements Placeholder {
         PLACEHOLDERS(
                 "placeholder", "phs", "ph"
         );
+        // TODO MiniMessage
 
         private static final Map<String, EscapeType> TYPES_MAP;
         static {

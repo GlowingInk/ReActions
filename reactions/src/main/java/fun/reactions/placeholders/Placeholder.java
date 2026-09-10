@@ -9,8 +9,8 @@ public interface Placeholder extends Named {
     /**
      * Process this placeholder
      * @param env Context of activation
-     * @param key Key of placeholder(e.g. %var:test% - var) in lower case
-     * @param params Text of placeholder(e.g. %var:test% - test)
+     * @param key Key of placeholder(e.g. %[var:test] - var) in lower case
+     * @param params Text of placeholder(e.g. %[var:test] - test)
      * @return Processed placeholder
      */
     @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String params);
@@ -24,7 +24,7 @@ public interface Placeholder extends Named {
         /**
          * Process this placeholder
          * @param env Context of activation
-         * @param phText Full placeholder(e.g. %my_variable% - my_variable)
+         * @param phText Full placeholder(e.g. %[my_variable] - my_variable)
          * @return Processed placeholder
          */
         @Nullable String resolve(@NotNull Environment env, @NotNull String phText);

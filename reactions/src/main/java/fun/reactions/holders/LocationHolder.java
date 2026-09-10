@@ -25,23 +25,26 @@ package fun.reactions.holders;
 import fun.reactions.ReActions;
 import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
+import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.location.position.RealPosition;
-import fun.reactions.util.message.Msg;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+// TODO Refactor
+@Deprecated
 public final class LocationHolder {
     private static final Map<String, Location> locs = new HashMap<>();
-    private static final Map<String, RealPosition> tports = new HashMap<>();
+    private static final Map<String, RealPosition> tports = CollectionUtils.caseInsensitiveLinkedMap();
 
     private LocationHolder() {}
 
@@ -78,6 +81,10 @@ public final class LocationHolder {
             }
     }
 
+    public static @Nullable RealPosition getTpPosition(@NotNull String posName) {
+        return tports.get(posName);
+    }
+
     public static Location getTpLoc(String locstr) {
         if (tports.containsKey(locstr)) return tports.get(locstr).toLocation();
         return null;
@@ -87,21 +94,17 @@ public final class LocationHolder {
         return tports.size();
     }
 
-    public static boolean addTpLoc(String id, Location loc) {
+    public static @NotNull Set<String> getTpLocNames() {
+        return Collections.unmodifiableSet(tports.keySet());
+    }
+
+    public static boolean addTpLoc(String id, RealPosition loc) {
         if (Utils.isStringEmpty(id)) return false;
-        tports.put(id, RealPosition.byLocation(loc));
+        tports.put(id, loc);
         return true;
     }
 
     public static boolean removeTpLoc(String id) {
         return tports.remove(id) != null;
-    }
-
-    public static void printLocList(CommandSender sender, int pageNum, int linesPerPage) {
-        List<String> locList = new ArrayList<>();
-        for (String loc : tports.keySet()) {
-            locList.add("&3" + loc + " &a" + tports.get(loc).toString());
-        }
-        Msg.printPage(sender, locList, Msg.MSG_LISTLOC, pageNum, linesPerPage, true);
     }
 }

@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.*;
 
+// TODO Use RaCommand
 public final class UserCommandsManager implements Listener {
     private final ReActions.Platform platform;
-    // TODO: Use Paper's async tab completer
     private final Map<String, UserCommand> commands;
     private final File file;
 

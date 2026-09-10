@@ -36,6 +36,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,7 +45,7 @@ import static fun.reactions.util.num.NumberUtils.asDouble;
 
 @SuppressWarnings("UnstableApiUsage")
 public class RealPosition implements FinePosition, Parameterizable {
-    private static final DecimalFormat FORMAT = new DecimalFormat("#.####");
+    private static final DecimalFormat FORMAT = new DecimalFormat("#.####", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
     private final String worldName;
     private final double x;
