@@ -72,11 +72,6 @@ public class ButtonActivator extends Activator implements Locatable {
         pos.intoConfiguration(cfg);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" + pos + ")";
-    }
-
     public static class Context extends ActivationContext {
         private final Location buttonLocation;
 

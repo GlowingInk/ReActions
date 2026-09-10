@@ -75,12 +75,6 @@ public class ConsumeActivator extends Activator {
         cfg.set("hand", hand.name());
     }
 
-    public String toString() {
-        return super.toString() + " (" +
-                this.item +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
         private final ItemStack item;
         private final EquipmentSlot hand;

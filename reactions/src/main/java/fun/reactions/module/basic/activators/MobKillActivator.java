@@ -38,7 +38,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Map;
 
 public class MobKillActivator extends Activator {
@@ -91,14 +90,6 @@ public class MobKillActivator extends Activator {
     @Override
     public boolean isValid() {
         return !Utils.isStringEmpty(mobType);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "type:" + (mobType == null ? "-" : mobType.toUpperCase(Locale.ROOT)) +
-                " name:" + (mobName == null ? "-" : mobName) +
-                ")";
     }
 
     public static class Context extends ActivationContext {

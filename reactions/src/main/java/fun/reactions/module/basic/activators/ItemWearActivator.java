@@ -78,11 +78,6 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + " (" + this.item + ")";
-    }
-
-    @Override
     public boolean isValid() {
         return !Utils.isStringEmpty(item);
     }

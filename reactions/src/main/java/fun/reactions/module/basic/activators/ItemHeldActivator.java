@@ -73,16 +73,6 @@ public class ItemHeldActivator extends Activator {
         cfg.set("slot-prev", slotPrev + 1);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "itemnew:" + (virtualItemNew == VirtualItem.ANY ? "-" : virtualItemNew) +
-                " itemprev:" + (virtualItemPrev == VirtualItem.ANY ? "-" : virtualItemPrev) +
-                " slotnew:" + (slotNew + 1) +
-                " slotprev:" + (slotPrev + 1) +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 11/11/2017

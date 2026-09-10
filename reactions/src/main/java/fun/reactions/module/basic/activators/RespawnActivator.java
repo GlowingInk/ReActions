@@ -71,11 +71,6 @@ public class RespawnActivator extends Activator {
         cfg.set("death-cause", deathCause.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "(" + this.deathCause.name() + ")";
-    }
-
     public static class Context extends ActivationContext {
         public static final String RESPAWN_LOCATION = "respawn_loc";
 

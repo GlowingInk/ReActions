@@ -128,21 +128,6 @@ public class SignActivator extends Activator {
         return emptyLines > 0;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("click:").append(this.click.name());
-        sb.append(" sign:");
-        if (this.maskLines.isEmpty()) sb.append("[][][][]");
-        else {
-            for (String s : maskLines)
-                sb.append("[").append(s).append("]");
-        }
-        sb.append(")");
-        return sb.toString();
-    }
-
     public static class SignContext extends ActivationContext {
         private final boolean leftClick;
         private final Location location;

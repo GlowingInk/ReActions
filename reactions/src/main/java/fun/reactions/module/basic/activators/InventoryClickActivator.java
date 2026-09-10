@@ -133,19 +133,6 @@ public class InventoryClickActivator extends Activator {
         return slot == Integer.parseInt(slotStr);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "name:" + this.inventoryName +
-                "; click:" + this.click.name() +
-                "; action:" + this.action.name() +
-                "; inventory:" + this.inventory.name() +
-                "; slotType:" + this.slotType.name() +
-                "; key:" + this.numberKey +
-                "; slot:" + this.slotStr +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
         public static final String ITEM = "item";
 

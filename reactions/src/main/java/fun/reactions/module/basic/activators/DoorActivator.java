@@ -97,14 +97,6 @@ public class DoorActivator extends Activator implements Locatable {
         cfg.set("state", STATE_MAPPER.toString(state));
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                lowerPos + "; " +
-                "state:" + STATE_MAPPER.toString(state) +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
         private final Block doorBlock;
 

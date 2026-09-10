@@ -51,13 +51,6 @@ public class GameModeActivator extends Activator {
         cfg.set("gamemode", gameMode == null ? "ANY" : gameMode.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "gamemode:" + (gameMode == null ? "ANY" : gameMode.name()) +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 27/10/2017

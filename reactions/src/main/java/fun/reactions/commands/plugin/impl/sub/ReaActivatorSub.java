@@ -28,10 +28,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static fun.reactions.commands.plugin.RegistryArgument.registryArgument;
@@ -197,7 +194,19 @@ public final class ReaActivatorSub extends RaCommandBase {
             for (String optionKey : keys) {
                 var optionValue = infoCfg.get(optionKey);
                 if (optionValue == null) continue;
-                sendInky(sender, " &e" + esc(optionKey) + " &7= &r" + esc(optionValue.toString()));
+                if (optionValue instanceof Collection<?> coll) {
+                    if (coll.isEmpty()) {
+                        sendInky(sender, " &e" + esc(optionKey) + " &7= &r[ ]");
+                    } else {
+                        sendInky(sender, " &e" + esc(optionKey) + " &7= &r[");
+                        for (Object subValue : coll) {
+                            sender.sendMessage("  " + subValue);
+                        }
+                        sender.sendMessage(" ]");
+                    }
+                } else {
+                    sendInky(sender, " &e" + esc(optionKey) + " &7= &r" + esc(optionValue.toString()));
+                }
             }
         }
 

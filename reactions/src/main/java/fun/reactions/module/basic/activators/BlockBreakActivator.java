@@ -79,14 +79,6 @@ public class BlockBreakActivator extends Activator implements Locatable {
         pos.intoConfiguration(cfg);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "block:" + (blockType == null ? "-" : blockType) +
-                "; loc:" + (pos == ImplicitPosition.EVERYWHERE ? "-" : pos) +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 14/05/2017

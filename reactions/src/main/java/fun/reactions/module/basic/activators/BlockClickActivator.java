@@ -112,15 +112,6 @@ public class BlockClickActivator extends Activator implements Locatable {
         cfg.set("location", Utils.isStringEmpty(blockLocation) ? null : blockLocation);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "type:" + (blockType == null ? "-" : blockType) +
-                "; click:" + this.click.name() +
-                "; loc:" + (blockLocation == null ? "-" : blockLocation) +
-                ")";
-    }
-
     /*
     public boolean isValid() {
         return (this.blockType == null || this.blockType.isEmpty()) && (this.blockLocation == null || this.blockLocation.isEmpty());

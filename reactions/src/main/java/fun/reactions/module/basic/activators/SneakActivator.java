@@ -43,13 +43,6 @@ public class SneakActivator extends Activator {
         cfg.set("sneak", sneak.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "sneak:" + this.sneak.name() +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 16/05/2017

@@ -40,7 +40,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Map;
 
 public class MobClickActivator extends Activator implements Locatable {
@@ -125,15 +124,6 @@ public class MobClickActivator extends Activator implements Locatable {
     @Override
     public boolean isValid() {
         return !Utils.isStringEmpty(mobType);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "type:" + (mobType.isEmpty() ? "-" : mobType.toUpperCase(Locale.ROOT)) +
-                " name:" + (mobName.isEmpty() ? "-" : mobName) +
-                " loc:" + (mobLocation.isEmpty() ? "-" : mobLocation) +
-                ")";
     }
 
     public static class Context extends ActivationContext {

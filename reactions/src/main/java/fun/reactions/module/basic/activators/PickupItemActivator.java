@@ -52,13 +52,6 @@ public class PickupItemActivator extends Activator {
         cfg.set("item", item.toString());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "item:" + item +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 04/09/2017

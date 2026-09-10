@@ -100,15 +100,6 @@ public class DamageByBlockActivator extends Activator implements Locatable {
         cfg.set("cause", this.damageCause);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "block:" + (blockType == null ? "-" : blockType.name()) +
-                "; loc:" + (blockLocation.isEmpty() ? "-" : blockLocation) +
-                "; cause:" + damageCause +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 23/07/2017

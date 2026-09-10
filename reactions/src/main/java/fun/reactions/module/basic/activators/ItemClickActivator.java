@@ -75,14 +75,6 @@ public class ItemClickActivator extends Activator {
         cfg.set("hand", hand.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                this.item +
-                "; hand:" + hand +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
         private final EquipmentSlot hand;
         private final ItemStack item;

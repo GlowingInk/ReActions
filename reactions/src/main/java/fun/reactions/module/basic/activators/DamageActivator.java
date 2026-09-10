@@ -64,14 +64,6 @@ public class DamageActivator extends Activator {
         cfg.set("source", this.source.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "cause:" + this.damageCause +
-                "; source:" + this.source.name() +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 23/07/2017

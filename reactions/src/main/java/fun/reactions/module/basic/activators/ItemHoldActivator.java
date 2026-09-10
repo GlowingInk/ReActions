@@ -86,14 +86,6 @@ public class ItemHoldActivator extends Activator {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + " (" +
-                this.item +
-                "; hand:" + hand +
-                ")";
-    }
-
-    @Override
     public boolean isValid() {
         return !Utils.isStringEmpty(item);
     }

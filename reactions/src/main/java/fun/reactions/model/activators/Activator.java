@@ -2,6 +2,7 @@ package fun.reactions.model.activators;
 
 import fun.reactions.model.Logic;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Activator {
@@ -75,7 +76,10 @@ public abstract class Activator {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(logic.getGroup()).append(", ").append(logic.getName()).append(" [").append(getClass().getSimpleName()).append("]");
-        sb.append(logic);
+        sb.append(' ').append(logic);
+        var infoCfg = new MemoryConfiguration();
+        saveOptions(infoCfg);
+        sb.append(' ').append(infoCfg);
         return sb.toString();
     }
 }

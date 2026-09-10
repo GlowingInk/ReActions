@@ -16,7 +16,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -62,14 +61,6 @@ public class WeChangeActivator extends Activator {
     public void saveOptions(@NotNull ConfigurationSection cfg) {
         cfg.set("block-type", blockType == null ? null : blockType.name());
         cfg.set("region", region);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "block-type:" + (blockType != null ? blockType : "ANY") +
-                " region:" + (region.isEmpty() ? "-" : region.toUpperCase(Locale.ROOT)) +
-                ")";
     }
 
     /**

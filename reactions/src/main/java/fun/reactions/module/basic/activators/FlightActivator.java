@@ -43,13 +43,6 @@ public class FlightActivator extends Activator {
         cfg.set("flight", flight.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "flight:" + this.flight.name() +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 05/02/2017

@@ -129,15 +129,6 @@ public class CommandActivator extends Activator {
         return !Utils.isStringEmpty(command);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "regex:" + this.useRegex +
-                "; command:" + this.command +
-                "; console:" + this.consoleAllowed +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
 
         private final String label, command;

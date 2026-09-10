@@ -120,16 +120,6 @@ public class DamageByMobActivator extends Activator {
         cfg.set("cause", damageCause);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "type:" + (damagerType.isEmpty() ? "-" : damagerType.toUpperCase(Locale.ROOT)) +
-                "; name:" + (damagerName.isEmpty() ? "-" : damagerName) +
-                "; etype:" + (entityType.isEmpty() ? "-" : entityType.toUpperCase(Locale.ROOT)) +
-                "; cause:" + damageCause +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 25/06/2017

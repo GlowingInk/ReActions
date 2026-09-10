@@ -68,11 +68,6 @@ public class DeathActivator extends Activator {
         cfg.set("death-cause", this.deathCause != null ? this.deathCause.name() : "PVP");
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "(" + this.deathCause.name() + ")";
-    }
-
     public static class Context extends ActivationContext {
 
         private final LivingEntity killer;

@@ -54,13 +54,6 @@ public class EntityClickActivator extends Activator {
         cfg.set("entity-type", entityType == null ? null : entityType.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "type:" + (entityType == null ? "-" : entityType.name()) +
-                ")";
-    }
-
     /**
      * @author MaxDikiy
      * @since 14/05/2017

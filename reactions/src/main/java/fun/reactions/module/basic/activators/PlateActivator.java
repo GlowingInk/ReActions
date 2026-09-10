@@ -84,11 +84,6 @@ public class PlateActivator extends Activator implements Locatable {
         pos.intoConfiguration(cfg);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" + pos + ")";
-    }
-
     public static class PlateContext extends ActivationContext {
         private final Location location;
 

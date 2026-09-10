@@ -75,16 +75,6 @@ public class VariableActivator extends Activator {
         return !Utils.isStringEmpty(id);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(" (");
-        sb.append("variable id:").append(this.id);
-        if (this.personal) sb.append(" personal:true");
-        sb.append(")");
-        return sb.toString();
-    }
-
     public static class Context extends ActivationContext {
         private final String variableId;
         private final String newValue;

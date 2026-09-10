@@ -58,11 +58,6 @@ public class JoinActivator extends Activator {
         cfg.set("first-join", firstJoin.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (first-join:" + this.firstJoin + ")";
-    }
-
     public static class Context extends ActivationContext {
         private final boolean firstJoin;
 

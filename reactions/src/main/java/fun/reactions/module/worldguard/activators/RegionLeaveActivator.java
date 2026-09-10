@@ -84,13 +84,6 @@ public class RegionLeaveActivator extends Activator implements Locatable {
         return !Utils.isStringEmpty(region);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "region:" + this.region +
-                ")";
-    }
-
     public static class Context extends RegionActivator.Context {
         public Context(Player player, String region) {
             super(player, region);

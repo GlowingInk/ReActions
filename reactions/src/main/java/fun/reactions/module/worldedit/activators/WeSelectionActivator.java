@@ -67,15 +67,6 @@ public class WeSelectionActivator extends Activator {
         cfg.set("type", typeSelection);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "minblocks:" + minBlocks +
-                "; maxblocks:" + maxBlocks +
-                "; type:" + typeSelection +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
         private final WeSelection selection;
 

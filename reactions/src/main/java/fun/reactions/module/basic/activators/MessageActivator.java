@@ -100,15 +100,6 @@ public class MessageActivator extends Activator {
         };
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                "type:" + this.type.name() +
-                " source:" + this.source.name() +
-                " mask:" + this.mask +
-                ")";
-    }
-
     public enum CheckType {
         REGEX,
         CONTAINS,

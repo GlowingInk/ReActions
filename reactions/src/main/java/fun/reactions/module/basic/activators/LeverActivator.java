@@ -91,14 +91,6 @@ public class LeverActivator extends Activator implements Locatable {
         cfg.set("lever-state", state.name());
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" +
-                pos + "," +
-                " state:" + state.name() +
-                ")";
-    }
-
     public static class Context extends ActivationContext {
         private final Block leverBlock;
 
