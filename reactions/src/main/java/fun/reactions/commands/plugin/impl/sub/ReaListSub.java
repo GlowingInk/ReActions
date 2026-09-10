@@ -67,27 +67,28 @@ public final class ReaListSub extends RaCommandBase {
     }
 
     private int listActivators(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String group, int page) {
-        Collection<Activator> found = group != null
+        Collection<Activator> found = (group != null && !group.equals("_"))
                 ? platform.getActivators().search().byGroup(group)
                 : platform.getActivators().search().all();
         List<String> lines = new ArrayList<>();
+        // TODO Better show group names in headers?
         for (Activator activator : found) {
             Logic logic = activator.getLogic();
             String display = "&7" + esc(logic.getGroup()) + "/&6" + esc(logic.getName()) + "&e (" + esc(logic.getType()) + ")";
             lines.add(listLine(ctx, display, "activator " + logic.getName()));
         }
-        return sendPage(ctx, "list activators " + esc(group == null ? "*" : group), "Activators", lines, page);
+        return sendPage(ctx, "list activators " + esc(group == null ? "_" : group), "Activators", lines, page);
     }
 
     private int listLocations(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String world, int page) {
         List<String> lines = new ArrayList<>();
         for (String name : LocationHolder.getTpLocNames()) {
             RealPosition pos = LocationHolder.getTpPosition(name);
-            if (pos == null || (world != null && !pos.worldName().equalsIgnoreCase(world))) continue;
+            if (pos == null || (world != null && !world.equals("_") && !pos.worldName().equalsIgnoreCase(world))) continue;
             String display = "&6" + esc(name) + "&7 (" + esc(pos.toString()) + ")";
             lines.add(listLine(ctx, display, "location " + name));
         }
-        return sendPage(ctx, "list locations " + esc(world == null ? "*" : world), "Locations", lines, page);
+        return sendPage(ctx, "list locations " + esc(world == null ? "_" : world), "Locations", lines, page);
     }
 
     private int listMenus(@NotNull CommandContext<CommandSourceStack> ctx, int page) {

@@ -321,6 +321,6 @@ public final class Utils {
     public static @NotNull String upperFirst(@NotNull String str) {
         return str.isEmpty()
                 ? str
-                : str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1);
+                : str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1).toLowerCase(Locale.ROOT);
     }
 }

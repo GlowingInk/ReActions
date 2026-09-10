@@ -24,14 +24,17 @@ import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static fun.reactions.commands.plugin.RegistryArgument.registryArgument;
+import static fun.reactions.util.Utils.upperFirst;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 import static net.kyori.adventure.text.Component.text;
@@ -94,7 +97,7 @@ public final class ReaActivatorSub extends RaCommandBase {
                                 .executes(ctx -> actionAdd(ctx, selection, ""))
                                 .then(argument("parameters", StringArgumentType.greedyString())
                                         .executes(ctx -> actionAdd(ctx, selection, StringArgumentType.getString(ctx, "parameters"))))));
-        return appendRemoveMoveNodes(node, selection).build();
+        return appendActivityNodes(node, selection).build();
     }
 
     private @NotNull LiteralCommandNode<CommandSourceStack> flagActivityNode() {
@@ -106,15 +109,29 @@ public final class ReaActivatorSub extends RaCommandBase {
                                 .suggests(suggestNames(activities::getFlagsTypesNames, false))
                                 .executes(ctx -> flagAdd(ctx, ""))
                                 .then(argument("parameters", StringArgumentType.greedyString())
-                                        .executes(ctx -> flagAdd(ctx, StringArgumentType.getString(ctx, "parameters"))))));
-        return appendRemoveMoveNodes(node, ActivitySelection.FLAG).build();
+                                        .executes(ctx -> flagAdd(ctx, StringArgumentType.getString(ctx, "parameters"))))))
+                .then(literal("invert")
+                        .requires(permission("reactions.activator.edit"))
+                        .then(argument("index", IntegerArgumentType.integer(1))
+                                .executes(this::flagInvert)));
+        return appendActivityNodes(node, ActivitySelection.FLAG).build();
     }
 
-    private @NotNull LiteralArgumentBuilder<CommandSourceStack> appendRemoveMoveNodes(
+    private @NotNull LiteralArgumentBuilder<CommandSourceStack> appendActivityNodes(
             @NotNull LiteralArgumentBuilder<CommandSourceStack> builder,
             @NotNull ActivitySelection selection
     ) {
         return builder
+                .then(literal("edit")
+                        .requires(permission("reactions.activator.view"))
+                        .then(argument("index", IntegerArgumentType.integer(1))
+                                .executes(ctx -> activityEdit(ctx, selection))))
+                .then(literal("change")
+                        .requires(permission("reactions.activator.edit"))
+                        .then(argument("index", IntegerArgumentType.integer(1))
+                                .executes(ctx -> activityChange(ctx, selection, ""))
+                                .then(argument("parameters", StringArgumentType.greedyString())
+                                        .executes(ctx -> activityChange(ctx, selection, StringArgumentType.getString(ctx, "parameters"))))))
                 .then(literal("remove")
                         .requires(permission("reactions.activator.edit"))
                         .then(argument("index", IntegerArgumentType.integer(1))
@@ -170,30 +187,87 @@ public final class ReaActivatorSub extends RaCommandBase {
         sender.sendMessage(text()
                 .append(inky("&7" + logic.getGroup() + "/&6&l" + logic.getName()))
                 .append(inky("&e (" + logic.getType() + ")")));
-        sendActivityInfo(sender, logic.getFlags(), "&aFlags:", true);
-        sendActivityInfo(sender, logic.getActions(), "&aActions:", false);
-        sendActivityInfo(sender, logic.getReactions(), "&aReactions:", false);
+        sendActivityInfo(ctx, activator, ActivitySelection.FLAG);
+        sendActivityInfo(ctx, activator, ActivitySelection.ACTION);
+        sendActivityInfo(ctx, activator, ActivitySelection.REACTION);
         return SINGLE_SUCCESS;
     }
 
     private void sendActivityInfo(
-            @NotNull CommandSender sender,
-            @NotNull List<? extends Activity.Stored<?>> storeds,
-            @NotNull String title,
-            boolean isFlag
-    ) { // TODO Edit/delete and stuff
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull Activator activator,
+            @NotNull ActivitySelection selection
+    ) {
+        var storeds = getActivityList(activator, selection);
         if (storeds.isEmpty()) return;
-        sendInky(sender, title);
+        CommandSender sender = ctx.getSource().getSender();
+        sendInky(sender, "&a" + upperFirst(selection.name()) + ":");
+        boolean isFlag = selection == ActivitySelection.FLAG;
+        String base = sender instanceof Player
+                ? "/" + rootLabel(ctx) + " activator " + activator.getLogic().getName() + " " + selection.lower
+                : null;
         for (int i = 0; i < storeds.size(); i++) {
+            int index = i + 1;
             Activity.Stored<?> stored = storeds.get(i);
             Activity activity = stored.getActivity();
             Component prefix = (isFlag && stored instanceof Flag.Stored storedFlag)
-                    ? inky(" &7" + (i + 1) + (storedFlag.isInverted() ? " &c&l!&r" : " "))
-                    : inky(" &7" + (i + 1) + " ");
-            sender.sendMessage(prefix
-                    .append(inky("&e" + activity.getName() + " &7= &r"))
-                    .append(text(stored.getContent())));
+                    ? inky(" &7" + index + (storedFlag.isInverted() ? " &c&l!&r" : " "))
+                    : inky(" &7" + index + " ");
+            Component name = base != null
+                    ? inky("&[&e" + activity.getName() + "](click:run " + base + " edit " + index + ")(hover:text &7Click to edit)")
+                    : inky("&e" + activity.getName());
+            sender.sendMessage(prefix.append(name).append(inky(" &7= &r")).append(text(stored.getContent())));
         }
+    }
+
+    private int activityEdit(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull ActivitySelection selection
+    ) throws CommandSyntaxException {
+        Activator activator = getActivator(ctx);
+        var activitiesList = getActivityList(activator, selection);
+        int index = IntegerArgumentType.getInteger(ctx, "index");
+        if (index > activitiesList.size()) {
+            sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + index + "&r.");
+            return SINGLE_SUCCESS;
+        }
+        Activity.Stored<?> stored = activitiesList.get(index - 1);
+        CommandSender sender = ctx.getSource().getSender();
+        sender.sendMessage("");
+        Component header = inky("&a" + upperFirst(selection.name()) + " &7#" + index + " &e" + stored.getActivity().getName());
+        if (stored instanceof Flag.Stored flagStored && flagStored.isInverted()) {
+            header = header.append(inky(" &c&l!"));
+        }
+        sender.sendMessage(header);
+        sender.sendMessage(text("  ").append(text(stored.getContent())));
+        if (sender instanceof Player) {
+            sender.sendMessage("");
+            String base = "/" + rootLabel(ctx) + " activator " + activator.getLogic().getName() + " " + selection.lower;
+            sendInky(sender, button("&a", "Change value", "suggest", base + " change " + index + " ", "Edit the value"));
+            if (index > 1) {
+                sendInky(sender, button("&e", "↑ Move up", "run", base + " move " + index + " " + (index - 1), "Move up one slot"));
+            }
+            if (index < activitiesList.size()) {
+                sendInky(sender, button("&e", "↓ Move down", "run", base + " move " + index + " " + (index + 1), "Move down one slot"));
+            }
+            if (stored instanceof Flag.Stored flagStored) {
+                sendInky(sender, flagStored.isInverted()
+                        ? button("&a", "✔ Inverted", "run", base + " invert " + index, "Click to un-invert")
+                        : button("&7", "❌ Not inverted", "run", base + " invert " + index, "Click to invert"));
+            }
+            sendInky(sender, button("&c", "❌ Delete", "run", base + " remove " + index, "Delete this " + selection));
+        }
+        return SINGLE_SUCCESS;
+    }
+
+    private static @NotNull String button(
+            @NotNull String color,
+            @NotNull String label,
+            @NotNull String clickType,
+            @NotNull String command,
+            @NotNull String hover
+    ) {
+        return "  &7[" + color + label + "&7](click:" + clickType + " " + command + ")(hover:text &7" + hover + ")";
     }
 
     private int deletePrompt(@NotNull CommandContext<CommandSourceStack> ctx) {
@@ -211,11 +285,17 @@ public final class ReaActivatorSub extends RaCommandBase {
     }
 
     private int activityHelp(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull ActivitySelection selection) {
-        return sendHelp(ctx, "activator " + esc(ctx.getArgument("name", String.class)) + " " + selection,
+        List<String> help = new ArrayList<>(List.of(
                 "add", "<type> &e[<parameters...>]", "Add a &a" + selection + "&r to the activator",
+                "edit", "<index>", "Show the &a" + selection + "&r at the given index, with edit buttons",
+                "change", "<index> &e[<parameters...>]", "Change the parameters of the &a" + selection + "&r at the given index",
                 "remove", "<index>", "Remove the &a" + selection + "&r at the given index",
                 "move", "<from> <to>", "Move a &a" + selection + "&r to another index"
-        );
+        ));
+        if (selection == ActivitySelection.FLAG) {
+            help.addAll(List.of("invert", "<index>", "Toggle inversion of the&a flag&r at the given index"));
+        }
+        return sendHelp(ctx, "activator " + esc(ctx.getArgument("name", String.class)) + " " + selection, help.toArray(new String[0]));
     }
 
     private int actionAdd(
@@ -259,6 +339,47 @@ public final class ReaActivatorSub extends RaCommandBase {
         return SINGLE_SUCCESS;
     }
 
+    private int activityChange(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull ActivitySelection selection,
+            @NotNull String parameters
+    ) throws CommandSyntaxException {
+        Activator activator = getActivator(ctx);
+        List<? extends Activity.Stored<?>> list = getActivityList(activator, selection);
+        int index = IntegerArgumentType.getInteger(ctx, "index");
+        if (index > list.size()) {
+            sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + index + "&r.");
+            return SINGLE_SUCCESS;
+        }
+        Activity.Stored<?> stored = list.get(index - 1);
+        Activity.Stored<?> updated = stored instanceof Flag.Stored flagStored
+                ? new Flag.Stored(flagStored.getActivity(), parameters, flagStored.isInverted())
+                : new Action.Stored((Action) stored.getActivity(), parameters);
+        setAt(list, index - 1, updated);
+        saveActivator(activator);
+        sendPrefixed(ctx, "Changed &a" + selection + "&r &a'" + updated.getActivity().getName() + "'&r at index &a" + index + "&r.");
+        return SINGLE_SUCCESS;
+    }
+
+    private int flagInvert(@NotNull CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Activator activator = getActivator(ctx);
+        List<Flag.Stored> list = activator.getLogic().getFlags();
+        int index = IntegerArgumentType.getInteger(ctx, "index");
+        if (index > list.size()) {
+            sendPrefixed(ctx, "There's no &cflag&r at index &c" + index + "&r.");
+            return SINGLE_SUCCESS;
+        }
+        Flag.Stored stored = list.get(index - 1);
+        Flag.Stored updated = new Flag.Stored(stored.getActivity(), stored.getContent(), !stored.isInverted());
+        list.set(index - 1, updated);
+        saveActivator(activator);
+        sendPrefixed(ctx, "&{state} &aflag&r &a'&{name}'&r at index &a" + index + "&r.", Map.of(
+                "state", updated.isInverted() ? "Inverted" : "Un-inverted",
+                "name", updated.getActivity().getName()
+        ));
+        return SINGLE_SUCCESS;
+    }
+
     private int activityRemove(
             @NotNull CommandContext<CommandSourceStack> ctx,
             @NotNull ActivitySelection selection
@@ -283,36 +404,37 @@ public final class ReaActivatorSub extends RaCommandBase {
             @NotNull ActivitySelection selection
     ) throws CommandSyntaxException {
         Activator activator = getActivator(ctx);
+        List<? extends Activity.Stored<?>> list = getActivityList(activator, selection);
         int from = IntegerArgumentType.getInteger(ctx, "from");
         int to = IntegerArgumentType.getInteger(ctx, "to");
-        doMove(getActivityList(activator, selection), selection, ctx, from, to);
-        saveActivator(activator);
-        return SINGLE_SUCCESS;
-    }
-
-    private <T extends Activity.Stored<?>> void doMove(
-            @NotNull List<T> list,
-            @NotNull ActivitySelection selection,
-            @NotNull CommandContext<CommandSourceStack> ctx,
-            int from, int to
-    ) {
         if (from > list.size()) {
             sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + from + "&r.");
-            return;
+            return SINGLE_SUCCESS;
         }
         if (to > list.size()) {
             sendPrefixed(ctx, "There's no &c" + selection + "&r at index &c" + to + "&r.");
-            return;
+            return SINGLE_SUCCESS;
         }
         if (from == to) {
             sendPrefixed(ctx, "Cannot move &c" + selection + "&r onto itself.");
-            return;
+            return SINGLE_SUCCESS;
         }
         int fromIdx = from - 1;
         int toIdx = to - 1;
         if (toIdx > fromIdx) toIdx--;
-        list.add(toIdx, list.remove(fromIdx));
+        moveAt(list, fromIdx, toIdx);
+        saveActivator(activator);
         sendPrefixed(ctx, "Moved &a" + selection + "&r from index &a" + from + "&r to &a" + to + "&r.");
+        return SINGLE_SUCCESS;
+    }
+
+    @SuppressWarnings("unchecked") // eh, whatever
+    private static <T extends Activity.Stored<?>> void setAt(@NotNull List<T> list, int index, @NotNull Activity.Stored<?> value) {
+        list.set(index, (T) value);
+    }
+
+    private static <T extends Activity.Stored<?>> void moveAt(@NotNull List<T> list, int fromIdx, int toIdx) {
+        list.add(toIdx, list.remove(fromIdx));
     }
 
     private @NotNull List<? extends Activity.Stored<?>> getActivityList(
