@@ -113,7 +113,7 @@ public class ParametersTest {
         FileConfiguration cfg = new YamlConfiguration();
         cfg.loadFromString(cfgStr);
         assertTrue(
-                Parameters.fromConfiguration(cfg, Set.of("ignored")).isSimilar(Parameters.fromString(expected))
+                Parameters.fromConfiguration(cfg, Set.of("ignored")::contains).isSimilar(Parameters.fromString(expected))
         );
     }
 
