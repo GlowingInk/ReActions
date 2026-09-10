@@ -167,6 +167,7 @@ public final class ReaLocationSub extends RaCommandBase {
             return;
         }
         LocationHolder.removeTpLoc(name);
+        LocationHolder.saveLocs();
         sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was deleted.");
     }
 
@@ -189,17 +190,24 @@ public final class ReaLocationSub extends RaCommandBase {
 
     private void move(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
+        if (getLocation(ctx) == null) {
+            return;
+        }
         if (!(ctx.getSource().getExecutor() instanceof Entity entity)) {
             sendPrefixed(ctx, "You must&e specify a position&r when running as non-player.");
             return;
         }
         RealPosition pos = RealPosition.byLocation(entity.getLocation());
         LocationHolder.addTpLoc(name, pos);
+        LocationHolder.saveLocs();
         sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was moved.");
     }
 
     private void move(@NotNull CommandContext<CommandSourceStack> ctx, boolean withRotation) throws CommandSyntaxException {
         String name = StringArgumentType.getString(ctx, "name");
+        if (getLocation(ctx) == null) {
+            return;
+        }
         World world = ctx.getArgument("world", World.class);
         FinePosition pos = ctx.getArgument("position", FinePositionResolver.class).resolve(ctx.getSource());
         LocationHolder.addTpLoc(name, RealPosition.of(
@@ -207,6 +215,7 @@ public final class ReaLocationSub extends RaCommandBase {
                 withRotation ? FloatArgumentType.getFloat(ctx, "yaw") : 0f,
                 withRotation ? FloatArgumentType.getFloat(ctx, "pitch") : 0f
         ));
+        LocationHolder.saveLocs();
         sendPrefixed(ctx, "Location &a'" + esc(name) + "'&r was moved.");
     }
 

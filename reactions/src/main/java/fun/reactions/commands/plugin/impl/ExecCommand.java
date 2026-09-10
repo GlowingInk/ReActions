@@ -27,6 +27,9 @@ public final class ExecCommand extends RaCommandBase {
                     return SINGLE_SUCCESS;
                 })
                 .then(argument("activator", StringArgumentType.word())
+                        .suggests(suggestNames(() -> platform.getActivators().search().byType("FUNCTION").stream()
+                                .map(activator -> activator.getLogic().getName())
+                                .toList(), false))
                         .executes(ctx -> {
                             activate(ctx, "");
                             return SINGLE_SUCCESS;
@@ -47,9 +50,13 @@ public final class ExecCommand extends RaCommandBase {
 
     // TODO Local vars
     private void activate(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
-        ContextManager.triggerFunction(
+        String activator = StringArgumentType.getString(ctx, "activator");
+        boolean success = ContextManager.triggerFunction(
                 ctx.getSource().getSender(),
-                Parameters.fromString(rawParameters).with("activator", StringArgumentType.getString(ctx, "activator"))
+                Parameters.fromString(rawParameters).with("activator", activator)
         );
+        if (!success) {
+            sendPrefixed(ctx, "Failed to execute &c'" + esc(activator) + "'&r&7 (doesn't exist or isn't a&e FUNCTION&7 activator).");
+        }
     }
 }

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
@@ -103,7 +104,7 @@ public final class ReaReloadSub extends RaCommandBase {
     }
 
     private int countGroupsUnder(@NotNull String rawGroup) {
-        String group = rawGroup.replaceAll("[/\\\\]", File.separator);
+        String group = rawGroup.replaceAll("[/\\\\]", Matcher.quoteReplacement(File.separator));
         int count = 0;
         for (String g : platform.getActivators().getGroupNames()) {
             if (g.equals(group) || g.startsWith(group + File.separator)) count++;
@@ -117,6 +118,10 @@ public final class ReaReloadSub extends RaCommandBase {
             @NotNull List<String> denied,
             @NotNull List<String> unknown
     ) {
+        if (done.isEmpty() && denied.isEmpty() && unknown.isEmpty()) {
+            sendPrefixed(ctx, "Nothing to reload - specify&c at least&r one target.");
+            return;
+        }
         if (!done.isEmpty()) {
             sendPrefixed(ctx, "Reloaded &a" + String.join("&r, &a", done) + "&r.");
         }
@@ -206,7 +211,7 @@ public final class ReaReloadSub extends RaCommandBase {
     }
 
     private int doReloadActivatorGroup(@NotNull String rawGroup) {
-        String group = rawGroup.replaceAll("[/\\\\]", File.separator);
+        String group = rawGroup.replaceAll("[/\\\\]", Matcher.quoteReplacement(File.separator));
         int amount = platform.getActivators().loadGroup(group, true);
         RaWorldGuard.updateRegionCache();
         return amount;

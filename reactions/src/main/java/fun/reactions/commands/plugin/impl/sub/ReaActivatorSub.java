@@ -79,13 +79,13 @@ public final class ReaActivatorSub extends RaCommandBase {
                                 .requires(permission("reactions.activator.edit"))
                                 .executes(this::deletePrompt)
                                 .then(literal("confirm").executes(this::delete)))
-                        .then(actionActivityNode(ActivitySelection.ACTION, actionArg))
-                        .then(actionActivityNode(ActivitySelection.REACTION, actionArg))
-                        .then(flagActivityNode()))
+                        .then(actionNode(ActivitySelection.ACTION, actionArg))
+                        .then(actionNode(ActivitySelection.REACTION, actionArg))
+                        .then(flagNode()))
                 .build();
     }
 
-    private @NotNull LiteralCommandNode<CommandSourceStack> actionActivityNode(
+    private @NotNull LiteralCommandNode<CommandSourceStack> actionNode(
             @NotNull ActivitySelection selection,
             @NotNull RegistryArgument<Action> actionArg
     ) {
@@ -100,12 +100,12 @@ public final class ReaActivatorSub extends RaCommandBase {
         return appendActivityNodes(node, selection).build();
     }
 
-    private @NotNull LiteralCommandNode<CommandSourceStack> flagActivityNode() {
+    private @NotNull LiteralCommandNode<CommandSourceStack> flagNode() {
         var node = literal(ActivitySelection.FLAG.lower)
                 .executes(ctx -> activityHelp(ctx, ActivitySelection.FLAG))
                 .then(literal("add")
                         .requires(permission("reactions.activator.edit"))
-                        .then(argument("type", StringArgumentType.word())
+                        .then(argument("type", StringArgumentType.string())
                                 .suggests(suggestNames(activities::getFlagsTypesNames, false))
                                 .executes(ctx -> flagAdd(ctx, ""))
                                 .then(argument("parameters", StringArgumentType.greedyString())
@@ -419,10 +419,7 @@ public final class ReaActivatorSub extends RaCommandBase {
             sendPrefixed(ctx, "Cannot move &c" + selection + "&r onto itself.");
             return SINGLE_SUCCESS;
         }
-        int fromIdx = from - 1;
-        int toIdx = to - 1;
-        if (toIdx > fromIdx) toIdx--;
-        moveAt(list, fromIdx, toIdx);
+        moveAt(list, from - 1, to - 1);
         saveActivator(activator);
         sendPrefixed(ctx, "Moved &a" + selection + "&r from index &a" + from + "&r to &a" + to + "&r.");
         return SINGLE_SUCCESS;
