@@ -153,7 +153,7 @@ public final class Shoot {
         if (!b.getType().isCollidable()) return true;
         if (!throughTypes.contains(b.getType())) return true;
         if ((shooter instanceof Player) && (isShotAndBreak(b, (Player) shooter))) {
-            b.getWorld().playEffect(b.getLocation(), Effect.STEP_SOUND, b.getType());
+            b.getWorld().playEffect(b.getLocation(), Effect.DESTROY_BLOCK, b.getType());
             b.breakNaturally();
             return true;
         }

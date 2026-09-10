@@ -51,13 +51,13 @@ public class Parameters implements Parameterizable {
     }
 
     public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg) {
-        return fromConfiguration(cfg, Set.of());
+        return fromConfiguration(cfg, _ -> false);
     }
 
-    public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg, @NotNull Set<String> ignoredKeys) {
+    public static @NotNull Parameters fromConfiguration(@NotNull ConfigurationSection cfg, @NotNull Predicate<String> excludedKeys) {
         Map<String, String> params = new LinkedHashMap<>();
         for (String key : cfg.getKeys(false)) {
-            if (ignoredKeys.contains(key)) continue;
+            if (excludedKeys.test(key)) continue;
             if (cfg.isString(key)) {
                 params.put(key, cfg.getString(key, ""));
             } else if (cfg.isList(key)) {
@@ -66,7 +66,7 @@ public class Parameters implements Parameterizable {
                     if (obj instanceof ItemStack item) {
                         params.put(key + i, VirtualItem.asString(item));
                     } else if (obj instanceof ConfigurationSection listCfg) {
-                        params.put(key + i, fromConfiguration(listCfg, ignoredKeys).toString());
+                        params.put(key + i, fromConfiguration(listCfg, excludedKeys).toString());
                     } else {
                         params.put(key + i, obj.toString());
                     }
@@ -74,7 +74,7 @@ public class Parameters implements Parameterizable {
                 }
             } else if (cfg.isConfigurationSection(key)) {
                 //noinspection ConstantConditions
-                params.put(key, fromConfiguration(cfg.getConfigurationSection(key), ignoredKeys).toString());
+                params.put(key, fromConfiguration(cfg.getConfigurationSection(key), excludedKeys).toString());
             } else if (cfg.isItemStack(key)) {
                 params.put(key, VirtualItem.asString(cfg.getItemStack(key)));
             } else {
