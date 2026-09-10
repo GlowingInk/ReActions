@@ -24,6 +24,7 @@ import fun.reactions.util.parameter.Parameters;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -187,6 +188,19 @@ public final class ReaActivatorSub extends RaCommandBase {
         sender.sendMessage(text()
                 .append(inky("&7" + logic.getGroup() + "/&6&l" + logic.getName()))
                 .append(inky("&e (" + logic.getType() + ")")));
+
+        MemoryConfiguration infoCfg = new MemoryConfiguration();
+        activator.saveOptions(infoCfg);
+        var keys = infoCfg.getKeys(false);
+        if (!keys.isEmpty()) {
+            sendInky(sender, "&aOptions:");
+            for (String optionKey : keys) {
+                var optionValue = infoCfg.get(optionKey);
+                if (optionValue == null) continue;
+                sendInky(sender, " &e" + esc(optionKey) + " &7= &r" + esc(optionValue.toString()));
+            }
+        }
+
         sendActivityInfo(ctx, activator, ActivitySelection.FLAG);
         sendActivityInfo(ctx, activator, ActivitySelection.ACTION);
         sendActivityInfo(ctx, activator, ActivitySelection.REACTION);
