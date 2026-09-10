@@ -41,7 +41,7 @@ public final class ReactionsCommand extends RaCommandBase {
                 "timer", "&a<name>", "Manage&a named&r timer",
                 "variable", "&a<name>", "Manage&a named&r variable",
                 "list", "&7(&aactivators&7|&alocations&7|&amenus&7|&atimers&7)", "List&a objects",
-                // TODO List activities, placeholders, selectors and whatnot
+                // TODO module subcommand - list their types etc.
                 "reload", "", "Reload a plugin or its specific parts"
         );
     }

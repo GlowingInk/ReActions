@@ -10,6 +10,8 @@ import fun.reactions.holders.LocationHolder;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
+import fun.reactions.time.timers.Timer;
+import fun.reactions.time.timers.TimersManager;
 import fun.reactions.util.location.position.RealPosition;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.World;
@@ -54,7 +56,14 @@ public final class ReaListSub extends RaCommandBase {
                         .executes(ctx -> listMenus(ctx, 1))
                         .then(argument("page", IntegerArgumentType.integer(1))
                                 .executes(ctx -> listMenus(ctx, IntegerArgumentType.getInteger(ctx, "page")))))
-                // TODO Timers
+                .then(literal("timers")
+                        .requires(permission("reactions.timer.view"))
+                        .executes(ctx -> listTimers(ctx, null, 1))
+                        .then(argument("type", StringArgumentType.word())
+                                .suggests(suggestNames(() -> List.of("ingame", "server"), true))
+                                .executes(ctx -> listTimers(ctx, filterArg(ctx, "type"), 1))
+                                .then(argument("page", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> listTimers(ctx, filterArg(ctx, "type"), IntegerArgumentType.getInteger(ctx, "page"))))))
                 .build();
     }
 
@@ -62,14 +71,16 @@ public final class ReaListSub extends RaCommandBase {
         return sendHelp(ctx, "list",
                 "activators", "&a[<group>|_] &e[<page>]", "List all activators, optionally filtered by&a group",
                 "locations", "&a[<world>|_] &e[<page>]", "List all locations, optionally filtered by&a world",
-                "menus", "&a[<page>]", "List all menus"
+                "menus", "&a[<page>]", "List all menus",
+                "timers", "&a[ingame|server|_] &e[<page>]", "List all timers, optionally filtered by&a type"
         );
     }
 
     private int listActivators(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String group, int page) {
-        Collection<Activator> found = (group != null && !group.equals("_"))
-                ? platform.getActivators().search().byGroup(group)
-                : platform.getActivators().search().all();
+        boolean all = group == null || group.equals("_");
+        Collection<Activator> found = all
+                ? platform.getActivators().search().all()
+                : platform.getActivators().search().byGroup(group);
         List<String> lines = new ArrayList<>();
         // TODO Better show group names in headers?
         for (Activator activator : found) {
@@ -81,10 +92,11 @@ public final class ReaListSub extends RaCommandBase {
     }
 
     private int listLocations(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String world, int page) {
+        boolean all = world == null || world.equals("_");
         List<String> lines = new ArrayList<>();
         for (String name : LocationHolder.getTpLocNames()) {
             RealPosition pos = LocationHolder.getTpPosition(name);
-            if (pos == null || (world != null && !world.equals("_") && !pos.worldName().equalsIgnoreCase(world))) continue;
+            if (pos == null || (!all && !pos.worldName().equalsIgnoreCase(world))) continue;
             String display = "&6" + esc(name) + "&7 (" + esc(pos.toString()) + ")";
             lines.add(listLine(ctx, display, "location " + name));
         }
@@ -97,6 +109,27 @@ public final class ReaListSub extends RaCommandBase {
             lines.add(listLine(ctx, "&6" + esc(name), "menu " + name));
         }
         return sendPage(ctx, "list menus", "Menus", lines, page);
+    }
+
+    private int listTimers(@NotNull CommandContext<CommandSourceStack> ctx, @Nullable String type, int page) {
+        boolean all = type == null || type.equals("_");
+        List<String> lines = new ArrayList<>();
+        if (all || type.equalsIgnoreCase("ingame")) {
+            for (var entry : TimersManager.getIngameTimers().entrySet()) {
+                lines.add(timerLine(ctx, entry.getKey(), entry.getValue()));
+            }
+        }
+        if (all || type.equalsIgnoreCase("server")) {
+            for (var entry : TimersManager.getServerTimers().entrySet()) {
+                lines.add(timerLine(ctx, entry.getKey(), entry.getValue()));
+            }
+        }
+        return sendPage(ctx, "list timers " + esc(type == null ? "_" : type), "Timers", lines, page);
+    }
+
+    private static @NotNull String timerLine(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String name, @NotNull Timer timer) {
+        String display = (timer.isPaused() ? "&c" : "&a") + esc(name) + "&7 (" + esc(timer.toString()) + ")";
+        return listLine(ctx, display, "timer " + name);
     }
 
     private static @Nullable String filterArg(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String arg) {

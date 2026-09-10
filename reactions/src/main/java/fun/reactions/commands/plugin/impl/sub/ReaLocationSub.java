@@ -98,7 +98,8 @@ public final class ReaLocationSub extends RaCommandBase {
                                                                 .executes(ctx -> {
                                                                     move(ctx, true);
                                                                     return SINGLE_SUCCESS;
-                                                                }))))))).build();
+                                                                }))))))
+                ).build();
     }
 
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {

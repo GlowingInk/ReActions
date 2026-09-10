@@ -103,18 +103,18 @@ public abstract class RaCommandBase {
         sendPrefixed(ctx, object + " &c'" + esc(name) + "'&r already exists.");
     }
 
-    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNamesItr(@NotNull Supplier<? extends Iterable<String>> names, boolean star) {
-        return _suggestNames(() -> StreamSupport.stream(names.get().spliterator(), false), star);
+    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNamesItr(@NotNull Supplier<? extends Iterable<String>> names, boolean all) {
+        return _suggestNames(() -> StreamSupport.stream(names.get().spliterator(), false), all);
     }
 
-    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names, boolean star) {
-        return _suggestNames(() -> names.get().stream(), star);
+    protected static @NotNull SuggestionProvider<CommandSourceStack> suggestNames(@NotNull Supplier<? extends Collection<String>> names, boolean all) {
+        return _suggestNames(() -> names.get().stream(), all);
     }
 
-    private static @NotNull SuggestionProvider<CommandSourceStack> _suggestNames(@NotNull Supplier<Stream<String>> names, boolean star) {
+    private static @NotNull SuggestionProvider<CommandSourceStack> _suggestNames(@NotNull Supplier<Stream<String>> names, boolean all) {
         return (_, builder) -> {
             String remaining = builder.getRemaining();
-            if (star && "_".startsWith(remaining)) builder.suggest("_");
+            if (all && "_".startsWith(remaining)) builder.suggest("_");
             names.get()
                     .filter(s -> s.startsWith(remaining))
                     .forEach(builder::suggest);
