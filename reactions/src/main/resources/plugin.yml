@@ -87,8 +87,23 @@ permissions:
     children:
       reactions.variable: true
 
+  reactions.timer:
+    description: Manage timers (/reactions timer)
+    default: op
+    children:
+      reactions: true
+      reactions.timer.view: true
+  reactions.timer.view:
+    description: View timer info and list timers (/reactions timer <name> info, /reactions list timers)
+    default: op
+  reactions.timer.edit:
+    description: Create, pause, resume and delete timers
+    default: op
+    children:
+      reactions.timer: true
+
   reactions.list:
-    description: List activators, locations and menus (/reactions list)
+    description: List activators, locations, menus and timers (/reactions list)
     default: op
     children:
       reactions: true
