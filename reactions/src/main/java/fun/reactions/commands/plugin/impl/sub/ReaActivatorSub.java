@@ -286,14 +286,14 @@ public final class ReaActivatorSub extends RaCommandBase {
 
     private int activityHelp(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull ActivitySelection selection) {
         List<String> help = new ArrayList<>(List.of(
-                "add", "<type> &e[<parameters...>]", "Add a &a" + selection + "&r to the activator",
-                "edit", "<index>", "Show the &a" + selection + "&r at the given index, with edit buttons",
-                "change", "<index> &e[<parameters...>]", "Change the parameters of the &a" + selection + "&r at the given index",
-                "remove", "<index>", "Remove the &a" + selection + "&r at the given index",
-                "move", "<from> <to>", "Move a &a" + selection + "&r to another index"
+                "add", "&a<type> &e[<parameters...>]", "Add a &a" + selection + "&r to the activator",
+                "edit", "&a<index>", "Show the &a" + selection + "&r at the given index, with edit buttons",
+                "change", "&a<index> &e[<parameters...>]", "Change the parameters of the &a" + selection + "&r at the given index",
+                "remove", "&a<index>", "Remove the &a" + selection + "&r at the given index",
+                "move", "&a<from> <to>", "Move a &a" + selection + "&r to another index"
         ));
         if (selection == ActivitySelection.FLAG) {
-            help.addAll(List.of("invert", "<index>", "Toggle inversion of the&a flag&r at the given index"));
+            help.addAll(List.of("invert", "&a<index>", "Toggle inversion of the&a flag&r at the given index"));
         }
         return sendHelp(ctx, "activator " + esc(ctx.getArgument("name", String.class)) + " " + selection, help.toArray(new String[0]));
     }
