@@ -122,7 +122,7 @@ public final class ReaMenuSub extends RaCommandBase {
                 ? resolver.resolve(ctx.getSource()).getFirst()
                 : (sender instanceof Player pl ? pl : null);
         if (player == null) {
-            sendPrefixed(sender, "Couldn't find selected player");
+            sendPrefixed(sender, "Couldn't find selected player.");
             return SINGLE_SUCCESS;
         }
         InventoryMenu.createAndOpenInventory(player, Parameters.fromMap(Map.of("menu", name)), new Variables());

@@ -124,7 +124,7 @@ public class ReaTimerSub extends RaCommandBase {
         if (isTimerMissing(ctx, name)) return SINGLE_SUCCESS;
 
         TimersManager.setPause(name, paused);
-        sendPrefixed(ctx, "Timer&a '" + esc(name) + "'&r was" + (paused ? "&e paused" : "&a resumed") + "&r.");
+        sendPrefixed(ctx, "Timer&a '" + esc(name) + "'&r was" + (paused ? "&e paused" : "&e resumed") + "&r.");
         return SINGLE_SUCCESS;
     }
 

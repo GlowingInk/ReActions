@@ -45,15 +45,16 @@ public final class ReaVariableSub extends RaCommandBase {
         boolean exists = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name)) != null;
         return sendHelp(ctx, "variable", name, exists, "set",
                 "show", "", "Show a variable",
-                "set", "[value]", "Set variable to a specified&e value",
+                "set", "&a[<value>]", "Set variable to a specified&a value",
                 "delete", "", "Delete a variable"
         );
     }
 
     private int set(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String value) {
         String name = StringArgumentType.getString(ctx, "name");
+        boolean existed = platform.getPersistentVariables().getVariable(playerOf(name), varNameOf(name)) != null;
         platform.getPersistentVariables().setVariable(playerOf(name), varNameOf(name), value);
-        sendPrefixed(ctx, "Variable&a '&{name}'&r was created with the value:&r\n&{value}", Map.of(
+        sendPrefixed(ctx, "Variable&a '&{name}'&r was " + (existed ? "updated" : "created") + " with the value:&r\n&{value}", Map.of(
                 "name", name,
                 "value", value
         ));
