@@ -35,7 +35,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
@@ -78,21 +81,6 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
 
     public static CreateResult addTimer(String name, Parameters params) {
         return addTimer(name, params, false);
-    }
-
-    public static void listTimers(CommandSender sender, int pageNum) {
-        List<String> timerList = new ArrayList<>();
-        Map<String, Timer> timers = getIngameTimers();
-        for (String id : timers.keySet()) {
-            Timer timer = timers.get(id);
-            timerList.add((timer.isPaused() ? "&c" : "&2") + id + " &a" + timer);
-        }
-        timers = getServerTimers();
-        for (String id : timers.keySet()) {
-            Timer timer = timers.get(id);
-            timerList.add((timer.isPaused() ? "&c" : "&2") + id + " &a" + timer);
-        }
-        Msg.printPage(sender, timerList, Msg.MSG_TIMERLIST, pageNum, LINES_PER_PAGE_15, true);
     }
 
     public static boolean removeTimer(CommandSender sender, String name) {

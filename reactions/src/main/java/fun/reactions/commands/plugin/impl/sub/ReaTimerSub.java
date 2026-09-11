@@ -20,7 +20,7 @@ import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
-public class ReaTimerSub extends RaCommandBase {
+public final class ReaTimerSub extends RaCommandBase {
     public ReaTimerSub(@NotNull ReActions.Platform platform) {
         super(platform);
     }
@@ -132,7 +132,7 @@ public class ReaTimerSub extends RaCommandBase {
         String name = StringArgumentType.getString(ctx, "name");
         if (isTimerMissing(ctx, name)) return SINGLE_SUCCESS;
 
-        TimersManager.removeTimer(ctx.getSource().getSender(), name);
+        TimersManager.removeTimer(ctx.getSource().getSender(), name); // TODO Message ourselves
         sendPrefixed(ctx, "Timer &a'" + esc(name) + "'&r was deleted.");
         return SINGLE_SUCCESS;
     }

@@ -1,6 +1,7 @@
 package fun.reactions.module.basic.placeholders;
 
-import fun.reactions.Cfg;
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.util.naming.Aliased;
@@ -10,10 +11,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Aliased.Names({"calculate", "expression", "eval", "math"})
-public class CalcPlaceholder implements Placeholder {
+public class CalcPlaceholder implements Placeholder, Reloadable {
+    private boolean modernPlaceholders;
+
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        modernPlaceholders = config.generalCfg().placeholders().modern();
+    }
+
     @Override
     public @Nullable String resolve(@NotNull Environment env, @NotNull String key, @NotNull String param) {
-        if (Cfg.modernPlaceholders || !param.contains("%")) {
+        if (modernPlaceholders || !param.contains("%")) {
             return NumberUtils.simpleFormat(ExpressionEvaluator.eval(param));
         }
         return null;

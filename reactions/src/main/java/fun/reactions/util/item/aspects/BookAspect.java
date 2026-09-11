@@ -1,6 +1,6 @@
 package fun.reactions.util.item.aspects;
 
-import fun.reactions.Cfg;
+import fun.reactions.ReActions;
 import fun.reactions.util.Utils;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,7 +36,7 @@ public record BookAspect(@NotNull Type type) implements MetaAspect {
         return switch (type) {
             case TITLE -> bookMeta.hasTitle() ? new TextInst(bookMeta.getTitle(), false) : null;
             case AUTHOR -> bookMeta.hasAuthor() ? new TextInst(bookMeta.getAuthor(), true) : null;
-            case PAGES -> Cfg.parseBookPages && bookMeta.hasPages() ? new PagesInst(bookMeta.getPages()) : null;
+            case PAGES -> ReActions.getConfiguration().generalCfg().parseBookPages() && bookMeta.hasPages() ? new PagesInst(bookMeta.getPages()) : null;
         };
     }
 

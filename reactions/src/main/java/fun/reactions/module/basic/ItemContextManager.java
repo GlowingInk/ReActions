@@ -1,7 +1,7 @@
 package fun.reactions.module.basic;
 
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basic.activators.ItemHoldActivator;
 import fun.reactions.module.basic.activators.ItemWearActivator;
@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -18,18 +19,26 @@ import java.util.UUID;
  */
 // TODO: Move to custom ActivatorTypes
 public final class ItemContextManager {
+    private static int itemWearRecheck;
+    private static int itemHoldRecheck;
+
     private ItemContextManager() {}
+
+    public static void acceptReload(@NotNull RaConfiguration config) {
+        itemWearRecheck = config.reactionsCfg().itemWearRecheck();
+        itemHoldRecheck = config.reactionsCfg().itemHoldRecheck();
+    }
 
     private static void setFutureItemWearCheck(final UUID playerId, final String itemStr, boolean repeat) {
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) return;
         if (!player.isOnline()) return;
         String rg = "iw-" + itemStr;
-        if (!ContextManager.isTimeToRaiseEvent(player, rg, Cfg.itemWearRecheck, repeat)) return;
+        if (!ContextManager.isTimeToRaiseEvent(player, rg, itemWearRecheck, repeat)) return;
         ItemWearActivator.Context iwe = new ItemWearActivator.Context(player);
         if (!iwe.isItemWeared(itemStr)) return;
         ReActions.getActivators().activate(iwe);
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20L * Cfg.itemWearRecheck);
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20L * itemWearRecheck);
     }
 
     public static void triggerItemWear(Player player) {
@@ -61,12 +70,12 @@ public final class ItemContextManager {
 
         if (!mainHandItemExist && !offHandItemExist) return;
         String rg = "ih-" + itemStr;
-        if (!ContextManager.isTimeToRaiseEvent(player, rg, Cfg.itemHoldRecheck, repeat)) return;
+        if (!ContextManager.isTimeToRaiseEvent(player, rg, itemHoldRecheck, repeat)) return;
 
         if (mainHandItemExist) processItemHoldActivator(player, mainHandItem, EquipmentSlot.HAND);
         if (offHandItemExist) processItemHoldActivator(player, offHandItem, EquipmentSlot.OFF_HAND);
 
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20L * Cfg.itemHoldRecheck);
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemHoldCheck(playerId, itemStr, true), 20L * itemHoldRecheck);
     }
 
     private static void processItemHoldActivator(Player player, ItemStack item, EquipmentSlot hand) {

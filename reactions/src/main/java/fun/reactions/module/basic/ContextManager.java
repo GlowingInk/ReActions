@@ -22,8 +22,8 @@
 
 package fun.reactions.module.basic;
 
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variables;
@@ -65,7 +65,13 @@ import java.util.Set;
 // TODO: Refactor to DetailsFactory
 public final class ContextManager {
 
+    private static int worldguardRecheck;
+
     private ContextManager() {}
+
+    public static void acceptReload(@NotNull RaConfiguration config) {
+        worldguardRecheck = config.reactionsCfg().worldguardRecheck();
+    }
 
     public static @NotNull Optional<Variables> triggerTeleport(Player player, TeleportCause cause, Location to) {
         TeleportActivator.Context context = new TeleportActivator.Context(player, cause, to);
@@ -316,12 +322,12 @@ public final class ContextManager {
         if (player.isDead()) return;
         if (!RaWorldGuard.isPlayerInRegion(player, region)) return;
         String rg = "rg-" + region;
-        if (!isTimeToRaiseEvent(player, rg, Cfg.worldguardRecheck, repeat)) return;
+        if (!isTimeToRaiseEvent(player, rg, worldguardRecheck, repeat)) return;
 
         RegionActivator.Context wge = new RegionActivator.Context(player, region);
         activate(wge);
 
-        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureRegionCheck(playerName, region, true), 20L * Cfg.worldguardRecheck);
+        Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureRegionCheck(playerName, region, true), 20L * worldguardRecheck);
     }
 
     public static boolean isTimeToRaiseEvent(Player p, String id, int seconds, boolean repeat) {

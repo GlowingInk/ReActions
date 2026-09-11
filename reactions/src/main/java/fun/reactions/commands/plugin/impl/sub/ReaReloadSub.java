@@ -5,7 +5,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
 import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.holders.LocationHolder;
@@ -224,7 +223,7 @@ public final class ReaReloadSub extends RaCommandBase {
 
     private int doReloadConfig() {
         platform.getPlugin().reloadConfig();
-        Cfg.load(platform.getPlugin().getConfig());
+        platform.getConfiguration().load(platform.getPlugin().getConfig());
         platform.getCommands().reload();
         return -1;
     }
@@ -235,7 +234,7 @@ public final class ReaReloadSub extends RaCommandBase {
     }
 
     private int doReloadVariables() {
-        if (!Cfg.playerSelfVarFile) platform.getPersistentVariables().load();
+        if (!platform.getConfiguration().generalCfg().playerSelfVarFile()) platform.getPersistentVariables().load();
         else platform.getPersistentVariables().loadVars();
         return platform.getPersistentVariables().size();
     }

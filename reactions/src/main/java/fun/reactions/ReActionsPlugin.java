@@ -22,6 +22,7 @@
 
 package fun.reactions;
 
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.commands.plugin.impl.ExecCommand;
 import fun.reactions.commands.plugin.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
@@ -29,12 +30,15 @@ import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.MoveListener;
 import fun.reactions.events.listeners.RaListener;
 import fun.reactions.holders.LocationHolder;
+import fun.reactions.holders.PushBack;
 import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.module.ModulesRegistry;
 import fun.reactions.module.basic.BasicModule;
+import fun.reactions.module.basic.ContextManager;
+import fun.reactions.module.basic.ItemContextManager;
 import fun.reactions.module.papi.PapiModule;
 import fun.reactions.module.vault.VaultModule;
 import fun.reactions.module.worldedit.WorldEditModule;
@@ -48,7 +52,6 @@ import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.Shoot;
-import fun.reactions.util.message.Messenger;
 import fun.reactions.util.message.Msg;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -72,14 +75,24 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private WaitingManager waitingManager;
     private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
+    private final RaConfiguration configuration = new RaConfiguration();
 
     @Override
     public void onLoad() {
-        Cfg.load(getConfig());
-        Cfg.save(getConfig());
-        saveConfig();
+        saveDefaultConfig();
+        configuration.load(getConfig());
+        configuration.register(cfg -> {
+            Shoot.actionShootBreak = cfg.actionsCfg().shoot().breakBlock();
+            Shoot.actionShootThrough = cfg.actionsCfg().shoot().penetrable();
+            Shoot.reload();
+        });
+        configuration.register(PushBack::acceptReload);
+        configuration.register(MoveListener::acceptReload);
+        configuration.register(ContextManager::acceptReload);
+        configuration.register(ItemContextManager::acceptReload);
         this.variablesManager = new PersistentVariablesManager();
-        if (Cfg.modernPlaceholders) {
+        configuration.register(variablesManager);
+        if (configuration.generalCfg().placeholders().modern()) {
             this.placeholdersManager = new ModernPlaceholdersManager();
         } else {
             logger().warn(
@@ -93,12 +106,14 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
             );
             this.placeholdersManager = new LegacyPlaceholdersManager();
         }
+        configuration.register(placeholdersManager);
         this.activitiesRegistry = new ActivitiesRegistry();
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this);
         this.selectorsManager = new SelectorsManager();
         this.modulesRegistry = new ModulesRegistry(this);
         this.waitingManager = new WaitingManager(this);
+        configuration.register(waitingManager);
         this.userCommandsManager = new UserCommandsManager(this);
         ReActions.setPlatform(this);
 
@@ -113,7 +128,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public void onEnable() {
         // TODO god why
-        Msg.init("ReActions", new Messenger(this), Cfg.language, Cfg.debugMode, Cfg.languageSave);
+        Msg.init(this, configuration.generalCfg().debugMode());
 
         this.savingManager = new SavingManager(this);
         savingManager.register(waitingManager);
@@ -124,7 +139,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         TimersManager.init();
         CooldownManager.load();
-        if (!Cfg.playerSelfVarFile) variablesManager.load();
+        if (!configuration.generalCfg().playerSelfVarFile()) variablesManager.load();
         else variablesManager.loadVars();
         LocationHolder.loadLocs();
         SQLManager.init();
@@ -137,7 +152,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         pluginManager.registerEvents(new Shoot.DamageListener(), this);
         MoveListener.init();
         Metrics metrics = new Metrics(this, 19363);
-        metrics.addCustomChart(new SimplePie("placeholders_manager", () -> Cfg.modernPlaceholders ? "Modern" : "Legacy"));
+        metrics.addCustomChart(new SimplePie("placeholders_manager", () -> configuration.generalCfg().placeholders().modern() ? "Modern" : "Legacy"));
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             var registrar = commands.registrar();
@@ -210,5 +225,10 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public @NotNull ModulesRegistry getModules() {
         return modulesRegistry;
+    }
+
+    @Override
+    public @NotNull RaConfiguration getConfiguration() {
+        return configuration;
     }
 }

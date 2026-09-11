@@ -22,32 +22,39 @@
 
 package fun.reactions;
 
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
 import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.message.Msg;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
-public class PersistentVariablesManager { // TODO: Should be reworked from scratch
+public class PersistentVariablesManager implements Reloadable { // TODO: Should be reworked from scratch
 
     private final Map<String, String> vars;
 
+    private boolean playerSelfVarFile;
+    private boolean playerAsynchSaveSelfVarFile;
+
     public PersistentVariablesManager() {
         this.vars = caseInsensitiveLinkedMap();
+    }
+
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        playerSelfVarFile = config.generalCfg().playerSelfVarFile();
+        playerAsynchSaveSelfVarFile = config.generalCfg().playerAsynchSaveSelfVarFile();
     }
 
     public int size() {
@@ -60,7 +67,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
 
     public void setVariable(@Nullable String player, @NotNull String var, @NotNull String value) {
         String prevVal = vars.put(formatId(player, var), value);
-        if (!Cfg.playerSelfVarFile) save();
+        if (!playerSelfVarFile) save();
         else save(player);
         ContextManager.triggerVariable(var, player, value, prevVal == null ? "" : prevVal);
     }
@@ -69,7 +76,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         String id = formatId(player, var);
         String prevVal = vars.remove(id);
         if (prevVal == null) return false;
-        if (!Cfg.playerSelfVarFile) save();
+        if (!playerSelfVarFile) save();
         else save(player);
         ContextManager.triggerVariable(var, player, "", prevVal);
         return true;
@@ -85,7 +92,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
     }
 
     public void save(String player) {
-        if (Cfg.playerAsynchSaveSelfVarFile) saveAsync(player);
+        if (playerAsynchSaveSelfVarFile) saveAsync(player);
         else savePlayer(player);
     }
 
@@ -130,7 +137,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
                 if (!key.contains(".")) continue;
                 vars.put(key, cfg.getString(key));
             }
-            if (!Cfg.playerSelfVarFile) {
+            if (!playerSelfVarFile) {
                 loadVars();
                 File dir = new File(ReActions.getPlugin().getDataFolder() + File.separator + "variables");
                 if (!dir.isDirectory()) return;
@@ -144,7 +151,7 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
     }
 
     public void loadVars() {
-        if (Cfg.playerSelfVarFile) load();
+        if (playerSelfVarFile) load();
         try {
             int deleted = 0;
             YamlConfiguration cfg = new YamlConfiguration();
@@ -188,17 +195,6 @@ public class PersistentVariablesManager { // TODO: Should be reworked from scrat
         }
         if (!ConfigUtils.saveConfig(cfg2, f, "Failed to save variable file")) return;
         varsTmp.clear();
-    }
-
-    public void printList(CommandSender sender, int pageNum, String mask) {
-        int linesPerPage = (sender instanceof Player) ? 15 : 10000;
-        List<String> varList = new ArrayList<>();
-        for (String key : vars.keySet()) {
-            if (mask.isEmpty() || key.contains(mask)) {
-                varList.add(key + " : " + vars.get(key));
-            }
-        }
-        Msg.printPage(sender, varList, Msg.MSG_VARLIST, pageNum, linesPerPage);
     }
 
     private static String formatId(String player, String var) {

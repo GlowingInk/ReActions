@@ -22,8 +22,8 @@
 
 package fun.reactions.events.listeners;
 
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.events.PlayerMoveByBlockEvent;
 import fun.reactions.events.PlayerStayEvent;
 import fun.reactions.holders.PushBack;
@@ -36,6 +36,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,15 +46,23 @@ public class MoveListener implements Listener {
 
     private static final Map<UUID, Location> prevLocations = new HashMap<>();
 
+    private static boolean useTask;
+    private static int taskTick;
+
+    public static void acceptReload(@NotNull RaConfiguration config) {
+        useTask = config.generalCfg().playerMoveEvent().use();
+        taskTick = config.generalCfg().playerMoveEvent().taskTick();
+    }
+
     public static void init() {
-        if (Cfg.playerMoveTaskUse) {
+        if (useTask) {
             Bukkit.getScheduler().runTaskTimer(ReActions.getPlugin(), () -> Bukkit.getOnlinePlayers().forEach(pl -> {
                 Location from = prevLocations.get(pl.getUniqueId());
                 Location to = pl.getLocation();
                 if (to.getWorld() != from.getWorld()) from = null;
                 processMove(pl, from, to);
                 prevLocations.put(pl.getUniqueId(), to);
-            }), 30, Cfg.playerMoveTaskTick);
+            }), 30, taskTick);
         } else Bukkit.getPluginManager().registerEvents(new MoveListener(), ReActions.getPlugin());
     }
 
@@ -66,7 +75,7 @@ public class MoveListener implements Listener {
     }
 
     public static void initLocation(Player player) {
-        if (Cfg.playerMoveTaskUse) {
+        if (useTask) {
             prevLocations.put(player.getUniqueId(), player.getLocation());
         }
     }

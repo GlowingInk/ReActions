@@ -1,6 +1,8 @@
 package fun.reactions.time.wait;
 
 import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Variables;
@@ -21,11 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import static fun.reactions.util.time.TimeUtils.offsetUntil;
 import static fun.reactions.util.time.TimeUtils.timeToTicks;
 
-public class WaitingManager implements Saveable {
+public class WaitingManager implements Saveable, Reloadable {
     private final ReActions.Platform rea;
 
-    private static AttachedBehaviour behaviour = AttachedBehaviour.SKIP;
-    private static long timeLimit;
+    private AttachedBehaviour behaviour = AttachedBehaviour.SKIP;
+    private long timeLimit;
 
     private final SortedSet<WaitTask> tasks;
     private final Set<WaitTask> toSchedule;
@@ -42,12 +44,11 @@ public class WaitingManager implements Saveable {
         this.toSchedule = Collections.newSetFromMap(new ConcurrentHashMap<>());
     }
 
-    public static void setBehaviour(@NotNull AttachedBehaviour behaviour) {
-        WaitingManager.behaviour = behaviour;
-    }
-
-    public static void setHoursLimit(long hours) {
-        WaitingManager.timeLimit = hours * TimeUtils.MS_PER_HOUR;
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        RaConfiguration.Waiter waiter = config.generalCfg().waiter();
+        this.behaviour = waiter.behaviour();
+        this.timeLimit = waiter.hoursLimit() * TimeUtils.MS_PER_HOUR;
     }
 
     @ApiStatus.Internal

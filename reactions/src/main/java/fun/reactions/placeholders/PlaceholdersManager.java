@@ -1,23 +1,23 @@
 package fun.reactions.placeholders;
 
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.model.environment.Environment;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class PlaceholdersManager {
+public abstract class PlaceholdersManager implements Reloadable {
     private final PlaceholderResolver resolver;
 
-    protected static int countLimit;
+    protected int countLimit;
 
     public PlaceholdersManager() {
         resolver = new PlaceholderResolver();
     }
 
-    // TODO: Unstatic
-    @ApiStatus.Internal
-    public static void setCountLimit(int countLimit) {
-        PlaceholdersManager.countLimit = countLimit;
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        countLimit = config.generalCfg().placeholders().limit();
     }
 
     public final void registerPlaceholder(@NotNull Placeholder ph) {

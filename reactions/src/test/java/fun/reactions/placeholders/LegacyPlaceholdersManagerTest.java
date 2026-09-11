@@ -12,7 +12,7 @@ public class LegacyPlaceholdersManagerTest {
     public void testParsePlaceholders() {
         var mgr = new LegacyPlaceholdersManager();
         mgr.registerPlaceholder(new LocalVarPlaceholder());
-        PlaceholdersManager.setCountLimit(16);
+        mgr.countLimit = 16;
         Variables vars = new Variables();
         vars.set("test", "y\\ay");
         vars.set("another", "%test%\\,");

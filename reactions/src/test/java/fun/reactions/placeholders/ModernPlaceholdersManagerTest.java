@@ -17,7 +17,7 @@ public class ModernPlaceholdersManagerTest {
         var mgr = new ModernPlaceholdersManager();
         when(platform.getPlaceholders()).thenReturn(mgr);
         mgr.registerPlaceholder(new LocalVarPlaceholder());
-        PlaceholdersManager.setCountLimit(16);
+        mgr.countLimit = 16;
         Variables vars = new Variables();
         vars.set("test", "y\\ay");
         vars.set("another", "%[test]\\,");

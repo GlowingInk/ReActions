@@ -22,8 +22,9 @@
 
 package fun.reactions.module.basic.actions;
 
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.util.TemporaryOp;
@@ -36,11 +37,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public record CommandActions(@NotNull Type commandAs) implements Action, Aliased {
-    private static void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
+public final class CommandActions implements Action, Aliased, Reloadable {
+    private final Type commandAs;
+    private boolean altOperator;
+
+    public CommandActions(@NotNull Type commandAs) {
+        this.commandAs = commandAs;
+    }
+
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        altOperator = config.actionsCfg().altOperator();
+    }
+
+    private void dispatchCommand(final boolean setOp, final CommandSender sender, final String commandLine) {
         Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> {
             if (setOp) {
-                if (Cfg.altOperator) {
+                if (altOperator) {
                     Bukkit.dispatchCommand(TemporaryOp.asOp(sender), commandLine);
                 } else {
                     TemporaryOp.setOp(sender);

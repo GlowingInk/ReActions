@@ -22,7 +22,6 @@
 
 package fun.reactions.model;
 
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
 import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.model.activity.Activity;
@@ -240,15 +239,16 @@ public final class Logic {
      * @param cfg Config for activator
      */
     public void save(@NotNull ConfigurationSection cfg) {
+        boolean saveEmptySections = ReActions.getConfiguration().reactionsCfg().saveEmptySections();
         List<String> flg = new ArrayList<>();
         for (Flag.Stored f : flags) flg.add(f.toString());
-        cfg.set("flags", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
+        cfg.set("flags", flg.isEmpty() && !saveEmptySections ? null : flg);
         flg = new ArrayList<>();
         for (Action.Stored a : actions) flg.add(a.toString());
-        cfg.set("actions", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
+        cfg.set("actions", flg.isEmpty() && !saveEmptySections ? null : flg);
         flg = new ArrayList<>();
         for (Action.Stored a : reactions) flg.add(a.toString());
-        cfg.set("reactions", flg.isEmpty() && !Cfg.saveEmptySections ? null : flg);
+        cfg.set("reactions", flg.isEmpty() && !saveEmptySections ? null : flg);
     }
 
     @Override

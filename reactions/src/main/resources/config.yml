@@ -1,0 +1,27 @@
+general:
+  debug: false
+  player-self-variable-file: false
+  player-asynch-save-self-variable-file: false
+  player-move-event:
+    use-task: false
+    task-tick: 5
+  placeholder-limit: 32
+  waiter-hours-limit: 8760
+  waiter-missing-player-behaviour: SKIP
+  use-modern-placeholders: true
+  parse-book-pages: false
+
+reactions:
+  save-empty-actions-and-flags-sections: false
+  center-player-teleport: true
+  region-recheck-delay: 2
+  item-hold-recheck-delay: 2
+  item-wear-recheck-delay: 2
+  horizontal-pushback-action: false
+
+actions:
+  shoot:
+    break-block: GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON
+    penetrable: FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE
+  cmd_op:
+    proxy-operator: false

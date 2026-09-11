@@ -1,7 +1,7 @@
 package fun.reactions.module;
 
-import fun.reactions.Cfg;
 import fun.reactions.ReActions;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.naming.Named;
 import org.bukkit.plugin.PluginManager;
@@ -80,7 +80,14 @@ public class ModulesRegistry {
         register("placeholders", module.getPlaceholders(), platform.getPlaceholders()::registerPlaceholder);
         register("selectors", module.getSelectors(), platform.getSelectors()::registerSelector);
         module.postRegister(platform);
+        registerIfReloadable(module);
         loadedModules.add(module);
+    }
+
+    private void registerIfReloadable(Object object) {
+        if (object instanceof Reloadable reloadable) {
+            platform.getConfiguration().register(reloadable);
+        }
     }
 
     private @NotNull List<String> checkPlugins(@NotNull Module module) {
@@ -101,6 +108,7 @@ public class ModulesRegistry {
         for (T type : values) {
             try {
                 register.accept(type);
+                registerIfReloadable(type);
                 names.add(type.getName().toUpperCase(Locale.ROOT));
             } catch (Exception ex) {
                 if (failed == null) failed = new ArrayList<>();
@@ -150,7 +158,7 @@ public class ModulesRegistry {
     }
 
     private void debugInfo(String msg) {
-        if (Cfg.debugMode) {
+        if (platform.getConfiguration().generalCfg().debugMode()) {
             platform.logger().info(msg);
         }
     }

@@ -1,5 +1,6 @@
 package fun.reactions;
 
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
@@ -72,6 +73,10 @@ public final class ReActions {
         return platform.getPlugin();
     }
 
+    public static RaConfiguration getConfiguration() {
+        return platform.getConfiguration();
+    }
+
     public interface Platform {
         @NotNull ActivatorTypesRegistry getActivatorTypes();
         @NotNull ActivatorsManager getActivators();
@@ -82,6 +87,7 @@ public final class ReActions {
         @NotNull SelectorsManager getSelectors();
         @NotNull WaitingManager getWaiter();
         @NotNull ModulesRegistry getModules();
+        @NotNull RaConfiguration getConfiguration();
         @NotNull ComponentLogger logger();
         @NotNull Plugin getPlugin();
         @NotNull File getDataFolder();

@@ -17,7 +17,6 @@ import fun.reactions.util.Utils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
-import fun.reactions.util.message.RaDebug;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.mob.MobSpawn;
 import org.bukkit.Bukkit;
@@ -312,7 +311,6 @@ public class BukkitListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         TemporaryOp.removeOp(player);
-        RaDebug.offPlayerDebug(player);
         MoveListener.initLocation(player);
 
         triggerJoin(player, !player.hasPlayedBefore());

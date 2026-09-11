@@ -22,7 +22,8 @@
 
 package fun.reactions.module.basic.actions;
 
-import fun.reactions.Cfg;
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
@@ -35,7 +36,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Aliased.Names("TP")
-public class TeleportAction implements Action, Activity.Personal { // TODO Player selector
+public class TeleportAction implements Action, Activity.Personal, Reloadable { // TODO Player selector
+    private boolean centerTpCoords;
+
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        centerTpCoords = config.reactionsCfg().centerTpCoords();
+    }
+
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -51,7 +59,7 @@ public class TeleportAction implements Action, Activity.Personal { // TODO Playe
         boolean land = params.getBoolean("land", true);
 
         if (radius > 0) loc = LocationUtils.getRadiusLocation(loc, radius, land);
-        if (Cfg.centerTpCoords) {
+        if (centerTpCoords) {
             loc.setX(loc.getBlockX() + 0.5);
             loc.setZ(loc.getBlockZ() + 0.5);
         }

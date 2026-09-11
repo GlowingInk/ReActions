@@ -22,9 +22,10 @@
 
 package fun.reactions.holders;
 
-import fun.reactions.Cfg;
+import fun.reactions.cfg.RaConfiguration;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,13 @@ public final class PushBack {
     private static final Map<String, Location> prevLocs1 = new HashMap<>();
     private static final Map<String, Location> prevLocs2 = new HashMap<>();
 
+    private static boolean horizontalPushback;
+
     private PushBack() {}
+
+    public static void acceptReload(@NotNull RaConfiguration config) {
+        horizontalPushback = config.reactionsCfg().horizontalPushback();
+    }
 
     public static boolean teleportToPrev(Player player, int prev) {
         Location loc;
@@ -50,7 +57,7 @@ public final class PushBack {
 
     private static double distance(Location loc1, Location loc2) {
         if (loc1.getWorld() != loc2.getWorld()) return 1000;
-        if (Cfg.horizontalPushback) {
+        if (horizontalPushback) {
             double dx = loc2.getX() - loc1.getX();
             double dy = loc2.getZ() - loc1.getZ();
             return (dx * dx) + (dy * dy);
