@@ -28,46 +28,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.DecimalFormat;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Deprecated
 public enum Msg { // TODO Isn't really needed
-    MSG_VARLIST("Variables"),
     MSG_SIGNFORBIDDEN("You're not permitted to set signs, that subscribed to activator %1%"),
     MSG_MOBBOUNTY("You received %1% for killing %2%"),
-    MSG_TIMERLIST("Timers"),
     MSG_TIMERNEEDNAME("You must define name for the timer"),
     MSG_TIMERUNKNOWNNAME("Could not find timer %1%"),
-    MSG_TIMERREMOVED("Timer %1% removed"),
-    LNG_CONFIG("[MESSAGES] Messages: %1% Language: %2% Save translate file: %1% Debug mode: %3%"),
-    LNG_PRINT_FAIL_M("Failed to print message. Unknown key %1%"),
-    LNG_PRINT_FAIL("Failed to print message %1%. Sender object is null.");
+    MSG_TIMERREMOVED("Timer %1% removed");
 
-    private static final DecimalFormat TWO_DECIMALS = new DecimalFormat("####0.##");
+    private static final DecimalFormat TWO_DECIMALS = new DecimalFormat("####0.##"); // TODO This class is not thread-safe
 
     private static JavaPlugin plugin;
 
     private static boolean debugMode = false;
-    private static final Set<String> onceLog = new HashSet<>();
+    private static final Set<String> logOnce = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final String message;
-    private final Character color1;
-    private final Character color2;
 
     Msg(String msg) {
         message = msg;
-        this.color1 = null;
-        this.color2 = null;
-    }
-
-    Msg(String msg, char color1, char color2) {
-        this.message = msg;
-        this.color1 = color1;
-        this.color2 = color2;
-    }
-
-    Msg(String msg, char color) {
-        this(msg, color, color);
     }
 
     public static String colorize(String text) {
@@ -85,7 +67,6 @@ public enum Msg { // TODO Isn't really needed
     public static void init(JavaPlugin plugin, boolean debug) {
         Msg.plugin = plugin;
         debugMode = debug;
-        LNG_CONFIG.debug(Msg.values().length, true, debugMode);
     }
 
     private static void log(String text) {
@@ -124,16 +105,9 @@ public enum Msg { // TODO Isn't really needed
         return true;
     }
 
-    public static Msg getByName(String name) {
-        for (Msg m : values()) {
-            if (m.name().equalsIgnoreCase(name)) return m;
-        }
-        return null;
-    }
-
     public static void logOnce(String key, Object... s) {
-        if (onceLog.contains(key)) return;
-        onceLog.add(key);
+        if (logOnce.contains(key)) return;
+        logOnce.add(key);
         Msg.logMessage(s);
     }
 
@@ -202,9 +176,7 @@ public enum Msg { // TODO Isn't really needed
      * @return
      */
     public String getText(Object... keys) {
-        char c2 = '2';
-        char c1 = 'a';
-        char[] colors = new char[]{color1 == null ? c1 : color1, color2 == null ? c2 : color2};
+        char[] colors = new char[]{'a', '2'};
         if (keys.length == 0) {
             return colorize("&" + colors[0] + this.message);
         }
