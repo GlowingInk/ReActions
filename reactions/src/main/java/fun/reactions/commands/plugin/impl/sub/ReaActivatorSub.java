@@ -389,14 +389,14 @@ public final class ReaActivatorSub extends RaCommandBase {
         List<Flag.Stored> list = activator.getLogic().getFlags();
         int index = IntegerArgumentType.getInteger(ctx, "index");
         if (index > list.size()) {
-            sendPrefixed(ctx, "There's no &cflag&r at index &c" + index + "&r.");
+            sendPrefixed(ctx, "There's no&c flag&r at index &c" + index + "&r.");
             return SINGLE_SUCCESS;
         }
         Flag.Stored stored = list.get(index - 1);
         Flag.Stored updated = new Flag.Stored(stored.getActivity(), stored.getContent(), !stored.isInverted());
         list.set(index - 1, updated);
         saveActivator(activator);
-        sendPrefixed(ctx, "&{state} &aflag&r &a'&{name}'&r at index &a" + index + "&r.", Map.of(
+        sendPrefixed(ctx, "&{state}&a flag&r &a'&{name}'&r at index &a" + index + "&r.", Map.of(
                 "state", updated.isInverted() ? "Inverted" : "Un-inverted",
                 "name", updated.getActivity().getName()
         ));

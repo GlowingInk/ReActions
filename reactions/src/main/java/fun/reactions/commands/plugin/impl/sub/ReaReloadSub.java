@@ -96,11 +96,11 @@ public final class ReaReloadSub extends RaCommandBase {
         if (target.equals("activators")) {
             return target + describeAmount(amount, platform.getActivators().getGroupNames().size());
         }
-        return amount < 0 ? target : target + " (&e" + amount + "&r)";
+        return amount < 0 ? target : target + " &7(&e" + amount + "&7)&r";
     }
 
     private static @NotNull String describeAmount(int amount, int groups) {
-        return " (&e" + amount + "&r in &e" + groups + "&r group" + (groups == 1 ? "" : "s") + ")";
+        return " &7(&e" + amount + "&7 in &e" + groups + " group" + (groups == 1 ? "" : "s") + "&7)&r";
     }
 
     private int countGroupsUnder(@NotNull String rawGroup) {
