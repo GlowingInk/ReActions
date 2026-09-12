@@ -1,7 +1,6 @@
 package fun.reactions.cfg;
 
 import fun.reactions.time.wait.WaitingManager;
-import fun.reactions.util.Shoot;
 import fun.reactions.util.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -132,8 +131,8 @@ public class RaConfiguration {
     public record ShootCfg(@NotNull String breakBlock, @NotNull String penetrable) {
         static @NotNull ShootCfg load(@NotNull FileConfiguration config) {
             return new ShootCfg(
-                    config.getString("actions.shoot.break-block", Shoot.actionShootBreak),
-                    config.getString("actions.shoot.penetrable", Shoot.actionShootThrough)
+                    config.getString("actions.shoot.break-block", "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON"),
+                    config.getString("actions.shoot.penetrable", "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE")
             );
         }
     }

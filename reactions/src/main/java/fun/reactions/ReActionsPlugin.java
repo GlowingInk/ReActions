@@ -51,7 +51,6 @@ import fun.reactions.selectors.SelectorsManager;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
-import fun.reactions.util.Shoot;
 import fun.reactions.util.message.Msg;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -81,11 +80,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     public void onLoad() {
         saveDefaultConfig();
         configuration.load(getConfig());
-        configuration.register(cfg -> {
-            Shoot.actionShootBreak = cfg.actionsCfg().shoot().breakBlock();
-            Shoot.actionShootThrough = cfg.actionsCfg().shoot().penetrable();
-            Shoot.reload();
-        });
         configuration.register(PushBack::acceptReload);
         configuration.register(MoveListener::acceptReload);
         configuration.register(ContextManager::acceptReload);
@@ -149,7 +143,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         pluginManager.registerEvents(new BukkitListener(), this);
         pluginManager.registerEvents(new RaListener(), this);
         pluginManager.registerEvents(userCommandsManager, this);
-        pluginManager.registerEvents(new Shoot.DamageListener(), this);
         MoveListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> configuration.generalCfg().placeholders().modern() ? "Modern" : "Legacy"));

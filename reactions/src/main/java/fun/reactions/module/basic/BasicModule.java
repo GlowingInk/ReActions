@@ -25,12 +25,14 @@ import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements Module {
     private LogHandler logHandler;
+    private ShootAction shootAction;
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void postRegister(@NotNull ReActions.Platform platform) {
         logHandler = new LogHandler();
         platform.getServer().getLogger().addHandler(logHandler);
+        platform.getServer().getPluginManager().registerEvents(shootAction, platform.getPlugin());
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -95,6 +97,7 @@ public class BasicModule implements Module {
     @Override
     public @NotNull Collection<Action> getActions() {
         RunFunctionAction functAction = new RunFunctionAction();
+        shootAction = new ShootAction();
         return Arrays.asList(
                 functAction,
                 new ExecuteAction(functAction),
@@ -131,7 +134,7 @@ public class BasicModule implements Module {
                 new BlockSetAction(),
                 new SignSetAction(),
                 new PowerSetAction(),
-                new ShootAction(),
+                shootAction,
                 new PersistentVarActions(PersistentVarActions.Type.SET, false),
                 new PersistentVarActions(PersistentVarActions.Type.CLEAR, false),
                 new PersistentVarActions(PersistentVarActions.Type.INCREASE, false),
