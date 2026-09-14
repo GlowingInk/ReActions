@@ -27,7 +27,7 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.LocationVariable;
-import fun.reactions.util.BlockUtils;
+import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.BlockParameters;

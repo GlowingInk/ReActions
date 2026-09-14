@@ -5,15 +5,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class TemporaryOp {
 
-    private static final Set<UUID> tempOps = new HashSet<>();
+    private static final Set<UUID> tempOps = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    private TemporaryOp() {}
+    private TemporaryOp() { }
 
     public static void setOp(CommandSender sender) {
         if (sender instanceof Player player && !player.isOp()) {
@@ -33,7 +34,7 @@ public final class TemporaryOp {
         return (T) Proxy.newProxyInstance(
                 sender.getClass().getClassLoader(),
                 sender.getClass().getInterfaces(),
-                (proxy, method, args) -> switch (method.getName()) {
+                (_, method, args) -> switch (method.getName()) {
                     case "isOp", "hasPermission" -> true;
                     case "permissionValue" -> TriState.TRUE;
                     default -> method.invoke(sender, args);

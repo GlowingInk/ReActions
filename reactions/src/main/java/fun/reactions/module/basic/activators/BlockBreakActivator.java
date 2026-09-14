@@ -6,10 +6,9 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.BlockVariable;
-import fun.reactions.util.item.ItemUtils;
+import fun.reactions.util.block.VirtualBlockData;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,23 +26,23 @@ import static fun.reactions.model.environment.Variable.value;
  */
 public class BlockBreakActivator extends Activator implements Locatable {
 
-    private final Material blockType;
+    private final VirtualBlockData blockData;
     private final ImplicitPosition pos;
 
-    private BlockBreakActivator(Logic base, Material block, ImplicitPosition pos) {
+    private BlockBreakActivator(Logic base, VirtualBlockData block, ImplicitPosition pos) {
         super(base);
-        this.blockType = block;
+        this.blockData = block;
         this.pos = pos;
     }
 
     public static BlockBreakActivator create(Logic base, Parameters param) {
-        Material block = param.get("block", ItemUtils::getMaterial);
+        VirtualBlockData block = param.get("block", VirtualBlockData::fromString);
         ImplicitPosition pos = param.getSafe("loc", ImplicitPosition::byString);
         return new BlockBreakActivator(base, block, pos);
     }
 
     public static BlockBreakActivator load(Logic base, ConfigurationSection cfg) {
-        Material block = ItemUtils.getMaterial(cfg.getString("block", ""));
+        VirtualBlockData block = VirtualBlockData.fromString(cfg.getString("block", ""));
         ImplicitPosition pos;
         if (cfg.isString("location")) {
             pos = ImplicitPosition.byString(cfg.getString("location"));
@@ -64,7 +63,7 @@ public class BlockBreakActivator extends Activator implements Locatable {
     }
 
     private boolean isActivatorBlock(Block block) {
-        if (this.blockType != null && blockType != block.getType()) return false;
+        if (this.blockData != null && !blockData.matches(block)) return false;
         return pos.isValidAt(block.getLocation());
     }
 
@@ -75,7 +74,7 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("block", blockType == null ? null : blockType.name());
+        cfg.set("block", blockData == null ? null : blockData.asString());
         pos.intoConfiguration(cfg);
     }
 

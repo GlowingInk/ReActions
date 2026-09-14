@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-public class BiType<A, B> {
+public final class BiType<A, B> {
     private final Converter<A, B> converter;
 
     private A a;

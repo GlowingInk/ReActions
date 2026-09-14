@@ -10,7 +10,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-public class RegistryUtils {
+public final class RegistryUtils {
+    private RegistryUtils() { }
+
     public static <T extends Keyed> @NotNull Registry<T> getRegistry(@NotNull RegistryKey<T> key) {
         return RegistryAccess.registryAccess().getRegistry(key);
     }

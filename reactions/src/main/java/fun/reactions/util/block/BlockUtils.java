@@ -1,4 +1,4 @@
-package fun.reactions.util;
+package fun.reactions.util.block;
 
 import org.bukkit.Tag;
 import org.bukkit.block.Block;

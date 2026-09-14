@@ -7,11 +7,10 @@ import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.BlockVariable;
 import fun.reactions.util.Utils;
-import fun.reactions.util.item.ItemUtils;
+import fun.reactions.util.block.VirtualBlockData;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,13 +27,13 @@ import java.util.Map;
 // TODO: Assemble to one activator
 public class DamageByBlockActivator extends Activator implements Locatable {
 
-    private final Material blockType;
+    private final VirtualBlockData blockData;
     private final String blockLocation;
     private final String damageCause;
 
     private DamageByBlockActivator(Logic base, String block, String location, String cause) {
         super(base);
-        this.blockType = ItemUtils.getMaterial(block.startsWith("type:") ? block.substring(5) : block);
+        this.blockData = VirtualBlockData.fromString(block.startsWith("type:") ? block.substring(5) : block);
         this.blockLocation = location;
         this.damageCause = cause;
     }
@@ -69,7 +68,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
     }
 
     private boolean isActivatorBlock(Block block) {
-        if (blockType != null && block.getType() != blockType) return false;
+        if (blockData != null && !blockData.matches(block)) return false;
         return checkLocations(block);
     }
 
@@ -95,7 +94,7 @@ public class DamageByBlockActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("block", blockType.name());
+        cfg.set("block", blockData == null ? null : blockData.asString());
         cfg.set("location", Utils.isStringEmpty(blockLocation) ? null : this.blockLocation);
         cfg.set("cause", this.damageCause);
     }

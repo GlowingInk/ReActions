@@ -29,12 +29,11 @@ import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.BlockVariable;
 import fun.reactions.util.Utils;
+import fun.reactions.util.block.VirtualBlockData;
 import fun.reactions.util.enums.ClickType;
-import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -46,26 +45,26 @@ import java.util.Map;
 
 // TODO Add Hand
 public class BlockClickActivator extends Activator implements Locatable {
-    private final Material blockType;
+    private final VirtualBlockData blockData;
     private final String blockLocation;
     private final ClickType click;
 
-    private BlockClickActivator(Logic base, Material block, String location, ClickType click) {
+    private BlockClickActivator(Logic base, VirtualBlockData block, String location, ClickType click) {
         super(base);
-        this.blockType = block;
+        this.blockData = block;
         this.blockLocation = location;
         this.click = click;
     }
 
     public static BlockClickActivator create(Logic base, Parameters param) {
-        Material block = param.get("block-type", ItemUtils::getMaterial);
+        VirtualBlockData block = param.get("block-type", VirtualBlockData::fromString);
         ClickType click = param.getSafe("click-type", ClickType::getByName);
         String loc = param.getString("location");
         return new BlockClickActivator(base, block, loc, click);
     }
 
     public static BlockClickActivator load(Logic base, ConfigurationSection cfg) {
-        Material block = ItemUtils.getMaterial(cfg.getString("block-type", ""));
+        VirtualBlockData block = VirtualBlockData.fromString(cfg.getString("block-type", ""));
         ClickType click = ClickType.getByName(cfg.getString("click-type", ""));
         String loc = cfg.getString("location");
         return new BlockClickActivator(base, block, loc, click);
@@ -80,7 +79,7 @@ public class BlockClickActivator extends Activator implements Locatable {
     }
 
     private boolean isActivatorBlock(Block block) {
-        if (this.blockType != null && block.getType() != this.blockType) return false;
+        if (this.blockData != null && !blockData.matches(block)) return false;
         return checkLocations(block);
     }
 
@@ -107,7 +106,7 @@ public class BlockClickActivator extends Activator implements Locatable {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("block-type", blockType == null ? null : blockType.name());
+        cfg.set("block-type", blockData == null ? null : blockData.asString());
         cfg.set("click-type", click.name());
         cfg.set("location", Utils.isStringEmpty(blockLocation) ? null : blockLocation);
     }

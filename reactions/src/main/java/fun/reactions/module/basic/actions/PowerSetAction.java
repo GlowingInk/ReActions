@@ -24,7 +24,7 @@ package fun.reactions.module.basic.actions;
 
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.BlockUtils;
+import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;

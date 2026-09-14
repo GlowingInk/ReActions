@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 public final class ConfigUtils {
-    private ConfigUtils() {}
+    private ConfigUtils() { }
 
     @Contract(mutates = "param1")
     public static boolean loadConfig(@NotNull YamlConfiguration cfg, @NotNull File file, @NotNull String errorMsg) {

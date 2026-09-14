@@ -32,7 +32,7 @@ import fun.reactions.module.worldguard.activators.RegionActivator;
 import fun.reactions.module.worldguard.activators.RegionEnterActivator;
 import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
-import fun.reactions.util.BlockUtils;
+import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
