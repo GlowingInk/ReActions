@@ -32,6 +32,10 @@ public class BasicModule implements Module {
     public void postRegister(@NotNull ReActions.Platform platform) {
         logHandler = new LogHandler();
         platform.getServer().getLogger().addHandler(logHandler);
+    }
+
+    @Override
+    public void onEnable(@NotNull ReActions.Platform platform) {
         platform.getServer().getPluginManager().registerEvents(shootAction, platform.getPlugin());
     }
 

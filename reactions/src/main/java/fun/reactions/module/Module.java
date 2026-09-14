@@ -25,6 +25,8 @@ public interface Module extends Named {
 
     default void postRegister(@NotNull ReActions.Platform platform) { }
 
+    default void onEnable(@NotNull ReActions.Platform platform) { }
+
     default void onDisable(@NotNull ReActions.Platform platform) { }
 
     @NotNull Collection<@NotNull String> getAuthors();

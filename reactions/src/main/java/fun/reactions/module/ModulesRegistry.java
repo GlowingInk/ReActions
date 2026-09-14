@@ -47,6 +47,13 @@ public class ModulesRegistry {
     }
 
     @ApiStatus.Internal
+    public void onEnable() {
+        for (Module module : loadedModules) {
+            module.onEnable(platform);
+        }
+    }
+
+    @ApiStatus.Internal
     public void onDisable() {
         for (Module module : loadedModules) {
             module.onDisable(platform);

@@ -143,6 +143,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         pluginManager.registerEvents(new BukkitListener(), this);
         pluginManager.registerEvents(new RaListener(), this);
         pluginManager.registerEvents(userCommandsManager, this);
+        modulesRegistry.onEnable();
         MoveListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> configuration.generalCfg().placeholders().modern() ? "Modern" : "Legacy"));
