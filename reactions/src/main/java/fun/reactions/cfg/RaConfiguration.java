@@ -11,14 +11,15 @@ import java.util.List;
 public class RaConfiguration {
     private final List<Reloadable> subscribers = new ArrayList<>();
 
-    private FileConfiguration config;
+    private FileConfiguration fileConfiguration;
     private GeneralCfg general;
     private ReactionsCfg reactions;
     private ActionsCfg actions;
     private MySQLCfg mysql;
 
     public void load(@NotNull FileConfiguration config) {
-        this.config = config;
+        this.fileConfiguration = config;
+
         general = GeneralCfg.load(config);
         reactions = ReactionsCfg.load(config);
         actions = ActionsCfg.load(config);
@@ -27,8 +28,8 @@ public class RaConfiguration {
         reloadSubscribers();
     }
 
-    public @NotNull FileConfiguration config() {
-        return config;
+    public @NotNull FileConfiguration fileConfiguration() {
+        return fileConfiguration;
     }
 
     public void register(@NotNull Reloadable reloadable) {
@@ -40,7 +41,7 @@ public class RaConfiguration {
         subscribers.forEach(sub -> sub.acceptReload(this));
     }
 
-    public @NotNull RaConfiguration.GeneralCfg generalCfg() {
+    public @NotNull GeneralCfg generalCfg() {
         return general;
     }
 
@@ -52,7 +53,7 @@ public class RaConfiguration {
         return actions;
     }
 
-    public @NotNull RaConfiguration.MySQLCfg mysqlCfg() {
+    public @NotNull MySQLCfg mysqlCfg() {
         return mysql;
     }
 
@@ -63,9 +64,9 @@ public class RaConfiguration {
             boolean playerAsynchSaveSelfVarFile,
             @NotNull PlaceholdersCfg placeholders,
             @NotNull Waiter waiter,
-            @NotNull PlayerMoveEvent playerMoveEvent
+            @NotNull PlayerMoveEventCfg playerMoveEvent
     ) {
-        static @NotNull RaConfiguration.GeneralCfg load(@NotNull FileConfiguration config) {
+        static @NotNull GeneralCfg load(@NotNull FileConfiguration config) {
             return new GeneralCfg(
                     config.getBoolean("general.debug", false),
                     config.getBoolean("general.parse-book-pages", false),
@@ -73,7 +74,7 @@ public class RaConfiguration {
                     config.getBoolean("general.player-asynch-save-self-variable-file", false),
                     PlaceholdersCfg.load(config),
                     Waiter.load(config),
-                    PlayerMoveEvent.load(config)
+                    PlayerMoveEventCfg.load(config)
             );
         }
     }
@@ -96,9 +97,9 @@ public class RaConfiguration {
         }
     }
 
-    public record PlayerMoveEvent(boolean use, int taskTick) {
-        static @NotNull PlayerMoveEvent load(@NotNull FileConfiguration config) {
-            return new PlayerMoveEvent(
+    public record PlayerMoveEventCfg(boolean use, int taskTick) {
+        static @NotNull PlayerMoveEventCfg load(@NotNull FileConfiguration config) {
+            return new PlayerMoveEventCfg(
                     config.getBoolean("general.player-move-event.use-task", false),
                     config.getInt("general.player-move-event.task-tick", 5)
             );
@@ -136,6 +137,7 @@ public class RaConfiguration {
 
     public record ShootCfg(@NotNull String breakBlock, @NotNull String penetrable) {
         static @NotNull ShootCfg load(@NotNull FileConfiguration config) {
+            // TODO Should construct EnumSet<Material> ourselves
             return new ShootCfg(
                     config.getString("actions.shoot.break-block", "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON"),
                     config.getString("actions.shoot.penetrable", "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE")
@@ -151,7 +153,7 @@ public class RaConfiguration {
             @NotNull String password,
             @NotNull String codepage
     ) {
-        static @NotNull RaConfiguration.MySQLCfg load(@NotNull FileConfiguration config) {
+        static @NotNull MySQLCfg load(@NotNull FileConfiguration config) {
             return new MySQLCfg(
                     config.getString("MySQL.server", "localhost"),
                     config.getString("MySQL.port", "3306"),
