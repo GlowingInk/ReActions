@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: More functionality like working with arrays
+public record SqlActions(@NotNull SQLManager sql, @NotNull Type sqlType) implements Action { // TODO: More functionality like working with arrays
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
@@ -47,7 +47,7 @@ public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: Mor
                     return false;
                 }
                 if (varName.isEmpty()) return false;
-                ReActions.getPersistentVariables().setVariable(playerName, varName, SQLManager.executeSelect(query, column, params, env.getVariables().getString("sql_set")));
+                ReActions.getPersistentVariables().setVariable(playerName, varName, sql.executeSelect(query, column, params, env.getVariables().getString("sql_set")));
             }
             case INSERT -> { // INSERT
                 query = params.getString("query", params.originValue()).trim();
@@ -56,7 +56,7 @@ public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: Mor
                     env.warn("You need to use only \"INSERT\" query in SQL_INSERT action. Query: " + query);
                     return false;
                 }
-                SQLManager.executeUpdate(query, params);
+                sql.executeUpdate(query, params);
             }
             case UPDATE -> { // UPDATE
                 query = params.getString("query", params.originValue()).trim();
@@ -65,7 +65,7 @@ public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: Mor
                     env.warn("You need to use only \"UPDATE\" query in SQL_UPDATE action. Query: " + query);
                     return false;
                 }
-                SQLManager.executeUpdate(query, params);
+                sql.executeUpdate(query, params);
             }
             case DELETE -> { // DELETE
                 query = params.getString("query", params.originValue()).trim();
@@ -74,7 +74,7 @@ public record SqlActions(@NotNull Type sqlType) implements Action { // TODO: Mor
                     env.warn("You need to use only \"DELETE\" query in SQL_DELETE action. Query: " + query);
                     return false;
                 }
-                SQLManager.executeUpdate(query, params);
+                sql.executeUpdate(query, params);
             }
             case SET -> { // SET
                 query = params.getString("query", params.originValue()).trim();

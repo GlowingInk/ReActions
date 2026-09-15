@@ -1,6 +1,7 @@
 package fun.reactions.module.basic;
 
 import fun.reactions.ReActions;
+import fun.reactions.SQLManager;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
@@ -26,6 +27,12 @@ import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 public class BasicModule implements Module {
     private LogHandler logHandler;
     private ShootAction shootAction;
+    private SQLManager sql;
+
+    @Override
+    public void preRegister(@NotNull ReActions.Platform platform) {
+        sql = platform.getSql();
+    }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
@@ -152,11 +159,11 @@ public class BasicModule implements Module {
                 new TimerActions(true),
                 new TimerActions(false),
                 new CancelEventAction(),
-                new SqlActions(SqlActions.Type.SELECT),
-                new SqlActions(SqlActions.Type.UPDATE),
-                new SqlActions(SqlActions.Type.INSERT),
-                new SqlActions(SqlActions.Type.DELETE),
-                new SqlActions(SqlActions.Type.SET),
+                new SqlActions(sql, SqlActions.Type.SELECT),
+                new SqlActions(sql, SqlActions.Type.UPDATE),
+                new SqlActions(sql, SqlActions.Type.INSERT),
+                new SqlActions(sql, SqlActions.Type.DELETE),
+                new SqlActions(sql, SqlActions.Type.SET),
                 new RegexAction(),
                 new DynamicActionAction(),
                 new OpenMenuAction(),
@@ -218,8 +225,8 @@ public class BasicModule implements Module {
                 new NumCompareFlags(NumCompareFlags.Type.LOWER),
                 new WeatherFlag(),
                 new TimerActiveFlag(),
-                new SqlFlags(SqlFlags.Type.CHECK),
-                new SqlFlags(SqlFlags.Type.RESULT),
+                new SqlFlags(sql, SqlFlags.Type.CHECK),
+                new SqlFlags(sql, SqlFlags.Type.RESULT),
                 new FlySpeedFlag(),
                 new WalkSpeedFlag(),
                 new CheckOnlineFlag(),

@@ -28,11 +28,11 @@ import fun.reactions.model.environment.Environment;
 import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 
-public record SqlFlags(Type type) implements Flag { // TODO: Make it safer
+public record SqlFlags(@NotNull SQLManager sql, @NotNull Type type) implements Flag { // TODO: Make it safer
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         Parameters params = Parameters.fromString(paramsStr);
-        if (!SQLManager.isEnabled()) return false;
+        if (!sql.isEnabled()) return false;
         if (!params.containsEvery("value", "select", "from") &&
                 !(params.contains("query"))) return false;
         String value = params.getString("value", "");
@@ -47,9 +47,9 @@ public record SqlFlags(Type type) implements Flag { // TODO: Make it safer
         }
         int column = params.getInteger("column", 1);
         if (type == Type.CHECK) {
-            return SQLManager.compareSelect(value, query, column, params, env.getVariables().getString("sql_set"));
+            return sql.compareSelect(value, query, column, params, env.getVariables().getString("sql_set"));
         } else {
-            return SQLManager.isSelectResultEmpty(query);
+            return sql.isSelectResultEmpty(query);
         }
     }
 

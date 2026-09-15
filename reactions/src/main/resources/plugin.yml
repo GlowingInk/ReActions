@@ -9,6 +9,8 @@ authors:
   - MaxDikiy
   - imDaniX
 softdepend: [ProtocolLib]
+libraries:
+  - com.zaxxer:HikariCP:7.1.0
 
 permissions:
   reactions:

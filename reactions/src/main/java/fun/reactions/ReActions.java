@@ -86,6 +86,7 @@ public final class ReActions {
         @NotNull PersistentVariablesManager getPersistentVariables();
         @NotNull SelectorsManager getSelectors();
         @NotNull WaitingManager getWaiter();
+        @NotNull SQLManager getSql();
         @NotNull ModulesRegistry getModules();
         @NotNull RaConfiguration getConfiguration();
         @NotNull ComponentLogger logger();

@@ -22,63 +22,93 @@
 
 package fun.reactions;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import fun.reactions.cfg.RaConfiguration;
+import fun.reactions.cfg.Reloadable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.OptionalInt;
 import java.util.Properties;
 
-public final class SQLManager {
+public final class SQLManager implements Reloadable {
     // TODO: Ability to create h2 tables through config file like databases.yml
     // TODO: Make from scratch
-    // TODO: HikariCP
 
-    private static boolean enabled = false;
-    private static String serverAddress;
-    private static String port;
-    private static String dataBase;
-    private static String userName;
-    private static String password;
-    private static String codepage;
+    private final ReActions.Platform rea;
 
-    private SQLManager() {}
+    private boolean enabled = false;
+    private String serverAddress;
+    private String port;
+    private String dataBase;
+    private String userName;
+    private String password;
+    private String codepage;
 
-    public static void init() {
-        loadCfg();
-        saveCfg();
+    private HikariDataSource dataSource;
+    private boolean init;
+
+    public SQLManager(@NotNull ReActions.Platform rea) {
+        this.rea = rea;
+    }
+
+    @Override
+    public void acceptReload(@NotNull RaConfiguration config) {
+        RaConfiguration.MySQLCfg mysql = config.mysqlCfg();
+        serverAddress = mysql.server();
+        port = mysql.port();
+        dataBase = mysql.database();
+        userName = mysql.username();
+        password = mysql.password();
+        codepage = mysql.codepage();
+    }
+
+    @ApiStatus.Internal
+    public void init() {
+        if (init) {
+            throw new IllegalStateException("SQLManager is already initialized");
+        }
+        init = true;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            enabled = true;
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             Msg.logOnce("mysqlinitfail", "MySQL JDBC Driver not found!");
             enabled = false;
+            return;
+        }
+
+        HikariConfig config = new HikariConfig();
+        config.setPoolName("ReActions-SQL");
+        config.setJdbcUrl(buildJdbcUrl(serverAddress, port, dataBase));
+        config.setUsername(userName);
+        config.setPassword(password);
+        if (!codepage.isEmpty()) {
+            config.addDataSourceProperty("useUnicode", "true");
+            config.addDataSourceProperty("characterEncoding", codepage);
+        }
+        config.setMaximumPoolSize(10);
+        config.setInitializationFailTimeout(-1);
+
+        dataSource = new HikariDataSource(config);
+        enabled = true;
+    }
+
+    @ApiStatus.Internal
+    public void shutdown() {
+        if (dataSource != null) {
+            dataSource.close();
+            dataSource = null;
         }
     }
 
-    public static void loadCfg() {
-        serverAddress = ReActions.getPlugin().getConfig().getString("MySQL.server", "localhost");
-        port = ReActions.getPlugin().getConfig().getString("MySQL.port", "3306");
-        dataBase = ReActions.getPlugin().getConfig().getString("MySQL.database", "ReActions");
-        userName = ReActions.getPlugin().getConfig().getString("MySQL.username", "root");
-        password = ReActions.getPlugin().getConfig().getString("MySQL.password", "password");
-        codepage = ReActions.getPlugin().getConfig().getString("MySQL.codepage", "UTF-8");
-    }
-
-    public static void saveCfg() {
-        ReActions.getPlugin().getConfig().set("MySQL.server", serverAddress);
-        ReActions.getPlugin().getConfig().set("MySQL.port", port);
-        ReActions.getPlugin().getConfig().set("MySQL.database", dataBase);
-        ReActions.getPlugin().getConfig().set("MySQL.username", userName);
-        ReActions.getPlugin().getConfig().set("MySQL.password", password);
-        ReActions.getPlugin().getConfig().set("MySQL.codepage", codepage);
-        ReActions.getPlugin().saveConfig();
-    }
-
-    public static boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
+    public boolean compareSelect(String value, String query, int column, Parameters params, String sqlset) {
         String result = executeSelect(query, column, params, sqlset);
         OptionalInt resultOpt = NumberUtils.parseInteger(result, Is.NON_NEGATIVE);
         if (resultOpt.isPresent()) {
@@ -90,12 +120,15 @@ public final class SQLManager {
         return result.equalsIgnoreCase(value);
     }
 
-    private static Connection connectToMySQL() {
-        return connectToMySQL(Parameters.fromString(""));
+    private static String buildJdbcUrl(String address, String port, String dataBase) {
+        return "jdbc:mysql://" + address + (port.isEmpty() ? "" : ":" + port) + "/" + dataBase;
     }
 
-    // server port db user password codepage
-    private static Connection connectToMySQL(Parameters params) {
+    private Connection getConnection(Parameters params) throws SQLException {
+        if (!params.containsAny("server", "port", "db", "user", "password", "codepage")) {
+            return dataSource.getConnection();
+        }
+
         String cAddress = params.getString("server", serverAddress);
         String cPort = params.getString("port", port);
         String cDataBase = params.getString("db", dataBase);
@@ -109,96 +142,62 @@ public final class SQLManager {
         }
         prop.setProperty("user", cUser);
         prop.setProperty("password", cPassword);
-        Connection connection = null;
-        String connectionLine = "jdbc:mysql://" + cAddress + (cPort.isEmpty() ? "" : ":" + cPort) + "/" + cDataBase;
-        try {
-            connection = DriverManager.getConnection(connectionLine, prop);
-        } catch (SQLException e) {
-            Msg.logOnce("sqlconnect", "Failed to connect to database: " + connectionLine + " user: " + userName);
-        }
-        return connection;
+        return DriverManager.getConnection(buildJdbcUrl(cAddress, cPort, cDataBase), prop);
     }
 
-
-    public static String executeSelect(String query, int column, Parameters params, String sqlset) {
+    public String executeSelect(String query, int column, Parameters params, String sqlset) {
         if (!enabled) return "";
 
-        Statement selectStmt = null;
-        ResultSet result = null;
         String resultStr = "";
-        Connection connection = connectToMySQL(params);
-
-        try {
-            selectStmt = connection.createStatement();
+        try (
+                Connection connection = getConnection(params);
+                Statement selectStmt = connection.createStatement()
+        ) {
             if (!Utils.isStringEmpty(sqlset)) {
                 selectStmt.execute(sqlset);
             }
-            result = selectStmt.executeQuery(query);
-            if (result.next()) {
-                int columns = result.getMetaData().getColumnCount();
-                if (column > 0 && column <= columns) resultStr = result.getString(column);
+            try (ResultSet result = selectStmt.executeQuery(query)) {
+                if (result.next()) {
+                    int columns = result.getMetaData().getColumnCount();
+                    if (column > 0 && column <= columns) resultStr = result.getString(column);
+                }
             }
         } catch (SQLException e) {
-            ReActions.getLogger().error("Failed to execute SQL query: {}", query, e);
-        }
-        try {
-            if (result != null) result.close();
-            if (selectStmt != null) selectStmt.close();
-            if (connection != null) connection.close();
-        } catch (SQLException ignored) {
+            rea.logger().error("Failed to execute SQL query: {}", query, e);
         }
         return resultStr;
     }
 
-
-    public static boolean executeUpdate(String query, Parameters params) {
+    public boolean executeUpdate(String query, Parameters params) {
         if (!enabled) return false;
-        Connection connection = connectToMySQL(params);
-        if (connection == null) return false;
-        Statement statement = null;
-        boolean ok = false;
-        try {
-            statement = connection.createStatement();
-            //statement.execute("SET NAMES 'utf8'");
+        try (
+                Connection connection = getConnection(params);
+                Statement statement = connection.createStatement()
+        ) {
             statement.executeUpdate(query);
-            ok = true;
+            return true;
         } catch (SQLException e) {
-            ReActions.getLogger().error("Failed to execute SQL query: {}", query, e);
+            rea.logger().error("Failed to execute SQL query: {}", query, e);
+            return false;
         }
-        try {
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
-        } catch (SQLException ignored) {
-        }
-        return ok;
     }
 
-
-    public static boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public static boolean isSelectResultEmpty(String query) {
+    public boolean isSelectResultEmpty(String query) {
         if (!enabled) return false;
-        Connection connection = connectToMySQL();
-        if (connection == null) return false;
 
-        Statement selectStmt = null;
-        ResultSet result = null;
         boolean resultBool = false;
-
-        try {
-            selectStmt = connection.createStatement();
-            result = selectStmt.executeQuery(query);
+        try (
+                Connection connection = getConnection(Parameters.fromString(""));
+                Statement selectStmt = connection.createStatement();
+                ResultSet result = selectStmt.executeQuery(query)
+        ) {
             resultBool = result.next();
         } catch (SQLException e) {
-            ReActions.getLogger().error("Failed to execute SQL query: {}", query, e);
-        }
-        try {
-            if (result != null) result.close();
-            if (selectStmt != null) selectStmt.close();
-            if (connection != null) connection.close();
-        } catch (SQLException ignored) {
+            rea.logger().error("Failed to execute SQL query: {}", query, e);
         }
         return resultBool;
     }

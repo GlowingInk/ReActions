@@ -74,6 +74,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private WaitingManager waitingManager;
     private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
+    private SQLManager sqlManager;
     private final RaConfiguration configuration = new RaConfiguration();
 
     @Override
@@ -108,6 +109,8 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.modulesRegistry = new ModulesRegistry(this);
         this.waitingManager = new WaitingManager(this);
         configuration.register(waitingManager);
+        this.sqlManager = new SQLManager(this);
+        configuration.register(sqlManager);
         this.userCommandsManager = new UserCommandsManager(this);
         ReActions.setPlatform(this);
 
@@ -136,7 +139,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         if (!configuration.generalCfg().playerSelfVarFile()) variablesManager.load();
         else variablesManager.loadVars();
         LocationHolder.loadLocs();
-        SQLManager.init();
+        sqlManager.init();
         InventoryMenu.init(this);
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
@@ -164,6 +167,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     public void onDisable() {
         savingManager.saveSync();
         modulesRegistry.onDisable();
+        sqlManager.shutdown();
     }
 
     @Override
@@ -209,6 +213,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public @NotNull WaitingManager getWaiter() {
         return waitingManager;
+    }
+
+    @Override
+    public @NotNull SQLManager getSql() {
+        return sqlManager;
     }
 
     @Override

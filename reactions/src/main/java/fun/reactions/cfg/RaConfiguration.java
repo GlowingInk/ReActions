@@ -12,15 +12,17 @@ public class RaConfiguration {
     private final List<Reloadable> subscribers = new ArrayList<>();
 
     private FileConfiguration config;
-    private General general;
+    private GeneralCfg general;
     private ReactionsCfg reactions;
     private ActionsCfg actions;
+    private MySQLCfg mysql;
 
     public void load(@NotNull FileConfiguration config) {
         this.config = config;
-        general = General.load(config);
+        general = GeneralCfg.load(config);
         reactions = ReactionsCfg.load(config);
         actions = ActionsCfg.load(config);
+        mysql = MySQLCfg.load(config);
 
         reloadSubscribers();
     }
@@ -38,7 +40,7 @@ public class RaConfiguration {
         subscribers.forEach(sub -> sub.acceptReload(this));
     }
 
-    public @NotNull General generalCfg() {
+    public @NotNull RaConfiguration.GeneralCfg generalCfg() {
         return general;
     }
 
@@ -50,7 +52,11 @@ public class RaConfiguration {
         return actions;
     }
 
-    public record General(
+    public @NotNull RaConfiguration.MySQLCfg mysqlCfg() {
+        return mysql;
+    }
+
+    public record GeneralCfg(
             boolean debugMode,
             boolean parseBookPages,
             boolean playerSelfVarFile,
@@ -59,8 +65,8 @@ public class RaConfiguration {
             @NotNull Waiter waiter,
             @NotNull PlayerMoveEvent playerMoveEvent
     ) {
-        static @NotNull General load(@NotNull FileConfiguration config) {
-            return new General(
+        static @NotNull RaConfiguration.GeneralCfg load(@NotNull FileConfiguration config) {
+            return new GeneralCfg(
                     config.getBoolean("general.debug", false),
                     config.getBoolean("general.parse-book-pages", false),
                     config.getBoolean("general.player-self-variable-file", false),
@@ -133,6 +139,26 @@ public class RaConfiguration {
             return new ShootCfg(
                     config.getString("actions.shoot.break-block", "GLASS,THIN_GLASS,STAINED_GLASS,STAINED_GLASS_PANE,GLOWSTONE,REDSTONE_LAMP_OFF,REDSTONE_LAMP_ON"),
                     config.getString("actions.shoot.penetrable", "FENCE,FENCE_GATE,IRON_BARDING,IRON_FENCE,NETHER_FENCE")
+            );
+        }
+    }
+
+    public record MySQLCfg(
+            @NotNull String server,
+            @NotNull String port,
+            @NotNull String database,
+            @NotNull String username,
+            @NotNull String password,
+            @NotNull String codepage
+    ) {
+        static @NotNull RaConfiguration.MySQLCfg load(@NotNull FileConfiguration config) {
+            return new MySQLCfg(
+                    config.getString("MySQL.server", "localhost"),
+                    config.getString("MySQL.port", "3306"),
+                    config.getString("MySQL.database", "ReActions"),
+                    config.getString("MySQL.username", "root"),
+                    config.getString("MySQL.password", "password"),
+                    config.getString("MySQL.codepage", "UTF-8")
             );
         }
     }
