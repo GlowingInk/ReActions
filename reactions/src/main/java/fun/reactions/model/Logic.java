@@ -39,10 +39,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class Logic {
+    /**
+     * Config keys consumed by {@link Logic#load(ConfigurationSection)}
+     */
+    private static final Set<String> RESERVED_KEYS = Set.of("flags", "actions", "reactions");
+
     private final ReActions.Platform platform;
     private final String name;
     private final String type;
@@ -60,6 +66,10 @@ public final class Logic {
         this.flags = new ArrayList<>();
         this.actions = new ArrayList<>();
         this.reactions = new ArrayList<>();
+    }
+
+    public static boolean isReservedKey(@NotNull String key) {
+        return RESERVED_KEYS.contains(key);
     }
 
     public @NotNull String getType() {

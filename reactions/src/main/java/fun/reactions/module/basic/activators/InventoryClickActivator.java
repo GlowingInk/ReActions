@@ -60,48 +60,15 @@ public class InventoryClickActivator extends Activator {
                 checkSlot(pice.slot);
     }
 
-    private static String getNumberKeyByName(String keyStr) {
-        if (keyStr.equalsIgnoreCase("ANY")) return "ANY";
-        int key = Integer.parseInt(keyStr);
-        if (key > 0) {
-            for (int i = 1; i < 10; i++) {
-                if (key == i) return String.valueOf(i);
-            }
-        }
-        return "ANY";
-    }
-
-    private static String getSlotByName(String slotStr) {
-        int slot = Integer.parseInt(slotStr);
-        if (slot > -1) {
-            for (int i = 0; i < 36; i++) {
-                if (slot == i) return String.valueOf(i);
-            }
-        }
-        return "ANY";
-    }
-
     public static InventoryClickActivator create(Logic base, Parameters param) {
         String inventoryName = param.getString("name", "");
-        ClickType click = param.getEnum("click", ClickType.class);
-        InventoryAction action = param.getEnum("action", InventoryAction.class);
-        InventoryType inventory = param.getEnum("inventory", InventoryType.class);
-        SlotType slotType = param.getEnum("slotType", SlotType.class);
-        String numberKey = getNumberKeyByName(param.getString("key", "ANY"));
-        String slotStr = getSlotByName(param.getString("slot", "ANY"));
+        ClickType click = Utils.getEnum(ClickType.class, param.getString("click-type", ""));
+        InventoryAction action = Utils.getEnum(InventoryAction.class, param.getString("action-type", ""));
+        InventoryType inventory = Utils.getEnum(InventoryType.class, param.getString("inventory-type", ""));
+        SlotType slotType = Utils.getEnum(SlotType.class, param.getString("slot-type", ""));
+        String numberKey = param.getString("key", "");
+        String slotStr = param.getString("slot", "");
         String itemStr = param.getString("item", null);
-        return new InventoryClickActivator(base, inventoryName, click, action, inventory, slotType, numberKey, slotStr, itemStr);
-    }
-
-    public static InventoryClickActivator load(Logic base, ConfigurationSection cfg) {
-        String inventoryName = cfg.getString("name", "");
-        ClickType click = Utils.getEnum(ClickType.class, cfg.getString("click-type", ""));
-        InventoryAction action = Utils.getEnum(InventoryAction.class, cfg.getString("action-type", ""));
-        InventoryType inventory = Utils.getEnum(InventoryType.class, cfg.getString("inventory-type", ""));
-        SlotType slotType = Utils.getEnum(SlotType.class, cfg.getString("slot-type", ""));
-        String numberKey = cfg.getString("key", "");
-        String slotStr = cfg.getString("slot", "");
-        String itemStr = cfg.getString("item");
         return new InventoryClickActivator(base, inventoryName, click, action, inventory, slotType, numberKey, slotStr, itemStr);
     }
 

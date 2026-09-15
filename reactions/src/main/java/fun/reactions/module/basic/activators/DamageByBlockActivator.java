@@ -45,14 +45,6 @@ public class DamageByBlockActivator extends Activator implements Locatable {
         return new DamageByBlockActivator(base, block, location, cause);
     }
 
-    public static DamageByBlockActivator load(Logic base, ConfigurationSection cfg) {
-        String block = cfg.getString("block", "");
-        String location = cfg.getString("loc", "");
-        String cause = cfg.getString("cause", "ANY");
-        return new DamageByBlockActivator(base, block, location, cause);
-
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context db = (Context) context;

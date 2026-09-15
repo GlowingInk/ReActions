@@ -44,8 +44,8 @@ public class WorldEditModule implements Module { // TODO: Actions with WorldEdit
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes() {
         return List.of(
-                typeOf(WeSelectionActivator.class, "WE_SELECTION", WeSelectionActivator::create, WeSelectionActivator::load),
-                typeOf(WeChangeActivator.class, "WE_CHANGE", WeChangeActivator::create, WeChangeActivator::load)
+                typeOf(WeSelectionActivator.class, "WE_SELECTION", WeSelectionActivator::create),
+                typeOf(WeChangeActivator.class, "WE_CHANGE", WeChangeActivator::create)
         );
     }
 

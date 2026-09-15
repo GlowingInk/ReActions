@@ -28,13 +28,8 @@ public class EntityClickActivator extends Activator {
         this.entityType = Utils.getEnum(EntityType.class, entityType);
     }
 
-    public static EntityClickActivator load(Logic base, ConfigurationSection cfg) {
-        String entityType = cfg.getString("entity-type");
-        return new EntityClickActivator(base, entityType);
-    }
-
     public static EntityClickActivator create(Logic base, Parameters param) {
-        String entityType = param.getString("type", "");
+        String entityType = param.getString("entity-type", null);
         return new EntityClickActivator(base, entityType);
     }
 

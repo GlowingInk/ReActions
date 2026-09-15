@@ -35,14 +35,8 @@ public class WeChangeActivator extends Activator {
     }
 
     public static WeChangeActivator create(Logic base, Parameters param) {
-        Material blockType = param.get("blocktype", ItemUtils::getMaterial);
+        Material blockType = param.get("block-type", ItemUtils::getMaterial);
         String region = param.getString("region", "");
-        return new WeChangeActivator(base, blockType, region);
-    }
-
-    public static WeChangeActivator load(Logic base, ConfigurationSection cfg) {
-        Material blockType = ItemUtils.getMaterial(cfg.getString("block-type", ""));
-        String region = cfg.getString("region", "");
         return new WeChangeActivator(base, blockType, region);
     }
 

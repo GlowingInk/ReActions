@@ -55,11 +55,6 @@ public class RegionActivator extends Activator implements Locatable {
         return new RegionActivator(base, region);
     }
 
-    public static RegionActivator load(Logic base, ConfigurationSection cfg) {
-        String region = cfg.getString("region", "region");
-        return new RegionActivator(base, region);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context be = (Context) context;

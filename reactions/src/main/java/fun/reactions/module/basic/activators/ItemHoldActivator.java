@@ -63,12 +63,6 @@ public class ItemHoldActivator extends Activator {
         return new ItemHoldActivator(base, item, hand);
     }
 
-    public static ItemHoldActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item", "");
-        HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
-        return new ItemHoldActivator(base, item, hand);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         if (item.isEmpty() || (VirtualItem.asItemStack(item) == null)) {

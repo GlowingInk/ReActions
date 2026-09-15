@@ -56,24 +56,9 @@ public class MobClickActivator extends Activator implements Locatable {
     }
 
     public static MobClickActivator create(Logic base, Parameters param) {
-        String type = param.originValue();
-        String name = "";
-        String location = "";
-        if (param.contains("type")) {
-            type = param.getString("type");
-            name = param.getString("name");
-            location = param.getString("loc");
-        } else if (param.originValue().contains("$")) {
-            name = type.substring(0, type.indexOf('$'));
-            type = type.substring(name.length() + 1);
-        }
-        return new MobClickActivator(base, type, name, location);
-    }
-
-    public static MobClickActivator load(Logic base, ConfigurationSection cfg) {
-        String type = cfg.getString("mob-type", "");
-        String name = cfg.getString("mob-name", "");
-        String location = cfg.getString("location", "");
+        String type = param.getString("mob-type", "");
+        String name = param.getString("mob-name", "");
+        String location = param.getString("location", "");
         return new MobClickActivator(base, type, name, location);
     }
 

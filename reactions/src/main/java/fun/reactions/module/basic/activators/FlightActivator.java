@@ -28,10 +28,6 @@ public class FlightActivator extends Activator {
         return new FlightActivator(base, param.getTriBoolean("flight"));
     }
 
-    public static FlightActivator load(Logic base, ConfigurationSection cfg) {
-        return new FlightActivator(base, TriBoolean.byString(cfg.getString("flight")));
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context fe = (Context) context;

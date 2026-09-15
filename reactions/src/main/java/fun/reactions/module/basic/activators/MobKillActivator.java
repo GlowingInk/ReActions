@@ -52,21 +52,22 @@ public class MobKillActivator extends Activator {
     }
 
     public static MobKillActivator create(Logic base, Parameters param) {
-        String type = param.originValue();
-        String name = null;
-        if (param.contains("type")) {
+        String type;
+        String name;
+        if (param.contains("mob-type")) {
+            type = param.getString("mob-type");
+            name = param.getString("mob-name", null);
+        } else if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name", null);
-        } else if (param.originValue().contains("$")) {
-            name = type.substring(0, type.indexOf('$'));
-            type = type.substring(name.length() + 1);
+        } else {
+            type = param.originValue();
+            name = null;
+            if (type.contains("$")) {
+                name = type.substring(0, type.indexOf('$'));
+                type = type.substring(name.length() + 1);
+            }
         }
-        return new MobKillActivator(base, type, name);
-    }
-
-    public static MobKillActivator load(Logic base, ConfigurationSection cfg) {
-        String type = cfg.getString("mob-type");
-        String name = cfg.getString("mob-name");
         return new MobKillActivator(base, type, name);
     }
 

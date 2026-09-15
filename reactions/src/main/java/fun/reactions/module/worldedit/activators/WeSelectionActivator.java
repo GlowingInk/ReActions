@@ -29,16 +29,9 @@ public class WeSelectionActivator extends Activator {
     }
 
     public static WeSelectionActivator create(Logic base, Parameters param) {
-        int minBlocks = param.getInteger("minblocks");
-        int maxBlocks = param.getInteger("maxblocks", Integer.MAX_VALUE);
+        int minBlocks = param.getInteger("min-blocks", 0);
+        int maxBlocks = param.getInteger("max-blocks", Integer.MAX_VALUE);
         String typeSelection = param.getString("type", "ANY");
-        return new WeSelectionActivator(base, minBlocks, maxBlocks, typeSelection);
-    }
-
-    public static WeSelectionActivator load(Logic base, ConfigurationSection cfg) {
-        int minBlocks = cfg.getInt("min-blocks", 0);
-        int maxBlocks = cfg.getInt("max-blocks", Integer.MAX_VALUE);
-        String typeSelection = cfg.getString("type", "ANY");
         return new WeSelectionActivator(base, minBlocks, maxBlocks, typeSelection);
     }
 

@@ -50,21 +50,15 @@ public class PlateActivator extends Activator implements Locatable {
     }
 
     public static PlateActivator create(Logic base, Parameters params) {
-        Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
-        if (targetBlock != null && Tag.PRESSURE_PLATES.isTagged(targetBlock.getType())) {
-            return new PlateActivator(base, ImplicitPosition.byLocation(targetBlock.getLocation()));
-        } else {
-            return new PlateActivator(base, params.getSafe("location", ImplicitPosition::byString));
+        if (params instanceof BlockParameters blockParams) {
+            Block targetBlock = blockParams.getBlock();
+            if (Tag.PRESSURE_PLATES.isTagged(targetBlock.getType())) {
+                return new PlateActivator(base, ImplicitPosition.byLocation(targetBlock.getLocation()));
+            }
         }
-    }
-
-    public static PlateActivator load(Logic base, ConfigurationSection cfg) {
-        ImplicitPosition pos;
-        if (cfg.isString("location")) {
-            pos = ImplicitPosition.byString(cfg.getString("location"));
-        } else {
-            pos = ImplicitPosition.fromConfiguration(cfg);
-        }
+        ImplicitPosition pos = params.contains("location")
+                ? ImplicitPosition.byString(params.getString("location"))
+                : ImplicitPosition.fromParameters(params);
         return new PlateActivator(base, pos);
     }
 

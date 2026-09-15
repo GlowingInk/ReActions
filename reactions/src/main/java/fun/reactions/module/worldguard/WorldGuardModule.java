@@ -52,9 +52,9 @@ public class WorldGuardModule implements Module {
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes() {
         return List.of(
-                typeOf(RegionActivator.class, "REGION", RegionActivator::create, RegionActivator::load),
-                typeOf(RegionEnterActivator.class, "REGION_ENTER", RegionEnterActivator::create, RegionEnterActivator::load),
-                typeOf(RegionLeaveActivator.class, "REGION_LEAVE", RegionLeaveActivator::create, RegionLeaveActivator::load)
+                typeOf(RegionActivator.class, "REGION", RegionActivator::create),
+                typeOf(RegionEnterActivator.class, "REGION_ENTER", RegionEnterActivator::create),
+                typeOf(RegionLeaveActivator.class, "REGION_LEAVE", RegionLeaveActivator::create)
         );
     }
 

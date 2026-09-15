@@ -55,15 +55,8 @@ public class MessageActivator extends Activator {
 
     public static MessageActivator create(Logic base, Parameters param) {
         CheckType type = CheckType.getByName(param.getString("type", "EQUAL"));
-        Source source = Source.getByName(param.getString("source", "CHAT_MESSAGE"));
-        String mask = param.getString("mask", param.getString("message", "Message mask"));
-        return new MessageActivator(base, type, source, mask);
-    }
-
-    public static MessageActivator load(Logic base, ConfigurationSection cfg) {
-        CheckType type = CheckType.getByName(cfg.getString("type", "EQUAL"));
-        Source source = Source.getByName(cfg.getString("source", "CHAT_INPUT"));
-        String mask = cfg.getString("mask", "Message mask");
+        Source source = Source.getByName(param.getString("source", "CHAT_INPUT"));
+        String mask = param.getString("mask", "Message mask");
         return new MessageActivator(base, type, source, mask);
     }
 

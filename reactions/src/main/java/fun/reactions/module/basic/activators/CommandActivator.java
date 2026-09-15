@@ -82,15 +82,9 @@ public class CommandActivator extends Activator {
         String command = param.getString("command", param.originValue());
         boolean starts = param.getBoolean("starts", true);
         boolean useRegex = param.getBoolean("regex", false);
-        boolean consoleAllowed = param.getBoolean("console", true);
-        return new CommandActivator(base, command, starts, useRegex, consoleAllowed);
-    }
-
-    public static CommandActivator load(Logic base, ConfigurationSection cfg) {
-        String command = cfg.getString("command");
-        boolean starts = cfg.getBoolean("starts", true);
-        boolean useRegex = cfg.getBoolean("regex", false);
-        boolean consoleAllowed = cfg.getBoolean("console_allowed", true);
+        boolean consoleAllowed = param.contains("console_allowed")
+                ? param.getBoolean("console_allowed", true)
+                : param.getBoolean("console", true);
         return new CommandActivator(base, command, starts, useRegex, consoleAllowed);
     }
 

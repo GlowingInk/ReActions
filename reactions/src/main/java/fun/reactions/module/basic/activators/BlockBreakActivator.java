@@ -37,19 +37,13 @@ public class BlockBreakActivator extends Activator implements Locatable {
 
     public static BlockBreakActivator create(Logic base, Parameters param) {
         VirtualBlockData block = param.get("block", VirtualBlockData::fromString);
-        ImplicitPosition pos = param.getSafe("loc", ImplicitPosition::byString);
-        return new BlockBreakActivator(base, block, pos);
-    }
-
-    public static BlockBreakActivator load(Logic base, ConfigurationSection cfg) {
-        VirtualBlockData block = VirtualBlockData.fromString(cfg.getString("block", ""));
         ImplicitPosition pos;
-        if (cfg.isString("location")) {
-            pos = ImplicitPosition.byString(cfg.getString("location"));
-        } else if (cfg.isString("loc")) {
-            pos = ImplicitPosition.byString(cfg.getString("loc"));
+        if (param.contains("location")) {
+            pos = ImplicitPosition.byString(param.getString("location"));
+        } else if (param.contains("loc")) {
+            pos = ImplicitPosition.byString(param.getString("loc"));
         } else {
-            pos = ImplicitPosition.fromConfiguration(cfg);
+            pos = ImplicitPosition.fromParameters(param);
         }
         return new BlockBreakActivator(base, block, pos);
     }

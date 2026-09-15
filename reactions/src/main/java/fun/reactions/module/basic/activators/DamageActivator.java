@@ -35,12 +35,6 @@ public class DamageActivator extends Activator {
         return new DamageActivator(base, cause, source);
     }
 
-    public static DamageActivator load(Logic base, ConfigurationSection cfg) {
-        String cause = cfg.getString("cause", "ANY");
-        DamageType source = DamageType.getByName(cfg.getString("source", "ANY"));
-        return new DamageActivator(base, cause, source);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context de = (Context) context;

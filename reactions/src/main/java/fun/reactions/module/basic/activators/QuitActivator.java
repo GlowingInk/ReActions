@@ -27,7 +27,6 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,10 +38,6 @@ public class QuitActivator extends Activator {
     }
 
     public static QuitActivator create(Logic base, Parameters ignore) {
-        return new QuitActivator(base);
-    }
-
-    public static QuitActivator load(Logic base, ConfigurationSection ignore) {
         return new QuitActivator(base);
     }
 

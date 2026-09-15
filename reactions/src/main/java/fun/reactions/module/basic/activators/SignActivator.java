@@ -27,15 +27,11 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.LocationVariable;
-import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.enums.ClickType;
 import fun.reactions.util.location.LocationUtils;
-import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -58,30 +54,11 @@ public class SignActivator extends Activator {
     }
 
     public static SignActivator create(Logic base, Parameters p) {
-        if (!(p instanceof BlockParameters param)) return null;
-        Block targetBlock = param.getBlock();
-        Sign sign = null;
-        if (targetBlock != null && BlockUtils.isSign(targetBlock))
-            sign = (Sign) targetBlock.getState();
-        ClickType click = ClickType.getByName(param.getString("click", "ANY"));
+        ClickType click = ClickType.getByName(p.getString("click-type", "ANY"));
         List<String> maskLines = new ArrayList<>();
-        if (sign == null) {
-            maskLines.add(param.getString("line1", ""));
-            maskLines.add(param.getString("line2", ""));
-            maskLines.add(param.getString("line3", ""));
-            maskLines.add(param.getString("line4", ""));
-        } else {
-            maskLines.add(param.getString("line1", sign.getLine(0)));
-            maskLines.add(param.getString("line2", sign.getLine(1)));
-            maskLines.add(param.getString("line3", sign.getLine(2)));
-            maskLines.add(param.getString("line4", sign.getLine(3)));
+        for (String key : p.keyedList("sign-mask")) {
+            maskLines.add(p.getString(key, ""));
         }
-        return new SignActivator(base, click, maskLines);
-    }
-
-    public static SignActivator load(Logic base, ConfigurationSection cfg) {
-        ClickType click = ClickType.getByName(cfg.getString("click-type", "ANY"));
-        List<String> maskLines = cfg.getStringList("sign-mask");
         return new SignActivator(base, click, maskLines);
     }
 

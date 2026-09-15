@@ -51,12 +51,7 @@ public class RespawnActivator extends Activator {
     }
 
     public static RespawnActivator create(Logic base, Parameters param) {
-        DeathCause cause = DeathCause.getByName(param.getString("cause", param.originValue()));
-        return new RespawnActivator(base, cause);
-    }
-
-    public static RespawnActivator load(Logic base, ConfigurationSection cfg) {
-        DeathCause cause = DeathCause.getByName(cfg.getString("death-cause", "ANY"));
+        DeathCause cause = DeathCause.getByName(param.getString("death-cause", "ANY"));
         return new RespawnActivator(base, cause);
     }
 

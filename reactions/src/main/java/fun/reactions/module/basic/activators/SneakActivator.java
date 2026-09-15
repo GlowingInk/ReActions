@@ -28,10 +28,6 @@ public class SneakActivator extends Activator {
         return new SneakActivator(base, param.getTriBoolean("sneak"));
     }
 
-    public static SneakActivator load(Logic base, ConfigurationSection cfg) {
-        return new SneakActivator(base, TriBoolean.byString(cfg.getString("sneak")));
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context se = (Context) context;

@@ -30,11 +30,6 @@ public class GameModeActivator extends Activator {
         return new GameModeActivator(base, gameMode);
     }
 
-    public static GameModeActivator load(Logic base, ConfigurationSection cfg) {
-        GameMode gameMode = Utils.getEnum(GameMode.class, cfg.getString("gamemode", "ANY"));
-        return new GameModeActivator(base, gameMode);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context e = (Context) context;

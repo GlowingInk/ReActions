@@ -37,19 +37,10 @@ public class ItemHeldActivator extends Activator {
 
     public static ItemHeldActivator create(Logic base, Parameters param) {
         return new ItemHeldActivator(base,
-                param.get("itemprev", VirtualItem::fromString),
-                param.get("itemnew", VirtualItem::fromString),
-                param.getInteger("slotprev", 1) - 1,
-                param.getInteger("slotnew", 1) - 1
-        );
-    }
-
-    public static ItemHeldActivator load(Logic base, ConfigurationSection cfg) {
-        return new ItemHeldActivator(base,
-                VirtualItem.fromString(cfg.getString("item-prev")),
-                VirtualItem.fromString(cfg.getString("item-new")),
-                cfg.getInt("slot-prev", 1) - 1,
-                cfg.getInt("slot-new", 1) - 1
+                VirtualItem.fromString(param.getString("item-prev", null)),
+                VirtualItem.fromString(param.getString("item-new", null)),
+                param.getInteger("slot-prev", 1) - 1,
+                param.getInteger("slot-new", 1) - 1
         );
     }
 

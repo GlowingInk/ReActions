@@ -8,15 +8,12 @@ import fun.reactions.model.environment.variables.EntityVariable;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -42,49 +39,11 @@ public class DamageByMobActivator extends Activator {
         this.damageCause = damageCause;
     }
 
-    private static String getCauseByName(String damageCauseStr) {
-        if (damageCauseStr != null) {
-            for (EntityDamageEvent.DamageCause damageCause : EntityDamageEvent.DamageCause.values()) {
-                if (damageCauseStr.equalsIgnoreCase(damageCause.name())) {
-                    return damageCause.name();
-                }
-            }
-        }
-        return "ANY";
-    }
-
-    private static String getEntityTypeByName(String sType) {
-        if (sType != null) {
-            sType = sType.toUpperCase(Locale.ROOT);
-            for (EntityType type : EntityType.values()) {
-                if (sType.equals(type.name()))
-                    return type.name();
-            }
-        }
-        return "ANY";
-    }
-
     public static DamageByMobActivator create(Logic base, Parameters param) {
-        String damagerType = param.originValue();
-        String damagerName;
-        if (damagerType.contains("$")) {
-            damagerName = getEntityTypeByName(damagerType.substring(0, damagerType.indexOf('$')));
-            damagerType = damagerType.substring(damagerName.length() + 1);
-        } else {
-            damagerType = getEntityTypeByName(param.getString("type", "ANY"));
-            damagerName = param.getString("name");
-        }
-        damagerName = ChatColor.translateAlternateColorCodes('&', damagerName.replace("\\_", " "));
-        String entityType = getEntityTypeByName(param.getString("etype", "ANY"));
-        String damageCause = getCauseByName(param.getString("cause", "ANY"));
-        return new DamageByMobActivator(base, damagerType, damagerName, entityType, damageCause);
-    }
-
-    public static DamageByMobActivator load(Logic base, ConfigurationSection cfg) {
-        String damagerName = cfg.getString("damager-name", "");
-        String damagerType = cfg.getString("damager-type", "");
-        String entityType = cfg.getString("entity-type", "");
-        String cause = cfg.getString("cause", "");
+        String damagerName = param.getString("damager-name", "");
+        String damagerType = param.getString("damager-type", "");
+        String entityType = param.getString("entity-type", "");
+        String cause = param.getString("cause", "");
         return new DamageByMobActivator(base, damagerName, damagerType, entityType, cause);
     }
 

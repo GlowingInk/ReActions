@@ -52,14 +52,8 @@ public class ItemClickActivator extends Activator {
     }
 
     public static ItemClickActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", param.originValue().isEmpty() ? null : param.originValue());
-        HandType hand = param.getSafe("hand", HandType::getByName);
-        return new ItemClickActivator(base, item, hand);
-    }
-
-    public static ItemClickActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item", null);
-        HandType hand = HandType.getByName(cfg.getString("hand", "ANY"));
+        String item = param.getString("item", null);
+        HandType hand = HandType.getByName(param.getString("hand", "ANY"));
         return new ItemClickActivator(base, item, hand);
     }
 

@@ -36,11 +36,6 @@ public class PickupItemActivator extends Activator {
         return new PickupItemActivator(base, item);
     }
 
-    public static PickupItemActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item");
-        return new PickupItemActivator(base, item);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context pie = (Context) context;

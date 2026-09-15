@@ -29,14 +29,8 @@ public class TeleportActivator extends Activator {
     }
 
     public static TeleportActivator create(Logic base, Parameters param) {
-        TeleportCause cause = Utils.getEnum(TeleportCause.class, param.getString("cause"));
-        String worldTo = param.getString("world");
-        return new TeleportActivator(base, cause, worldTo);
-    }
-
-    public static TeleportActivator load(Logic base, ConfigurationSection cfg) {
-        TeleportCause cause = Utils.getEnum(TeleportCause.class, cfg.getString("cause", ""));
-        String worldTo = cfg.getString("world");
+        TeleportCause cause = Utils.getEnum(TeleportCause.class, param.getString("cause", ""));
+        String worldTo = param.getString("world", null);
         return new TeleportActivator(base, cause, worldTo);
     }
 

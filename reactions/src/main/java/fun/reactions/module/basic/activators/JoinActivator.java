@@ -43,10 +43,6 @@ public class JoinActivator extends Activator {
         return new JoinActivator(base, param.getTriBoolean("first-join"));
     }
 
-    public static JoinActivator load(Logic base, ConfigurationSection cfg) {
-        return new JoinActivator(base, TriBoolean.byString(cfg.getString("first-join")));
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context ce = (Context) context;

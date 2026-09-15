@@ -36,11 +36,6 @@ public class DropActivator extends Activator {
         return new DropActivator(base, itemStr);
     }
 
-    public static DropActivator load(Logic base, ConfigurationSection cfg) {
-        String itemStr = cfg.getString("item");
-        return new DropActivator(base, itemStr);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context de = (Context) context;

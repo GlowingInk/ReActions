@@ -54,11 +54,6 @@ public class RegionLeaveActivator extends Activator implements Locatable {
         return new RegionLeaveActivator(base, region);
     }
 
-    public static RegionLeaveActivator load(Logic base, ConfigurationSection cfg) {
-        String region = cfg.getString("region", "region");
-        return new RegionLeaveActivator(base, region);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context be = (Context) context;

@@ -34,16 +34,10 @@ public class CuboidActivator extends Activator implements Locatable {
     public static CuboidActivator create(Logic base, Parameters param) {
         CuboidMode mode = CuboidMode.getByName(param.getString("mode", "ENTER"));
         String world = param.getString("world", Bukkit.getWorlds().getFirst().getName());
-        ImplicitPosition loc1 = ImplicitPosition.of(world, param.getInteger("loc1.x"), param.getInteger("loc1.y"), param.getInteger("loc1.z"));
-        ImplicitPosition loc2 = ImplicitPosition.of(world, param.getInteger("loc2.x"), param.getInteger("loc2.y"), param.getInteger("loc2.z"));
-        return new CuboidActivator(base, new Cuboid(loc1, loc2), mode);
-    }
-
-    public static CuboidActivator load(Logic base, ConfigurationSection cfg) {
-        CuboidMode mode = CuboidMode.getByName(cfg.getString("mode", "ENTER"));
-        String world = cfg.getString("world");
-        ImplicitPosition loc1 = ImplicitPosition.of(world, cfg.getInt("loc1.x"), cfg.getInt("loc1.y"), cfg.getInt("loc1.z"));
-        ImplicitPosition loc2 = ImplicitPosition.of(world, cfg.getInt("loc2.x"), cfg.getInt("loc2.y"), cfg.getInt("loc2.z"));
+        Parameters loc1P = param.getParameters("loc1");
+        Parameters loc2P = param.getParameters("loc2");
+        ImplicitPosition loc1 = ImplicitPosition.of(world, loc1P.getInteger("x"), loc1P.getInteger("y"), loc1P.getInteger("z"));
+        ImplicitPosition loc2 = ImplicitPosition.of(world, loc2P.getInteger("x"), loc2P.getInteger("y"), loc2P.getInteger("z"));
         return new CuboidActivator(base, new Cuboid(loc1, loc2), mode);
     }
 

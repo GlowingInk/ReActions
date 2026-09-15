@@ -63,13 +63,6 @@ public class BlockClickActivator extends Activator implements Locatable {
         return new BlockClickActivator(base, block, loc, click);
     }
 
-    public static BlockClickActivator load(Logic base, ConfigurationSection cfg) {
-        VirtualBlockData block = VirtualBlockData.fromString(cfg.getString("block-type", ""));
-        ClickType click = ClickType.getByName(cfg.getString("click-type", ""));
-        String loc = cfg.getString("location");
-        return new BlockClickActivator(base, block, loc, click);
-    }
-
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
         Context bce = (Context) context;

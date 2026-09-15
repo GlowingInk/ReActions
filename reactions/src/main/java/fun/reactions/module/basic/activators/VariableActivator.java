@@ -46,14 +46,8 @@ public class VariableActivator extends Activator {
     }
 
     public static VariableActivator create(Logic base, Parameters param) {
-        String id = param.getString("id", "UnknownVariable");
+        String id = param.getString("variable-id", "UnknownVariable");
         boolean personal = param.getBoolean("personal", false);
-        return new VariableActivator(base, id, personal);
-    }
-
-    public static VariableActivator load(Logic base, ConfigurationSection cfg) {
-        String id = cfg.getString("variable-id", "UnknownVariable");
-        boolean personal = cfg.getBoolean("personal", false);
         return new VariableActivator(base, id, personal);
     }
 

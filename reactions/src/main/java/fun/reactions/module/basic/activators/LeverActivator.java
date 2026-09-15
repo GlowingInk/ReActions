@@ -52,23 +52,14 @@ public class LeverActivator extends Activator implements Locatable {
     }
 
     public static LeverActivator create(Logic base, Parameters params) {
-        Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
         TriBoolean state = params.getTriBoolean(params.findKey(Parameters.ORIGIN_KEY, "lever-state"));
+        Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
             return new LeverActivator(base, state, ImplicitPosition.byLocation(targetBlock.getLocation()));
-        } else {
-            return new LeverActivator(base, state, params.getSafe("location", ImplicitPosition::byString));
         }
-    }
-
-    public static LeverActivator load(Logic base, ConfigurationSection cfg) {
-        ImplicitPosition pos;
-        if (cfg.isString("location")) {
-            pos = ImplicitPosition.byString(cfg.getString("location"));
-        } else {
-            pos = ImplicitPosition.fromConfiguration(cfg);
-        }
-        TriBoolean state = TriBoolean.byString(cfg.getString("lever-state", "ANY"));
+        ImplicitPosition pos = params.contains("location")
+                ? ImplicitPosition.byString(params.getString("location", null))
+                : ImplicitPosition.fromParameters(params);
         return new LeverActivator(base, state, pos);
     }
 

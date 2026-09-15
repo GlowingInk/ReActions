@@ -56,24 +56,26 @@ public class MobDamageActivator extends Activator {
     }
 
     public static MobDamageActivator create(Logic base, Parameters param) {
-        String type = param.originValue();
-        String name = "";
-        String itemStr = "";
-        if (param.contains("type")) {
+        String type;
+        String name;
+        String itemStr;
+        if (param.contains("mob-type")) {
+            type = param.getString("mob-type", "");
+            name = param.getString("mob-name", "");
+            itemStr = param.getString("item", null);
+        } else if (param.contains("type")) {
             type = param.getString("type");
             name = param.getString("name");
             itemStr = param.getString("item", null);
-        } else if (param.originValue().contains("$")) {
-            name = type.substring(0, type.indexOf('$'));
-            type = type.substring(name.length() + 1);
+        } else {
+            type = param.originValue();
+            name = "";
+            itemStr = "";
+            if (type.contains("$")) {
+                name = type.substring(0, type.indexOf('$'));
+                type = type.substring(name.length() + 1);
+            }
         }
-        return new MobDamageActivator(base, type, name, itemStr);
-    }
-
-    public static MobDamageActivator load(Logic base, ConfigurationSection cfg) {
-        String type = cfg.getString("mob-type", "");
-        String name = cfg.getString("mob-name", "");
-        String itemStr = cfg.getString("item");
         return new MobDamageActivator(base, type, name, itemStr);
     }
 

@@ -32,10 +32,8 @@ import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.location.position.ImplicitPosition;
-import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -60,23 +58,10 @@ public class DoorActivator extends Activator implements Locatable {
     }
 
     public static DoorActivator create(Logic base, Parameters params) {
-        Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
-        TriBoolean state = params.get(params.findKey(Parameters.ORIGIN_KEY, "state"), STATE_MAPPER::byString);
-        if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
-            return new DoorActivator(base, state, ImplicitPosition.byLocation(targetBlock.getLocation()));
-        } else {
-            return new DoorActivator(base, state, params.getSafe("location", ImplicitPosition::byString));
-        }
-    }
-
-    public static DoorActivator load(Logic base, ConfigurationSection cfg) {
-        ImplicitPosition pos;
-        if (cfg.isString("location")) {
-            pos = ImplicitPosition.byString(cfg.getString("location"));
-        } else {
-            pos = ImplicitPosition.fromConfiguration(cfg);
-        }
-        TriBoolean state = STATE_MAPPER.byString(cfg.getString("state"));
+        ImplicitPosition pos = params.contains("location")
+                ? ImplicitPosition.byString(params.getString("location", null))
+                : ImplicitPosition.fromParameters(params);
+        TriBoolean state = STATE_MAPPER.byString(params.getString("state", null));
         return new DoorActivator(base, state, pos);
     }
 

@@ -7,7 +7,6 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.util.function.RaGenerator;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -70,26 +69,24 @@ public class ActivatorTypesRegistry {
         return Collections.unmodifiableCollection(typesAliases.keySet());
     }
 
-    public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, @NotNull RaGenerator<ConfigurationSection> loader) {
-        return typeOf(type, name, creator, loader, false);
+    public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator) {
+        return typeOf(type, name, creator, false);
     }
 
-    public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, @NotNull RaGenerator<ConfigurationSection> loader, boolean needBlock) {
-        return new SimpleType(type, name, creator, loader, needBlock);
+    public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, boolean needBlock) {
+        return new SimpleType(type, name, creator, needBlock);
     }
 
     private static class SimpleType implements ActivatorType {
         private final Class<? extends Activator> type;
         private final RaGenerator<Parameters> creator;
-        private final RaGenerator<ConfigurationSection> loader;
         private final boolean needBlock;
         private final String name;
         private final Set<Activator> activators;
 
-        private SimpleType(Class<? extends Activator> type, String name, RaGenerator<Parameters> creator, RaGenerator<ConfigurationSection> loader, boolean needBlock) {
+        private SimpleType(Class<? extends Activator> type, String name, RaGenerator<Parameters> creator, boolean needBlock) {
             this.type = type;
             this.creator = creator;
-            this.loader = loader;
             this.needBlock = needBlock;
             this.name = name;
             this.activators = new HashSet<>();
@@ -113,11 +110,6 @@ public class ActivatorTypesRegistry {
         @Override
         public Activator createActivator(@NotNull Logic logic, @NotNull Parameters params) {
             return creator.apply(logic, params);
-        }
-
-        @Override
-        public Activator loadActivator(@NotNull Logic logic, @NotNull ConfigurationSection cfg) {
-            return loader.apply(logic, cfg);
         }
 
         @Override

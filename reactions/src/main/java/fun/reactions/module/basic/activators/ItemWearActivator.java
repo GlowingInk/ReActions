@@ -46,14 +46,8 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     }
 
     public static ItemWearActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", Parameters.ORIGIN_KEY);
+        String item = param.getString("item", null);
         // WearSlot slot = WearSlot.getByName(param.getParam("slot", "any"));
-        return new ItemWearActivator(base, item/*, slot*/);
-    }
-
-    public static ItemWearActivator load(Logic base, ConfigurationSection cfg) {
-        String item = cfg.getString("item");
-        // WearSlot slot = WearSlot.getByName(cfg.getString("wear-slot", "any"));
         return new ItemWearActivator(base, item/*, slot*/);
     }
 

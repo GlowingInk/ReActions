@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+// TODO Some kind of activator scheme
 public interface ActivatorType extends Named {
     /**
      * Basically an ID of activator type
@@ -41,7 +42,9 @@ public interface ActivatorType extends Named {
      * @param cfg config of activator
      * @return an Activator, or null, if given config is invalid
      */
-    @Nullable Activator loadActivator(@NotNull Logic logic, @NotNull ConfigurationSection cfg);
+    default @Nullable Activator loadActivator(@NotNull Logic logic, @NotNull ConfigurationSection cfg) {
+        return createActivator(logic, Parameters.fromConfiguration(cfg, Logic::isReservedKey));
+    }
 
     // v TODO That's probably a bad design, ActivatorType should not handle activators storing?
 

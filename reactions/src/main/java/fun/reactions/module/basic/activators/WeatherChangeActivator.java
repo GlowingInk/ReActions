@@ -38,14 +38,8 @@ public class WeatherChangeActivator extends Activator {
     }
 
     public static WeatherChangeActivator create(Logic base, Parameters params) {
-        String world = params.getString("world");
+        String world = params.getString("world", null);
         WeatherState state = WeatherState.getByName(params.getString("weather", "any"));
-        return new WeatherChangeActivator(base, world, state);
-    }
-
-    public static WeatherChangeActivator load(Logic base, ConfigurationSection cfg) {
-        String world = cfg.getString("world");
-        WeatherState state = WeatherState.getByName(cfg.getString("weather", "any"));
         return new WeatherChangeActivator(base, world, state);
     }
 
