@@ -9,6 +9,7 @@ import fun.reactions.module.ModulesRegistry;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.selectors.SelectorsManager;
 import fun.reactions.time.wait.WaitingManager;
+import fun.reactions.variables.PersistentVariablesManager;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;

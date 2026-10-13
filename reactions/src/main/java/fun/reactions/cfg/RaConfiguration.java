@@ -60,8 +60,6 @@ public class RaConfiguration {
     public record GeneralCfg(
             boolean debugMode,
             boolean parseBookPages,
-            boolean playerSelfVarFile,
-            boolean playerAsynchSaveSelfVarFile,
             @NotNull PlaceholdersCfg placeholders,
             @NotNull Waiter waiter,
             @NotNull PlayerMoveEventCfg playerMoveEvent
@@ -70,8 +68,6 @@ public class RaConfiguration {
             return new GeneralCfg(
                     config.getBoolean("general.debug", false),
                     config.getBoolean("general.parse-book-pages", false),
-                    config.getBoolean("general.player-self-variable-file", false),
-                    config.getBoolean("general.player-asynch-save-self-variable-file", false),
                     PlaceholdersCfg.load(config),
                     Waiter.load(config),
                     PlayerMoveEventCfg.load(config)

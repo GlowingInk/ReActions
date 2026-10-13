@@ -2,3 +2,4 @@
 .fleet
 /target
 *.iml
+/reactions/target/

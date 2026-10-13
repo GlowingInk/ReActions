@@ -52,6 +52,7 @@ import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.message.Msg;
+import fun.reactions.variables.PersistentVariablesManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.bukkit.Metrics;
@@ -85,8 +86,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         configuration.register(MoveListener::acceptReload);
         configuration.register(ContextManager::acceptReload);
         configuration.register(ItemContextManager::acceptReload);
-        this.variablesManager = new PersistentVariablesManager();
-        configuration.register(variablesManager);
+        this.variablesManager = new PersistentVariablesManager(this);
         if (configuration.generalCfg().placeholders().modern()) {
             this.placeholdersManager = new ModernPlaceholdersManager();
         } else {
@@ -136,8 +136,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
         TimersManager.init();
         CooldownManager.load();
-        if (!configuration.generalCfg().playerSelfVarFile()) variablesManager.load();
-        else variablesManager.loadVars();
+        variablesManager.init();
         LocationHolder.loadLocs();
         sqlManager.init();
         InventoryMenu.init(this);
@@ -168,6 +167,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         savingManager.saveSync();
         modulesRegistry.onDisable();
         sqlManager.shutdown();
+        variablesManager.shutdown();
     }
 
     @Override

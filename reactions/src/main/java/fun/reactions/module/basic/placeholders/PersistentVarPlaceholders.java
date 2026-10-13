@@ -1,9 +1,9 @@
 package fun.reactions.module.basic.placeholders;
 
-import fun.reactions.PersistentVariablesManager;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.util.naming.Aliased;
+import fun.reactions.variables.PersistentVariablesManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,7 +1,5 @@
 general:
   debug: false
-  player-self-variable-file: false
-  player-asynch-save-self-variable-file: false
   player-move-event:
     use-task: false
     task-tick: 5

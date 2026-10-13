@@ -10,7 +10,8 @@ authors:
   - imDaniX
 softdepend: [ProtocolLib]
 libraries:
-  - com.zaxxer:HikariCP:7.1.0
+  - com.zaxxer:HikariCP:${hikaricp.version}
+  - com.h2database:h2:${h2.version}
 
 permissions:
   reactions:

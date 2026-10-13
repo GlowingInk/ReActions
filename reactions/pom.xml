@@ -16,6 +16,11 @@
 
     <description>The plugin itself</description>
 
+    <properties>
+        <hikaricp.version>7.1.0</hikaricp.version>
+        <h2.version>2.3.232</h2.version>
+    </properties>
+
     <build>
         <finalName>ReActions</finalName>
         <plugins>
@@ -93,7 +98,13 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>7.1.0</version>
+            <version>${hikaricp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>provided</scope>
         </dependency>
 

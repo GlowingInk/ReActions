@@ -234,8 +234,7 @@ public final class ReaReloadSub extends RaCommandBase {
     }
 
     private int doReloadVariables() {
-        if (!platform.getConfiguration().generalCfg().playerSelfVarFile()) platform.getPersistentVariables().load();
-        else platform.getPersistentVariables().loadVars();
+        platform.getPersistentVariables().load();
         return platform.getPersistentVariables().size();
     }
 

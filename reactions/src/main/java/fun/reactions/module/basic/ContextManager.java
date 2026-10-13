@@ -32,6 +32,7 @@ import fun.reactions.module.worldguard.activators.RegionActivator;
 import fun.reactions.module.worldguard.activators.RegionEnterActivator;
 import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
+import fun.reactions.util.Utils;
 import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.enums.DeathCause;
 import fun.reactions.util.message.Msg;
@@ -57,6 +58,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -352,10 +354,13 @@ public final class ContextManager {
         return Optional.empty();
     }
 
-    public static void triggerVariable(String var, String playerName, String newValue, String prevValue) {
+    public static void triggerVariable(String var, @Nullable String playerName, String newValue, String prevValue) {
         if (newValue.equalsIgnoreCase(prevValue)) return;
-        Player player = Bukkit.getPlayerExact(playerName);
-        if (!playerName.isEmpty() && player == null) return;
+        Player player = null;
+        if (!Utils.isStringEmpty(playerName)) {
+            player = Bukkit.getPlayerExact(playerName);
+            if (player == null) return;
+        }
         VariableActivator.Context ve = new VariableActivator.Context(player, var, newValue, prevValue);
         activate(ve);
     }

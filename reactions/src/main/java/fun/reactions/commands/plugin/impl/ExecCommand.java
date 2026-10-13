@@ -56,7 +56,7 @@ public final class ExecCommand extends RaCommandBase {
                 Parameters.fromString(rawParameters).with("activator", activator)
         );
         if (!success) {
-            sendPrefixed(ctx, "Failed to execute &c'" + esc(activator) + "' - it doesn't exist or isn't a&e FUNCTION&r activator.");
+            sendPrefixed(ctx, "Failed to execute &c'" + esc(activator) + "'&r - it doesn't exist or isn't a&e FUNCTION&r activator.");
         }
     }
 }
