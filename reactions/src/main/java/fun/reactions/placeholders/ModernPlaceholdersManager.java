@@ -83,7 +83,7 @@ public class ModernPlaceholdersManager extends PlaceholdersManager {
                             }
                             stepIndex = index + 1;
                             stage = IterationStage.TEXT;
-                        } else if (ch == '%') {
+                        } else if (ch == '%' && index + 1 < text.length() && text.charAt(index + 1) == '[') {
                             stage = IterationStage.PLACEHOLDER_CHECK;
                         }
                     }
