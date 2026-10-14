@@ -151,11 +151,11 @@ public class RaConfiguration {
     ) {
         static @NotNull MySQLCfg load(@NotNull FileConfiguration config) {
             return new MySQLCfg(
-                    config.getString("MySQL.server", "localhost"),
+                    config.getString("MySQL.server", ""),
                     config.getString("MySQL.port", "3306"),
                     config.getString("MySQL.database", "ReActions"),
-                    config.getString("MySQL.username", "root"),
-                    config.getString("MySQL.password", "password"),
+                    config.getString("MySQL.username", ""),
+                    config.getString("MySQL.password", ""),
                     config.getString("MySQL.codepage", "UTF-8")
             );
         }

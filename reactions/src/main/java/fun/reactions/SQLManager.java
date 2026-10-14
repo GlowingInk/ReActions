@@ -76,6 +76,10 @@ public final class SQLManager implements Reloadable {
             throw new IllegalStateException("SQLManager is already initialized");
         }
         init = true;
+        if (serverAddress.isEmpty()) {
+            enabled = false;
+            return;
+        }
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
