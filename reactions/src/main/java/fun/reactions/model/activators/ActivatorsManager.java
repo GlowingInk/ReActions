@@ -52,12 +52,43 @@ public class ActivatorsManager {
 
     public int loadGroup(@NotNull String group, boolean clear) {
         actsFolder.mkdirs();
+        if (clear) clearGroup(group);
         int[] loaded = {0};
-        loadGroupsRecursively(actsFolder, group, clear, false, loaded);
+        if (group.isEmpty()) {
+            loadGroupsRecursively(actsFolder, "", false, loaded);
+        } else {
+            int split = group.lastIndexOf(File.separatorChar);
+            String parent = split == -1 ? "" : group.substring(0, split);
+            loadGroupsRecursively(new File(actsFolder, group), parent, true, loaded);
+            loadGroupsRecursively(new File(actsFolder, group + ".yml"), parent, true, loaded);
+        }
         return loaded[0];
     }
 
-    private void loadGroupsRecursively(@NotNull File file, @NotNull String group, boolean clear, boolean useGroup, int @NotNull [] loaded) {
+    private void clearGroup(@NotNull String group) {
+        if (group.isEmpty()) {
+            clearActivators();
+            return;
+        }
+        String subgroupPrefix = group + File.separator;
+        Iterator<Map.Entry<String, Set<Activator>>> iterator = activatorsGroups.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Set<Activator>> entry = iterator.next();
+            if (!entry.getKey().equals(group) && !entry.getKey().startsWith(subgroupPrefix)) continue;
+            for (Activator activator : entry.getValue()) {
+                types.get(activator.getClass()).removeActivator(activator);
+                activatorsNames.remove(activator.getLogic().getName());
+            }
+            iterator.remove();
+        }
+    }
+
+    private void loadGroupsRecursively(
+            @NotNull File file,
+            @NotNull String group,
+            boolean useGroup,
+            int @NotNull [] loaded
+    ) {
         if (!file.exists()) return;
 
         if (file.isDirectory()) {
@@ -67,7 +98,7 @@ public class ActivatorsManager {
                         : group + File.separator + file.getName();
             }
             for (File inner : CollectionUtils.emptyOnNull(file.listFiles())) {
-                loadGroupsRecursively(inner, group, clear, true, loaded);
+                loadGroupsRecursively(inner, group, true, loaded);
             }
         } else if (file.getName().endsWith(".yml")) {
             FileConfiguration cfg = new YamlConfiguration();
@@ -81,15 +112,6 @@ public class ActivatorsManager {
             group = group.isEmpty()
                     ? localGroup
                     : group + File.separator + localGroup;
-            if (clear) {
-                Set<Activator> activators = activatorsGroups.remove(group);
-                if (activators != null) {
-                    for (Activator activator : activators) {
-                        types.get(activator.getClass()).removeActivator(activator);
-                        activatorsNames.remove(activator.getLogic().getName());
-                    }
-                }
-            }
             for (String typeStr : cfg.getKeys(false)) {
                 ActivatorType type = types.get(typeStr);
                 if (type == null) {
@@ -121,17 +143,21 @@ public class ActivatorsManager {
     }
 
     public boolean moveActivator(@NotNull Activator activator, @NotNull String newGroup) {
-        String oldGroup = activator.getLogic().getGroup();
-        if (newGroup.equals(oldGroup)) return false; // TODO Error: moved to same group
-
-        activatorsGroups.get(oldGroup).remove(activator);
-        saveGroup(oldGroup);
-
+        if (newGroup.equals(activator.getLogic().getGroup())) return false;
+        detachFromGroup(activator);
         activator.getLogic().setGroup(newGroup);
         activatorsGroups.computeIfAbsent(newGroup, s -> new HashSet<>()).add(activator);
         saveGroup(newGroup);
-
         return true;
+    }
+
+    private void detachFromGroup(@NotNull Activator activator) {
+        String group = activator.getLogic().getGroup();
+        Set<Activator> remaining = activatorsGroups.get(group);
+        remaining.remove(activator);
+        if (remaining.isEmpty()) activatorsGroups.remove(group);
+        Set<Activator> snapshot = new HashSet<>(remaining);
+        platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(group, snapshot, activator));
     }
 
     public boolean addActivator(@NotNull Activator activator, boolean save) {
@@ -161,9 +187,8 @@ public class ActivatorsManager {
     public @Nullable Activator removeActivator(@NotNull String name) {
         Activator activator = activatorsNames.remove(name);
         if (activator == null) return null;
-        activatorsGroups.get(activator.getLogic().getGroup()).remove(activator);
         types.get(activator.getClass()).removeActivator(activator);
-        saveGroup(activator.getLogic().getGroup());
+        detachFromGroup(activator);
         return activator;
     }
 
@@ -183,11 +208,11 @@ public class ActivatorsManager {
         Set<Activator> activators = activatorsGroups.get(name);
         if (activators == null) return false;
         Set<Activator> finalActivators = new HashSet<>(activators);
-        platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators));
+        platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators, null));
         return true;
     }
 
-    private void saveGroup(@NotNull String name, @NotNull Set<Activator> activators) {
+    private void saveGroup(@NotNull String name, @NotNull Set<Activator> activators, @Nullable Activator removed) {
         File file = new File(actsFolder, name.replace('/', File.separatorChar) + ".yml");
         if (activators.isEmpty()) {
             if (!file.delete()) {
@@ -196,6 +221,10 @@ public class ActivatorsManager {
             return;
         }
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+        if (removed != null) {
+            ConfigurationSection typeCfg = cfg.getConfigurationSection(types.get(removed.getClass()).getName());
+            if (typeCfg != null) typeCfg.set(removed.getLogic().getName(), null);
+        }
         for (Activator activator : activators) {
             try {
                 String typeStr = Objects.requireNonNull(types.get(activator.getClass())).getName();

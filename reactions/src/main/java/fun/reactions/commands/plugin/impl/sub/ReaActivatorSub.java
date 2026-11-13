@@ -27,7 +27,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -73,6 +75,11 @@ public final class ReaActivatorSub extends RaCommandBase {
                         .then(literal("info")
                                 .requires(permission("reactions.activator.view"))
                                 .executes(this::info))
+                        .then(literal("move")
+                                .requires(permission("reactions.activator.edit"))
+                                .then(argument("group", StringArgumentType.greedyString())
+                                        .suggests(suggestNames(activators::getGroupNames, false))
+                                        .executes(this::move)))
                         .then(literal("delete")
                                 .requires(permission("reactions.activator.edit"))
                                 .executes(this::deletePrompt)
@@ -293,6 +300,38 @@ public final class ReaActivatorSub extends RaCommandBase {
         return "  &7[" + color + label + "&7](click:" + clickType + " " + command + ")(hover:text &7" + hover + ")";
     }
 
+    private int move(@NotNull CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Activator activator = getActivator(ctx);
+        String rawGroup = StringArgumentType.getString(ctx, "group");
+        String group = toGroupPath(rawGroup);
+        if (group == null) {
+            sendPrefixed(ctx, "Invalid group name &c'" + esc(rawGroup) + "'&r.");
+            return SINGLE_SUCCESS;
+        }
+        String oldGroup = activator.getLogic().getGroup();
+        if (!activators.moveActivator(activator, group)) {
+            sendPrefixed(ctx, "Activator &c'&{name}'&r is already in the group &c'&{group}'&r.", Map.of(
+                    "name", activator.getLogic().getName(),
+                    "group", group
+            ));
+            return SINGLE_SUCCESS;
+        }
+        sendPrefixed(ctx, "Activator &a'&{name}'&r was moved from &a'&{from}'&r to &a'&{to}'&r.", Map.of(
+                "name", activator.getLogic().getName(),
+                "from", oldGroup,
+                "to", group
+        ));
+        return SINGLE_SUCCESS;
+    }
+
+    private static @Nullable String toGroupPath(@NotNull String rawGroup) {
+        String[] segments = rawGroup.trim().split("[/\\\\]", -1);
+        for (String segment : segments) {
+            if (segment.isBlank() || segment.equals(".") || segment.equals("..")) return null;
+        }
+        return String.join(File.separator, segments);
+    }
+
     private int deletePrompt(@NotNull CommandContext<CommandSourceStack> ctx) {
         sendPrefixed(ctx, "Append&e 'confirm'&r to the command to proceed.");
         return SINGLE_SUCCESS;
@@ -302,7 +341,6 @@ public final class ReaActivatorSub extends RaCommandBase {
         Activator activator = getActivator(ctx);
         String name = activator.getLogic().getName();
         activators.removeActivator(name);
-        saveActivator(activator);
         sendPrefixed(ctx, "Activator &a'&{name}'&r was successfully removed.", Map.of("name", name));
         return SINGLE_SUCCESS;
     }

@@ -46,7 +46,7 @@ public class MobClickActivator extends Activator implements Locatable {
     // TODO: EntityType
     private final String mobType;
     private final String mobName;
-    private final String mobLocation;
+    private final String mobLocation; // TODO Better location
 
     private MobClickActivator(Logic base, String type, String name, String location) {
         super(base);
