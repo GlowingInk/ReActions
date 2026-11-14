@@ -15,13 +15,15 @@ import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
 public final class ExecCommand extends RaCommandBase {
+    public static final String PARAMETERS_SYNTAX = "&e[player:<selector>] [delay:<time>]";
+
     public ExecCommand(@NotNull ReActionsPlugin plugin) {
         super(plugin);
     }
 
     public @NotNull LiteralCommandNode<CommandSourceStack> asNode() {
         return literal("exec")
-                .requires(permission("reactions.exec"))
+                .requires(permission("reactions.activator.execute"))
                 .executes(ctx -> {
                     help(ctx);
                     return SINGLE_SUCCESS;
@@ -30,27 +32,28 @@ public final class ExecCommand extends RaCommandBase {
                         .suggests(suggestNames(() -> platform.getActivators().search().byType("FUNCTION").stream()
                                 .map(activator -> activator.getLogic().getName())
                                 .toList(), false))
-                        .executes(ctx -> {
-                            activate(ctx, "");
-                            return SINGLE_SUCCESS;
-                        })
+                        .executes(ctx -> execute(ctx, StringArgumentType.getString(ctx, "activator"), ""))
                         .then(argument("parameters", StringArgumentType.greedyString())
-                                .executes(ctx -> {
-                                    activate(ctx, StringArgumentType.getString(ctx, "parameters"));
-                                    return SINGLE_SUCCESS;
-                                })))
+                                .executes(ctx -> execute(
+                                        ctx,
+                                        StringArgumentType.getString(ctx, "activator"),
+                                        StringArgumentType.getString(ctx, "parameters")
+                                ))))
                 .build();
     }
 
     private void help(@NotNull CommandContext<CommandSourceStack> ctx) {
         sendHelp(ctx,
-                "", "<activator> &e[player:<selector>] [delay:<time>]&r", "Execute FUNCTION&a activator"
+                "", "<activator> " + PARAMETERS_SYNTAX + "&r", "Execute FUNCTION&a activator"
         );
     }
 
     // TODO Local vars
-    private void activate(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String rawParameters) {
-        String activator = StringArgumentType.getString(ctx, "activator");
+    public static int execute(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String activator,
+            @NotNull String rawParameters
+    ) {
         boolean success = ContextManager.triggerFunction(
                 ctx.getSource().getSender(),
                 Parameters.fromString(rawParameters).with("activator", activator)
@@ -58,5 +61,6 @@ public final class ExecCommand extends RaCommandBase {
         if (!success) {
             sendPrefixed(ctx, "Failed to execute &c'" + esc(activator) + "'&r - it doesn't exist or isn't a&e FUNCTION&r activator.");
         }
+        return SINGLE_SUCCESS;
     }
 }

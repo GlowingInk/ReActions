@@ -8,8 +8,10 @@ import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -35,7 +37,7 @@ public final class UserCommandsManager implements Listener {
     public void reload() {
         YamlConfiguration cfg = new YamlConfiguration();
         if (!ConfigUtils.loadConfig(cfg, file, "Failed to load commands")) return;
-        commands.clear();
+        unregisterAll();
         for (String cmdKey : cfg.getKeys(false)) {
             ConfigurationSection cmdSection = cfg.getConfigurationSection(cmdKey);
             if (cmdSection == null) continue;
@@ -48,6 +50,20 @@ public final class UserCommandsManager implements Listener {
             // TODO: Error message
             register(command, prefix, aliases, new UserCommand(cmdSection, toBukkit), toBukkit);
         }
+        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+    }
+
+    private void unregisterAll() {
+        Set<UserCommand> registered = getCommandsSet();
+        Map<String, Command> known = Bukkit.getCommandMap().getKnownCommands();
+        List<String> labels = new ArrayList<>();
+        for (Map.Entry<String, Command> entry : known.entrySet()) {
+            if (registered.contains(entry.getValue())) labels.add(entry.getKey());
+        }
+        for (String label : labels) {
+            known.remove(label);
+        }
+        commands.clear();
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -103,6 +119,10 @@ public final class UserCommandsManager implements Listener {
 
     private @NotNull Set<UserCommand> getCommandsSet() {
         return new HashSet<>(commands.values());
+    }
+
+    public int size() {
+        return getCommandsSet().size();
     }
 
     public @NotNull List<String> list() {

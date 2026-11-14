@@ -83,6 +83,7 @@ public final class ContextManager {
 
     public static boolean triggerPrecommand(Player player, CommandSender sender, String fullCommand) {
         CommandActivator.Context context = new CommandActivator.Context(player, sender, fullCommand);
+        activate(context);
         return context.isCancelled();
     }
 

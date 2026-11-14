@@ -27,7 +27,7 @@ import static io.papermc.paper.command.brigadier.Commands.literal;
 
 public final class ReaReloadSub extends RaCommandBase {
     private static final Set<String> TARGETS = Set.of(
-            "activators", "locations", "config", "cooldowns", "variables", "timers", "menus"
+            "activators", "locations", "config", "commands", "cooldowns", "variables", "timers", "menus"
     );
 
     public ReaReloadSub(@NotNull ReActions.Platform platform) {
@@ -194,6 +194,7 @@ public final class ReaReloadSub extends RaCommandBase {
             case "activators" -> doReloadActivators();
             case "locations" -> doReloadLocations();
             case "config" -> doReloadConfig();
+            case "commands" -> doReloadCommands();
             case "cooldowns" -> doReloadCooldowns();
             case "variables" -> doReloadVariables();
             case "timers" -> doReloadTimers();
@@ -224,8 +225,12 @@ public final class ReaReloadSub extends RaCommandBase {
     private int doReloadConfig() {
         platform.getPlugin().reloadConfig();
         platform.getConfiguration().load(platform.getPlugin().getConfig());
-        platform.getCommands().reload();
         return -1;
+    }
+
+    private int doReloadCommands() {
+        platform.getCommands().reload();
+        return platform.getCommands().size();
     }
 
     private int doReloadCooldowns() {

@@ -18,32 +18,24 @@ permissions:
     description: Use the /reactions command
     default: op
 
-  reactions.exec:
-    description: Execute FUNCTION activators (/exec)
-    default: op
-
   reactions.activator:
-    description: Manage activators (/reactions activator)
+    description: Access activator subcommands (/reactions activator)
     default: op
-    children:
-      reactions: true
-      reactions.activator.view: true
   reactions.activator.view:
     description: View activator info and list activators (/reactions activator <name> info, /reactions list activators)
+    default: op
+  reactions.activator.execute:
+    description: Execute FUNCTION activators (/exec, /reactions activator <name> execute)
     default: op
   reactions.activator.edit:
     description: Create, delete and edit activators (including their actions, reactions and flags)
     default: op
     children:
-      reactions.activator: true
+      reactions.activator.view: true
 
   reactions.location:
-    description: Manage locations (/reactions location)
+    description: Access location subcommands (/reactions location)
     default: op
-    children:
-      reactions: true
-      reactions.location.view: true
-      reactions.location.use: true
   reactions.location.view:
     description: View location info and list locations (/reactions location <name> info, /reactions list locations)
     default: op
@@ -54,15 +46,11 @@ permissions:
     description: Create, delete and move locations
     default: op
     children:
-      reactions.location: true
+      reactions.location.view: true
 
   reactions.menu:
-    description: Manage menus (/reactions menu)
+    description: Access menu subcommands (/reactions menu)
     default: op
-    children:
-      reactions: true
-      reactions.menu.view: true
-      reactions.menu.use: true
   reactions.menu.view:
     description: List menus (/reactions list menus)
     default: op
@@ -73,14 +61,11 @@ permissions:
     description: Create and delete menus
     default: op
     children:
-      reactions.menu: true
+      reactions.menu.view: true
 
   reactions.variable:
-    description: Manage variables (/reactions variable)
+    description: Access variable subcommands (/reactions variable)
     default: op
-    children:
-      reactions: true
-      reactions.variable.view: true
   reactions.variable.view:
     description: Show variables (/reactions variable <name> show)
     default: op
@@ -88,14 +73,11 @@ permissions:
     description: Set and delete variables
     default: op
     children:
-      reactions.variable: true
+      reactions.variable.view: true
 
   reactions.timer:
-    description: Manage timers (/reactions timer)
+    description: Access timer subcommands (/reactions timer)
     default: op
-    children:
-      reactions: true
-      reactions.timer.view: true
   reactions.timer.view:
     description: View timer info and list timers (/reactions timer <name> info, /reactions list timers)
     default: op
@@ -103,51 +85,36 @@ permissions:
     description: Create, pause, resume and delete timers
     default: op
     children:
-      reactions.timer: true
+      reactions.timer.view: true
 
   reactions.list:
-    description: List activators, locations, menus and timers (/reactions list)
+    description: Access list subcommands (/reactions list)
     default: op
-    children:
-      reactions: true
 
   reactions.reload:
-    description: Reload the plugin (/reactions reload)
+    description: Access reload subcommand (/reactions reload)
     default: op
-    children:
-      reactions: true
   reactions.reload.activators:
     description: Reload activators
     default: op
-    children:
-      reactions.reload: true
   reactions.reload.locations:
     description: Reload locations
     default: op
-    children:
-      reactions.reload: true
   reactions.reload.config:
     description: Reload the plugin configuration
     default: op
-    children:
-      reactions.reload: true
+  reactions.reload.commands:
+    description: Reload custom commands
+    default: op
   reactions.reload.cooldowns:
     description: Reload cooldowns
     default: op
-    children:
-      reactions.reload: true
   reactions.reload.variables:
     description: Reload persistent variables
     default: op
-    children:
-      reactions.reload: true
   reactions.reload.timers:
     description: Reload timers
     default: op
-    children:
-      reactions.reload: true
   reactions.reload.menus:
     description: Reload menus
     default: op
-    children:
-      reactions.reload: true

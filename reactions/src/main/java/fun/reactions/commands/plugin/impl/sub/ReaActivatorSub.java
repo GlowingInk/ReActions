@@ -11,6 +11,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.commands.plugin.RegistryArgument;
+import fun.reactions.commands.plugin.impl.ExecCommand;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.ActivatorsManager;
@@ -84,6 +85,11 @@ public final class ReaActivatorSub extends RaCommandBase {
                                 .requires(permission("reactions.activator.edit"))
                                 .executes(this::deletePrompt)
                                 .then(literal("confirm").executes(this::delete)))
+                        .then(literal("execute")
+                                .requires(permission("reactions.activator.execute"))
+                                .executes(ctx -> execute(ctx, ""))
+                                .then(argument("parameters", StringArgumentType.greedyString())
+                                        .executes(ctx -> execute(ctx, StringArgumentType.getString(ctx, "parameters")))))
                         .then(actionNode(ActivitySelection.ACTION, actionArg))
                         .then(actionNode(ActivitySelection.REACTION, actionArg))
                         .then(flagNode()))
@@ -155,6 +161,7 @@ public final class ReaActivatorSub extends RaCommandBase {
                 "info", "", "Show info about this activator",
                 "move", "&a<group>", "Move this activator into another&a group",
                 "delete", "[confirm]", "Delete this activator",
+                "execute", ExecCommand.PARAMETERS_SYNTAX, "Execute this&a FUNCTION&r activator",
                 "action", "...", "Manage activator actions",
                 "reaction", "...", "Manage activator reactions",
                 "flag", "...", "Manage activator flags"
@@ -322,6 +329,13 @@ public final class ReaActivatorSub extends RaCommandBase {
                 "to", group
         ));
         return SINGLE_SUCCESS;
+    }
+
+    private int execute(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String rawParameters
+    ) throws CommandSyntaxException {
+        return ExecCommand.execute(ctx, getActivator(ctx).getLogic().getName(), rawParameters);
     }
 
     private static @Nullable String toGroupPath(@NotNull String rawGroup) {
