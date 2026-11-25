@@ -32,7 +32,7 @@ import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.MoveListener;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.holders.PushBack;
-import fun.reactions.menu.InventoryMenu;
+import fun.reactions.menu.MenuManager;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
@@ -76,6 +76,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private SelectorsManager selectorsManager;
     private AreasRegistry areasRegistry;
     private ItemManager itemManager;
+    private MenuManager menuManager;
     private final MovementRegistry movementRegistry = new MovementRegistry();
     private MoveListener moveListener;
     private WaitingManager waitingManager;
@@ -112,6 +113,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         this.activitiesRegistry = new ActivitiesRegistry();
         this.areasRegistry = new AreasRegistry();
         this.itemManager = new ItemManager();
+        this.menuManager = new MenuManager(this);
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this);
         this.selectorsManager = new SelectorsManager();
@@ -148,11 +150,12 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         variablesManager.init();
         LocationHolder.loadLocs();
         sqlManager.init();
-        InventoryMenu.init(this);
+        menuManager.load();
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
         pluginManager.registerEvents(new BukkitListener(this, moveListener), this);
         pluginManager.registerEvents(userCommandsManager, this);
+        pluginManager.registerEvents(menuManager, this);
         modulesRegistry.onEnable();
         moveListener.init();
         Metrics metrics = new Metrics(this, 19363);
@@ -226,6 +229,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public @NotNull ItemManager getItems() {
         return itemManager;
+    }
+
+    @Override
+    public @NotNull MenuManager getMenus() {
+        return menuManager;
     }
 
     @Override

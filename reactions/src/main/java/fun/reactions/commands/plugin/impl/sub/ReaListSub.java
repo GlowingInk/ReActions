@@ -7,7 +7,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.holders.LocationHolder;
-import fun.reactions.menu.InventoryMenu;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.time.timers.Timer;
@@ -105,7 +104,7 @@ public final class ReaListSub extends RaCommandBase {
 
     private int listMenus(@NotNull CommandContext<CommandSourceStack> ctx, int page) {
         List<String> lines = new ArrayList<>();
-        for (String name : InventoryMenu.getMenuNames()) {
+        for (String name : platform.getMenus().getNames()) {
             lines.add(listLine(ctx, "&6" + esc(name), "menu " + name));
         }
         return sendPage(ctx, "list menus", "Menus", lines, page);

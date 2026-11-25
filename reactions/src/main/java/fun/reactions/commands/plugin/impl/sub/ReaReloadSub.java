@@ -8,7 +8,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import fun.reactions.ReActions;
 import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.holders.LocationHolder;
-import fun.reactions.menu.InventoryMenu;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
@@ -249,7 +248,7 @@ public final class ReaReloadSub extends RaCommandBase {
     }
 
     private int doReloadMenus() {
-        InventoryMenu.load();
-        return InventoryMenu.getMenuNames().size();
+        platform.getMenus().load();
+        return platform.getMenus().getNames().size();
     }
 }

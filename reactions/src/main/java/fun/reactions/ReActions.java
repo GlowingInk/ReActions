@@ -4,6 +4,7 @@ import fun.reactions.areas.AreasRegistry;
 import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.MovementRegistry;
+import fun.reactions.menu.MenuManager;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
@@ -103,6 +104,7 @@ public final class ReActions {
         @NotNull SelectorsManager getSelectors();
         @NotNull AreasRegistry getAreas();
         @NotNull ItemManager getItems();
+        @NotNull MenuManager getMenus();
         @NotNull MovementRegistry getMovement();
         @NotNull WaitingManager getWaiter();
         @NotNull SQLManager getSql();
