@@ -1,8 +1,6 @@
 package fun.reactions.events.listeners;
 
 import fun.reactions.ReActions;
-import fun.reactions.events.PlayerAttacksEntityEvent;
-import fun.reactions.events.PlayerPickupItemEvent;
 import fun.reactions.holders.PlayerRespawner;
 import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activators.ActivationContext;
@@ -19,13 +17,10 @@ import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.mob.MobSpawn;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -51,26 +46,37 @@ import static fun.reactions.module.basic.ItemContextManager.triggerItemWear;
 
 public class BukkitListener implements Listener {
     @EventHandler(ignoreCancelled = true)
-    public void onPickupEvent(EntityPickupItemEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) return;
-        PlayerPickupItemEvent plEvent = new PlayerPickupItemEvent((Player) event.getEntity(), event.getItem());
-        Bukkit.getPluginManager().callEvent(plEvent);
-        event.setCancelled(plEvent.isCancelled());
+    public void onPickup(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        Item item = event.getItem();
+        triggerPickupItem(player, item, item.getPickupDelay()).ifPresent(vars -> applyItemChanges(vars, item, event));
+        if (event.isCancelled()) return;
+        triggerItemHold(player);
+        triggerItemWear(player);
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onAttackEvent(EntityDamageByEntityEvent event) {
-        LivingEntity damager = EntityUtils.getDamagerEntity(event);
-        if (damager == null || damager.getType() != EntityType.PLAYER) return;
-        if (!(event.getEntity() instanceof LivingEntity)) return;
-        PlayerAttacksEntityEvent plEvent = new PlayerAttacksEntityEvent((Player) damager,
-                (LivingEntity) event.getEntity(),
-                event.getDamage(),
-                event.getFinalDamage(),
-                event.getCause());
-        Bukkit.getPluginManager().callEvent(plEvent);
-        event.setDamage(plEvent.getDamage());
-        event.setCancelled(plEvent.isCancelled());
+    public void onPlayerAttack(EntityDamageByEntityEvent event) {
+        if (!(EntityUtils.getDamagerEntity(event) instanceof Player damager)) return;
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
+        playGrowl(damager);
+        if (target.getType() == EntityType.PLAYER) {
+            long time = System.currentTimeMillis();
+            damager.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
+            target.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
+        }
+        var optVars = triggerMobDamage(damager, target, event.getDamage(), event.getFinalDamage(), event.getCause());
+        if (optVars.isEmpty()) return;
+        Variables vars = optVars.get();
+        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
+        vars.changedDouble(MobDamageActivator.MobDamageContext.DAMAGE).ifPresent(event::setDamage);
+    }
+
+    private static void playGrowl(LivingEntity entity) {
+        if (!entity.hasMetadata("ReActions-growl")) return;
+        String growl = entity.getMetadata("ReActions-growl").getFirst().asString();
+        if (Utils.isStringEmpty(growl)) return;
+        Utils.soundPlay(entity.getLocation(), growl);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -216,24 +222,6 @@ public class BukkitListener implements Listener {
 
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onMobGrowl(PlayerAttacksEntityEvent event) {
-        LivingEntity damager = event.getPlayer();
-        if (!damager.hasMetadata("ReActions-growl")) return;
-        String growl = damager.getMetadata("ReActions-growl").getFirst().asString();
-        if (Utils.isStringEmpty(growl)) return;
-        Utils.soundPlay(damager.getLocation(), growl);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onMobDamageByPlayer(PlayerAttacksEntityEvent event) {
-        var optVars = triggerMobDamage(event.getPlayer(), event.getEntity(), event.getDamage(), event.getFinalDamage(), event.getCause());
-        if (optVars.isEmpty()) return;
-        Variables vars = optVars.get();
-        vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
-        vars.changedDouble(MobDamageActivator.MobDamageContext.DAMAGE).ifPresent(event::setDamage);
-    }
-
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamageByMob(EntityDamageByEntityEvent event) {
         LivingEntity damager = EntityUtils.getDamagerEntity(event);
@@ -297,16 +285,6 @@ public class BukkitListener implements Listener {
         Utils.soundPlay(le.getLocation(), cry);
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPvPDamage(PlayerAttacksEntityEvent event) {
-        LivingEntity target = event.getEntity();
-        if (target.getType() != EntityType.PLAYER) return;
-        Player damager = event.getPlayer();
-        long time = System.currentTimeMillis();
-        damager.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
-        target.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
-    }
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -366,12 +344,14 @@ public class BukkitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
-        var optVars = triggerDrop(event.getPlayer(), event.getItemDrop(), event.getItemDrop().getPickupDelay());
-        if (optVars.isEmpty()) return;
-        Variables vars = optVars.get();
+        Item item = event.getItemDrop();
+        triggerDrop(event.getPlayer(), item, item.getPickupDelay()).ifPresent(vars -> applyItemChanges(vars, item, event));
+    }
+
+    private static void applyItemChanges(Variables vars, Item item, Cancellable event) {
         vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
-        vars.changedInt(DropActivator.Context.PICKUP_DELAY).ifPresent((d) -> event.getItemDrop().setPickupDelay(d));
-        vars.changed(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent((i) -> event.getItemDrop().setItemStack(i));
+        vars.changedInt(DropActivator.Context.PICKUP_DELAY).ifPresent(item::setPickupDelay);
+        vars.changed(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent(item::setItemStack);
     }
 
     @EventHandler(ignoreCancelled = true)

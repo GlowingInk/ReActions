@@ -28,7 +28,6 @@ import fun.reactions.commands.plugin.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
 import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.MoveListener;
-import fun.reactions.events.listeners.RaListener;
 import fun.reactions.holders.LocationHolder;
 import fun.reactions.holders.PushBack;
 import fun.reactions.menu.InventoryMenu;
@@ -143,7 +142,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
         pluginManager.registerEvents(new BukkitListener(), this);
-        pluginManager.registerEvents(new RaListener(), this);
         pluginManager.registerEvents(userCommandsManager, this);
         modulesRegistry.onEnable();
         MoveListener.init();

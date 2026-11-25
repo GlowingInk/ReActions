@@ -24,9 +24,8 @@ package fun.reactions.events.listeners;
 
 import fun.reactions.ReActions;
 import fun.reactions.cfg.RaConfiguration;
-import fun.reactions.events.PlayerMoveByBlockEvent;
-import fun.reactions.events.PlayerStayEvent;
 import fun.reactions.holders.PushBack;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.location.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,7 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,10 +66,10 @@ public class MoveListener implements Listener {
 
     private static void processMove(Player player, Location from, Location to) {
         PushBack.rememberLocations(player, from, to);
-        PlayerEvent event = LocationUtils.equalsPositionally(from, to)
-                ? new PlayerStayEvent(player, to)
-                : new PlayerMoveByBlockEvent(player, to, from);
-        Bukkit.getPluginManager().callEvent(event);
+        if (!LocationUtils.equalsPositionally(from, to)) {
+            ContextManager.triggerAllRegions(player, to, from);
+        }
+        ContextManager.triggerCuboid(player);
     }
 
     public static void initLocation(Player player) {
