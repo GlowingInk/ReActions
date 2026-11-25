@@ -24,10 +24,10 @@ package fun.reactions.module.basic.flags;
 
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.Rng;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
+import ink.glowing.utils.rng.RngUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalDouble;
@@ -38,7 +38,7 @@ public class ChanceFlag implements Flag {
     public boolean proceed(@NotNull Environment env, @NotNull String paramsStr) {
         env.getVariables().set("chance", paramsStr + "%");
         OptionalDouble chanceOpt = NumberUtils.parseDouble(paramsStr, Is.NON_NEGATIVE);
-        return chanceOpt.isPresent() && Rng.percentChance(chanceOpt.getAsDouble());
+        return chanceOpt.isPresent() && RngUtils.percentChance(chanceOpt.getAsDouble());
     }
 
     @Override

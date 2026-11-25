@@ -1,10 +1,10 @@
 package fun.reactions.model.environment;
 
 import fun.reactions.model.environment.variables.StructVariable;
-import fun.reactions.util.bool.OptionalBoolean;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.bool.TriState;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.*;
 import java.util.function.*;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
 
 public class Variables {
     private final Map<String, Variable> variables;
@@ -25,17 +24,17 @@ public class Variables {
     }
 
     private Variables(@NotNull Map<String, Variable> variables, boolean copy) {
-        this.variables = copy ? caseInsensitiveMap(variables) : variables;
+        this.variables = copy ? CaseInsensitive.newMap(variables) : variables;
     }
 
     public Variables() {
-        this.variables = caseInsensitiveMap();
+        this.variables = CaseInsensitive.newMap();
     }
 
     @ApiStatus.Internal
     public static @NotNull Variables readConfiguration(@NotNull ConfigurationSection cfg) {
         Set<String> keys = cfg.getKeys(false);
-        Map<String, Variable> vars = caseInsensitiveMap(keys.size());
+        Map<String, Variable> vars = CaseInsensitive.newMap(keys.size());
         for (String key : keys) {
             Variable var = cfg.isConfigurationSection(key)
                     ? StructVariable.read(Objects.requireNonNull(cfg.getConfigurationSection(key)))
@@ -68,7 +67,7 @@ public class Variables {
     @ApiStatus.Internal
     public static @NotNull Variables readParameters(@NotNull Parameters params) {
         Set<String> keys = params.keys();
-        Map<String, Variable> vars = caseInsensitiveMap(keys.size());
+        Map<String, Variable> vars = CaseInsensitive.newMap(keys.size());
         for (String key : keys) {
             vars.put(key, Variable.value(params.getString(key)));
         }
@@ -76,7 +75,7 @@ public class Variables {
     }
 
     public @NotNull Map<String, Variable> forkMap() {
-        Map<String, Variable> forkedVars = caseInsensitiveMap(variables.size());
+        Map<String, Variable> forkedVars = CaseInsensitive.newMap(variables.size());
         if (!variables.isEmpty()) {
             for (var entry : variables.entrySet()) {
                 forkedVars.put(entry.getKey(), entry.getValue().fork());
@@ -118,12 +117,12 @@ public class Variables {
         return variables.getOrDefault(key, Variable.EMPTY).changed();
     }
 
-    public @NotNull OptionalBoolean changedBoolean(@NotNull String key) {
-        return changedString(key).map(s -> TriBoolean.byString(s).asOptional()).orElse(OptionalBoolean.EMPTY);
+    public @NotNull TriState changedBoolean(@NotNull String key) {
+        return changedString(key).map(Parameters.TRI::parse).orElse(TriState.UNSET);
     }
 
-    public @NotNull OptionalBoolean changedBoolean(@NotNull String key, @NotNull Predicate<@NotNull String> funct) {
-        return changedString(key).map(s -> OptionalBoolean.of(funct.test(s))).orElse(OptionalBoolean.EMPTY);
+    public @NotNull TriState changedBoolean(@NotNull String key, @NotNull Predicate<@NotNull String> funct) {
+        return changedString(key).map(s -> TriState.of(funct.test(s))).orElse(TriState.UNSET);
     }
 
     public @NotNull OptionalInt changedInt(@NotNull String key) {

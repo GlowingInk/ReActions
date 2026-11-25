@@ -9,13 +9,11 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.*;
-import java.util.regex.Pattern;
 
 public final class NumberUtils {
     private static final double TRIM_VALUE = 1_0000;
     public static final Predicate<String> IS_INTEGER = (str) -> parseLong(str).isPresent();
-    public static final Pattern NUMBER = Pattern.compile("-?\\d+(?:\\.\\d+(?:[eE][+-]?\\d+)?)?");
-    public static final Predicate<String> IS_NUMBER = NUMBER.asMatchPredicate();
+    public static final Predicate<String> IS_NUMBER = (str) -> parseDouble(str).isPresent();
 
     private NumberUtils() {}
 
@@ -28,29 +26,21 @@ public final class NumberUtils {
     }
 
     public static double asDouble(@Nullable String str, double def) {
-        return isNumber(str)
-                ? Double.parseDouble(str)
-                : def;
+        return str == null ? def : parseDouble(str).orElse(def);
     }
 
     public static double asDouble(@Nullable String str, @NotNull DoubleSupplier def) {
-        return isNumber(str)
-                ? Double.parseDouble(str)
-                : def.getAsDouble();
+        return str == null ? def.getAsDouble() : parseDouble(str).orElseGet(def);
     }
 
     public static @NotNull OptionalDouble parseDouble(@NotNull String str) {
-        return IS_NUMBER.test(str)
-                ? OptionalDouble.of(Double.parseDouble(str))
-                : OptionalDouble.empty();
+        OptionalDouble parsed = ink.glowing.utils.num.NumberUtils.parseDouble(str);
+        return parsed.isPresent() && Double.isFinite(parsed.getAsDouble()) ? parsed : OptionalDouble.empty();
     }
 
     public static @NotNull OptionalDouble parseDouble(@NotNull String str, @NotNull DoublePredicate predicate) {
-        if (IS_NUMBER.test(str)) {
-            double d = Double.parseDouble(str);
-            if (predicate.test(d)) return OptionalDouble.of(d);
-        }
-        return OptionalDouble.empty();
+        OptionalDouble parsed = parseDouble(str);
+        return parsed.isPresent() && predicate.test(parsed.getAsDouble()) ? parsed : OptionalDouble.empty();
     }
 
     public static int asInteger(@Nullable String str) {
@@ -160,7 +150,7 @@ public final class NumberUtils {
 
     @Contract("null -> false")
     public static boolean isNumber(@Nullable String str) {
-        return !Utils.isStringEmpty(str) && IS_NUMBER.test(str);
+        return str != null && parseDouble(str).isPresent();
     }
 
     /**

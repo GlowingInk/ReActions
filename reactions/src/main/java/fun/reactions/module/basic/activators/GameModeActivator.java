@@ -4,8 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.Utils;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ public class GameModeActivator extends Activator {
     }
 
     public static GameModeActivator create(Logic base, Parameters param) {
-        GameMode gameMode = Utils.getEnum(GameMode.class, param.getString("gamemode", "ANY"));
+        GameMode gameMode = EnumUtils.parseEnum(param.getString("gamemode", "ANY"), GameMode.class, null);
         return new GameModeActivator(base, gameMode);
     }
 

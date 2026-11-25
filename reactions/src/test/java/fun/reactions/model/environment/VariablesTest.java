@@ -26,7 +26,7 @@ public class VariablesTest {
 
         assertTrue(vars.changedBoolean("cancel_event").isEmpty());
         vars.set("cancel_event", "true");
-        assertTrue(vars.changedBoolean("cancel_event").orElse(false));
+        assertTrue(vars.changedBoolean("cancel_event").asBoolean(false));
     }
 
     @Test

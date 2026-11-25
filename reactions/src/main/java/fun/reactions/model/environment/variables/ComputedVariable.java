@@ -1,6 +1,7 @@
 package fun.reactions.model.environment.variables;
 
 import fun.reactions.model.environment.Variable;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
 
 public abstract class ComputedVariable extends TrackedVariable {
     private @Nullable Map<String, Variable> childrenCache;
@@ -21,7 +21,7 @@ public abstract class ComputedVariable extends TrackedVariable {
 
     private @NotNull Map<String, Variable> childrenCache() {
         if (childrenCache == null) {
-            childrenCache = caseInsensitiveMap();
+            childrenCache = CaseInsensitive.newMap();
         }
         return childrenCache;
     }

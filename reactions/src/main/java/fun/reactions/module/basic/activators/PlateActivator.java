@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-// TODO Use TriBoolean (when pressing on disabled plate)
+// TODO Use TriState (when pressing on disabled plate)
 public class PlateActivator extends Activator implements Locatable {
     private final ImplicitPosition pos;
 

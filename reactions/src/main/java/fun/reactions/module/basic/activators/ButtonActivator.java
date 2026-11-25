@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-// TODO Use TriBoolean (when clicking on disabled button)
+// TODO Use TriState (when clicking on disabled button)
 public class ButtonActivator extends Activator implements Locatable {
     private final ImplicitPosition pos;
 

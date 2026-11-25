@@ -4,6 +4,7 @@ import fun.reactions.ReActions;
 import fun.reactions.cfg.Reloadable;
 import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.naming.Named;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.ApiStatus;
@@ -36,14 +37,14 @@ public class ModulesRegistry {
     public ModulesRegistry(@NotNull ReActions.Platform platform) {
         this.platform = platform;
         this.modulesFolder = new File(platform.getDataFolder(), "Modules");
-        this.later = new LinkedHashMap<>();
-        this.loadedModules = new LinkedHashMap<>();
+        this.later = CaseInsensitive.newLinkedMap();
+        this.loadedModules = CaseInsensitive.newLinkedMap();
         this.classLoaders = new ArrayList<>();
         this.pendingListeners = new ArrayList<>();
     }
 
     public @Nullable Module getModule(@NotNull String name) {
-        return loadedModules.get(key(name));
+        return loadedModules.get(name);
     }
 
     @ApiStatus.Internal
@@ -55,7 +56,7 @@ public class ModulesRegistry {
         later = null;
         if (pending.isEmpty()) return;
         debugInfo("Registering pending modules.");
-        Set<String> failed = new HashSet<>();
+        Set<String> failed = CaseInsensitive.newSet();
         for (Module module : pending.values()) {
             resolve(module, pending, new ArrayList<>(), failed);
         }
@@ -67,15 +68,13 @@ public class ModulesRegistry {
             @NotNull List<Module> path,
             @NotNull Set<String> failed
     ) {
-        String moduleKey = key(module.getName());
-        if (loadedModules.containsKey(moduleKey)) return true;
-        if (failed.contains(moduleKey)) return false;
+        if (loadedModules.containsKey(module.getName())) return true;
+        if (failed.contains(module.getName())) return false;
         path.add(module);
         List<String> missingModules = new ArrayList<>(0);
         for (String requiredName : module.requiredModules()) {
-            String requiredKey = key(requiredName);
-            if (loadedModules.containsKey(requiredKey)) continue;
-            Module required = pending.get(requiredKey);
+            if (loadedModules.containsKey(requiredName)) continue;
+            Module required = pending.get(requiredName);
             if (required == null) {
                 missingModules.add(requiredName);
             } else if (path.contains(required)) {
@@ -103,7 +102,7 @@ public class ModulesRegistry {
         } else {
             reportMissingModules(module, missingModules);
         }
-        if (!registered) failed.add(moduleKey);
+        if (!registered) failed.add(module.getName());
         return registered;
     }
 
@@ -141,19 +140,19 @@ public class ModulesRegistry {
     }
 
     public void registerModule(@NotNull Module module) {
-        String moduleKey = key(module.getName());
-        if (loadedModules.containsKey(moduleKey) || (later != null && later.containsKey(moduleKey))) {
+        String name = module.getName();
+        if (loadedModules.containsKey(name) || (later != null && later.containsKey(name))) {
             platform.logger().warn("Module '{}' is already registered", module.getName());
             return;
         }
         List<String> missingModules = new ArrayList<>(0);
         for (String requiredName : module.requiredModules()) {
-            if (!loadedModules.containsKey(key(requiredName))) {
+            if (!loadedModules.containsKey(requiredName)) {
                 missingModules.add(requiredName);
             }
         }
         if (later != null && (!module.requiredPlugins().isEmpty() || !missingModules.isEmpty())) {
-            later.put(moduleKey, module);
+            later.put(name, module);
         } else if (missingModules.isEmpty()) {
             register(module);
         } else {
@@ -197,7 +196,7 @@ public class ModulesRegistry {
             register("areas", withAreas.getAreas(), platform.getAreas()::registerArea);
         }
         registerHooks(module);
-        loadedModules.put(key(module.getName()), module);
+        loadedModules.put(module.getName(), module);
         if (enabled) {
             module.onEnable(platform);
         }
@@ -313,10 +312,6 @@ public class ModulesRegistry {
         } catch (IOException ex) {
             platform.logger().warn("Failed to close module class loader", ex);
         }
-    }
-
-    private static @NotNull String key(@NotNull String moduleName) {
-        return moduleName.toLowerCase(Locale.ROOT);
     }
 
     private void debugInfo(String msg) {

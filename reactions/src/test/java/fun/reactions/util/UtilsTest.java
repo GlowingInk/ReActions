@@ -5,7 +5,6 @@ import org.bukkit.Color;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
@@ -74,30 +73,6 @@ public class UtilsTest {
                 searchNotNull(def, values),
                 expected
         );
-    }
-
-    @DataProvider
-    public Object[][] getEnumData() {
-        return new Object[][] {
-                {"UP", RoundingMode.DOWN, RoundingMode.UP},
-                {"UNNECESSARY", null, RoundingMode.UNNECESSARY},
-                {"unknown", null, null},
-                {"unknown", RoundingMode.DOWN, RoundingMode.DOWN}
-        };
-    }
-
-    @Test(dataProvider = "getEnumData")
-    public void getEnumTest(String name, RoundingMode def, RoundingMode expected) {
-        assertEquals(
-                getEnum(RoundingMode.class, name, def),
-                expected
-        );
-        if (def != null) {
-            assertEquals(
-                    getEnum(name, def),
-                    expected
-            );
-        }
     }
 
     @DataProvider

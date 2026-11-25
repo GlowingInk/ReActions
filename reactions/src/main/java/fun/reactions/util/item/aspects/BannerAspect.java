@@ -2,6 +2,7 @@ package fun.reactions.util.item.aspects;
 
 import fun.reactions.util.RegistryUtils;
 import fun.reactions.util.Utils;
+import ink.glowing.utils.EnumUtils;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
@@ -35,7 +36,7 @@ public class BannerAspect implements MetaAspect {
                 if (index == -1) continue;
                 PatternType type = RegistryUtils.searchRegistry(patternStr.substring(0, index), getRegistry(RegistryKey.BANNER_PATTERN));
                 if (type == null) continue;
-                DyeColor color = Utils.getEnum(DyeColor.class, patternStr.substring(index + 1));
+                DyeColor color = EnumUtils.parseEnum(patternStr.substring(index + 1), DyeColor.class, null);
                 if (color == null) continue;
                 patterns.add(new Pattern(color, type));
             }

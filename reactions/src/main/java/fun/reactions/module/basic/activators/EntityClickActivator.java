@@ -5,9 +5,9 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.EntityVariable;
-import fun.reactions.util.Utils;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -25,7 +25,7 @@ public class EntityClickActivator extends Activator {
 
     private EntityClickActivator(Logic base, String entityType) {
         super(base);
-        this.entityType = Utils.getEnum(EntityType.class, entityType);
+        this.entityType = EnumUtils.parseEnum(entityType, EntityType.class, null);
     }
 
     public static EntityClickActivator create(Logic base, Parameters param) {

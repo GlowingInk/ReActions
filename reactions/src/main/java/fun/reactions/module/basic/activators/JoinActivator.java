@@ -25,22 +25,22 @@ package fun.reactions.module.basic.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.bool.TriState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class JoinActivator extends Activator {
-    private final TriBoolean firstJoin;
+    private final TriState firstJoin;
 
-    private JoinActivator(Logic base, TriBoolean firstJoin) {
+    private JoinActivator(Logic base, TriState firstJoin) {
         super(base);
         this.firstJoin = firstJoin;
     }
 
     public static JoinActivator create(Logic base, Parameters param) {
-        return new JoinActivator(base, param.getTriBoolean("first-join"));
+        return new JoinActivator(base, param.getTriState("first-join"));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class JoinActivator extends Activator {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("first-join", firstJoin.name());
+        cfg.set("first-join", Parameters.TRI.name(firstJoin));
     }
 
     public static class Context extends ActivationContext {

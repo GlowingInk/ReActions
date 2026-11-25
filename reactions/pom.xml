@@ -52,6 +52,10 @@
                                     <pattern>ink.glowing.text</pattern>
                                     <shadedPattern>fun.reactions.util.text</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>ink.glowing.utils</pattern>
+                                    <shadedPattern>fun.reactions.util.inky</shadedPattern>
+                                </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <filters>
@@ -78,6 +82,13 @@
             <groupId>ink.glowing.text</groupId>
             <artifactId>inkymessage</artifactId>
             <version>0.13.0</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>ink.glowing.utils</groupId>
+            <artifactId>inkyutils-common</artifactId>
+            <version>0.7.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

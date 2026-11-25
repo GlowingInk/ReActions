@@ -1,7 +1,7 @@
 package fun.reactions.cfg;
 
 import fun.reactions.time.wait.WaitingManager;
-import fun.reactions.util.Utils;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,7 +88,7 @@ public class RaConfiguration {
         static @NotNull Waiter load(@NotNull FileConfiguration config) {
             return new Waiter(
                     config.getLong("general.waiter-hours-limit", 4380),
-                    Utils.getEnum(config.getString("general.waiter-missing-player-behaviour", "SKIP"), WaitingManager.AttachedBehaviour.SKIP)
+                    EnumUtils.parseEnum(config.getString("general.waiter-missing-player-behaviour", "SKIP"), WaitingManager.AttachedBehaviour.SKIP)
             );
         }
     }

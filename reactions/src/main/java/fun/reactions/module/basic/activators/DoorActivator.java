@@ -29,10 +29,10 @@ import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.util.block.BlockUtils;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.bool.TriState;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -43,15 +43,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class DoorActivator extends Activator implements Locatable {
-    private static final TriBoolean.Mapper STATE_MAPPER = new TriBoolean.Mapper.Builder()
-            .trueMain("OPEN").addTrueVariants("OPENED")
-            .falseMain("CLOSE").addFalseVariants("CLOSED")
+    private static final TriState.Mapper STATE_MAPPER = TriState.Mapper.builder()
+            .name(TriState.TRUE, "OPEN").addVariants(true, "OPENED")
+            .name(TriState.FALSE, "CLOSE").addVariants(false, "CLOSED")
+            .name(TriState.UNSET, "ANY")
             .build();
 
-    private final TriBoolean state;
+    private final TriState state;
     private final ImplicitPosition lowerPos;
 
-    private DoorActivator(Logic base, TriBoolean state, ImplicitPosition lowerPos) {
+    private DoorActivator(Logic base, TriState state, ImplicitPosition lowerPos) {
         super(base);
         this.state = state;
         this.lowerPos = lowerPos;
@@ -61,7 +62,7 @@ public class DoorActivator extends Activator implements Locatable {
         ImplicitPosition pos = params.contains("location")
                 ? ImplicitPosition.byString(params.getString("location", null))
                 : ImplicitPosition.fromParameters(params);
-        TriBoolean state = STATE_MAPPER.byString(params.getString("state", null));
+        TriState state = STATE_MAPPER.parse(params.getString("state", null));
         return new DoorActivator(base, state, pos);
     }
 
@@ -79,7 +80,7 @@ public class DoorActivator extends Activator implements Locatable {
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
         lowerPos.intoConfiguration(cfg);
-        cfg.set("state", STATE_MAPPER.toString(state));
+        cfg.set("state", STATE_MAPPER.name(state));
     }
 
     public static class Context extends ActivationContext {

@@ -2,12 +2,14 @@ package fun.reactions.util.parameter;
 
 import fun.reactions.util.RichOptional;
 import fun.reactions.util.Utils;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.function.SafeFunction;
 import fun.reactions.util.function.SafeSupplier;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.time.TimeUtils;
+import ink.glowing.utils.EnumUtils;
+import ink.glowing.utils.bool.TriState;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
@@ -20,12 +22,14 @@ import java.util.*;
 import java.util.function.*;
 import java.util.regex.Pattern;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 import static ink.glowing.text.InkyMessage.isEscapedAt;
 
 public class Parameters implements Parameterizable {
     public static final String ORIGIN_KEY = ": ";
-    public static final Parameters EMPTY = new Parameters("", "", caseInsensitiveLinkedMap(1));
+    public static final Parameters EMPTY = new Parameters("", "", CaseInsensitive.newLinkedMap(1));
+    public static final TriState.Mapper TRI = TriState.Mapper.NATURAL.toBuilder()
+            .name(TriState.UNSET, "ANY")
+            .build();
     private static final Pattern VALUE_ESCAPE = Pattern.compile("(?<!\\\\)[{}]");
     private static final Pattern FULL_ESCAPE = Pattern.compile("[{}:\\\\]");
 
@@ -87,7 +91,7 @@ public class Parameters implements Parameterizable {
 
     public static @NotNull Parameters fromMap(@NotNull Map<String, String> map) {
         if (map.isEmpty()) return EMPTY;
-        Map<String, String> params = caseInsensitiveLinkedMap(map);
+        Map<String, String> params = CaseInsensitive.newLinkedMap(map);
         String str = formatMap(map);
         return new Parameters(str, str, params);
     }
@@ -99,7 +103,7 @@ public class Parameters implements Parameterizable {
     public static @NotNull Parameters fromString(final @NotNull String str, @Nullable String defKey) {
         if (str.isEmpty()) return EMPTY;
         boolean hasDefKey = !Utils.isStringEmpty(defKey);
-        Map<String, String> params = caseInsensitiveLinkedMap();
+        Map<String, String> params = CaseInsensitive.newLinkedMap();
         IterationState state = IterationState.SPACE;
         String param = "";
         StringBuilder bld = null;
@@ -190,7 +194,7 @@ public class Parameters implements Parameterizable {
         }
 
         return params.isEmpty()
-                ? new Parameters(str, caseInsensitiveLinkedMap(1))
+                ? new Parameters(str, CaseInsensitive.newLinkedMap(1))
                 : new Parameters(str, params);
     }
 
@@ -203,7 +207,7 @@ public class Parameters implements Parameterizable {
     }
 
     public static @NotNull Parameters singleton(@NotNull String key, @NotNull String value) {
-        Map<String, String> params = caseInsensitiveLinkedMap(2);
+        Map<String, String> params = CaseInsensitive.newLinkedMap(2);
         params.put(key, value);
         String escaped = escapeValue(value);
         String origin;
@@ -307,25 +311,25 @@ public class Parameters implements Parameterizable {
         String value = params.get(key);
         return value == null
                 ? def
-                : Utils.getEnum(value, def);
+                : EnumUtils.parseEnum(value, def);
     }
 
     @Contract(pure = true)
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz) {
-        return get(key, (value) -> Utils.getEnum(clazz, value));
+        return get(key, (value) -> EnumUtils.parseEnum(value, clazz, null));
     }
 
     @Contract(value = "_, _, !null -> !null", pure = true)
     public <R extends Enum<R>> @Nullable R getEnum(@NotNull String key, @NotNull Class<R> clazz, @Nullable R def) {
-        return get(key, (value) -> Utils.getEnum(clazz, value, def));
+        return get(key, (value) -> EnumUtils.parseEnum(value, clazz, def));
     }
 
     public <R extends Enum<R>> @Nullable R getEnumOr(@NotNull String key, @NotNull Class<R> clazz, @NotNull Supplier<R> def) {
-        return getOr(key, (value) -> Utils.getEnum(clazz, value), def);
+        return getOr(key, (value) -> EnumUtils.parseEnum(value, clazz, null), def);
     }
 
     public <R extends Enum<R>> @NotNull R getEnumSafe(@NotNull String key, @NotNull Class<R> clazz, @NotNull SafeSupplier<R> def) {
-        return getSafe(key, (value) -> Utils.getEnum(clazz, value), def);
+        return getSafe(key, (value) -> EnumUtils.parseEnum(value, clazz, null), def);
     }
 
     @Contract(pure = true)
@@ -388,16 +392,16 @@ public class Parameters implements Parameterizable {
 
     @Contract(pure = true)
     public boolean getBoolean(@NotNull String key, boolean def) {
-        return getTriBoolean(key).asBoolean(def);
+        return getTriState(key).asBoolean(def);
     }
 
     public boolean getBoolean(@NotNull String key, @NotNull BooleanSupplier def) {
-        return getTriBoolean(key).asBoolean(def);
+        return getTriState(key).asBoolean(def);
     }
 
     @Contract(pure = true)
-    public @NotNull TriBoolean getTriBoolean(@NotNull String key) {
-        return getSafe(key, TriBoolean::byString);
+    public @NotNull TriState getTriState(@NotNull String key) {
+        return getSafe(key, TRI::parse);
     }
 
     @Contract(pure = true)

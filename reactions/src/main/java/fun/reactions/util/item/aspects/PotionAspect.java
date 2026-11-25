@@ -4,6 +4,7 @@ import fun.reactions.util.Utils;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.Registry;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -129,7 +130,7 @@ public record PotionAspect(boolean base) implements MetaAspect {
             } else if (potionTypeStr.startsWith("base-type:")) {
                 this.potionType = Parameters.fromString(potionTypeStr).getEnum("base-type", PotionType.class);
             } else {
-                this.potionType = Utils.getEnum(PotionType.class, potionTypeStr);
+                this.potionType = EnumUtils.parseEnum(potionTypeStr, PotionType.class, null);
             }
         }
 

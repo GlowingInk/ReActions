@@ -2,13 +2,13 @@ package fun.reactions.model.environment.variables;
 
 import fun.reactions.model.environment.Variable;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveMap;
 
 public final class StructVariable extends TrackedVariable {
     @ApiStatus.Internal
@@ -19,7 +19,7 @@ public final class StructVariable extends TrackedVariable {
 
     public StructVariable(@NotNull String value, @NotNull Map<String, Variable> children) {
         this.value = value;
-        this.children = caseInsensitiveMap(children);
+        this.children = CaseInsensitive.newMap(children);
     }
 
     @Override

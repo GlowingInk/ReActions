@@ -5,10 +5,10 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.ItemVariable;
-import fun.reactions.util.Utils;
 import fun.reactions.util.enums.SafeEnum;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -62,10 +62,10 @@ public class InventoryClickActivator extends Activator {
 
     public static InventoryClickActivator create(Logic base, Parameters param) {
         String inventoryName = param.getString("name", "");
-        ClickType click = Utils.getEnum(ClickType.class, param.getString("click-type", ""));
-        InventoryAction action = Utils.getEnum(InventoryAction.class, param.getString("action-type", ""));
-        InventoryType inventory = Utils.getEnum(InventoryType.class, param.getString("inventory-type", ""));
-        SlotType slotType = Utils.getEnum(SlotType.class, param.getString("slot-type", ""));
+        ClickType click = EnumUtils.parseEnum(param.getString("click-type", ""), ClickType.class, null);
+        InventoryAction action = EnumUtils.parseEnum(param.getString("action-type", ""), InventoryAction.class, null);
+        InventoryType inventory = EnumUtils.parseEnum(param.getString("inventory-type", ""), InventoryType.class, null);
+        SlotType slotType = EnumUtils.parseEnum(param.getString("slot-type", ""), SlotType.class, null);
         String numberKey = param.getString("key", "");
         String slotStr = param.getString("slot", "");
         String itemStr = param.getString("item", null);

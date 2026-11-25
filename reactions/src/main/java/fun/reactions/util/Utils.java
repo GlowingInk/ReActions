@@ -213,50 +213,6 @@ public final class Utils {
         return def;
     }
 
-    /**
-     * Get any enum by its name
-     * @param <T> Enum type
-     * @param clazz Enum class
-     * @param name Name of enum
-     * @return Corresponding enum, or null if not found
-     */
-    public static <T extends Enum<T>> @Nullable T getEnum(@NotNull Class<T> clazz, @NotNull String name) {
-        return getEnum(clazz, name, null);
-    }
-
-    /**
-     * Get any enum by its name or default value if not found
-     * @param <T> Enum type
-     * @param clazz Enum class
-     * @param name Name of enum
-     * @param def Default value
-     * @return Corresponding enum, or {@param def} if not found
-     */
-    @Contract("_, _, !null -> !null")
-    public static <T extends Enum<T>> @Nullable T getEnum(@NotNull Class<T> clazz, @NotNull String name, @Nullable T def) {
-        try {
-            return Enum.valueOf(clazz, name.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException ignored) {
-            return def;
-        }
-    }
-
-    /**
-     * Get any enum by its name or default value if not found
-     * @param <T> Enum type
-     * @param name Name of enum
-     * @param def Default value
-     * @return Corresponding enum, or {@param def} if not found
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String name, @NotNull T def) {
-        try {
-            return (T) Enum.valueOf(def.getClass(), name.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException ignored) {
-            return def;
-        }
-    }
-
     public static @NotNull String cutLast(@NotNull StringBuilder builder, int offset) {
         return offset < builder.length()
                 ? builder.substring(0, builder.length() - offset)

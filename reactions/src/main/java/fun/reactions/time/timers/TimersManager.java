@@ -28,6 +28,7 @@ import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,7 +41,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
 public class TimersManager { // TODO Rework from scratch; maybe rework with WaitingManager
 	/*
@@ -133,7 +133,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     }
 
     public static Map<String, Timer> getIngameTimers() {
-        Map<String, Timer> ingameTimers = caseInsensitiveLinkedMap();
+        Map<String, Timer> ingameTimers = CaseInsensitive.newLinkedMap();
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (timer.isIngameTimer()) ingameTimers.put(key, timer);
@@ -142,7 +142,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     }
 
     public static Map<String, Timer> getServerTimers() {
-        Map<String, Timer> serverTimers = caseInsensitiveLinkedMap();
+        Map<String, Timer> serverTimers = CaseInsensitive.newLinkedMap();
         for (String key : timers.keySet()) {
             Timer timer = timers.get(key);
             if (!timer.isIngameTimer()) serverTimers.put(key, timer);
@@ -164,7 +164,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     public static void init() {
         currentIngameTime = "";
         timersIngame = new HashSet<>();
-        timers = caseInsensitiveLinkedMap();
+        timers = CaseInsensitive.newLinkedMap();
         load();
         initIngameTimer();
         initServerTimer();

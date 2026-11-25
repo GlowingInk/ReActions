@@ -4,6 +4,7 @@ import fun.reactions.util.Utils;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.parameter.ParametersUtils;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -77,7 +78,7 @@ public record FireworkAspect(boolean effects) implements MetaAspect {
             for (String effectStr : split) {
                 Parameters params = Parameters.fromString(effectStr);
                 FireworkEffect.Builder builder = FireworkEffect.builder();
-                FireworkEffect.Type type = Utils.getEnum(params.getString("type"), FireworkEffect.Type.BALL); // TODO: Allow search by key
+                FireworkEffect.Type type = EnumUtils.parseEnum(params.getString("type"), FireworkEffect.Type.BALL); // TODO: Allow search by key
                 builder.with(type);
                 if (params.getBoolean("flicker")) builder.withFlicker();
                 if (params.getBoolean("trail")) builder.withTrail();

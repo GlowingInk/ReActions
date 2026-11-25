@@ -1,6 +1,6 @@
 package fun.reactions.util.enums;
 
-import fun.reactions.util.Utils;
+import ink.glowing.utils.EnumUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public record SafeEnum<E extends Enum<E>>(@Nullable E instance) {
     public SafeEnum(@NotNull String name, @NotNull Class<E> clazz) {
-        this(Utils.getEnum(clazz, name));
+        this(EnumUtils.parseEnum(name, clazz, null));
     }
 
     public boolean isValidFor(@Nullable E other) {

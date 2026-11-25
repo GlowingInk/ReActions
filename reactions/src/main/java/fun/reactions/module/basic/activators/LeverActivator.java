@@ -27,10 +27,10 @@ import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.activators.Locatable;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.location.position.ImplicitPosition;
 import fun.reactions.util.parameter.BlockParameters;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.bool.TriState;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -42,17 +42,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class LeverActivator extends Activator implements Locatable {
-    private final TriBoolean state;
+    private final TriState state;
     private final ImplicitPosition pos;
 
-    private LeverActivator(Logic base, TriBoolean state, ImplicitPosition pos) {
+    private LeverActivator(Logic base, TriState state, ImplicitPosition pos) {
         super(base);
         this.state = state;
         this.pos = pos;
     }
 
     public static LeverActivator create(Logic base, Parameters params) {
-        TriBoolean state = params.getTriBoolean(params.findKey(Parameters.ORIGIN_KEY, "lever-state"));
+        TriState state = params.getTriState(params.findKey(Parameters.ORIGIN_KEY, "lever-state"));
         Block targetBlock = params instanceof BlockParameters blockParams ? blockParams.getBlock() : null;
         if (targetBlock != null && targetBlock.getType() == Material.LEVER) {
             return new LeverActivator(base, state, ImplicitPosition.byLocation(targetBlock.getLocation()));
@@ -79,7 +79,7 @@ public class LeverActivator extends Activator implements Locatable {
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
         pos.intoConfiguration(cfg);
-        cfg.set("lever-state", state.name());
+        cfg.set("lever-state", Parameters.TRI.name(state));
     }
 
     public static class Context extends ActivationContext {

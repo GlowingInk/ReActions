@@ -4,8 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.bool.TriState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,15 +17,15 @@ import java.util.Map;
  * @since 05/02/2017
  */
 public class FlightActivator extends Activator {
-    private final TriBoolean flight;
+    private final TriState flight;
 
-    private FlightActivator(Logic base, TriBoolean type) {
+    private FlightActivator(Logic base, TriState type) {
         super(base);
         this.flight = type;
     }
 
     public static FlightActivator create(Logic base, Parameters param) {
-        return new FlightActivator(base, param.getTriBoolean("flight"));
+        return new FlightActivator(base, param.getTriState("flight"));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class FlightActivator extends Activator {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("flight", flight.name());
+        cfg.set("flight", Parameters.TRI.name(flight));
     }
 
     /**

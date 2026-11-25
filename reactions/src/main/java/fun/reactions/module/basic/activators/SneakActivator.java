@@ -4,8 +4,8 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
-import fun.reactions.util.bool.TriBoolean;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.bool.TriState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,15 +17,15 @@ import java.util.Map;
  * @since 16/05/2017
  */
 public class SneakActivator extends Activator {
-    private final TriBoolean sneak;
+    private final TriState sneak;
 
-    private SneakActivator(Logic base, TriBoolean sneak) {
+    private SneakActivator(Logic base, TriState sneak) {
         super(base);
         this.sneak = sneak;
     }
 
     public static SneakActivator create(Logic base, Parameters param) {
-        return new SneakActivator(base, param.getTriBoolean("sneak"));
+        return new SneakActivator(base, param.getTriState("sneak"));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class SneakActivator extends Activator {
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("sneak", sneak.name());
+        cfg.set("sneak", Parameters.TRI.name(sneak));
     }
 
     /**

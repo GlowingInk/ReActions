@@ -1,14 +1,14 @@
 package fun.reactions.util.parameter;
 
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.block.Block;
 
-import static fun.reactions.util.collections.CollectionUtils.caseInsensitiveLinkedMap;
 
 public final class BlockParameters extends Parameters {
     private final Block block;
 
     public BlockParameters(String param, Block block) {
-        super(param, caseInsensitiveLinkedMap(fromString(param).originMap()));
+        super(param, CaseInsensitive.newLinkedMap(fromString(param).originMap()));
         this.block = block;
     }
 

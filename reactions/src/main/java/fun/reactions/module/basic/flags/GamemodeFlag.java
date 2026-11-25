@@ -25,8 +25,8 @@ package fun.reactions.module.basic.flags;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class GamemodeFlag implements Flag, Activity.Personal {
     @Override
     public boolean proceed(@NotNull Environment env, @NotNull Player player, @NotNull String paramsStr) {
-        return player.getGameMode() == Utils.getEnum(GameMode.class, paramsStr);
+        return player.getGameMode() == EnumUtils.parseEnum(paramsStr, GameMode.class, null);
     }
 
     @Override

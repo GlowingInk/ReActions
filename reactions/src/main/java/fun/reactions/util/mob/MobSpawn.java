@@ -33,6 +33,8 @@ import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.parameter.ParametersUtils;
+import ink.glowing.utils.EnumUtils;
+import ink.glowing.utils.rng.RngUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -125,7 +127,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
                 mbs = mbs.substring(name.length() + 1);
             }
 
-            EntityType et = Utils.getEnum(mbs, EntityType.ZOMBIE);
+            EntityType et = EnumUtils.parseEnum(mbs, EntityType.ZOMBIE);
 
             Entity e = loc.getWorld().spawnEntity(loc, et);
 
@@ -284,7 +286,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
     private static ItemStack getRandomItem(String str) {
         if (str.isEmpty()) return new ItemStack(Material.AIR);
         List<String> ln = ParametersUtils.splitSafely(str, ',');
-        ItemStack item = VirtualItem.asItemStack(Rng.randomElement(ln));
+        ItemStack item = VirtualItem.asItemStack(RngUtils.randomElement(ln));
         if (item == null) return new ItemStack(Material.AIR);
         item.setAmount(1);
         return item;

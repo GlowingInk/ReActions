@@ -25,11 +25,11 @@ package fun.reactions.module.worldguard.actions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
-import fun.reactions.util.Rng;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.rng.Chance;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -37,7 +37,6 @@ import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.function.DoublePredicate;
 
 @Aliased.Names({"FILL_BLOCK", "BLOCK_FILL"})
 public class BlockFillAction implements Action {
@@ -80,11 +79,11 @@ public class BlockFillAction implements Action {
 
     private void fillArea(Material type, Location loc1, Location loc2, int chance, boolean phys, boolean drop) {
         World world = loc1.getWorld();
-        DoublePredicate check = chance >= 100 ? (d) -> true : Rng::percentChance;
+        Chance check = Chance.ofPercent(chance);
         for (int x = Math.min(loc1.getBlockX(), loc2.getBlockX()), xMax = Math.max(loc1.getBlockX(), loc2.getBlockX()); x <= xMax; ++x) {
             for (int z = Math.min(loc1.getBlockZ(), loc2.getBlockZ()), zMax = Math.max(loc1.getBlockZ(), loc2.getBlockZ()); z <= zMax; ++z) {
                 for (int y = Math.min(loc1.getBlockY(), loc2.getBlockY()), yMax = Math.max(loc1.getBlockY(), loc2.getBlockY()); y <= yMax; ++y) {
-                    if (check.test(chance)) {
+                    if (check.test()) {
                         Block block = world.getBlockAt(x, y, z);
                         if (drop && !block.getType().isAir()) block.breakNaturally();
                         block.setType(type, phys);

@@ -6,9 +6,9 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.model.environment.variables.ReferenceVariable;
-import fun.reactions.util.Utils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.EnumUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class TeleportActivator extends Activator {
     }
 
     public static TeleportActivator create(Logic base, Parameters param) {
-        TeleportCause cause = Utils.getEnum(TeleportCause.class, param.getString("cause", ""));
+        TeleportCause cause = EnumUtils.parseEnum(param.getString("cause", ""), TeleportCause.class, null);
         String worldTo = param.getString("world", null);
         return new TeleportActivator(base, cause, worldTo);
     }

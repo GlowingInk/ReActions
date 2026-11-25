@@ -4,9 +4,9 @@ import fun.reactions.ReActions;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
+import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ import java.util.*;
 
 public class InventoryMenu implements Listener { // TODO Requires major refactoring
 
-    private static final Map<String, VirtualInventory> menu = CollectionUtils.caseInsensitiveLinkedMap();
+    private static final Map<String, VirtualInventory> menu = CaseInsensitive.newLinkedMap();
     private static Variables vars;
 
     public static void init(ReActions.Platform platform) {
