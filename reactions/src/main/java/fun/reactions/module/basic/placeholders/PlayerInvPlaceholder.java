@@ -25,9 +25,9 @@ public class PlayerInvPlaceholder implements Placeholder {
         if (slotOpt.isPresent()) {
             int slotNum = slotOpt.getAsInt();
             if (slotNum < 0 || slotNum >= player.getInventory().getSize()) return VirtualItem.AIR.asString();
-            return VirtualItem.asString(player.getInventory().getItem(slotNum));
+            return env.getPlatform().getItems().asString(player.getInventory().getItem(slotNum));
         } else {
-            return VirtualItem.asString(switch (text.toLowerCase(Locale.ROOT)) {
+            return env.getPlatform().getItems().asString(switch (text.toLowerCase(Locale.ROOT)) {
                 case "mainhand", "main-hand", "main_hand", "hand" ->
                         player.getInventory().getItemInMainHand();
                 case "offhand", "off-hand", "off_hand", "secondhand", "second-hand", "second_hand" ->

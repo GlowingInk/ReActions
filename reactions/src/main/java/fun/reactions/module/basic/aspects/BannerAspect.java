@@ -1,7 +1,8 @@
-package fun.reactions.util.item.aspects;
+package fun.reactions.module.basic.aspects;
 
 import fun.reactions.util.RegistryUtils;
 import fun.reactions.util.Utils;
+import fun.reactions.util.item.MetaAspect;
 import ink.glowing.utils.EnumUtils;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;

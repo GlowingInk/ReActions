@@ -26,7 +26,6 @@ import fun.reactions.ReActions;
 import fun.reactions.util.Rng;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
-import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.num.Is;
@@ -286,7 +285,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
     private static ItemStack getRandomItem(String str) {
         if (str.isEmpty()) return new ItemStack(Material.AIR);
         List<String> ln = ParametersUtils.splitSafely(str, ',');
-        ItemStack item = VirtualItem.asItemStack(RngUtils.randomElement(ln));
+        ItemStack item = ReActions.getItems().asItemStack(RngUtils.randomElement(ln));
         if (item == null) return new ItemStack(Material.AIR);
         item.setAmount(1);
         return item;

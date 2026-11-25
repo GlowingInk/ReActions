@@ -1,7 +1,6 @@
 package fun.reactions.events.listeners;
 
 import fun.reactions.ReActions;
-import fun.reactions.events.MovementHandler;
 import fun.reactions.holders.PlayerRespawner;
 import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activators.ActivationContext;
@@ -13,7 +12,6 @@ import fun.reactions.util.Rng;
 import fun.reactions.util.TemporaryOp;
 import fun.reactions.util.Utils;
 import fun.reactions.util.block.BlockUtils;
-import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
@@ -47,11 +45,11 @@ import static fun.reactions.module.basic.ItemContextManager.triggerItemHold;
 import static fun.reactions.module.basic.ItemContextManager.triggerItemWear;
 
 public class BukkitListener implements Listener {
-    private final MovementHandler movement;
+    private final ReActions.Platform platform;
     private final MoveListener moveListener;
 
-    public BukkitListener(@NotNull MovementHandler movement, @NotNull MoveListener moveListener) {
-        this.movement = movement;
+    public BukkitListener(@NotNull ReActions.Platform platform, @NotNull MoveListener moveListener) {
+        this.platform = platform;
         this.moveListener = moveListener;
     }
 
@@ -72,8 +70,8 @@ public class BukkitListener implements Listener {
         playGrowl(damager);
         if (target.getType() == EntityType.PLAYER) {
             long time = System.currentTimeMillis();
-            damager.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
-            target.setMetadata("reactions-pvp-time", new FixedMetadataValue(ReActions.getPlugin(), time));
+            damager.setMetadata("reactions-pvp-time", new FixedMetadataValue(platform.getPlugin(), time));
+            target.setMetadata("reactions-pvp-time", new FixedMetadataValue(platform.getPlugin(), time));
         }
         var optVars = triggerMobDamage(damager, target, event.getDamage(), event.getFinalDamage(), event.getCause());
         if (optVars.isEmpty()) return;
@@ -142,7 +140,7 @@ public class BukkitListener implements Listener {
     // TODO: All the checks should be inside activator
     @EventHandler(ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
-        for (Activator activator : ReActions.getActivatorTypes().get(SignActivator.class).getActivators()) {
+        for (Activator activator : platform.getActivatorTypes().get(SignActivator.class).getActivators()) {
             SignActivator signAct = (SignActivator) activator;
             if (!signAct.checkMask(event.getLines())) continue;
             Msg.MSG_SIGNFORBIDDEN.print(event.getPlayer(), '4', 'c', signAct.getLogic().getName());
@@ -200,7 +198,7 @@ public class BukkitListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         // TODO: Set respawn location
         PlayerRespawner.triggerPlayerRespawn(event.getPlayer(), event.getRespawnLocation());
-        movement.onMove(event.getPlayer(), event.getPlayer().getLocation(), event.getRespawnLocation());
+        platform.getMovement().onMove(event.getPlayer(), event.getPlayer().getLocation(), event.getRespawnLocation());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -302,7 +300,7 @@ public class BukkitListener implements Listener {
         moveListener.initLocation(player);
 
         triggerJoin(player, !player.hasPlayedBefore());
-        movement.onMove(player, null, player.getLocation());
+        platform.getMovement().onMove(player, null, player.getLocation());
         triggerCuboid(player);
         triggerItemHold(player);
         triggerItemWear(player);
@@ -339,7 +337,7 @@ public class BukkitListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Teleporter.startTeleport(event);
         triggerCuboid(event.getPlayer());
-        movement.onMove(event.getPlayer(), event.getFrom(), event.getTo());
+        platform.getMovement().onMove(event.getPlayer(), event.getFrom(), event.getTo());
         Teleporter.stopTeleport(event.getPlayer());
     }
 
@@ -348,7 +346,7 @@ public class BukkitListener implements Listener {
         var optVars = triggerInventoryClick(event);
         if (optVars.isEmpty()) return;
         Variables vars = optVars.get();
-        vars.changed(InventoryClickActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent(event::setCurrentItem);
+        vars.changed(InventoryClickActivator.Context.ITEM, platform.getItems()::asItemStack).ifPresent(event::setCurrentItem);
         vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
     }
 
@@ -358,10 +356,10 @@ public class BukkitListener implements Listener {
         triggerDrop(event.getPlayer(), item, item.getPickupDelay()).ifPresent(vars -> applyItemChanges(vars, item, event));
     }
 
-    private static void applyItemChanges(Variables vars, Item item, Cancellable event) {
+    private void applyItemChanges(Variables vars, Item item, Cancellable event) {
         vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
         vars.changedInt(DropActivator.Context.PICKUP_DELAY).ifPresent(item::setPickupDelay);
-        vars.changed(DropActivator.Context.ITEM, VirtualItem::asItemStack).ifPresent(item::setItemStack);
+        vars.changed(DropActivator.Context.ITEM, platform.getItems()::asItemStack).ifPresent(item::setItemStack);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -4,7 +4,6 @@ import fun.reactions.ReActions;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.Bukkit;
@@ -69,7 +68,7 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
         for (int i = 0; i < contents.length; i++) {
             ItemStack item = contents[i];
             if (item == null || item.getType().isAir()) continue;
-            slots.set(i, VirtualItem.asString(item));
+            slots.set(i, ReActions.getItems().asString(item));
         }
         putMenu(id, vi);
         save();
@@ -144,7 +143,7 @@ public class InventoryMenu implements Listener { // TODO Requires major refactor
             for (int i = 1; i <= size; i++) {
                 String slotStr = "slot" + i;
                 if (!param.contains(slotStr)) continue;
-                ItemStack slotItem = VirtualItem.asItemStack(param.getString(slotStr));
+                ItemStack slotItem = ReActions.getItems().asItemStack(param.getString(slotStr));
                 if (slotItem == null) continue;
                 inv.setItem(i - 1, slotItem);
             }

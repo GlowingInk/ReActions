@@ -1,14 +1,13 @@
-package fun.reactions.util.item.aspects;
+package fun.reactions.util.item;
 
+import fun.reactions.util.naming.Named;
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface MetaAspect { // TODO Rework to use DataComponents
-    @NotNull String getName();
-
+public interface MetaAspect extends Named { // TODO Rework to also use DataComponents
     @NotNull MetaAspect.Instance fromString(@NotNull String value);
 
     @Nullable MetaAspect.Instance fromItem(@NotNull ItemMeta meta);

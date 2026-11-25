@@ -26,6 +26,7 @@ import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.util.Utils;
+import fun.reactions.util.item.ItemManager;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
@@ -53,12 +54,13 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        if (item.isEmpty() || (VirtualItem.asItemStack(item) == null)) {
+        ItemManager items = logic.getPlatform().getItems();
+        if (item.isEmpty() || (items.asItemStack(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
             return false;
         }
         Context iw = (Context) context;
-        return iw.isItemWeared(this.item);
+        return iw.isItemWeared(items.fromString(item));
     }
 
     @Override
@@ -86,9 +88,9 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
             return ItemWearActivator.class;
         }
 
-        public boolean isItemWeared(String itemStr) { // TODO: Why is it there?
+        public boolean isItemWeared(VirtualItem item) { // TODO: Why is it there?
             for (ItemStack armour : player.getInventory().getArmorContents())
-                if (VirtualItem.isSimilar(itemStr, armour)) return true;
+                if (item.isSimilar(armour)) return true;
             return false;
         }
     }

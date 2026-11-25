@@ -7,6 +7,7 @@ import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.selectors.Selector;
+import fun.reactions.util.item.MetaAspect;
 import fun.reactions.util.naming.Named;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,5 +59,9 @@ public interface Module extends Named {
 
     interface WithAreas extends Module {
         @NotNull Collection<@NotNull AreaProvider> getAreas();
+    }
+
+    interface WithItemAspects extends Module {
+        @NotNull Collection<@NotNull MetaAspect> getItemAspects();
     }
 }

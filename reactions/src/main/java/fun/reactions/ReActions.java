@@ -11,6 +11,7 @@ import fun.reactions.module.ModulesRegistry;
 import fun.reactions.placeholders.PlaceholdersManager;
 import fun.reactions.selectors.SelectorsManager;
 import fun.reactions.time.wait.WaitingManager;
+import fun.reactions.util.item.ItemManager;
 import fun.reactions.variables.PersistentVariablesManager;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Server;
@@ -68,6 +69,10 @@ public final class ReActions {
         return platform.getAreas();
     }
 
+    public static ItemManager getItems() {
+        return platform.getItems();
+    }
+
     public static MovementRegistry getMovement() {
         return platform.getMovement();
     }
@@ -97,6 +102,7 @@ public final class ReActions {
         @NotNull PersistentVariablesManager getPersistentVariables();
         @NotNull SelectorsManager getSelectors();
         @NotNull AreasRegistry getAreas();
+        @NotNull ItemManager getItems();
         @NotNull MovementRegistry getMovement();
         @NotNull WaitingManager getWaiter();
         @NotNull SQLManager getSql();

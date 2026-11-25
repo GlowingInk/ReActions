@@ -195,6 +195,9 @@ public class ModulesRegistry {
         if (module instanceof Module.WithAreas withAreas) {
             register("areas", withAreas.getAreas(), platform.getAreas()::registerArea);
         }
+        if (module instanceof Module.WithItemAspects withItemAspects) {
+            register("item aspects", withItemAspects.getItemAspects(), platform.getItems()::registerAspect);
+        }
         registerHooks(module);
         loadedModules.put(module.getName(), module);
         if (enabled) {

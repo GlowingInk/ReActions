@@ -52,7 +52,7 @@ public class MobDamageActivator extends Activator {
         super(base);
         this.mobType = type;
         this.mobName = name;
-        this.item = VirtualItem.fromString(item);
+        this.item = base.getPlatform().getItems().fromString(item);
     }
 
     public static MobDamageActivator create(Logic base, Parameters param) {

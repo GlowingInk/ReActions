@@ -37,8 +37,8 @@ public class ItemHeldActivator extends Activator {
 
     public static ItemHeldActivator create(Logic base, Parameters param) {
         return new ItemHeldActivator(base,
-                VirtualItem.fromString(param.getString("item-prev", null)),
-                VirtualItem.fromString(param.getString("item-new", null)),
+                base.getPlatform().getItems().fromString(param.getString("item-prev", null)),
+                base.getPlatform().getItems().fromString(param.getString("item-new", null)),
                 param.getInteger("slot-prev", 1) - 1,
                 param.getInteger("slot-new", 1) - 1
         );

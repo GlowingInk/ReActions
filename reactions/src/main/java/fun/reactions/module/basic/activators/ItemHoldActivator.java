@@ -29,8 +29,8 @@ import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.ItemVariable;
 import fun.reactions.util.Utils;
 import fun.reactions.util.enums.HandType;
+import fun.reactions.util.item.ItemManager;
 import fun.reactions.util.item.ItemUtils;
-import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
@@ -65,12 +65,13 @@ public class ItemHoldActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        if (item.isEmpty() || (VirtualItem.asItemStack(item) == null)) {
+        ItemManager items = logic.getPlatform().getItems();
+        if (item.isEmpty() || (items.asItemStack(item) == null)) {
             Msg.logOnce(logic.getName() + "activatorholdempty", "Failed to parse itemStr of activator " + logic.getName());
             return false;
         }
         Context ie = (Context) context;
-        return hand.isValidFor(ie.hand) && VirtualItem.isSimilar(this.item, ie.item);
+        return hand.isValidFor(ie.hand) && items.isSimilar(this.item, ie.item);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class PickupItemActivator extends Activator {
 
     private PickupItemActivator(Logic base, @Nullable String item) {
         super(base);
-        this.item = VirtualItem.fromString(item);
+        this.item = base.getPlatform().getItems().fromString(item);
     }
 
     public static PickupItemActivator create(Logic base, Parameters param) {

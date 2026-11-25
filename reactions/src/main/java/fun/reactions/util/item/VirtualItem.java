@@ -1,8 +1,5 @@
 package fun.reactions.util.item;
 
-import fun.reactions.util.item.aspects.*;
-import fun.reactions.util.naming.Aliased;
-import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameterizable;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Material;
@@ -13,13 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class VirtualItem implements Parameterizable {
-    private static final Pattern SIMPLE_ITEM = Pattern.compile("([a-zA-Z\\d_]+)(?::(\\d{1,9}))?(?:\\*(\\d{1,9}))?");
-
     /**
      * A VirtualItem that accepts only null or air ItemStacks
      */
@@ -87,37 +80,6 @@ public class VirtualItem implements Parameterizable {
         }
     };
 
-    private static final Map<String, MetaAspect> ASPECTS_BY_NAME = new LinkedHashMap<>(); // TODO: Registry
-    private static final List<MetaAspect> ASPECTS = new ArrayList<>();
-    static {
-        registerAspect(new NameAspect(true));
-        registerAspect(new NameAspect(false));
-        registerAspect(new LoreAspect(true));
-        registerAspect(new LoreAspect(false));
-        registerAspect(new DurabilityAspect());
-        registerAspect(new EnchantmentsAspect());
-        registerAspect(new ModelAspect());
-        registerAspect(new ColorAspect());
-        registerAspect(new BannerAspect());
-        registerAspect(new BookAspect(BookAspect.Type.PAGES));
-        registerAspect(new BookAspect(BookAspect.Type.TITLE));
-        registerAspect(new BookAspect(BookAspect.Type.AUTHOR));
-        registerAspect(new FireworkAspect(true));
-        registerAspect(new FireworkAspect(false));
-        registerAspect(new HeadAspect());
-        registerAspect(new MapAspect(true));
-        registerAspect(new MapAspect(false));
-        registerAspect(new PotionAspect(true));
-        registerAspect(new PotionAspect(false));
-    }
-    private static void registerAspect(@NotNull MetaAspect aspect) {
-        ASPECTS_BY_NAME.put(aspect.getName().toLowerCase(Locale.ROOT), aspect);
-        ASPECTS.add(aspect);
-        for (String alias : Aliased.getAliasesOf(aspect)) {
-            ASPECTS_BY_NAME.putIfAbsent(alias.toLowerCase(Locale.ROOT), aspect);
-        }
-    }
-
     private final Material type;
     private final int amount;
     private final List<MetaAspect.Instance> aspects; // TODO Probably would be better to just have a Map<String, MA.Instance>
@@ -126,7 +88,7 @@ public class VirtualItem implements Parameterizable {
     private ItemStack itemValue;
     private Parameters paramsValue;
 
-    private VirtualItem(
+    VirtualItem(
             @Nullable Material type,
             int amount,
             @NotNull List<MetaAspect.Instance> aspects,
@@ -138,7 +100,7 @@ public class VirtualItem implements Parameterizable {
         this.paramsValue = params;
     }
 
-    private VirtualItem(
+    VirtualItem(
             @Nullable Material type,
             int amount,
             @NotNull List<MetaAspect.Instance> aspects,
@@ -206,7 +168,7 @@ public class VirtualItem implements Parameterizable {
         return asItemStack(true);
     }
 
-    private @Nullable ItemStack asItemStack(boolean initClone) {
+    @Nullable ItemStack asItemStack(boolean initClone) {
         if (itemGenerated) {
             return itemValue == null
                     ? null
@@ -290,154 +252,6 @@ public class VirtualItem implements Parameterizable {
             case EQUAL -> amount == -1 || amount == compared.getAmount();
             case SATISFIES -> amount == -1 || amount <= compared.getAmount();
         };
-    }
-
-    /**
-     * Generate a new VirtualItem from item.
-     * Considers null as item type AIR.
-     * @param item item to generate from
-     * @return generated VirtualItem
-     */
-    public static @NotNull VirtualItem fromItemStack(@Nullable ItemStack item) {
-        return fromItemStack(item, true);
-    }
-
-    private static @NotNull VirtualItem fromItemStack(@Nullable ItemStack item, boolean clone) {
-        if (item == null || item.isEmpty()) {
-            return VirtualItem.AIR;
-        }
-        if (clone) {
-            item = item.clone();
-        }
-        List<MetaAspect.Instance> aspects;
-        if (!item.hasItemMeta()) {
-            aspects = List.of();
-        } else {
-            aspects = new ArrayList<>();
-            ItemMeta meta = item.getItemMeta();
-            for (MetaAspect aspect : ASPECTS) {
-                MetaAspect.Instance aspectInst = aspect.fromItem(meta);
-                if (aspectInst != null) aspects.add(aspectInst);
-            }
-            if (aspects.isEmpty()) {
-                aspects = List.of();
-            }
-        }
-        return new VirtualItem(
-                item.getType(),
-                item.getAmount(),
-                aspects,
-                item
-        );
-    }
-
-    @Contract(pure = true)
-    public static @NotNull VirtualItem fromString(@Nullable String paramsStr) {
-        return paramsStr == null
-                ? EVERYTHING
-                : fromParameters(Parameters.fromString(paramsStr));
-    }
-
-    @Contract(pure = true)
-    public static @NotNull VirtualItem fromParameters(@Nullable Parameters params) {
-        if (params == null) return VirtualItem.EVERYTHING;
-        if (params.isEmpty()) return VirtualItem.ANY;
-        List<MetaAspect.Instance> aspects = new ArrayList<>();
-        Material type = null;
-        int amount = -1;
-        boolean regex = params.getBoolean("regex", false);
-        for (String key : params.keysFull()) {
-            key = key.toLowerCase(Locale.ROOT);
-            String value = params.getString(key);
-            switch (key) {
-                case Parameters.ORIGIN_KEY: {
-                    continue;
-                }
-                case "everything": {
-                    if (params.getBoolean(key)) {
-                        return EVERYTHING;
-                    }
-                    break;
-                }
-                case "nothing", "invalid": {
-                    if (params.getBoolean(key)) {
-                        return NOTHING;
-                    }
-                    break;
-                }
-                case "item": {
-                    Matcher matcher = SIMPLE_ITEM.matcher(params.getString(key));
-                    if (!matcher.matches()) break;
-                    type = ItemUtils.getMaterial(matcher.group(1));
-                    if (type == null) return VirtualItem.NOTHING;
-                    if (matcher.group(2) != null) {
-                        aspects.add(ASPECTS_BY_NAME.get("durability").fromString(matcher.group(1)));
-                    }
-                    if (matcher.group(3) != null) {
-                        amount = NumberUtils.asInteger(matcher.group(3), -1);
-                    }
-                    break;
-                }
-                case "type": {
-                    type = params.get(key, ItemUtils::getMaterial);
-                    if (type == null) return VirtualItem.NOTHING;
-                    break;
-                }
-                case "amount": {
-                    amount = params.getInteger(key);
-                    break;
-                }
-                case "name": case "lore":
-                    if (regex) key += "-regex";
-                default:
-                    MetaAspect aspect = ASPECTS_BY_NAME.get(key);
-                    if (aspect == null) continue;
-                    aspects.add(aspect.fromString(value));
-                    break;
-            }
-        }
-        return new VirtualItem(
-                type,
-                amount,
-                aspects,
-                params
-        );
-    }
-
-    @Contract("null -> null; !null -> !null")
-    public static @Nullable ItemStack asCleanItemStack(@Nullable ItemStack item) {
-        if (item == null) return null;
-        VirtualItem virtual = fromItemStack(item, false);
-        return new VirtualItem(
-                virtual.type,
-                virtual.amount,
-                virtual.aspects,
-                virtual.asParameters()
-        ).asItemStack(false);
-    }
-
-    public static @Nullable ItemStack asItemStack(@NotNull String itemStr) {
-        return fromString(itemStr).asItemStack(false);
-    }
-
-    public static @Nullable ItemStack asItemStack(@NotNull Parameters itemParams) {
-        return fromParameters(itemParams).asItemStack(false);
-    }
-
-    public static @NotNull String asString(@Nullable ItemStack item) {
-        return fromItemStack(item, false).asString();
-    }
-
-    public static @NotNull Parameters asParameters(@Nullable ItemStack item) {
-        return fromItemStack(item, false).asParameters();
-    }
-
-    public static boolean isSimilar(@NotNull String itemStr, @Nullable ItemStack compared) {
-        return fromString(itemStr).isSimilar(compared);
-    }
-
-    public static boolean isSimilar(@NotNull Parameters itemParams, @Nullable ItemStack compared) {
-        return fromParameters(itemParams).isSimilar(compared);
     }
 
     @Override

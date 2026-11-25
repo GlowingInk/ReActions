@@ -1,5 +1,6 @@
 package fun.reactions.module.basic.activators;
 
+import fun.reactions.ReActions;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
@@ -44,7 +45,7 @@ public class InventoryClickActivator extends Activator {
         this.slotType = new SafeEnum<>(slotType);
         this.numberKey = numberKey;
         this.slotStr = slotStr;
-        this.item = VirtualItem.fromString(itemStr);
+        this.item = base.getPlatform().getItems().fromString(itemStr);
     }
 
     @Override
@@ -134,7 +135,7 @@ public class InventoryClickActivator extends Activator {
 
         @Override
         protected @NotNull Map<String, Variable> prepareVariables() {
-            Variable itemVar = item == null ? Variable.value(VirtualItem.asString(null)) : new ItemVariable(item);
+            Variable itemVar = item == null ? Variable.value(VirtualItem.AIR.asString()) : new ItemVariable(item);
             return Map.of(
                     CANCEL_EVENT, Variable.value(false),
                     ITEM, itemVar,
@@ -144,7 +145,7 @@ public class InventoryClickActivator extends Activator {
                     "slottype", Variable.value(slotType),
                     "inventory", Variable.value(inventoryType),
                     "key", Variable.value(numberKey + 1),
-                    "itemkey", numberKey > -1 ? Variable.lazy(() -> VirtualItem.asString(getBottomInventory().getItem(numberKey))) : Variable.value(""),
+                    "itemkey", numberKey > -1 ? Variable.lazy(() -> ReActions.getItems().asString(getBottomInventory().getItem(numberKey))) : Variable.value(""),
                     "slot", Variable.value(slot)
             );
         }

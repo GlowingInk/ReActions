@@ -43,18 +43,18 @@ public record ItemFlags(@NotNull Type flagType) implements Flag, Activity.Person
             case HAND -> {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 env.getVariables().set("item_amount", String.valueOf(item.getAmount())); // TODO: Generalize those weird quirks
-                return VirtualItem.fromString(paramsStr).isSimilar(item); // TODO: Generalize those weird quirks
+                return env.getPlatform().getItems().fromString(paramsStr).isSimilar(item); // TODO: Generalize those weird quirks
             }
             case INVENTORY -> {
                 return hasItemInInventory(env, player, paramsStr);
             }
             case WEAR -> {
-                return isItemWeared(player, paramsStr);
+                return isItemWeared(env, player, paramsStr);
             }
             case OFFHAND -> {
                 ItemStack inOffhand = player.getInventory().getItemInOffHand();
                 env.getVariables().set("item_amount", String.valueOf(inOffhand.getAmount()));
-                return VirtualItem.fromString(paramsStr).isSimilar(inOffhand);
+                return env.getPlatform().getItems().fromString(paramsStr).isSimilar(inOffhand);
             }
             default -> {
                 return false;
@@ -62,8 +62,8 @@ public record ItemFlags(@NotNull Type flagType) implements Flag, Activity.Person
         }
     }
 
-    private boolean isItemWeared(Player player, String itemStr) {
-        VirtualItem compared = VirtualItem.fromString(itemStr);
+    private boolean isItemWeared(Environment env, Player player, String itemStr) {
+        VirtualItem compared = env.getPlatform().getItems().fromString(itemStr);
         for (ItemStack armour : player.getInventory().getArmorContents())
             if (compared.isSimilar(armour)) return true;
         return false;
@@ -73,7 +73,7 @@ public record ItemFlags(@NotNull Type flagType) implements Flag, Activity.Person
         Parameters params = Parameters.fromString(itemStr);
 
         if (!params.containsEvery("slot", "item")) {
-            int countAmount = countItemsInInventory(player.getInventory(), itemStr);
+            int countAmount = countItemsInInventory(player.getInventory(), env.getPlatform().getItems().fromString(itemStr));
             env.getVariables().set("item_amount", countAmount == 0 ? "0" : String.valueOf(countAmount));
             int amount = params.getInteger("amount", 1);
             return countAmount >= amount;
@@ -84,7 +84,7 @@ public record ItemFlags(@NotNull Type flagType) implements Flag, Activity.Person
         int slotNum = NumberUtils.asInteger(slotStr, -1);
         if (slotNum >= player.getInventory().getSize()) return false;
 
-        VirtualItem item = VirtualItem.fromParameters(params);
+        VirtualItem item = env.getPlatform().getItems().fromParameters(params);
 
         if (slotNum < 0) {
             return switch (slotStr.toLowerCase(Locale.ROOT)) {
@@ -107,8 +107,7 @@ public record ItemFlags(@NotNull Type flagType) implements Flag, Activity.Person
         };
     }
 
-    private static int countItemsInInventory(Inventory inventory, String itemStr) {
-        VirtualItem virtualItem = VirtualItem.fromString(itemStr);
+    private static int countItemsInInventory(Inventory inventory, VirtualItem virtualItem) {
         int count = 0;
         for (ItemStack item : inventory) {
             if (virtualItem.isSimilar(item)) {

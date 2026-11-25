@@ -1,5 +1,6 @@
-package fun.reactions.util.item.aspects;
+package fun.reactions.module.basic.aspects;
 
+import fun.reactions.util.item.MetaAspect;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.NumberUtils;
 import org.bukkit.inventory.meta.Damageable;

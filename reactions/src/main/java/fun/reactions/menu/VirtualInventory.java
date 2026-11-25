@@ -1,7 +1,7 @@
 package fun.reactions.menu;
 
+import fun.reactions.ReActions;
 import fun.reactions.util.Utils;
-import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -73,7 +73,7 @@ public class VirtualInventory {
         holder.setInventory(inv);
         for (int i = 0; i < slots.size(); i++) {
             if (slots.get(i).isEmpty()) continue;
-            ItemStack item = VirtualItem.asItemStack(slots.get(i));
+            ItemStack item = ReActions.getItems().asItemStack(slots.get(i));
             if (item == null) continue;
             inv.setItem(i, item);
         }

@@ -5,7 +5,6 @@ import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.module.basic.activators.ItemHoldActivator;
 import fun.reactions.module.basic.activators.ItemWearActivator;
-import fun.reactions.util.item.VirtualItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -36,7 +35,7 @@ public final class ItemContextManager {
         String rg = "iw-" + itemStr;
         if (!ContextManager.isTimeToRaiseEvent(player, rg, itemWearRecheck, repeat)) return;
         ItemWearActivator.Context iwe = new ItemWearActivator.Context(player);
-        if (!iwe.isItemWeared(itemStr)) return;
+        if (!iwe.isItemWeared(ReActions.getItems().fromString(itemStr))) return;
         ReActions.getActivators().activate(iwe);
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> setFutureItemWearCheck(playerId, itemStr, true), 20L * itemWearRecheck);
     }
@@ -84,6 +83,6 @@ public final class ItemContextManager {
     }
 
     private static boolean isItemHoldProcessable(ItemStack item, String itemStr) {
-        return VirtualItem.isSimilar(itemStr, item);
+        return ReActions.getItems().isSimilar(itemStr, item);
     }
 }

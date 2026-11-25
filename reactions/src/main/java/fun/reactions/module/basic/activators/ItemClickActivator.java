@@ -47,7 +47,7 @@ public class ItemClickActivator extends Activator {
 
     private ItemClickActivator(Logic base, @Nullable String item, HandType hand) {
         super(base);
-        this.item = VirtualItem.fromString(item);
+        this.item = base.getPlatform().getItems().fromString(item);
         this.hand = hand;
     }
 

@@ -24,7 +24,7 @@ public class EnderChestPlaceholder implements Placeholder {
             int slotNum = slotOpt.getAsInt();
             Inventory inv = player.getEnderChest();
             if (slotNum >= 0 && slotNum < inv.getSize()) {
-                return VirtualItem.asString(inv.getItem(slotNum));
+                return env.getPlatform().getItems().asString(inv.getItem(slotNum));
             }
         }
         return VirtualItem.AIR.asString();

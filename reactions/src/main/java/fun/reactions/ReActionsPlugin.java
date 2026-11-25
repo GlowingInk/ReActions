@@ -52,6 +52,7 @@ import fun.reactions.selectors.SelectorsManager;
 import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
+import fun.reactions.util.item.ItemManager;
 import fun.reactions.util.message.Msg;
 import fun.reactions.variables.PersistentVariablesManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -74,6 +75,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private PersistentVariablesManager variablesManager;
     private SelectorsManager selectorsManager;
     private AreasRegistry areasRegistry;
+    private ItemManager itemManager;
     private final MovementRegistry movementRegistry = new MovementRegistry();
     private MoveListener moveListener;
     private WaitingManager waitingManager;
@@ -109,6 +111,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         configuration.register(placeholdersManager);
         this.activitiesRegistry = new ActivitiesRegistry();
         this.areasRegistry = new AreasRegistry();
+        this.itemManager = new ItemManager();
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this);
         this.selectorsManager = new SelectorsManager();
@@ -148,7 +151,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         InventoryMenu.init(this);
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
-        pluginManager.registerEvents(new BukkitListener(movementRegistry, moveListener), this);
+        pluginManager.registerEvents(new BukkitListener(this, moveListener), this);
         pluginManager.registerEvents(userCommandsManager, this);
         modulesRegistry.onEnable();
         moveListener.init();
@@ -218,6 +221,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public @NotNull AreasRegistry getAreas() {
         return areasRegistry;
+    }
+
+    @Override
+    public @NotNull ItemManager getItems() {
+        return itemManager;
     }
 
     @Override

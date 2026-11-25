@@ -1,5 +1,6 @@
 package fun.reactions.util.item;
 
+import fun.reactions.ReActions;
 import fun.reactions.util.Rng;
 import fun.reactions.util.parameter.Parameters;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -82,7 +83,7 @@ public final class ItemUtils {
         } else if (!(keys = params.keyedList("item")).isEmpty()) {
             return parseItemsSet(params, keys);
         } else {
-            ItemStack vi = VirtualItem.asItemStack(items);
+            ItemStack vi = ReActions.getItems().asItemStack(items);
             if (vi != null) {
                 return List.of(vi);
             }
@@ -94,11 +95,11 @@ public final class ItemUtils {
     private static @NotNull List<ItemStack> parseItemsSet(@NotNull Parameters params, @NotNull List<String> keys) {
         List<ItemStack> items = new ArrayList<>();
         for (String key : keys) {
-            ItemStack item = params.get(key, VirtualItem::asItemStack);
+            ItemStack item = params.get(key, ReActions.getItems()::asItemStack);
             if (item != null) items.add(item);
         }
         if (items.isEmpty()) {
-            ItemStack item = VirtualItem.asItemStack(params);
+            ItemStack item = ReActions.getItems().asItemStack(params);
             if (item != null) items.add(item);
         }
         return items;

@@ -1,7 +1,8 @@
-package fun.reactions.util.item.aspects;
+package fun.reactions.module.basic.aspects;
 
 import fun.reactions.ReActions;
 import fun.reactions.util.Utils;
+import fun.reactions.util.item.MetaAspect;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;

@@ -1,5 +1,6 @@
-package fun.reactions.util.item.aspects;
+package fun.reactions.module.basic.aspects;
 
+import fun.reactions.util.item.MetaAspect;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.jetbrains.annotations.NotNull;

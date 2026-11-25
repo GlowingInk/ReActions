@@ -28,7 +28,7 @@ public class DropActivator extends Activator {
 
     private DropActivator(Logic base, @Nullable String itemStr) {
         super(base);
-        this.item = VirtualItem.fromString(itemStr);
+        this.item = base.getPlatform().getItems().fromString(itemStr);
     }
 
     public static DropActivator create(Logic base, Parameters param) {

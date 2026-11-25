@@ -8,6 +8,7 @@ import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.module.Module;
 import fun.reactions.module.basic.actions.*;
 import fun.reactions.module.basic.activators.*;
+import fun.reactions.module.basic.aspects.*;
 import fun.reactions.module.basic.flags.*;
 import fun.reactions.module.basic.placeholders.*;
 import fun.reactions.module.basic.selectors.LocSelector;
@@ -16,6 +17,7 @@ import fun.reactions.module.basic.selectors.PlayerSelector;
 import fun.reactions.module.basic.selectors.WorldSelector;
 import fun.reactions.placeholders.Placeholder;
 import fun.reactions.selectors.Selector;
+import fun.reactions.util.item.MetaAspect;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -26,7 +28,7 @@ import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
 public class BasicModule implements
         Module.WithActivatorTypes, Module.WithActions, Module.WithFlags,
-        Module.WithPlaceholders, Module.WithSelectors {
+        Module.WithPlaceholders, Module.WithSelectors, Module.WithItemAspects {
     private LogHandler logHandler;
     private SQLManager sql;
 
@@ -261,6 +263,31 @@ public class BasicModule implements
                 new WorldSelector(),
                 new LocSelector(),
                 new PermSelector()
+        );
+    }
+
+    @Override
+    public @NotNull Collection<MetaAspect> getItemAspects() {
+        return Arrays.asList(
+                new NameAspect(true),
+                new NameAspect(false),
+                new LoreAspect(true),
+                new LoreAspect(false),
+                new DurabilityAspect(),
+                new EnchantmentsAspect(),
+                new ModelAspect(),
+                new ColorAspect(),
+                new BannerAspect(),
+                new BookAspect(BookAspect.Type.PAGES),
+                new BookAspect(BookAspect.Type.TITLE),
+                new BookAspect(BookAspect.Type.AUTHOR),
+                new FireworkAspect(true),
+                new FireworkAspect(false),
+                new HeadAspect(),
+                new MapAspect(true),
+                new MapAspect(false),
+                new PotionAspect(true),
+                new PotionAspect(false)
         );
     }
 }

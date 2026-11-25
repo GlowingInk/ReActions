@@ -1,5 +1,6 @@
 package fun.reactions.model.environment.variables;
 
+import fun.reactions.ReActions;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameterizable;
@@ -84,7 +85,7 @@ public final class ItemVariable implements Variable, Parameterizable {
 
     private @NotNull StructVariable struct() {
         if (struct == null) {
-            VirtualItem virtual = VirtualItem.fromItemStack(item);
+            VirtualItem virtual = ReActions.getItems().fromItemStack(item);
             struct = StructVariable.ofFlat(virtual.asString(), virtual.asParameters());
         }
         return struct;

@@ -1,10 +1,10 @@
 package fun.reactions.util.parameter;
 
+import fun.reactions.ReActions;
 import fun.reactions.util.RichOptional;
 import fun.reactions.util.Utils;
 import fun.reactions.util.function.SafeFunction;
 import fun.reactions.util.function.SafeSupplier;
-import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.time.TimeUtils;
 import ink.glowing.utils.EnumUtils;
@@ -68,7 +68,7 @@ public class Parameters implements Parameterizable {
                 int i = 1;
                 for (Object obj : cfg.getList(key, List.of())) {
                     if (obj instanceof ItemStack item) {
-                        params.put(key + i, VirtualItem.asString(item));
+                        params.put(key + i, ReActions.getItems().asString(item));
                     } else if (obj instanceof ConfigurationSection listCfg) {
                         params.put(key + i, fromConfiguration(listCfg, excludedKeys).toString());
                     } else {
@@ -80,7 +80,7 @@ public class Parameters implements Parameterizable {
                 //noinspection ConstantConditions
                 params.put(key, fromConfiguration(cfg.getConfigurationSection(key), excludedKeys).toString());
             } else if (cfg.isItemStack(key)) {
-                params.put(key, VirtualItem.asString(cfg.getItemStack(key)));
+                params.put(key, ReActions.getItems().asString(cfg.getItemStack(key)));
             } else {
                 //noinspection ConstantConditions
                 params.put(key, cfg.get(key).toString());

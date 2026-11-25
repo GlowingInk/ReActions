@@ -1,6 +1,7 @@
-package fun.reactions.util.item.aspects;
+package fun.reactions.module.basic.aspects;
 
 import fun.reactions.util.Utils;
+import fun.reactions.util.item.MetaAspect;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.parameter.ParametersUtils;

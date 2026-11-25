@@ -96,7 +96,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
         if (itemStr.equalsIgnoreCase("AIR")) {
             player.getInventory().setItem(slotNum, null);
         } else {
-            ItemStack vi = VirtualItem.asItemStack(itemStr);
+            ItemStack vi = env.getPlatform().getItems().asItemStack(itemStr);
             if (vi == null) return false;
             player.getInventory().setItem(slotNum, vi);
         }
@@ -121,7 +121,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
         if (slotNum >= player.getInventory().getSize()) return false;
         ItemStack item = player.getInventory().getItem(slotNum);
         String actionItems = "";
-        if (item != null) actionItems = VirtualItem.asString(item);
+        if (item != null) actionItems = env.getPlatform().getItems().asString(item);
         env.getVariables().set("item_str", actionItems);
         env.getVariables().set("item_str_esc", Utils.escapeJava(actionItems));
 
@@ -136,7 +136,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
         ItemStack[] armour = player.getInventory().getArmorContents();
         ItemStack item = armour[slot];
         String actionItems = "";
-        if (item != null) actionItems = VirtualItem.asString(item);
+        if (item != null) actionItems = env.getPlatform().getItems().asString(item);
         env.getVariables().set("item_str", actionItems);
         env.getVariables().set("item_str_esc", Utils.escapeJava(actionItems));
         return true;
@@ -151,7 +151,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
             env.getVariables().set("item_str_esc", "");
             return true;
         }
-        String item = VirtualItem.asString(player.getInventory().getItemInOffHand());
+        String item = env.getPlatform().getItems().asString(player.getInventory().getItemInOffHand());
         env.getVariables().set("item_str", item);
         env.getVariables().set("item_str_esc", Utils.escapeJava(item));
         return true;
@@ -173,7 +173,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
             if (slot == -1) return setItemInOffhand(env, params, null);
             //if (slot == -1) slot = 3;
         } else {
-            item = VirtualItem.asItemStack(itemStr);
+            item = env.getPlatform().getItems().asItemStack(itemStr);
             if (item == null) return false;
             if (slot == -1) return setItemInOffhand(env, params, item);
             // if (slot == -1) slot = getSlotByItem(item);
@@ -215,7 +215,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
     }
 
     private boolean removeItemInInventory(Environment env, Parameters params) {
-        VirtualItem search = VirtualItem.fromParameters(params);
+        VirtualItem search = env.getPlatform().getItems().fromParameters(params);
         int toRemove = search.getAmount();
         int totalRemoved = 0;
         boolean all = toRemove == -1;
@@ -245,7 +245,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
     }
 
     private boolean removeItemInHand(Environment env, Parameters params) {
-        VirtualItem search = VirtualItem.fromParameters(params);
+        VirtualItem search = env.getPlatform().getItems().fromParameters(params);
         boolean all = !params.contains("amount");
         PlayerInventory inventory = env.getPlayer().getInventory();
         ItemStack item = inventory.getItemInMainHand();
@@ -258,7 +258,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
             }
         }
         if (!item.getType().isEmpty()) {
-            env.getVariables().set("item", VirtualItem.asString(item));
+            env.getVariables().set("item", env.getPlatform().getItems().asString(item));
             env.getVariables().set("item_str", ItemUtils.toDisplayString(item));
         } else {
             env.getVariables().set("item", "");
@@ -268,7 +268,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
     }
 
     private boolean removeItemInOffHand(Environment env, Parameters params) {
-        VirtualItem search = VirtualItem.fromParameters(params);
+        VirtualItem search = env.getPlatform().getItems().fromParameters(params);
         boolean all = !params.contains("amount");
         PlayerInventory inventory = env.getPlayer().getInventory();
         ItemStack item = inventory.getItemInOffHand();
@@ -281,7 +281,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
             }
         }
         if (!item.getType().isEmpty()) {
-            env.getVariables().set("item", VirtualItem.asString(item));
+            env.getVariables().set("item", env.getPlatform().getItems().asString(item));
             env.getVariables().set("item_str", ItemUtils.toDisplayString(item));
         } else {
             env.getVariables().set("item", "");
@@ -339,7 +339,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
     private boolean unwearItem(Environment env, Parameters params) {
         Player player = env.getPlayer();
         int slot = getSlotNum(params.getString("slot"));
-        VirtualItem search = params.getSafe("item", VirtualItem::fromString);
+        VirtualItem search = params.getSafe("item", env.getPlatform().getItems()::fromString);
         String action = params.getString("item-action", "remove"); // TODO Use enum
 
         ItemStack found = null;
@@ -369,7 +369,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
             ItemUtils.giveItemOrDrop(player, found);
         }
 
-        env.getVariables().set("item", VirtualItem.asString(found));
+        env.getVariables().set("item", env.getPlatform().getItems().asString(found));
         env.getVariables().set("item_str", ItemUtils.toDisplayString(found));
         return true;
     }
