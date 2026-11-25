@@ -1,15 +1,18 @@
 package fun.reactions.module.worldguard;
 
 import fun.reactions.ReActions;
+import fun.reactions.areas.AreaProvider;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
 import fun.reactions.module.Module;
+import fun.reactions.module.basic.ContextManager;
 import fun.reactions.module.worldguard.actions.BlockFillAction;
 import fun.reactions.module.worldguard.actions.ClearRegionAction;
 import fun.reactions.module.worldguard.activators.RegionActivator;
 import fun.reactions.module.worldguard.activators.RegionEnterActivator;
 import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
+import fun.reactions.module.worldguard.areas.RegionAreaProvider;
 import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.module.worldguard.flags.RegionFlags;
 import fun.reactions.module.worldguard.flags.RegionInRadiusFlag;
@@ -23,24 +26,22 @@ import java.util.List;
 
 import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
-public class WorldGuardModule implements Module {
+public class WorldGuardModule implements
+        Module.WithActivatorTypes, Module.WithActions, Module.WithFlags,
+        Module.WithSelectors, Module.WithAreas {
     @Override
     public @NotNull Collection<String> requiredPlugins() {
         return List.of("WorldGuard");
     }
 
     @Override
-    public boolean isImportant() {
-        return false;
-    }
-
-    @Override
-    public void preRegister(@NotNull ReActions.Platform platform) {
+    public void onRegister(@NotNull ReActions.Platform platform) {
         RaWorldGuard.init();
+        platform.getMovement().registerHandler(ContextManager::triggerAllRegions);
     }
 
     @Override
-    public void postRegister(@NotNull ReActions.Platform platform) {
+    public void onEnable(@NotNull ReActions.Platform platform) {
         platform.getServer().getScheduler().runTask(platform.getPlugin(), RaWorldGuard::updateRegionCache);
     }
 
@@ -82,6 +83,11 @@ public class WorldGuardModule implements Module {
     @Override
     public @NotNull Collection<Selector> getSelectors() {
         return List.of(new RegionSelector());
+    }
+
+    @Override
+    public @NotNull Collection<AreaProvider> getAreas() {
+        return List.of(new RegionAreaProvider());
     }
 
     @Override

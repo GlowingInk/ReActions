@@ -1,7 +1,9 @@
 package fun.reactions;
 
+import fun.reactions.areas.AreasRegistry;
 import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.commands.user.UserCommandsManager;
+import fun.reactions.events.MovementRegistry;
 import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.model.activators.type.ActivatorTypesRegistry;
 import fun.reactions.model.activity.ActivitiesRegistry;
@@ -62,6 +64,14 @@ public final class ReActions {
         return platform.getSelectors();
     }
 
+    public static AreasRegistry getAreas() {
+        return platform.getAreas();
+    }
+
+    public static MovementRegistry getMovement() {
+        return platform.getMovement();
+    }
+
     public static WaitingManager getWaiter() {
         return platform.getWaiter();
     }
@@ -86,6 +96,8 @@ public final class ReActions {
         @NotNull PlaceholdersManager getPlaceholders();
         @NotNull PersistentVariablesManager getPersistentVariables();
         @NotNull SelectorsManager getSelectors();
+        @NotNull AreasRegistry getAreas();
+        @NotNull MovementRegistry getMovement();
         @NotNull WaitingManager getWaiter();
         @NotNull SQLManager getSql();
         @NotNull ModulesRegistry getModules();

@@ -278,7 +278,7 @@ public final class ContextManager {
         ReActions.getActivators().activate(new CuboidActivator.Context(player));
     }
 
-    public static void triggerAllRegions(final Player player, final Location to, final Location from) {
+    public static void triggerAllRegions(@NotNull Player player, @Nullable Location from, @NotNull Location to) {
         if (!RaWorldGuard.isConnected()) return;
         Bukkit.getScheduler().runTaskLaterAsynchronously(ReActions.getPlugin(), () -> {
 

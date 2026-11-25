@@ -22,8 +22,11 @@
 
 package fun.reactions.util.location;
 
+import fun.reactions.ReActions;
+import fun.reactions.areas.AreaBounds;
+import fun.reactions.areas.AreaProvider;
+import fun.reactions.areas.AreasRegistry;
 import fun.reactions.holders.LocationHolder;
-import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.Rng;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -89,9 +92,9 @@ public final class LocationUtils { // TODO: Requires refactoring
         }
 
         boolean land = params.getBoolean("land", true);
-        if (params.contains("region")) {
-            location = getRegionLocation(params.getString("region", ""), land);
-            location = copyYawPitch(location, def);
+        Location areaLocation = getAreaLocation(params, land);
+        if (areaLocation != null) {
+            location = copyYawPitch(areaLocation, def);
         }
 
         if (params.containsEvery("loc1", "loc2")) {
@@ -133,10 +136,16 @@ public final class LocationUtils { // TODO: Requires refactoring
         return getMinMaxLocation(minmax, land);
     }
 
-    public static Location getRegionLocation(String regionStr, boolean land) {
-        List<Location> minmax = RaWorldGuard.getRegionMinMaxLocations(regionStr);
-        if (minmax.isEmpty()) return null;
-        return getMinMaxLocation(minmax, land);
+    public static @Nullable Location getAreaLocation(@NotNull Parameters params, boolean land) {
+        AreasRegistry areas = ReActions.getAreas();
+        for (String name : areas.getAreasNames()) {
+            String id = params.getString(name, null);
+            AreaProvider area = areas.getArea(name);
+            if (id == null || area == null) continue;
+            AreaBounds bounds = area.getBounds(id);
+            if (bounds != null) return getMinMaxLocation(List.of(bounds.min(), bounds.max()), land);
+        }
+        return null;
     }
 
 

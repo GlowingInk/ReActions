@@ -12,13 +12,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class PapiModule implements Module { // TODO To own jar
+public class PapiModule implements Module.WithPlaceholders { // TODO To own jar
     private PlaceholderAPIPlugin papiPlugin;
-
-    @Override
-    public boolean isImportant() {
-        return false;
-    }
 
     @Override
     public @NotNull Collection<String> requiredPlugins() {
@@ -26,7 +21,7 @@ public class PapiModule implements Module { // TODO To own jar
     }
 
     @Override
-    public void preRegister(@NotNull ReActions.Platform platform) {
+    public void onRegister(@NotNull ReActions.Platform platform) {
         new RaPapiExpansion(platform).register();
         this.papiPlugin = (PlaceholderAPIPlugin) Objects.requireNonNull(
                 platform.getServer().getPluginManager().getPlugin("PlaceholderAPI")

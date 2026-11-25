@@ -4,72 +4,169 @@ import fun.reactions.ReActions;
 import fun.reactions.cfg.Reloadable;
 import fun.reactions.util.collections.CollectionUtils;
 import fun.reactions.util.naming.Named;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.net.URI;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 public class ModulesRegistry {
+    private static final String SERVICES_PATH = "META-INF/services/" + Module.class.getName();
+
     private final ReActions.Platform platform;
     private final File modulesFolder;
-    private final List<Module> loadedModules;
-    private List<Module> later;
+    private final Map<String, Module> loadedModules;
+    private final List<URLClassLoader> classLoaders;
+    private final List<Listener> pendingListeners;
+    private Map<String, Module> later;
     private boolean loaded;
+    private boolean enabled;
 
     public ModulesRegistry(@NotNull ReActions.Platform platform) {
         this.platform = platform;
         this.modulesFolder = new File(platform.getDataFolder(), "Modules");
-        this.later = new ArrayList<>();
-        this.loadedModules = new ArrayList<>();
+        this.later = new LinkedHashMap<>();
+        this.loadedModules = new LinkedHashMap<>();
+        this.classLoaders = new ArrayList<>();
+        this.pendingListeners = new ArrayList<>();
+    }
+
+    public @Nullable Module getModule(@NotNull String name) {
+        return loadedModules.get(key(name));
     }
 
     @ApiStatus.Internal
-    public void registerPluginDepended() {
+    public void registerPending() {
         if (later == null) {
-            throw new IllegalStateException("Plugin-depended modules are already registered.");
+            throw new IllegalStateException("Pending modules are already registered.");
         }
-        if (!later.isEmpty()) {
-            debugInfo("Registering plugin-depended modules.");
-            later.forEach(this::register);
-        }
+        Map<String, Module> pending = later;
         later = null;
+        if (pending.isEmpty()) return;
+        debugInfo("Registering pending modules.");
+        Set<String> failed = new HashSet<>();
+        for (Module module : pending.values()) {
+            resolve(module, pending, new ArrayList<>(), failed);
+        }
+    }
+
+    private boolean resolve(
+            @NotNull Module module,
+            @NotNull Map<String, Module> pending,
+            @NotNull List<Module> path,
+            @NotNull Set<String> failed
+    ) {
+        String moduleKey = key(module.getName());
+        if (loadedModules.containsKey(moduleKey)) return true;
+        if (failed.contains(moduleKey)) return false;
+        path.add(module);
+        List<String> missingModules = new ArrayList<>(0);
+        for (String requiredName : module.requiredModules()) {
+            String requiredKey = key(requiredName);
+            if (loadedModules.containsKey(requiredKey)) continue;
+            Module required = pending.get(requiredKey);
+            if (required == null) {
+                missingModules.add(requiredName);
+            } else if (path.contains(required)) {
+                List<String> loop = new ArrayList<>();
+                for (Module looped : path.subList(path.indexOf(required), path.size())) {
+                    loop.add(looped.getName());
+                }
+                loop.add(required.getName());
+                platform.logger().warn(
+                        "Found a loop in required modules: {}. Registering '{}' without waiting for '{}'",
+                        String.join(" -> ", loop), module.getName(), required.getName()
+                );
+            } else if (!resolve(required, pending, path, failed)) {
+                missingModules.add(requiredName);
+            }
+        }
+        path.removeLast();
+        boolean registered = false;
+        if (missingModules.isEmpty()) {
+            try {
+                registered = register(module);
+            } catch (Exception | LinkageError ex) {
+                platform.logger().error("Failed to register '{}' module", module.getName(), ex);
+            }
+        } else {
+            reportMissingModules(module, missingModules);
+        }
+        if (!registered) failed.add(moduleKey);
+        return registered;
+    }
+
+    private void reportMissingModules(@NotNull Module module, @NotNull List<String> missingModules) {
+        if (module.isImportant()) {
+            platform.logger().warn(
+                    "Module '{}' cannot be registered because some of its required modules are missing: {}",
+                    module.getName(), String.join(", ", missingModules)
+            );
+        }
     }
 
     @ApiStatus.Internal
     public void onEnable() {
-        for (Module module : loadedModules) {
+        enabled = true;
+        for (Listener listener : pendingListeners) {
+            platform.getServer().getPluginManager().registerEvents(listener, platform.getPlugin());
+        }
+        pendingListeners.clear();
+        for (Module module : loadedModules.values()) {
             module.onEnable(platform);
         }
     }
 
     @ApiStatus.Internal
     public void onDisable() {
-        for (Module module : loadedModules) {
+        for (Module module : loadedModules.values()) {
             module.onDisable(platform);
         }
+        enabled = false;
+        for (URLClassLoader loader : classLoaders) {
+            closeQuietly(loader);
+        }
+        classLoaders.clear();
     }
 
     public void registerModule(@NotNull Module module) {
-        if (!module.requiredPlugins().isEmpty() && later != null) {
-            later.add(module);
-        } else {
+        String moduleKey = key(module.getName());
+        if (loadedModules.containsKey(moduleKey) || (later != null && later.containsKey(moduleKey))) {
+            platform.logger().warn("Module '{}' is already registered", module.getName());
+            return;
+        }
+        List<String> missingModules = new ArrayList<>(0);
+        for (String requiredName : module.requiredModules()) {
+            if (!loadedModules.containsKey(key(requiredName))) {
+                missingModules.add(requiredName);
+            }
+        }
+        if (later != null && (!module.requiredPlugins().isEmpty() || !missingModules.isEmpty())) {
+            later.put(moduleKey, module);
+        } else if (missingModules.isEmpty()) {
             register(module);
+        } else {
+            reportMissingModules(module, missingModules);
         }
     }
 
-    private void register(@NotNull Module module) {
-        platform.logger().info("Registering '{}' module (by {})", module.getName(), String.join(", ", module.getAuthors()));
+    private boolean register(@NotNull Module module) {
+        if (module.getAuthors().isEmpty()) {
+            platform.logger().info("Registering '{}' module", module.getName());
+        } else {
+            platform.logger().info("Registering '{}' module (by {})", module.getName(), String.join(", ", module.getAuthors()));
+        }
         List<String> missingPlugins = checkPlugins(module);
         if (!missingPlugins.isEmpty()) {
             if (module.isImportant()) {
@@ -78,22 +175,45 @@ public class ModulesRegistry {
                         module.getName(), String.join(", ", missingPlugins)
                 );
             }
-            return;
+            return false;
         }
-        module.preRegister(platform);
-        register("activators", module.getActivatorTypes(), platform.getActivatorTypes()::registerType);
-        register("actions", module.getActions(), platform.getActivities()::registerAction);
-        register("flags", module.getFlags(), platform.getActivities()::registerFlag);
-        register("placeholders", module.getPlaceholders(), platform.getPlaceholders()::registerPlaceholder);
-        register("selectors", module.getSelectors(), platform.getSelectors()::registerSelector);
-        module.postRegister(platform);
-        registerIfReloadable(module);
-        loadedModules.add(module);
+        module.onRegister(platform);
+        if (module instanceof Module.WithActivatorTypes withTypes) {
+            register("activators", withTypes.getActivatorTypes(), platform.getActivatorTypes()::registerType);
+        }
+        if (module instanceof Module.WithActions withActions) {
+            register("actions", withActions.getActions(), platform.getActivities()::registerAction);
+        }
+        if (module instanceof Module.WithFlags withFlags) {
+            register("flags", withFlags.getFlags(), platform.getActivities()::registerFlag);
+        }
+        if (module instanceof Module.WithPlaceholders withPlaceholders) {
+            register("placeholders", withPlaceholders.getPlaceholders(), platform.getPlaceholders()::registerPlaceholder);
+        }
+        if (module instanceof Module.WithSelectors withSelectors) {
+            register("selectors", withSelectors.getSelectors(), platform.getSelectors()::registerSelector);
+        }
+        if (module instanceof Module.WithAreas withAreas) {
+            register("areas", withAreas.getAreas(), platform.getAreas()::registerArea);
+        }
+        registerHooks(module);
+        loadedModules.put(key(module.getName()), module);
+        if (enabled) {
+            module.onEnable(platform);
+        }
+        return true;
     }
 
-    private void registerIfReloadable(Object object) {
+    private void registerHooks(@NotNull Object object) {
         if (object instanceof Reloadable reloadable) {
             platform.getConfiguration().register(reloadable);
+        }
+        if (object instanceof Listener listener) {
+            if (enabled) {
+                platform.getServer().getPluginManager().registerEvents(listener, platform.getPlugin());
+            } else {
+                pendingListeners.add(listener);
+            }
         }
     }
 
@@ -115,7 +235,7 @@ public class ModulesRegistry {
         for (T type : values) {
             try {
                 register.accept(type);
-                registerIfReloadable(type);
+                registerHooks(type);
                 names.add(type.getName().toUpperCase(Locale.ROOT));
             } catch (Exception ex) {
                 if (failed == null) failed = new ArrayList<>();
@@ -130,38 +250,73 @@ public class ModulesRegistry {
         }
     }
 
+    @ApiStatus.Internal
     public void loadFolderModules() {
         if (loaded) throw new IllegalStateException("Modules from folder are already loaded");
-        modulesFolder.mkdirs();
-        List<Class<?>> toRegister = new ArrayList<>();
-        ClassLoader moduleClassLoader = Module.class.getClassLoader();
-        for (File file : CollectionUtils.emptyOnNull(modulesFolder.listFiles((dir, name) -> name.endsWith(".jar")))) {
-            URI fileUri = file.toURI();
-            try (JarInputStream stream = new JarInputStream(fileUri.toURL().openStream());
-                URLClassLoader loader = new URLClassLoader(new URL[]{fileUri.toURL()}, moduleClassLoader)) {
-                JarEntry entry;
-                while ((entry = stream.getNextJarEntry()) != null) {
-                    String name = entry.getName();
-                    if (!name.endsWith(".class")) {
-                        continue;
-                    }
-                    Class<?> clazz = loader.loadClass(name.substring(0, name.lastIndexOf('.')).replace('/', '.'));
-                    if (Module.class.isAssignableFrom(clazz)) {
-                        toRegister.add(clazz);
-                    }
-                }
-            } catch (Exception ex) {
-                platform.logger().error("Something went wrong during module parsing", ex);
-            }
-        }
-        for (Class<?> clazz : toRegister) {
-            try {
-                registerModule((Module) clazz.getConstructor().newInstance());
-            } catch (Exception ex) {
-                platform.logger().error("Something went wrong during module registration", ex);
-            }
-        }
         loaded = true;
+        modulesFolder.mkdirs();
+        ClassLoader parentLoader = Module.class.getClassLoader();
+        for (File file : CollectionUtils.emptyOnNull(modulesFolder.listFiles((dir, name) -> name.endsWith(".jar")))) {
+            URLClassLoader loader;
+            try {
+                loader = new URLClassLoader(new URL[]{file.toURI().toURL()}, parentLoader);
+            } catch (MalformedURLException ex) {
+                platform.logger().error("Invalid module jar path '{}'", file.getName(), ex);
+                continue;
+            }
+            List<String> classNames;
+            try {
+                classNames = readModuleClassNames(loader);
+            } catch (IOException ex) {
+                platform.logger().error("Failed to read module jar '{}'", file.getName(), ex);
+                closeQuietly(loader);
+                continue;
+            }
+            if (classNames.isEmpty()) {
+                platform.logger().warn("Module jar '{}' doesn't declare any modules in {}", file.getName(), SERVICES_PATH);
+                closeQuietly(loader);
+                continue;
+            }
+            classLoaders.add(loader);
+            for (String className : classNames) {
+                try {
+                    Module module = Class.forName(className, true, loader)
+                            .asSubclass(Module.class)
+                            .getConstructor()
+                            .newInstance();
+                    registerModule(module);
+                } catch (Exception | LinkageError ex) {
+                    platform.logger().error("Failed to load module '{}' from '{}'", className, file.getName(), ex);
+                }
+            }
+        }
+    }
+
+    private static @NotNull List<String> readModuleClassNames(@NotNull URLClassLoader loader) throws IOException {
+        URL services = loader.findResource(SERVICES_PATH);
+        if (services == null) return List.of();
+        List<String> classNames = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(services.openStream(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                int commentStart = line.indexOf('#');
+                String className = (commentStart < 0 ? line : line.substring(0, commentStart)).strip();
+                if (!className.isEmpty()) classNames.add(className);
+            }
+        }
+        return classNames;
+    }
+
+    private void closeQuietly(@NotNull URLClassLoader loader) {
+        try {
+            loader.close();
+        } catch (IOException ex) {
+            platform.logger().warn("Failed to close module class loader", ex);
+        }
+    }
+
+    private static @NotNull String key(@NotNull String moduleName) {
+        return moduleName.toLowerCase(Locale.ROOT);
     }
 
     private void debugInfo(String msg) {

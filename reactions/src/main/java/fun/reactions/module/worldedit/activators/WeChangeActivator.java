@@ -1,11 +1,12 @@
 package fun.reactions.module.worldedit.activators;
 
+import fun.reactions.ReActions;
+import fun.reactions.areas.AreaProvider;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.LocationVariable;
-import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
 import fun.reactions.util.naming.Aliased;
@@ -44,7 +45,9 @@ public class WeChangeActivator extends Activator {
     public boolean checkContext(@NotNull ActivationContext context) {
         Context e = (Context) context;
         if (!checkBlockType(e.getBlockType())) return false;
-        return region.isEmpty() || RaWorldGuard.isLocationInRegion(e.getLocation(), region);
+        if (region.isEmpty()) return true;
+        AreaProvider regions = ReActions.getAreas().getArea("region");
+        return regions != null && regions.contains(region, e.getLocation());
     }
 
     private boolean checkBlockType(Material check) {

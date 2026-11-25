@@ -23,7 +23,6 @@
 package fun.reactions.util.mob;
 
 import fun.reactions.ReActions;
-import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.Rng;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
@@ -63,7 +62,6 @@ public final class MobSpawn { // TODO: Requires major refactoring
         }
         String locationStr = params.getString("loc", "");
         Location loc = LocationUtils.parseLocation(locationStr, p == null ? null : p.getLocation());
-        String region = params.getString("region", "");
         int radius = params.getInteger("radius");
         int num = Rng.nextIntRanged(params.getString("num", "1"));
         double health = Rng.nextIntRanged(params.getString("health", "0"));
@@ -87,7 +85,8 @@ public final class MobSpawn { // TODO: Requires major refactoring
         String exec = params.getString("run", "");
         String exec_delay = params.getString("rundelay", "1t");
 
-        if (RaWorldGuard.isRegionExists(region)) loc = LocationUtils.getRegionLocation(region, land);
+        Location areaLoc = LocationUtils.getAreaLocation(params, land);
+        if (areaLoc != null) loc = areaLoc;
         else if (radius > 0) loc = LocationUtils.getRadiusLocation(loc, radius, land);
         if (loc == null) return;
 

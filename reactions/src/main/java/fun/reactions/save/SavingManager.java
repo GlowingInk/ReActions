@@ -17,8 +17,6 @@ public class SavingManager implements Listener, Saveable {
     public SavingManager(@NotNull ReActions.Platform rea) {
         this.server = rea.getServer();
         this.saveables = new HashSet<>();
-
-        this.server.getPluginManager().registerEvents(this, rea.getPlugin());
     }
 
     public void register(@NotNull Saveable saveable) {

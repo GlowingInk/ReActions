@@ -1,6 +1,7 @@
 package fun.reactions.module;
 
 import fun.reactions.ReActions;
+import fun.reactions.areas.AreaProvider;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
@@ -17,37 +18,45 @@ public interface Module extends Named {
         return List.of();
     }
 
-    default boolean isImportant() {
-        return true;
+    default @NotNull Collection<@NotNull String> requiredModules() {
+        return List.of();
     }
 
-    default void preRegister(@NotNull ReActions.Platform platform) { }
+    default boolean isImportant() {
+        return false;
+    }
 
-    default void postRegister(@NotNull ReActions.Platform platform) { }
+    default void onRegister(@NotNull ReActions.Platform platform) { }
 
     default void onEnable(@NotNull ReActions.Platform platform) { }
 
     default void onDisable(@NotNull ReActions.Platform platform) { }
 
-    @NotNull Collection<@NotNull String> getAuthors();
-
-    default @NotNull Collection<@NotNull ActivatorType> getActivatorTypes() {
+    default @NotNull Collection<@NotNull String> getAuthors() {
         return List.of();
     }
 
-    default @NotNull Collection<@NotNull Action> getActions() {
-        return List.of();
+    interface WithActivatorTypes extends Module {
+        @NotNull Collection<@NotNull ActivatorType> getActivatorTypes();
     }
 
-    default @NotNull Collection<@NotNull Flag> getFlags() {
-        return List.of();
+    interface WithActions extends Module {
+        @NotNull Collection<@NotNull Action> getActions();
     }
 
-    default @NotNull Collection<@NotNull Placeholder> getPlaceholders() {
-        return List.of();
+    interface WithFlags extends Module {
+        @NotNull Collection<@NotNull Flag> getFlags();
     }
 
-    default @NotNull Collection<@NotNull Selector> getSelectors() {
-        return List.of();
+    interface WithPlaceholders extends Module {
+        @NotNull Collection<@NotNull Placeholder> getPlaceholders();
+    }
+
+    interface WithSelectors extends Module {
+        @NotNull Collection<@NotNull Selector> getSelectors();
+    }
+
+    interface WithAreas extends Module {
+        @NotNull Collection<@NotNull AreaProvider> getAreas();
     }
 }

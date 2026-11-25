@@ -20,19 +20,14 @@ import java.util.List;
 
 import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
-public class WorldEditModule implements Module { // TODO: Actions with WorldEdit API - placing blocks, working with schematics
+public class WorldEditModule implements Module.WithActivatorTypes, Module.WithActions, Module.WithFlags { // TODO: Actions with WorldEdit API - placing blocks, working with schematics
     @Override
     public @NotNull Collection<String> requiredPlugins() {
         return List.of("WorldEdit");
     }
 
     @Override
-    public boolean isImportant() {
-        return false;
-    }
-
-    @Override
-    public void preRegister(ReActions.@NotNull Platform platform) {
+    public void onRegister(ReActions.@NotNull Platform platform) {
         RaWorldEdit.init();
     }
 

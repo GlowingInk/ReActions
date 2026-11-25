@@ -19,19 +19,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public class VaultModule implements Module {
+public class VaultModule implements Module.WithActions, Module.WithFlags, Module.WithPlaceholders, Module.WithSelectors {
     @Override
     public @NotNull Collection<String> requiredPlugins() {
         return List.of("Vault");
     }
 
     @Override
-    public boolean isImportant() {
-        return false;
-    }
-
-    @Override
-    public void preRegister(@NotNull ReActions.Platform platform) {
+    public void onRegister(@NotNull ReActions.Platform platform) {
         RaVault.init();
     }
 

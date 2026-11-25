@@ -24,26 +24,22 @@ import java.util.List;
 
 import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
 
-public class BasicModule implements Module {
+public class BasicModule implements
+        Module.WithActivatorTypes, Module.WithActions, Module.WithFlags,
+        Module.WithPlaceholders, Module.WithSelectors {
     private LogHandler logHandler;
-    private ShootAction shootAction;
     private SQLManager sql;
 
     @Override
-    public void preRegister(@NotNull ReActions.Platform platform) {
+    public void onRegister(@NotNull ReActions.Platform platform) {
         sql = platform.getSql();
     }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void postRegister(@NotNull ReActions.Platform platform) {
+    public void onEnable(@NotNull ReActions.Platform platform) {
         logHandler = new LogHandler();
         platform.getServer().getLogger().addHandler(logHandler);
-    }
-
-    @Override
-    public void onEnable(@NotNull ReActions.Platform platform) {
-        platform.getServer().getPluginManager().registerEvents(shootAction, platform.getPlugin());
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -55,6 +51,11 @@ public class BasicModule implements Module {
     @Override
     public @NotNull String getName() {
         return "ReActions";
+    }
+
+    @Override
+    public boolean isImportant() {
+        return true;
     }
 
     @Override
@@ -108,7 +109,6 @@ public class BasicModule implements Module {
     @Override
     public @NotNull Collection<Action> getActions() {
         RunFunctionAction functAction = new RunFunctionAction();
-        shootAction = new ShootAction();
         return Arrays.asList(
                 functAction,
                 new ExecuteAction(functAction),
@@ -145,7 +145,7 @@ public class BasicModule implements Module {
                 new BlockSetAction(),
                 new SignSetAction(),
                 new PowerSetAction(),
-                shootAction,
+                new ShootAction(),
                 new PersistentVarActions(PersistentVarActions.Type.SET, false),
                 new PersistentVarActions(PersistentVarActions.Type.CLEAR, false),
                 new PersistentVarActions(PersistentVarActions.Type.INCREASE, false),

@@ -22,10 +22,12 @@
 
 package fun.reactions;
 
+import fun.reactions.areas.AreasRegistry;
 import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.commands.plugin.impl.ExecCommand;
 import fun.reactions.commands.plugin.impl.ReactionsCommand;
 import fun.reactions.commands.user.UserCommandsManager;
+import fun.reactions.events.MovementRegistry;
 import fun.reactions.events.listeners.BukkitListener;
 import fun.reactions.events.listeners.MoveListener;
 import fun.reactions.holders.LocationHolder;
@@ -71,6 +73,9 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private PlaceholdersManager placeholdersManager;
     private PersistentVariablesManager variablesManager;
     private SelectorsManager selectorsManager;
+    private AreasRegistry areasRegistry;
+    private final MovementRegistry movementRegistry = new MovementRegistry();
+    private MoveListener moveListener;
     private WaitingManager waitingManager;
     private SavingManager savingManager;
     private ModulesRegistry modulesRegistry;
@@ -82,9 +87,10 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         saveDefaultConfig();
         configuration.load(getConfig());
         configuration.register(PushBack::acceptReload);
-        configuration.register(MoveListener::acceptReload);
         configuration.register(ContextManager::acceptReload);
         configuration.register(ItemContextManager::acceptReload);
+        this.moveListener = new MoveListener(this, movementRegistry);
+        configuration.register(moveListener);
         this.variablesManager = new PersistentVariablesManager(this);
         if (configuration.generalCfg().placeholders().modern()) {
             this.placeholdersManager = new ModernPlaceholdersManager();
@@ -102,6 +108,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         }
         configuration.register(placeholdersManager);
         this.activitiesRegistry = new ActivitiesRegistry();
+        this.areasRegistry = new AreasRegistry();
         this.typesRegistry = new ActivatorTypesRegistry(this);
         this.activatorsManager = new ActivatorsManager(this);
         this.selectorsManager = new SelectorsManager();
@@ -141,10 +148,10 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         InventoryMenu.init(this);
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(savingManager, this);
-        pluginManager.registerEvents(new BukkitListener(), this);
+        pluginManager.registerEvents(new BukkitListener(movementRegistry, moveListener), this);
         pluginManager.registerEvents(userCommandsManager, this);
         modulesRegistry.onEnable();
-        MoveListener.init();
+        moveListener.init();
         Metrics metrics = new Metrics(this, 19363);
         metrics.addCustomChart(new SimplePie("placeholders_manager", () -> configuration.generalCfg().placeholders().modern() ? "Modern" : "Legacy"));
 
@@ -155,7 +162,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         });
 
         getServer().getScheduler().runTask(this, () -> {
-            modulesRegistry.registerPluginDepended();
+            modulesRegistry.registerPending();
             activatorsManager.loadGroup("", false);
         });
     }
@@ -206,6 +213,16 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public @NotNull SelectorsManager getSelectors() {
         return selectorsManager;
+    }
+
+    @Override
+    public @NotNull AreasRegistry getAreas() {
+        return areasRegistry;
+    }
+
+    @Override
+    public @NotNull MovementRegistry getMovement() {
+        return movementRegistry;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fun.reactions.events.listeners;
 
 import fun.reactions.ReActions;
+import fun.reactions.events.MovementHandler;
 import fun.reactions.holders.PlayerRespawner;
 import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activators.ActivationContext;
@@ -37,6 +38,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,6 +47,14 @@ import static fun.reactions.module.basic.ItemContextManager.triggerItemHold;
 import static fun.reactions.module.basic.ItemContextManager.triggerItemWear;
 
 public class BukkitListener implements Listener {
+    private final MovementHandler movement;
+    private final MoveListener moveListener;
+
+    public BukkitListener(@NotNull MovementHandler movement, @NotNull MoveListener moveListener) {
+        this.movement = movement;
+        this.moveListener = moveListener;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
@@ -190,7 +200,7 @@ public class BukkitListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         // TODO: Set respawn location
         PlayerRespawner.triggerPlayerRespawn(event.getPlayer(), event.getRespawnLocation());
-        triggerAllRegions(event.getPlayer(), event.getRespawnLocation(), event.getPlayer().getLocation());
+        movement.onMove(event.getPlayer(), event.getPlayer().getLocation(), event.getRespawnLocation());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -289,10 +299,10 @@ public class BukkitListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         TemporaryOp.removeOp(player);
-        MoveListener.initLocation(player);
+        moveListener.initLocation(player);
 
         triggerJoin(player, !player.hasPlayedBefore());
-        triggerAllRegions(player, player.getLocation(), null);
+        movement.onMove(player, null, player.getLocation());
         triggerCuboid(player);
         triggerItemHold(player);
         triggerItemWear(player);
@@ -329,7 +339,7 @@ public class BukkitListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Teleporter.startTeleport(event);
         triggerCuboid(event.getPlayer());
-        triggerAllRegions(event.getPlayer(), event.getTo(), event.getFrom());
+        movement.onMove(event.getPlayer(), event.getFrom(), event.getTo());
         Teleporter.stopTeleport(event.getPlayer());
     }
 
@@ -385,7 +395,7 @@ public class BukkitListener implements Listener {
         TemporaryOp.removeOp(event.getPlayer());
         var optVars = triggerQuit(event);
         optVars.flatMap(variables -> variables.changedString(QuitActivator.Context.QUIT_MESSAGE)).ifPresent(event::setQuitMessage);
-        MoveListener.removeLocation(event.getPlayer());
+        moveListener.removeLocation(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
