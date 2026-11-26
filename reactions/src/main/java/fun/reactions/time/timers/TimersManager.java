@@ -25,12 +25,10 @@ package fun.reactions.time.timers;
 import fun.reactions.ReActions;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
 import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
@@ -83,18 +81,9 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         return addTimer(name, params, false);
     }
 
-    public static boolean removeTimer(CommandSender sender, String name) {
-        if (name.isEmpty()) {
-            Msg.MSG_TIMERNEEDNAME.print(sender);
-            return false;
-        }
-        if (!timers.containsKey(name)) {
-            Msg.MSG_TIMERUNKNOWNNAME.print(sender, name);
-            return false;
-        }
-        timers.remove(name);
+    public static boolean removeTimer(String name) {
+        if (timers.remove(name) == null) return false;
         save();
-        Msg.MSG_TIMERREMOVED.print(sender, name);
         return true;
     }
 

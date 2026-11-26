@@ -28,7 +28,6 @@ import fun.reactions.model.activators.Activator;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemManager;
 import fun.reactions.util.item.VirtualItem;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -56,7 +55,7 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
     public boolean checkContext(@NotNull ActivationContext context) {
         ItemManager items = logic.getPlatform().getItems();
         if (item.isEmpty() || (items.asItemStack(item) == null)) {
-            Msg.logOnce(logic.getName() + "activatorwearempty", "Failed to parse item of activator " + logic.getName());
+            logic.getPlatform().warnOnce("item_wear_invalid:" + logic.getName(), "Failed to parse item of activator {}", logic.getName());
             return false;
         }
         Context iw = (Context) context;

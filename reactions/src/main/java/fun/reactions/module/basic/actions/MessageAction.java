@@ -24,13 +24,14 @@ package fun.reactions.module.basic.actions;
 
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -60,14 +61,14 @@ public class MessageAction implements Action {
         if (players.isEmpty()) return;
 
         String type = params.getString("type");
-        String message = Msg.colorize(params.getStringSafe("text", () -> hideSelectors(env, params.originValue())));
+        String message = colorize(params.getStringSafe("text", () -> hideSelectors(env, params.originValue())));
         String annoymentTime = params.getString("hide");
         for (Player receiver : players) {
             if (showMessage(env, receiver, message, annoymentTime)) {
                 switch (type.toLowerCase(Locale.ROOT)) {
                     case "title" -> receiver.sendTitle(
                             message,
-                            Msg.colorize(params.getString("subtitle", null)),
+                            colorize(params.getString("subtitle", null)),
                             params.getInteger("fadein", 10),
                             params.getInteger("stay", 70),
                             params.getInteger("fadeout", 20)
@@ -107,5 +108,9 @@ public class MessageAction implements Action {
     private static String hideSelectors(Environment env, String message) {
         String sb = "(?i)(" + String.join("|", env.getPlatform().getSelectors().getAllKeys()) + "|type|hide):(\\{.*}|\\S+)\\s?";
         return message.replaceAll(sb, "");
+    }
+
+    private static @Nullable String colorize(@Nullable String text) {
+        return text == null ? null : ChatColor.translateAlternateColorCodes('&', text);
     }
 }

@@ -22,7 +22,7 @@
 
 package fun.reactions.time.timers;
 
-import fun.reactions.util.message.Msg;
+import fun.reactions.ReActions;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
 import org.quartz.CronExpression;
@@ -61,7 +61,7 @@ public class Timer { // TODO World is missing? tf
             try {
                 this.timeServer = new CronExpression(time);
             } catch (ParseException e) {
-                Msg.logOnce(time, "Failed to parse cron format: " + time);
+                ReActions.warnOnce("timer_cron:" + time, "Failed to parse cron format: {}", time);
                 this.timeServer = null;
             }
         }

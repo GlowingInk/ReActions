@@ -12,7 +12,7 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import fun.reactions.util.message.Msg;
+import fun.reactions.ReActions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -40,7 +40,7 @@ public final class RaWorldEdit {
             worldedit.getWorldEdit().getEventBus().register(new WeListener());
             connected = true;
         } catch (Throwable e) {
-            Msg.logMessage("WorldEdit not found...");
+            ReActions.getLogger().info("WorldEdit not found...");
             connected = false;
         }
     }

@@ -31,7 +31,6 @@ import fun.reactions.util.Utils;
 import fun.reactions.util.enums.HandType;
 import fun.reactions.util.item.ItemManager;
 import fun.reactions.util.item.ItemUtils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -67,7 +66,7 @@ public class ItemHoldActivator extends Activator {
     public boolean checkContext(@NotNull ActivationContext context) {
         ItemManager items = logic.getPlatform().getItems();
         if (item.isEmpty() || (items.asItemStack(item) == null)) {
-            Msg.logOnce(logic.getName() + "activatorholdempty", "Failed to parse itemStr of activator " + logic.getName());
+            logic.getPlatform().warnOnce("item_hold_invalid:" + logic.getName(), "Failed to parse item of activator {}", logic.getName());
             return false;
         }
         Context ie = (Context) context;

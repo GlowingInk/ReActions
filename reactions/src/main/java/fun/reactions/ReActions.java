@@ -86,6 +86,10 @@ public final class ReActions {
         return platform.logger();
     }
 
+    public static void warnOnce(@NotNull String key, @NotNull String message, Object... args) {
+        platform.warnOnce(key, message, args);
+    }
+
     public static Plugin getPlugin() {
         return platform.getPlugin();
     }
@@ -111,6 +115,7 @@ public final class ReActions {
         @NotNull ModulesRegistry getModules();
         @NotNull RaConfiguration getConfiguration();
         @NotNull ComponentLogger logger();
+        void warnOnce(@NotNull String key, @NotNull String message, Object... args);
         @NotNull Plugin getPlugin();
         @NotNull File getDataFolder();
         @NotNull Server getServer();

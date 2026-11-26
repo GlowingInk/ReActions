@@ -22,8 +22,8 @@
 
 package fun.reactions.module.vault.external;
 
+import fun.reactions.ReActions;
 import fun.reactions.util.Utils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
 import net.milkbowl.vault.economy.Economy;
@@ -50,7 +50,7 @@ public final class RaVault {
         if (checkVault()) {
             vault_perm = setupPermissions();
             vault_eco = setupEconomy();
-            Msg.logMessage("Vault connected");
+            ReActions.getLogger().info("Vault connected");
         }
     }
 

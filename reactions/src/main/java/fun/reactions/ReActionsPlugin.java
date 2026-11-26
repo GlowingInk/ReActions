@@ -53,7 +53,6 @@ import fun.reactions.time.CooldownManager;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.time.wait.WaitingManager;
 import fun.reactions.util.item.ItemManager;
-import fun.reactions.util.message.Msg;
 import fun.reactions.variables.PersistentVariablesManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -65,6 +64,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ActivitiesRegistry activitiesRegistry;
@@ -84,6 +85,7 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     private ModulesRegistry modulesRegistry;
     private SQLManager sqlManager;
     private final RaConfiguration configuration = new RaConfiguration();
+    private final Set<String> warnedKeys = ConcurrentHashMap.newKeySet();
 
     @Override
     public void onLoad() {
@@ -135,9 +137,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
 
     @Override
     public void onEnable() {
-        // TODO god why
-        Msg.init(this, configuration.generalCfg().debugMode());
-
         this.savingManager = new SavingManager(this);
         savingManager.register(waitingManager);
         waitingManager.init();
@@ -184,6 +183,11 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
     @Override
     public @NotNull ComponentLogger logger() {
         return getComponentLogger();
+    }
+
+    @Override
+    public void warnOnce(@NotNull String key, @NotNull String message, Object... args) {
+        if (warnedKeys.add(key)) logger().warn(message, args);
     }
 
     @Override

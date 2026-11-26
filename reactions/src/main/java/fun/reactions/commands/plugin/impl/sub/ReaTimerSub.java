@@ -130,10 +130,11 @@ public final class ReaTimerSub extends RaCommandBase {
 
     private int delete(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
-        if (isTimerMissing(ctx, name)) return SINGLE_SUCCESS;
-
-        TimersManager.removeTimer(ctx.getSource().getSender(), name); // TODO Message ourselves
-        sendPrefixed(ctx, "Timer &a'" + esc(name) + "'&r was deleted.");
+        if (TimersManager.removeTimer(name)) {
+            sendPrefixed(ctx, "Timer &a'" + esc(name) + "'&r was deleted.");
+        } else {
+            sendNotFound(ctx, "Timer", name);
+        }
         return SINGLE_SUCCESS;
     }
 

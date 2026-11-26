@@ -22,6 +22,7 @@
 
 package fun.reactions.module.basic.actions;
 
+import fun.reactions.ReActions;
 import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.cfg.Reloadable;
 import fun.reactions.model.activity.Activity;
@@ -33,7 +34,6 @@ import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.Rng;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -181,7 +181,7 @@ public class ShootAction implements Action, Activity.Personal, Reloadable, Liste
                 Bukkit.getPluginManager().callEvent(event);
                 return !event.isCancelled();
             } catch (NoSuchMethodError er) {
-                Msg.logOnce("bbevent", "BlockBreakEvent constructor is no longer valid. Warn a developer.");
+                ReActions.warnOnce("shoot_block_break", "BlockBreakEvent constructor is no longer valid. Warn a developer.");
             }
         }
         return false;

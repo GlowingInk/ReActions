@@ -27,7 +27,6 @@ import fun.reactions.util.Rng;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.location.LocationUtils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -58,7 +57,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
     public static void mobSpawn(Player p, Parameters params) {
         String mob = params.getString("type", "").toUpperCase(Locale.ROOT);
         if (mob.isEmpty()) {
-            Msg.logMessage("Failed to spawn mob: " + params);
+            ReActions.getLogger().warn("Failed to spawn mob: {}", params);
             return;
         }
         String locationStr = params.getString("loc", "");
@@ -132,7 +131,7 @@ public final class MobSpawn { // TODO: Requires major refactoring
 
             if (!(e instanceof LivingEntity mob)) {
                 e.remove();
-                Msg.logOnce("mobspawnnotmob_" + mobstr, "Cannot spawn mob " + mbs + " (" + mobstr + ")");
+                ReActions.warnOnce("mob_spawn_not_mob:" + mobstr, "Cannot spawn mob {} ({})", mbs, mobstr);
                 continue;
             }
 

@@ -4,7 +4,6 @@ import fun.reactions.ReActions;
 import fun.reactions.holders.PlayerRespawner;
 import fun.reactions.holders.Teleporter;
 import fun.reactions.model.activators.ActivationContext;
-import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variables;
 import fun.reactions.module.basic.activators.*;
 import fun.reactions.module.vault.external.RaVault;
@@ -13,7 +12,6 @@ import fun.reactions.util.TemporaryOp;
 import fun.reactions.util.Utils;
 import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.location.LocationUtils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.mob.MobSpawn;
 import org.bukkit.block.Block;
@@ -25,7 +23,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -120,8 +117,11 @@ public class BukkitListener implements Listener {
             vars.changedString(MessageActivator.Context.MESSAGE).ifPresent(event::setMessage);
             // TODO: setFormat
         } catch (IllegalStateException ignore) {
-            Msg.logOnce("asyncchaterror", "Chat is in async thread. Because of that you should use " +
-                    "additional EXEC activator in some cases, like teleportation, setting blocks etc.");
+            platform.warnOnce(
+                    "async_chat",
+                    "Chat is in async thread. Because of that you should use " +
+                    "additional EXEC activator in some cases, like teleportation, setting blocks etc."
+            );
         }
     }
 
@@ -135,18 +135,6 @@ public class BukkitListener implements Listener {
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         if (triggerPrecommand(event.getPlayer(), event.getPlayer(), event.getMessage().substring(1)))
             event.setCancelled(true);
-    }
-
-    // TODO: All the checks should be inside activator
-    @EventHandler(ignoreCancelled = true)
-    public void onSignChange(SignChangeEvent event) {
-        for (Activator activator : platform.getActivatorTypes().get(SignActivator.class).getActivators()) {
-            SignActivator signAct = (SignActivator) activator;
-            if (!signAct.checkMask(event.getLines())) continue;
-            Msg.MSG_SIGNFORBIDDEN.print(event.getPlayer(), '4', 'c', signAct.getLogic().getName());
-            event.setCancelled(true);
-            return;
-        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -221,7 +209,6 @@ public class BukkitListener implements Listener {
         if (event.getEntity().hasMetadata("ReActions-money") && RaVault.isEconomyConnected()) {
             int money = Rng.nextIntRanged(event.getEntity().getMetadata("ReActions-money").getFirst().asString());
             RaVault.creditAccount(killer.getName(), "", Double.toString(money), "");
-            Msg.MSG_MOBBOUNTY.print(killer, 'e', '6', RaVault.format(money, ""), event.getEntity().getType().name());
         }
         if (event.getEntity().hasMetadata("ReActions-activator")) {
             String exec = event.getEntity().getMetadata("ReActions-activator").getFirst().asString();

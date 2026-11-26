@@ -22,9 +22,9 @@
 
 package fun.reactions.module.basic.actions;
 
+import fun.reactions.ReActions;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
@@ -99,7 +99,7 @@ public class PotionEffectAction implements Action {// TODO Allow to use player s
                 PotionType ptype = PotionType.valueOf(potionEffect.toUpperCase(Locale.ROOT));
                 pef = ptype.getEffectType();
             } catch (IllegalArgumentException e) {
-                Msg.logMessage("Unknown potion type name: " + potionEffect);
+                ReActions.getLogger().warn("Unknown potion type name: {}", potionEffect);
             }
         }
 

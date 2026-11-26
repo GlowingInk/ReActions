@@ -24,7 +24,6 @@ package fun.reactions.module.basic.actions;
 
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -93,7 +92,7 @@ public class LogAction implements Action {
             } else {
                 saveToFile(env, file, message);
             }
-        } else Msg.logMessage(params.originValue());
+        } else env.getPlatform().logger().info(ChatColor.stripColor(params.originValue()));
 
         return true;
     }

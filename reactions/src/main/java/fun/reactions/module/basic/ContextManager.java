@@ -35,7 +35,6 @@ import fun.reactions.module.worldguard.external.RaWorldGuard;
 import fun.reactions.util.Utils;
 import fun.reactions.util.block.BlockUtils;
 import fun.reactions.util.enums.DeathCause;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.mob.EntityUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
@@ -212,11 +211,11 @@ public final class ContextManager {
         if (id.isEmpty()) return false;
         Activator act = ReActions.getActivators().getActivator(id);
         if (act == null) {
-            Msg.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
+            ReActions.warnOnce("exec_missing:" + id, "Failed to run exec activator {}. Activator not found.", id);
             return false;
         }
         if (act.getClass() != FunctionActivator.class) {
-            Msg.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
+            ReActions.warnOnce("exec_wrong_type:" + id, "Failed to run exec activator {}. Wrong activator type.", id);
             return false;
         }
 
@@ -251,11 +250,11 @@ public final class ContextManager {
         final Player player = (sender instanceof Player) ? (Player) sender : null;
         Activator act = ReActions.getActivators().getActivator(id);
         if (act == null) {
-            Msg.logOnce("wrongact_" + id, "Failed to run exec activator " + id + ". Activator not found.");
+            ReActions.warnOnce("exec_missing:" + id, "Failed to run exec activator {}. Activator not found.", id);
             return false;
         }
         if (act.getClass() != FunctionActivator.class) {
-            Msg.logOnce("wrongactype_" + id, "Failed to run exec activator " + id + ". Wrong activator type.");
+            ReActions.warnOnce("exec_wrong_type:" + id, "Failed to run exec activator {}. Wrong activator type.", id);
             return false;
         }
         // TODO Custom ActivatorType to handle exec stopping
@@ -267,8 +266,7 @@ public final class ContextManager {
 
     public static boolean triggerPlate(PlayerInteractEvent event) {
         if (event.getAction() != Action.PHYSICAL) return false;
-        // TODO EnumSet Plates?
-        if (!(event.getClickedBlock().getType().name().endsWith("_PRESSURE_PLATE"))) return false;
+        if (!Tag.PRESSURE_PLATES.isTagged(event.getClickedBlock().getType())) return false;
         PlateActivator.PlateContext pe = new PlateActivator.PlateContext(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(pe);
         return pe.isCancelled();

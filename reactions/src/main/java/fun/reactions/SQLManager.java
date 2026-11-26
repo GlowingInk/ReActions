@@ -27,7 +27,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.cfg.Reloadable;
 import fun.reactions.util.Utils;
-import fun.reactions.util.message.Msg;
 import fun.reactions.util.num.Is;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
@@ -83,7 +82,7 @@ public final class SQLManager implements Reloadable {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            Msg.logOnce("mysqlinitfail", "MySQL JDBC Driver not found!");
+            rea.warnOnce("mysql_driver", "MySQL JDBC Driver not found!");
             enabled = false;
             return;
         }
