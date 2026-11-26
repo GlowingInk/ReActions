@@ -74,7 +74,25 @@ public final class TimeUtils { // TODO Generalize formatTime/formatIngameTime
     public static String formatIngameTime(long msTime, boolean simpleFormat) {
         return simpleFormat && msTime < MS_PER_SECOND
                 ? msTime + "ms"
-                : (long) ((msTime / (double) MS_PER_SECOND + 6) % 24) + ":" + (long) (60 * (msTime % (double) MS_PER_SECOND) / MS_PER_SECOND);
+                : formatClock((long) ((msTime / (double) MS_PER_SECOND + 6) % 24), (long) (60 * (msTime % (double) MS_PER_SECOND) / MS_PER_SECOND));
+    }
+
+    public static @NotNull String formatClock(long hours, long minutes) {
+        return (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes;
+    }
+
+    public static @NotNull String formatDuration(long msTime) {
+        long seconds = msTime / MS_PER_SECOND;
+        long days = seconds / 86400;
+        long hours = seconds / 3600 % 24;
+        long minutes = seconds / 60 % 60;
+        seconds %= 60;
+        StringBuilder builder = new StringBuilder();
+        if (days > 0) builder.append(days).append("d ");
+        if (days > 0 || hours > 0) builder.append(hours).append("h ");
+        if (days > 0 || hours > 0 || minutes > 0) builder.append(minutes).append("m ");
+        if (builder.isEmpty() || seconds > 0) builder.append(seconds).append("s");
+        return builder.toString().trim();
     }
 
     public static String formatTime(long msTime, String format) {

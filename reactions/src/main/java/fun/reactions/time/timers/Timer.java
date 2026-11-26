@@ -23,80 +23,177 @@
 package fun.reactions.time.timers;
 
 import fun.reactions.ReActions;
+import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
 import fun.reactions.util.time.TimeUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.quartz.CronExpression;
 
 import java.text.ParseException;
-import java.util.Arrays;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Timer { // TODO World is missing? tf
-
+public abstract sealed class Timer permits Timer.Ingame, Timer.Server {
+    private final Parameters params;
     private boolean paused;
 
-    private final boolean ingameTimer;
-    private final Parameters params;
-    private Set<String> timesIngame;
-
-    private CronExpression timeServer;
-
-    public Timer(Parameters params) {
-        this.timesIngame = new HashSet<>();
-        this.ingameTimer = params.getString("timer-type", "ingame").equalsIgnoreCase("ingame");
+    private Timer(@NotNull Parameters params) {
         this.paused = params.getBoolean("paused", false);
         this.params = params.with("paused", String.valueOf(this.paused));
-        this.parseTime();
-
     }
 
-    public void parseTime() {
-        if (this.ingameTimer) {
-            this.timesIngame = new HashSet<>();
-            this.timesIngame.addAll(Arrays.asList(params.getString("time", "").split(",\\S*")));
-        } else {
-            String time = params.getString("time", "").replace("_", " ");
-            try {
-                this.timeServer = new CronExpression(time);
-            } catch (ParseException e) {
-                ReActions.warnOnce("timer_cron:" + time, "Failed to parse cron format: {}", time);
-                this.timeServer = null;
-            }
-        }
+    public static @NotNull Timer of(@NotNull Parameters params) {
+        return params.getString("timer-type", Ingame.TYPE).equalsIgnoreCase(Ingame.TYPE)
+                ? new Ingame(params)
+                : new Server(params);
     }
 
+    public abstract @NotNull String getType();
+
+    protected abstract boolean isTime();
+
+    protected abstract @Nullable Duration untilNextTime();
 
     public boolean isTimeToRun() {
-        if (isPaused()) return false;
-        return this.ingameTimer ? isIngameTimeToRun() : isServerTimeToRun();
+        return !paused && isTime();
     }
 
-    private boolean isServerTimeToRun() {
-        if (this.ingameTimer) return false;
-        if (this.timeServer == null) return false;
-        return (this.timeServer.isSatisfiedBy(new Date()));
-    }
-
-    private boolean isIngameTimeToRun() {
-        return ingameTimer && timesIngame.contains(TimeUtils.formatIngameTime());
+    public @Nullable Duration untilNextRun() {
+        return paused ? null : untilNextTime();
     }
 
     @Override
     public String toString() {
-        return params.getString("activator", "Undefined") + " : " + params.getString("time", "Undefined") + (this.isIngameTimer() ? " (ingame)" : " (server)");
+        return params.getString("activator", "Undefined") + " : " + params.getString("time", "Undefined") + " (" + getType() + ")";
     }
 
-    public boolean isPaused() {return this.paused;}
+    public boolean isPaused() {
+        return paused;
+    }
 
-    public boolean isIngameTimer() {return this.ingameTimer;}
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
 
-    public Parameters getParams() {return this.params;}
+    public @NotNull Parameters getParams() {
+        return params;
+    }
 
-    public Set<String> getTimesIngame() {return this.timesIngame;}
+    public static final class Ingame extends Timer {
+        public static final String TYPE = "ingame";
 
-    public CronExpression getTimeServer() {return this.timeServer;}
+        private static final long TICKS_PER_DAY = 24000;
 
-    public void setPaused(boolean paused) {this.paused = paused; }
+        private final Set<String> times = new HashSet<>();
+        private final @Nullable String world;
+        private @Nullable String lastTime;
+
+        private Ingame(@NotNull Parameters params) {
+            super(params);
+            String world = params.getString("world", "");
+            this.world = world.isEmpty() ? null : world;
+            for (String time : params.getString("time", "").split(",\\s*")) {
+                String normalized = normalize(time);
+                if (normalized != null) times.add(normalized);
+            }
+        }
+
+        @Override
+        public @NotNull String getType() {
+            return TYPE;
+        }
+
+        public @Nullable String getWorld() {
+            return world;
+        }
+
+        @Override
+        protected boolean isTime() {
+            World resolved = resolveWorld();
+            if (resolved == null) return false;
+            String time = TimeUtils.formatIngameTime(resolved);
+            if (time.equals(lastTime)) return false;
+            lastTime = time;
+            return times.contains(time);
+        }
+
+        @Override
+        protected @Nullable Duration untilNextTime() {
+            World resolved = resolveWorld();
+            if (resolved == null) return null;
+            long now = resolved.getTime();
+            long closest = -1;
+            for (String time : times) {
+                long delta = Math.floorMod(ticks(time) - now, TICKS_PER_DAY);
+                if (closest == -1 || delta < closest) closest = delta;
+            }
+            return closest == -1 ? null : Duration.ofMillis(closest * TimeUtils.MS_PER_TICK);
+        }
+
+        private @Nullable World resolveWorld() {
+            if (world == null) return Bukkit.getWorlds().getFirst();
+            World resolved = Bukkit.getWorld(world);
+            if (resolved == null) ReActions.warnOnce("timer_world:" + world, "Timer world '{}' doesn't exist", world);
+            return resolved;
+        }
+
+        private static @Nullable String normalize(@NotNull String time) {
+            int split = time.indexOf(':');
+            if (split == -1) return null;
+            int hours = NumberUtils.asInteger(time.substring(0, split).trim(), -1);
+            int minutes = NumberUtils.asInteger(time.substring(split + 1).trim(), -1);
+            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+            return TimeUtils.formatClock(hours, minutes);
+        }
+
+        private static long ticks(@NotNull String normalized) {
+            int split = normalized.indexOf(':');
+            int hours = Integer.parseInt(normalized.substring(0, split));
+            int minutes = Integer.parseInt(normalized.substring(split + 1));
+            return Math.floorMod(hours - 6, 24) * 1000L + (minutes * 1000L + 59) / 60;
+        }
+    }
+
+    public static final class Server extends Timer {
+        public static final String TYPE = "server";
+
+        private final @Nullable CronExpression cron;
+
+        private Server(@NotNull Parameters params) {
+            super(params);
+            this.cron = parseCron(params.getString("time", "").replace("_", " "));
+        }
+
+        @Override
+        public @NotNull String getType() {
+            return TYPE;
+        }
+
+        @Override
+        protected boolean isTime() {
+            return cron != null && cron.isSatisfiedBy(new Date());
+        }
+
+        @Override
+        protected @Nullable Duration untilNextTime() {
+            if (cron == null) return null;
+            Date now = new Date();
+            Date next = cron.getTimeAfter(now);
+            return next == null ? null : Duration.ofMillis(next.getTime() - now.getTime());
+        }
+
+        private static @Nullable CronExpression parseCron(@NotNull String time) {
+            try {
+                return new CronExpression(time);
+            } catch (ParseException ex) {
+                ReActions.warnOnce("timer_cron:" + time, "Failed to parse cron format: {}", time);
+                return null;
+            }
+        }
+    }
 }

@@ -121,12 +121,7 @@ public final class CooldownManager { // TODO Requires refactoring
         times[4] = formatNum(hour);
         times[5] = formatNum(min);
         times[6] = formatNum(sec);
-        StringBuilder sb = new StringBuilder();
-        if (days > 0) sb.append(days).append("d");
-        if (days > 0 || hour > 0) sb.append(" ").append(hour).append("h");
-        if (days > 0 || hour > 0 || min > 0) sb.append(" ").append(min).append("m");
-        if (sb.isEmpty() || sec > 0) sb.append(" ").append(sec).append("s");
-        times[7] = sb.toString().trim();
+        times[7] = TimeUtils.formatDuration(time);
         return times;
     }
 

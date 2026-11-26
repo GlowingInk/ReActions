@@ -10,10 +10,15 @@ import fun.reactions.commands.plugin.RaCommandBase;
 import fun.reactions.time.timers.Timer;
 import fun.reactions.time.timers.TimersManager;
 import fun.reactions.util.parameter.Parameters;
+import fun.reactions.util.time.TimeUtils;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -41,9 +46,15 @@ public final class ReaTimerSub extends RaCommandBase {
                                         .then(argument("activator", StringArgumentType.word())
                                                 .suggests(suggestNames(() -> platform.getActivators().getActivatorNames(), false))
                                                 .then(argument("time", StringArgumentType.word())
-                                                        .executes(ctx -> createIngame(ctx, false))
+                                                        .executes(ctx -> createIngame(ctx, false, null))
                                                         .then(argument("paused", BoolArgumentType.bool())
-                                                                .executes(ctx -> createIngame(ctx, BoolArgumentType.getBool(ctx, "paused")))))))
+                                                                .executes(ctx -> createIngame(ctx, BoolArgumentType.getBool(ctx, "paused"), null))
+                                                                .then(argument("world", ArgumentTypes.world())
+                                                                        .executes(ctx -> createIngame(
+                                                                                ctx,
+                                                                                BoolArgumentType.getBool(ctx, "paused"),
+                                                                                ctx.getArgument("world", World.class)
+                                                                        )))))))
                                 .then(literal("server")
                                         .then(argument("activator", StringArgumentType.word())
                                                 .suggests(suggestNames(() -> platform.getActivators().getActivatorNames(), false))
@@ -69,7 +80,7 @@ public final class ReaTimerSub extends RaCommandBase {
     private int help(@NotNull CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "name");
         return sendHelp(ctx, "timer", name, TimersManager.isTimerExists(name), "create",
-                "create", "ingame &a<activator> &e<time> &6[<paused>]", "Create in-game timer using&e in-game time&r that runs&a activator",
+                "create", "ingame &a<activator> &e<time> &6[<paused>] [<world>]", "Create in-game timer using&e in-game time&r of the world that runs&a activator",
                 "create", "server &a<activator> &e<cron> &6[<paused>]", "Create server timer using&e cron syntax&r that runs&a activator",
                 "info", "", "Get info about a timer",
                 "pause", "", "Pause a timer",
@@ -78,26 +89,33 @@ public final class ReaTimerSub extends RaCommandBase {
         );
     }
 
-    private int createIngame(@NotNull CommandContext<CommandSourceStack> ctx, boolean paused) {
+    private int createIngame(@NotNull CommandContext<CommandSourceStack> ctx, boolean paused, @Nullable World world) {
         String time = StringArgumentType.getString(ctx, "time");
         String activator = StringArgumentType.getString(ctx, "activator");
-        return create(ctx, "INGAME", time, activator, paused);
+        return create(ctx, "INGAME", time, activator, paused, world == null ? null : world.getName());
     }
 
     private int createServer(@NotNull CommandContext<CommandSourceStack> ctx, boolean paused) {
         String cron = StringArgumentType.getString(ctx, "cron");
         String activator = StringArgumentType.getString(ctx, "activator");
-        return create(ctx, "SERVER", cron, activator, paused);
+        return create(ctx, "SERVER", cron, activator, paused, null);
     }
 
-    private int create(@NotNull CommandContext<CommandSourceStack> ctx, @NotNull String timerType, @NotNull String time, @NotNull String activator, boolean paused) {
+    private int create(
+            @NotNull CommandContext<CommandSourceStack> ctx,
+            @NotNull String timerType,
+            @NotNull String time,
+            @NotNull String activator,
+            boolean paused,
+            @Nullable String world
+    ) {
         String name = StringArgumentType.getString(ctx, "name");
-        Map<String, String> params = Map.of(
-                "timer-type", timerType,
-                "time", time,
-                "paused", String.valueOf(paused),
-                "activator", activator
-        );
+        Map<String, String> params = new HashMap<>();
+        params.put("timer-type", timerType);
+        params.put("time", time);
+        params.put("paused", String.valueOf(paused));
+        params.put("activator", activator);
+        if (world != null) params.put("world", world);
         switch (TimersManager.addTimer(name, Parameters.fromMap(params), true)) {
             case SUCCESS -> sendPrefixed(ctx, "Timer &a'" + esc(name) + "'&r was created.");
             case ERROR_NAME_MISSING -> sendPrefixed(ctx, "Cannot create a timer with no name.");
@@ -115,8 +133,25 @@ public final class ReaTimerSub extends RaCommandBase {
         if (isTimerMissing(ctx, name)) return SINGLE_SUCCESS;
 
         Timer timer = getTimer(name);
-        sendPrefixed(ctx, "Timer &a'" + esc(name) + "'&r : &a" + timer); // TODO Better message; time until next run
+        Parameters params = timer.getParams();
+        sendInky(ctx, "&6&l" + esc(name) + "&e (" + timer.getType() + ")" + (timer.isPaused() ? " &c[paused]" : ""));
+        sendInky(ctx, " &eActivator &7= &r" + esc(params.getString("activator", "")));
+        sendInky(ctx, " &eTime &7= &r" + esc(params.getString("time", "")));
+        if (timer instanceof Timer.Ingame ingame) {
+            sendInky(ctx, " &eWorld &7= &r" + (ingame.getWorld() == null ? "&7main" : esc(ingame.getWorld())));
+        }
+        sendInky(ctx, " &eNext run &7= &r" + describeNextRun(timer));
         return SINGLE_SUCCESS;
+    }
+
+    private static @NotNull String describeNextRun(@NotNull Timer timer) {
+        if (timer.isPaused()) return "&7paused";
+        Duration until = timer.untilNextRun();
+        if (until == null) return "&cnever";
+        String in = "in " + TimeUtils.formatDuration(until.toMillis());
+        return timer instanceof Timer.Ingame
+                ? in + " &7(approximately)"
+                : in + " &7(" + TimeUtils.formatTime(System.currentTimeMillis() + until.toMillis()) + ")";
     }
 
     private int setPaused(@NotNull CommandContext<CommandSourceStack> ctx, boolean paused) {

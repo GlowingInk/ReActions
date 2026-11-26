@@ -26,7 +26,6 @@ import fun.reactions.ReActions;
 import fun.reactions.module.basic.ContextManager;
 import fun.reactions.util.ConfigUtils;
 import fun.reactions.util.parameter.Parameters;
-import fun.reactions.util.time.TimeUtils;
 import ink.glowing.utils.hash.CaseInsensitive;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,9 +34,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 
 public class TimersManager { // TODO Rework from scratch; maybe rework with WaitingManager
@@ -72,10 +70,8 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
 
     private static final int LINES_PER_PAGE_15 = 15;
     private static BukkitTask ingameTimer = null;
-    private static String currentIngameTime;
     private static BukkitTask serverTimer = null;
     private static Map<String, Timer> timers;
-    private static Set<String> timersIngame;
 
     public static CreateResult addTimer(String name, Parameters params) {
         return addTimer(name, params, false);
@@ -104,9 +100,8 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         if (!params.contains("time")) {
             return CreateResult.ERROR_TYPE_MISSING;
         }
-        Timer timer = new Timer(params);
+        Timer timer = Timer.of(params);
         timers.put(name, timer);
-        updateIngameTimers();
         if (save) save();
         return CreateResult.SUCCESS;
     }
@@ -121,38 +116,24 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
         ERROR_TIME_MISSING
     }
 
-    public static Map<String, Timer> getIngameTimers() {
-        Map<String, Timer> ingameTimers = CaseInsensitive.newLinkedMap();
-        for (String key : timers.keySet()) {
-            Timer timer = timers.get(key);
-            if (timer.isIngameTimer()) ingameTimers.put(key, timer);
+    public static Map<String, Timer.Ingame> getIngameTimers() {
+        Map<String, Timer.Ingame> ingameTimers = CaseInsensitive.newLinkedMap();
+        for (var entry : timers.entrySet()) {
+            if (entry.getValue() instanceof Timer.Ingame timer) ingameTimers.put(entry.getKey(), timer);
         }
         return ingameTimers;
     }
 
-    public static Map<String, Timer> getServerTimers() {
-        Map<String, Timer> serverTimers = CaseInsensitive.newLinkedMap();
-        for (String key : timers.keySet()) {
-            Timer timer = timers.get(key);
-            if (!timer.isIngameTimer()) serverTimers.put(key, timer);
+    public static Map<String, Timer.Server> getServerTimers() {
+        Map<String, Timer.Server> serverTimers = CaseInsensitive.newLinkedMap();
+        for (var entry : timers.entrySet()) {
+            if (entry.getValue() instanceof Timer.Server timer) serverTimers.put(entry.getKey(), timer);
         }
         return serverTimers;
     }
 
 
-    public static void updateIngameTimers() {
-        timersIngame.clear();
-        Map<String, Timer> ingame = getIngameTimers();
-        for (String key : ingame.keySet()) {
-            Timer timer = ingame.get(key);
-            timersIngame.addAll(timer.getTimesIngame());
-        }
-    }
-
-
     public static void init() {
-        currentIngameTime = "";
-        timersIngame = new HashSet<>();
         timers = CaseInsensitive.newLinkedMap();
         load();
         initIngameTimer();
@@ -162,13 +143,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     public static void initIngameTimer() {
         if (ingameTimer != null) return;
         ingameTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), () -> {
-            String currentTime = TimeUtils.formatIngameTime();
-            if (currentIngameTime.equalsIgnoreCase(currentTime)) return;
-            currentIngameTime = currentTime;
-            if (!timersIngame.contains(currentIngameTime)) return;
-            Map<String, Timer> timers = getIngameTimers();
-            for (String key : timers.keySet()) {
-                Timer timer = timers.get(key);
+            for (Timer.Ingame timer : getIngameTimers().values()) {
                 if (timer.isTimeToRun()) {
                     Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> ContextManager.triggerFunction(null, timer.getParams()));
                 }
@@ -179,7 +154,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
     public static void initServerTimer() {
         if (serverTimer != null) return;
         serverTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(ReActions.getPlugin(), () -> {
-            for (Timer timer : getServerTimers().values()) {
+            for (Timer.Server timer : getServerTimers().values()) {
                 if (timer.isTimeToRun()) {
                     Bukkit.getScheduler().runTask(ReActions.getPlugin(), () -> ContextManager.triggerFunction(null, timer.getParams()));
                 }
@@ -218,7 +193,7 @@ public class TimersManager { // TODO Rework from scratch; maybe rework with Wait
             Timer timer = timers.get(name);
             Parameters params = timer.getParams();
             if (params.isEmpty()) continue;
-            String timerType = timer.isIngameTimer() ? "INGAME" : "SERVER";
+            String timerType = timer.getType().toUpperCase(Locale.ROOT);
             String root = timerType + "." + name + ".";
             for (String key : params.keys()) {
                 if (key.equalsIgnoreCase("timer-type")) continue;
