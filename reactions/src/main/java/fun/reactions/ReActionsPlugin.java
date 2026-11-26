@@ -39,7 +39,6 @@ import fun.reactions.model.activity.ActivitiesRegistry;
 import fun.reactions.module.ModulesRegistry;
 import fun.reactions.module.basic.BasicModule;
 import fun.reactions.module.basic.ContextManager;
-import fun.reactions.module.basic.ItemContextManager;
 import fun.reactions.module.papi.PapiModule;
 import fun.reactions.module.vault.VaultModule;
 import fun.reactions.module.worldedit.WorldEditModule;
@@ -93,7 +92,6 @@ public class ReActionsPlugin extends JavaPlugin implements ReActions.Platform {
         configuration.load(getConfig());
         configuration.register(PushBack::acceptReload);
         configuration.register(ContextManager::acceptReload);
-        configuration.register(ItemContextManager::acceptReload);
         this.moveListener = new MoveListener(this, movementRegistry);
         configuration.register(moveListener);
         this.variablesManager = new PersistentVariablesManager(this);

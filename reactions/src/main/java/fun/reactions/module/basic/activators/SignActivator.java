@@ -25,6 +25,8 @@ package fun.reactions.module.basic.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.ActivatorsManager;
+import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.LocationVariable;
 import fun.reactions.util.enums.ClickType;
@@ -36,10 +38,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // TODO Add Hand
 public class SignActivator extends Activator {
@@ -62,7 +61,7 @@ public class SignActivator extends Activator {
         return new SignActivator(base, click, maskLines);
     }
 
-    public boolean checkMask(String[] sign) {
+    private boolean checkMask(String[] sign) {
         if (maskLines.isEmpty()) return false;
         int emptyLines = 0;
         for (int i = 0; i < Math.min(4, maskLines.size()); i++) {
@@ -80,9 +79,12 @@ public class SignActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        SignContext signEvent = (SignContext) context;
-        if (click.checkRight(signEvent.leftClick)) return false;
-        return checkMask(signEvent.signLines);
+        SignContext sign = (SignContext) context;
+        return matches(sign.signLines, sign.leftClick);
+    }
+
+    private boolean matches(String[] lines, boolean leftClick) {
+        return !click.checkRight(leftClick) && checkMask(lines);
     }
 
     @Override
@@ -103,6 +105,56 @@ public class SignActivator extends Activator {
             }
         }
         return emptyLines > 0;
+    }
+
+    public static final class Type implements ActivatorType {
+        private final Set<SignActivator> activators = new LinkedHashSet<>();
+
+        @Override
+        public @NotNull String getName() {
+            return "SIGN";
+        }
+
+        @Override
+        public @NotNull Class<SignActivator> getActivatorClass() {
+            return SignActivator.class;
+        }
+
+        @Override
+        public @NotNull Activator createActivator(@NotNull Logic logic, @NotNull Parameters params) {
+            return create(logic, params);
+        }
+
+        @Override
+        public boolean isNeedBlock() {
+            return true;
+        }
+
+        @Override
+        public void include(@NotNull Activator activator) {
+            activators.add((SignActivator) activator);
+        }
+
+        @Override
+        public void discard(@NotNull Activator activator) {
+            activators.remove((SignActivator) activator);
+        }
+
+        public boolean trigger(
+                @NotNull Player player,
+                @NotNull String[] lines,
+                @NotNull Location location,
+                boolean leftClick
+        ) {
+            List<SignActivator> matched = new ArrayList<>();
+            for (SignActivator activator : activators) {
+                if (activator.matches(lines, leftClick)) matched.add(activator);
+            }
+            if (matched.isEmpty()) return false;
+            SignContext context = new SignContext(player, lines, location, leftClick);
+            ActivatorsManager.executeLogic(context, matched);
+            return context.isCancelled();
+        }
     }
 
     public static class SignContext extends ActivationContext {

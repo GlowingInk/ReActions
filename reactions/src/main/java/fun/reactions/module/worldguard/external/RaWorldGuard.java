@@ -25,7 +25,7 @@ package fun.reactions.module.worldguard.external;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import fun.reactions.ReActions;
-import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.ActivatorsManager;
 import fun.reactions.module.worldguard.activators.RegionActivator;
 import fun.reactions.module.worldguard.activators.RegionEnterActivator;
 import fun.reactions.module.worldguard.activators.RegionLeaveActivator;
@@ -51,16 +51,14 @@ public class RaWorldGuard {
         if (bridge == null) return;
         regionActivators = new HashSet<>();
         // TODO Custom ActivatorType
-        for (Activator a : ReActions.getActivatorTypes().get(RegionActivator.class).getActivators()) {
-            RegionActivator r = (RegionActivator) a;
+        ActivatorsManager.Search search = ReActions.getActivators().search();
+        for (RegionActivator r : search.byType(RegionActivator.class)) {
             regionActivators.add(r.getRegion());
         }
-        for (Activator a : ReActions.getActivatorTypes().get(RegionEnterActivator.class).getActivators()) {
-            RegionEnterActivator r = (RegionEnterActivator) a;
+        for (RegionEnterActivator r : search.byType(RegionEnterActivator.class)) {
             regionActivators.add(r.getRegion());
         }
-        for (Activator a : ReActions.getActivatorTypes().get(RegionLeaveActivator.class).getActivators()) {
-            RegionLeaveActivator r = (RegionLeaveActivator) a;
+        for (RegionLeaveActivator r : search.byType(RegionLeaveActivator.class)) {
             regionActivators.add(r.getRegion());
         }
     }

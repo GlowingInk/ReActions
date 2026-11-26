@@ -22,15 +22,16 @@
 
 package fun.reactions.module.basic.activators;
 
+import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
 import fun.reactions.model.environment.Variable;
 import fun.reactions.model.environment.variables.ItemVariable;
-import fun.reactions.util.Utils;
 import fun.reactions.util.enums.HandType;
-import fun.reactions.util.item.ItemManager;
 import fun.reactions.util.item.ItemUtils;
+import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -38,58 +39,78 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class ItemHoldActivator extends Activator {
-    // TODO: Store VirtualItem
-    private final String item;
+public class ItemHoldActivator extends ItemPossessionActivatorBase {
     private final HandType hand;
 
-    private ItemHoldActivator(Logic base, String item, HandType hand) {
-        super(base);
-        this.item = item;
+    private ItemHoldActivator(@NotNull Logic logic, @NotNull VirtualItem item, @NotNull HandType hand) {
+        super(logic, item);
         this.hand = hand;
     }
 
-    public String getItem() {return this.item;}
+    public static ItemHoldActivator create(Logic logic, Parameters params) {
+        VirtualItem item = logic.getPlatform().getItems().fromString(params.getString("item", ""));
+        HandType hand = HandType.getByName(params.getString("hand", "ANY"));
+        return new ItemHoldActivator(logic, item, hand);
+    }
 
-    public HandType getHand() {return this.hand;}
-
-    public static ItemHoldActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", "");
-        HandType hand = HandType.getByName(param.getString("hand", "ANY"));
-        return new ItemHoldActivator(base, item, hand);
+    public @NotNull HandType getHand() {
+        return hand;
     }
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        ItemManager items = logic.getPlatform().getItems();
-        if (item.isEmpty() || (items.asItemStack(item) == null)) {
-            logic.getPlatform().warnOnce("item_hold_invalid:" + logic.getName(), "Failed to parse item of activator {}", logic.getName());
-            return false;
-        }
-        Context ie = (Context) context;
-        return hand.isValidFor(ie.hand) && items.isSimilar(this.item, ie.item);
+        Context hold = (Context) context;
+        return hand.isValidFor(hold.hand) && item.isSimilar(hold.item);
     }
 
     @Override
     public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("item", item);
+        super.saveOptions(cfg);
         cfg.set("hand", hand.name());
     }
 
-    @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(item);
+    public static final class Type extends ItemPossessionActivatorBase.Type<ItemHoldActivator, Context> {
+        public Type(@NotNull ReActions.Platform platform) {
+            super(platform, ItemHoldActivator.class, "ITEM_HOLD");
+        }
+
+        @Override
+        public @NotNull Activator createActivator(@NotNull Logic logic, @NotNull Parameters params) {
+            return create(logic, params);
+        }
+
+        @Override
+        protected int recheck(@NotNull RaConfiguration config) {
+            return config.reactionsCfg().itemHoldRecheck();
+        }
+
+        @Override
+        protected @NotNull List<Context> contexts(@NotNull Player player, @NotNull VirtualItem item) {
+            List<Context> contexts = new ArrayList<>(2);
+            ItemStack mainHand = player.getInventory().getItemInMainHand();
+            if (item.isSimilar(mainHand)) contexts.add(new Context(player, mainHand, EquipmentSlot.HAND));
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (item.isSimilar(offHand)) contexts.add(new Context(player, offHand, EquipmentSlot.OFF_HAND));
+            return contexts;
+        }
+
+        @Override
+        protected boolean matches(@NotNull ItemHoldActivator activator, @NotNull Context context) {
+            return activator.hand.isValidFor(context.hand);
+        }
     }
 
     public static class Context extends ActivationContext {
         private final EquipmentSlot hand;
         private final ItemStack item;
 
-        public Context(Player p, ItemStack item, EquipmentSlot hand) {
-            super(p);
+        public Context(@NotNull Player player, @NotNull ItemStack item, @NotNull EquipmentSlot hand) {
+            super(player);
             this.item = item;
             this.hand = hand;
         }
@@ -103,12 +124,9 @@ public class ItemHoldActivator extends Activator {
         protected @NotNull Map<String, Variable> prepareVariables() {
             Map<String, Variable> vars = new HashMap<>();
             vars.put("hand", Variable.value(hand == EquipmentSlot.HAND ? "MAIN" : "SECOND"));
-            if (item != null) {
-                vars.put("item", new ItemVariable(item));
-                vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
-            }
+            vars.put("item", new ItemVariable(item));
+            vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
             return vars;
         }
     }
 }
-

@@ -63,8 +63,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-// TODO: Refactor to DetailsFactory
-public final class ContextManager {
+public final class ContextManager {  // TODO Move more stuff into Types
 
     private static int worldguardRecheck;
 
@@ -176,18 +175,6 @@ public final class ContextManager {
         ButtonActivator.Context be = new ButtonActivator.Context(event.getPlayer(), event.getClickedBlock().getLocation());
         activate(be);
         return be.isCancelled();
-    }
-
-    public static boolean triggerSign(Player player, String[] lines, Location loc, boolean leftClick) {
-        for (Activator act : ReActions.getActivatorTypes().get(SignActivator.class).getActivators()) {
-            SignActivator sign = (SignActivator) act;
-            if (sign.checkMask(lines)) {
-                SignActivator.SignContext se = new SignActivator.SignContext(player, lines, loc, leftClick);
-                activate(se);
-                return se.isCancelled();
-            }
-        }
-        return false;
     }
 
     // TODO: I think all of it should be inside ActionExecute class
@@ -337,20 +324,6 @@ public final class ContextManager {
         boolean needUpdate = repeat || ((curTime - prevTime) >= (1000L * seconds));
         if (needUpdate) p.setMetadata("reactions-rchk-" + id, new FixedMetadataValue(ReActions.getPlugin(), curTime));
         return needUpdate;
-    }
-
-    // FIXME: Refactor, should not be this way
-    public static @NotNull Optional<Variables> triggerMessage(CommandSender sender, MessageActivator.Source source, String message) {
-        Player player = (sender instanceof Player) ? (Player) sender : null;
-        for (Activator act : ReActions.getActivatorTypes().get(MessageActivator.class).getActivators()) {
-            MessageActivator a = (MessageActivator) act;
-            if (a.filterMessage(source, message)) {
-                MessageActivator.Context me = new MessageActivator.Context(player, a, message);
-                activate(me);
-                return me.getVariables();
-            }
-        }
-        return Optional.empty();
     }
 
     public static void triggerVariable(String var, @Nullable String playerName, String newValue, String prevValue) {

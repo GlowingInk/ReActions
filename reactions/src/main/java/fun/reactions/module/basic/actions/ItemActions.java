@@ -26,7 +26,9 @@ import fun.reactions.ReActions;
 import fun.reactions.model.activity.Activity;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.environment.Environment;
-import fun.reactions.module.basic.ItemContextManager;
+import fun.reactions.module.basic.activators.ItemHoldActivator;
+import fun.reactions.module.basic.activators.ItemPossessionActivatorBase;
+import fun.reactions.module.basic.activators.ItemWearActivator;
 import fun.reactions.util.Utils;
 import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
@@ -158,7 +160,6 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
     }
 
     private boolean wearItem(Environment env, Parameters params) {
-        Player player = env.getPlayer();
         String itemStr = params.getString("item");
         int slot = -1; //4 - auto, 3 - helmete, 2 - chestplate, 1 - leggins, 0 - boots
         ItemPolicy existDrop = ItemPolicy.UNDRESS;
@@ -178,7 +179,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
             if (slot == -1) return setItemInOffhand(env, params, item);
             // if (slot == -1) slot = getSlotByItem(item);
         }
-        return setArmourItem(player, slot, item, existDrop);
+        return setArmourItem(env, slot, item, existDrop);
     }
 
     private enum ItemPolicy {
@@ -191,11 +192,12 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
         if (itemStr.isEmpty()) return false;
         if (!itemStr.equalsIgnoreCase("offhand")) return false;
         player.getInventory().setItemInOffHand(item);
-        ItemContextManager.triggerItemWear(player);
+        ItemPossessionActivatorBase.Type.trigger(env.getPlatform(), ItemWearActivator.class, player);
         return true;
     }
 
-    private boolean setArmourItem(Player player, int slot, ItemStack item, ItemPolicy existDrop) {
+    private boolean setArmourItem(Environment env, int slot, ItemStack item, ItemPolicy existDrop) {
+        Player player = env.getPlayer();
         ItemStack[] armour = player.getInventory().getArmorContents().clone();
         ItemStack oldItem = armour[slot] == null ? null : armour[slot].clone();
         if (ItemUtils.isExist(oldItem) && existDrop == ItemPolicy.KEEP) {
@@ -210,7 +212,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
                 player.getWorld().dropItemNaturally(player.getLocation(), oldItem);
             }
         }
-        ItemContextManager.triggerItemWear(player);
+        ItemPossessionActivatorBase.Type.trigger(env.getPlatform(), ItemWearActivator.class, player);
         return true;
     }
 
@@ -299,7 +301,7 @@ public record ItemActions(@NotNull Type actionType) implements Action, Activity.
         Bukkit.getScheduler().runTaskLater(ReActions.getPlugin(), () -> {
             for (ItemStack i : items)
                 ItemUtils.giveItemOrDrop(player, i);
-            ItemContextManager.triggerItemHold(player);
+            ItemPossessionActivatorBase.Type.trigger(env.getPlatform(), ItemHoldActivator.class, player);
         }, 1);
         return true;
     }

@@ -18,7 +18,10 @@ public abstract class Activator {
      * @param context Details with data for activator
      */
     public final void executeActivator(@NotNull ActivationContext context) {
-        if (!checkContext(context)) return;
+        if (checkContext(context)) executeLogic(context);
+    }
+
+    public final void executeLogic(@NotNull ActivationContext context) {
         logic.execute(context.createEnvironment(logic.getPlatform(), logic.getName()));
     }
 

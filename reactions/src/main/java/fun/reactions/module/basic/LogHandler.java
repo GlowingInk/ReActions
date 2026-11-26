@@ -24,14 +24,22 @@ package fun.reactions.module.basic;
 
 import fun.reactions.module.basic.activators.MessageActivator;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 
 public class LogHandler extends StreamHandler {
+    private final MessageActivator.Type messageType;
+
+    public LogHandler(@NotNull MessageActivator.Type messageType) {
+        this.messageType = messageType;
+    }
+
     @Override
     public void publish(LogRecord record) {
         try {
-            ContextManager.triggerMessage(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
+            messageType.trigger(null, MessageActivator.Source.LOG_OUTPUT, record.getMessage());
         } catch (Exception ignored) { }
         super.publish(record);
     }

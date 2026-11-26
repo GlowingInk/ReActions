@@ -1,12 +1,8 @@
 package fun.reactions.model.activators.type;
 
 import fun.reactions.ReActions;
-import fun.reactions.model.Logic;
-import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.util.function.RaGenerator;
 import fun.reactions.util.naming.Aliased;
-import fun.reactions.util.parameter.Parameters;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -67,81 +63,5 @@ public class ActivatorTypesRegistry {
 
     public @NotNull @UnmodifiableView Collection<String> getTypeNames() {
         return Collections.unmodifiableCollection(typesAliases.keySet());
-    }
-
-    public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator) {
-        return typeOf(type, name, creator, false);
-    }
-
-    public static @NotNull ActivatorType typeOf(@NotNull Class<? extends Activator> type, @NotNull String name, @NotNull RaGenerator<Parameters> creator, boolean needBlock) {
-        return new SimpleType(type, name, creator, needBlock);
-    }
-
-    private static class SimpleType implements ActivatorType {
-        private final Class<? extends Activator> type;
-        private final RaGenerator<Parameters> creator;
-        private final boolean needBlock;
-        private final String name;
-        private final Set<Activator> activators;
-
-        private SimpleType(Class<? extends Activator> type, String name, RaGenerator<Parameters> creator, boolean needBlock) {
-            this.type = type;
-            this.creator = creator;
-            this.needBlock = needBlock;
-            this.name = name;
-            this.activators = new HashSet<>();
-        }
-
-        @Override
-        public @NotNull Class<? extends Activator> getActivatorClass() {
-            return type;
-        }
-
-        @Override
-        public @NotNull String getName() {
-            return name;
-        }
-
-        @Override
-        public @NotNull Set<Activator> getActivators() {
-            return activators;
-        }
-
-        @Override
-        public Activator createActivator(@NotNull Logic logic, @NotNull Parameters params) {
-            return creator.apply(logic, params);
-        }
-
-        @Override
-        public boolean isNeedBlock() {
-            return needBlock;
-        }
-
-        @Override
-        public void addActivator(@NotNull Activator activator) {
-            activators.add(activator);
-        }
-
-        @Override
-        public void removeActivator(@NotNull Activator activator) {
-            activators.remove(activator);
-        }
-
-        @Override
-        public void clearActivators() {
-            activators.clear();
-        }
-
-        @Override
-        public void activate(@NotNull ActivationContext details) {
-            for (Activator activator : getActivators()) {
-                activator.executeActivator(details);
-            }
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return activators.isEmpty();
-        }
     }
 }

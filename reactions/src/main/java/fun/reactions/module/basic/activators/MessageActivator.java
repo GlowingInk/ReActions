@@ -25,17 +25,23 @@ package fun.reactions.module.basic.activators;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
+import fun.reactions.model.activators.ActivatorsManager;
+import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.Variables;
 import fun.reactions.util.Utils;
 import fun.reactions.util.function.FunctionalUtils;
 import fun.reactions.util.naming.Aliased;
 import fun.reactions.util.num.NumberUtils;
 import fun.reactions.util.parameter.Parameters;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -69,18 +75,13 @@ public class MessageActivator extends Activator {
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        Context e = (Context) context;
-        return e.isForActivator(this);
+        Context message = (Context) context;
+        return (source == Source.ALL || source == message.source) && filter(message.message);
     }
 
     @Override
     public boolean isValid() {
         return !Utils.isStringEmpty(mask);
-    }
-
-    public boolean filterMessage(Source source, String message) {
-        if (source != this.source && this.source != Source.ALL) return false;
-        return filter(message);
     }
 
     private boolean filter(String message) {
@@ -91,6 +92,68 @@ public class MessageActivator extends Activator {
             case REGEX -> message.matches(this.mask);
             case START -> message.toLowerCase(Locale.ROOT).startsWith(this.mask.toLowerCase(Locale.ROOT));
         };
+    }
+
+    public static final class Type implements ActivatorType {
+        private final Map<Source, List<MessageActivator>> activators = new EnumMap<>(Source.class);
+
+        public Type() {
+            for (Source source : Source.values()) {
+                activators.put(source, new CopyOnWriteArrayList<>());
+            }
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return "MESSAGE";
+        }
+
+        @Override
+        public @NotNull Class<MessageActivator> getActivatorClass() {
+            return MessageActivator.class;
+        }
+
+        @Override
+        public @NotNull Activator createActivator(@NotNull Logic logic, @NotNull Parameters params) {
+            return create(logic, params);
+        }
+
+        @Override
+        public boolean isNeedBlock() {
+            return false;
+        }
+
+        @Override
+        public void include(@NotNull Activator activator) {
+            MessageActivator message = (MessageActivator) activator;
+            activators.get(message.source).add(message);
+        }
+
+        @Override
+        public void discard(@NotNull Activator activator) {
+            MessageActivator message = (MessageActivator) activator;
+            activators.get(message.source).remove(message);
+        }
+
+        public @NotNull Optional<Variables> trigger(
+                @Nullable CommandSender sender,
+                @NotNull Source source,
+                @NotNull String message
+        ) {
+            MessageActivator activator = find(source, message);
+            if (activator == null && source != Source.ALL) activator = find(Source.ALL, message);
+            if (activator == null) return Optional.empty();
+            Context context = new Context(sender instanceof Player player ? player : null, source, message);
+            ActivatorsManager.executeLogic(context, List.of(activator));
+            return context.getVariables();
+        }
+
+        private @Nullable MessageActivator find(@NotNull Source source, @NotNull String message) {
+            for (MessageActivator activator : activators.get(source)) {
+                if (activator.filter(message)) return activator;
+            }
+            return null;
+        }
     }
 
     public enum CheckType {
@@ -144,17 +207,13 @@ public class MessageActivator extends Activator {
         public static final String MESSAGE = "message";
         private static final Pattern NOT_D = Pattern.compile("\\D+");
 
+        private final Source source;
         private final String message;
-        private final MessageActivator activator;
 
-        public Context(Player player, MessageActivator activator, String message) {
+        public Context(@Nullable Player player, @NotNull Source source, @NotNull String message) {
             super(player);
-            this.activator = activator;
+            this.source = source;
             this.message = message;
-        }
-
-        public boolean isForActivator(MessageActivator messageActivator) {
-            return this.activator.equals(messageActivator);
         }
 
         @Override

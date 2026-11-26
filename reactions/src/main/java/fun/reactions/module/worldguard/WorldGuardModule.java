@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
-
 public class WorldGuardModule implements
         Module.WithActivatorTypes, Module.WithActions, Module.WithFlags,
         Module.WithSelectors, Module.WithAreas {
@@ -53,9 +51,9 @@ public class WorldGuardModule implements
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes() {
         return List.of(
-                typeOf(RegionActivator.class, "REGION", RegionActivator::create),
-                typeOf(RegionEnterActivator.class, "REGION_ENTER", RegionEnterActivator::create),
-                typeOf(RegionLeaveActivator.class, "REGION_LEAVE", RegionLeaveActivator::create)
+                ActivatorType.of(RegionActivator.class, "REGION", RegionActivator::create),
+                ActivatorType.of(RegionEnterActivator.class, "REGION_ENTER", RegionEnterActivator::create),
+                ActivatorType.of(RegionLeaveActivator.class, "REGION_LEAVE", RegionLeaveActivator::create)
         );
     }
 

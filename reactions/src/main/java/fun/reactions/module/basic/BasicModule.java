@@ -1,7 +1,6 @@
 package fun.reactions.module.basic;
 
 import fun.reactions.ReActions;
-import fun.reactions.SQLManager;
 import fun.reactions.model.activators.type.ActivatorType;
 import fun.reactions.model.activity.actions.Action;
 import fun.reactions.model.activity.flags.Flag;
@@ -24,30 +23,32 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
+import static fun.reactions.model.activators.type.ActivatorType.of;
 
 public class BasicModule implements
         Module.WithActivatorTypes, Module.WithActions, Module.WithFlags,
         Module.WithPlaceholders, Module.WithSelectors, Module.WithItemAspects {
     private LogHandler logHandler;
-    private SQLManager sql;
+    private ReActions.Platform platform;
 
     @Override
     public void onRegister(@NotNull ReActions.Platform platform) {
-        sql = platform.getSql();
+        this.platform = platform;
     }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void onEnable(@NotNull ReActions.Platform platform) {
-        logHandler = new LogHandler();
-        platform.getServer().getLogger().addHandler(logHandler);
+        if (platform.getActivatorTypes().get(MessageActivator.class) instanceof MessageActivator.Type messageType) {
+            logHandler = new LogHandler(messageType);
+            platform.getServer().getLogger().addHandler(logHandler);
+        }
     }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void onDisable(@NotNull ReActions.Platform platform) {
-        platform.getServer().getLogger().removeHandler(logHandler);
+        if (logHandler != null) platform.getServer().getLogger().removeHandler(logHandler);
     }
 
     @Override
@@ -68,43 +69,43 @@ public class BasicModule implements
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes() {
         return Arrays.asList(
-                typeOf(FunctionActivator.class, "FUNCTION", FunctionActivator::create),
-                typeOf(ButtonActivator.class, "BUTTON", ButtonActivator::create, true),
-                typeOf(PlateActivator.class, "PLATE", PlateActivator::create, true),
-                typeOf(TeleportActivator.class, "TELEPORT", TeleportActivator::create),
-                typeOf(CommandActivator.class, "COMMAND", CommandActivator::create),
-                typeOf(MessageActivator.class, "MESSAGE", MessageActivator::create),
-                typeOf(PvpKillActivator.class, "PVP_KILL", PvpKillActivator::create),
-                typeOf(DeathActivator.class, "DEATH", DeathActivator::create),
-                typeOf(RespawnActivator.class, "RESPAWN", RespawnActivator::create),
-                typeOf(LeverActivator.class, "LEVER", LeverActivator::create, true),
-                typeOf(DoorActivator.class, "DOOR", DoorActivator::create, true),
-                typeOf(JoinActivator.class, "JOIN", JoinActivator::create),
-                typeOf(QuitActivator.class, "QUIT", QuitActivator::create),
-                typeOf(MobClickActivator.class, "MOB_CLICK", MobClickActivator::create),
-                typeOf(MobKillActivator.class, "MOB_KILL", MobKillActivator::create),
-                typeOf(MobDamageActivator.class, "MOB_DAMAGE", MobDamageActivator::create),
-                typeOf(ItemClickActivator.class, "ITEM_CLICK", ItemClickActivator::create),
-                typeOf(ConsumeActivator.class, "CONSUME", ConsumeActivator::create),
-                typeOf(ItemHoldActivator.class, "ITEM_HOLD", ItemHoldActivator::create),
-                typeOf(ItemHeldActivator.class, "ITEM_HELD", ItemHeldActivator::create),
-                typeOf(ItemWearActivator.class, "ITEM_WEAR", ItemWearActivator::create),
-                typeOf(SignActivator.class, "SIGN", SignActivator::create, true),
-                typeOf(BlockClickActivator.class, "BLOCK_CLICK", BlockClickActivator::create, true),
-                typeOf(InventoryClickActivator.class, "INVENTORY_CLICK", InventoryClickActivator::create),
-                typeOf(DropActivator.class, "DROP", DropActivator::create),
-                typeOf(PickupItemActivator.class, "PICKUP_ITEM", PickupItemActivator::create),
-                typeOf(FlightActivator.class, "FLIGHT", FlightActivator::create),
-                typeOf(EntityClickActivator.class, "ENTITY_CLICK", EntityClickActivator::create),
-                typeOf(BlockBreakActivator.class, "BLOCK_BREAK", BlockBreakActivator::create, true),
-                typeOf(SneakActivator.class, "SNEAK", SneakActivator::create),
-                typeOf(DamageActivator.class, "DAMAGE", DamageActivator::create),
-                typeOf(DamageByMobActivator.class, "DAMAGE_BY_MOB", DamageByMobActivator::create),
-                typeOf(DamageByBlockActivator.class, "DAMAGE_BY_BLOCK", DamageByBlockActivator::create),
-                typeOf(VariableActivator.class, "VARIABLE", VariableActivator::create),
-                typeOf(GameModeActivator.class, "GAMEMODE", GameModeActivator::create),
-                typeOf(CuboidActivator.class, "CUBOID", CuboidActivator::create),
-                typeOf(WeatherChangeActivator.class, "WEATHER_CHANGE", WeatherChangeActivator::create)
+                of(FunctionActivator.class, "FUNCTION", FunctionActivator::create),
+                of(ButtonActivator.class, "BUTTON", ButtonActivator::create, true),
+                of(PlateActivator.class, "PLATE", PlateActivator::create, true),
+                of(TeleportActivator.class, "TELEPORT", TeleportActivator::create),
+                of(CommandActivator.class, "COMMAND", CommandActivator::create),
+                new MessageActivator.Type(),
+                of(PvpKillActivator.class, "PVP_KILL", PvpKillActivator::create),
+                of(DeathActivator.class, "DEATH", DeathActivator::create),
+                of(RespawnActivator.class, "RESPAWN", RespawnActivator::create),
+                of(LeverActivator.class, "LEVER", LeverActivator::create, true),
+                of(DoorActivator.class, "DOOR", DoorActivator::create, true),
+                of(JoinActivator.class, "JOIN", JoinActivator::create),
+                of(QuitActivator.class, "QUIT", QuitActivator::create),
+                of(MobClickActivator.class, "MOB_CLICK", MobClickActivator::create),
+                of(MobKillActivator.class, "MOB_KILL", MobKillActivator::create),
+                of(MobDamageActivator.class, "MOB_DAMAGE", MobDamageActivator::create),
+                of(ItemClickActivator.class, "ITEM_CLICK", ItemClickActivator::create),
+                of(ConsumeActivator.class, "CONSUME", ConsumeActivator::create),
+                new ItemHoldActivator.Type(platform),
+                of(ItemHeldActivator.class, "ITEM_HELD", ItemHeldActivator::create),
+                new ItemWearActivator.Type(platform),
+                new SignActivator.Type(),
+                of(BlockClickActivator.class, "BLOCK_CLICK", BlockClickActivator::create, true),
+                of(InventoryClickActivator.class, "INVENTORY_CLICK", InventoryClickActivator::create),
+                of(DropActivator.class, "DROP", DropActivator::create),
+                of(PickupItemActivator.class, "PICKUP_ITEM", PickupItemActivator::create),
+                of(FlightActivator.class, "FLIGHT", FlightActivator::create),
+                of(EntityClickActivator.class, "ENTITY_CLICK", EntityClickActivator::create),
+                of(BlockBreakActivator.class, "BLOCK_BREAK", BlockBreakActivator::create, true),
+                of(SneakActivator.class, "SNEAK", SneakActivator::create),
+                of(DamageActivator.class, "DAMAGE", DamageActivator::create),
+                of(DamageByMobActivator.class, "DAMAGE_BY_MOB", DamageByMobActivator::create),
+                of(DamageByBlockActivator.class, "DAMAGE_BY_BLOCK", DamageByBlockActivator::create),
+                of(VariableActivator.class, "VARIABLE", VariableActivator::create),
+                of(GameModeActivator.class, "GAMEMODE", GameModeActivator::create),
+                of(CuboidActivator.class, "CUBOID", CuboidActivator::create),
+                of(WeatherChangeActivator.class, "WEATHER_CHANGE", WeatherChangeActivator::create)
         );
     }
 
@@ -161,11 +162,11 @@ public class BasicModule implements
                 new TimerActions(true),
                 new TimerActions(false),
                 new CancelEventAction(),
-                new SqlActions(sql, SqlActions.Type.SELECT),
-                new SqlActions(sql, SqlActions.Type.UPDATE),
-                new SqlActions(sql, SqlActions.Type.INSERT),
-                new SqlActions(sql, SqlActions.Type.DELETE),
-                new SqlActions(sql, SqlActions.Type.SET),
+                new SqlActions(platform.getSql(), SqlActions.Type.SELECT),
+                new SqlActions(platform.getSql(), SqlActions.Type.UPDATE),
+                new SqlActions(platform.getSql(), SqlActions.Type.INSERT),
+                new SqlActions(platform.getSql(), SqlActions.Type.DELETE),
+                new SqlActions(platform.getSql(), SqlActions.Type.SET),
                 new RegexAction(),
                 new DynamicActionAction(),
                 new OpenMenuAction(),
@@ -227,8 +228,8 @@ public class BasicModule implements
                 new NumCompareFlags(NumCompareFlags.Type.LOWER),
                 new WeatherFlag(),
                 new TimerActiveFlag(),
-                new SqlFlags(sql, SqlFlags.Type.CHECK),
-                new SqlFlags(sql, SqlFlags.Type.RESULT),
+                new SqlFlags(platform.getSql(), SqlFlags.Type.CHECK),
+                new SqlFlags(platform.getSql(), SqlFlags.Type.RESULT),
                 new FlySpeedFlag(),
                 new WalkSpeedFlag(),
                 new CheckOnlineFlag(),

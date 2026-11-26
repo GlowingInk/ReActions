@@ -32,8 +32,9 @@ public class ActivatorsManager {
     private final File actsFolder;
     private final ActivatorTypesRegistry types;
 
-    private final Map<String, Activator> activatorsNames;
-    private final Map<String, Set<Activator>> activatorsGroups;
+    private final Map<String, Activator> activatorsByNames;
+    private final Map<String, Set<Activator>> activatorsByGroups;
+    private final Map<Class<? extends Activator>, Set<Activator>> activatorsByTypes;
 
     private final Search search;
 
@@ -46,8 +47,9 @@ public class ActivatorsManager {
         logger = platform.logger();
         search = new Search();
 
-        activatorsNames = CaseInsensitive.newLinkedMap();
-        activatorsGroups = new HashMap<>();
+        activatorsByNames = CaseInsensitive.newLinkedMap();
+        activatorsByGroups = new HashMap<>();
+        activatorsByTypes = new HashMap<>();
     }
 
     public int loadGroup(@NotNull String group, boolean clear) {
@@ -71,13 +73,13 @@ public class ActivatorsManager {
             return;
         }
         String subgroupPrefix = group + File.separator;
-        Iterator<Map.Entry<String, Set<Activator>>> iterator = activatorsGroups.entrySet().iterator();
+        Iterator<Map.Entry<String, Set<Activator>>> iterator = activatorsByGroups.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Set<Activator>> entry = iterator.next();
             if (!entry.getKey().equals(group) && !entry.getKey().startsWith(subgroupPrefix)) continue;
             for (Activator activator : entry.getValue()) {
-                types.get(activator.getClass()).removeActivator(activator);
-                activatorsNames.remove(activator.getLogic().getName());
+                detachFromType(activator);
+                activatorsByNames.remove(activator.getLogic().getName());
             }
             iterator.remove();
         }
@@ -146,16 +148,16 @@ public class ActivatorsManager {
         if (newGroup.equals(activator.getLogic().getGroup())) return false;
         detachFromGroup(activator);
         activator.getLogic().setGroup(newGroup);
-        activatorsGroups.computeIfAbsent(newGroup, s -> new HashSet<>()).add(activator);
+        activatorsByGroups.computeIfAbsent(newGroup, _ -> new HashSet<>()).add(activator);
         saveGroup(newGroup);
         return true;
     }
 
     private void detachFromGroup(@NotNull Activator activator) {
         String group = activator.getLogic().getGroup();
-        Set<Activator> remaining = activatorsGroups.get(group);
+        Set<Activator> remaining = activatorsByGroups.get(group);
         remaining.remove(activator);
-        if (remaining.isEmpty()) activatorsGroups.remove(group);
+        if (remaining.isEmpty()) activatorsByGroups.remove(group);
         Set<Activator> snapshot = new HashSet<>(remaining);
         platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(group, snapshot, activator));
     }
@@ -163,49 +165,66 @@ public class ActivatorsManager {
     public boolean addActivator(@NotNull Activator activator, boolean save) {
         Logic logic = activator.getLogic();
         String name = logic.getName();
-        if (activatorsNames.containsKey(name)) {
-            logger.warn("Failed to add activator '{}' - activator with this name already exists", logic.getName());
+        if (activatorsByNames.containsKey(name)) {
+            logger.warn("Failed to add activator '{}' - activator with this name already exists", name);
             return false;
         }
-        Objects.requireNonNull(types.get(activator.getClass())).addActivator(activator);
-        activatorsNames.put(logic.getName(), activator);
-        activatorsGroups.computeIfAbsent(logic.getGroup(), g -> new HashSet<>()).add(activator);
+        activatorsByTypes.computeIfAbsent(activator.getClass(), _ -> new HashSet<>()).add(activator);
+        activatorsByNames.put(name, activator);
+        activatorsByGroups.computeIfAbsent(logic.getGroup(), _ -> new HashSet<>()).add(activator);
+        typeOf(activator).include(activator);
         if (save) saveGroup(logic.getGroup());
         return true;
     }
 
+    private void detachFromType(@NotNull Activator activator) {
+        Set<Activator> remaining = activatorsByTypes.get(activator.getClass());
+        if (remaining != null) {
+            remaining.remove(activator);
+            if (remaining.isEmpty()) activatorsByTypes.remove(activator.getClass());
+        }
+        typeOf(activator).discard(activator);
+    }
+
+    private @NotNull ActivatorType typeOf(@NotNull Activator activator) {
+        return Objects.requireNonNull(types.get(activator.getClass()));
+    }
+
     public void clearActivators() {
-        types.getTypes().forEach(ActivatorType::clearActivators);
-        activatorsNames.clear();
-        activatorsGroups.clear();
+        for (Activator activator : activatorsByNames.values()) {
+            typeOf(activator).discard(activator);
+        }
+        activatorsByTypes.clear();
+        activatorsByNames.clear();
+        activatorsByGroups.clear();
     }
 
     public boolean containsActivator(@NotNull String name) {
-        return activatorsNames.containsKey(name);
+        return activatorsByNames.containsKey(name);
     }
 
     public @Nullable Activator removeActivator(@NotNull String name) {
-        Activator activator = activatorsNames.remove(name);
+        Activator activator = activatorsByNames.remove(name);
         if (activator == null) return null;
-        types.get(activator.getClass()).removeActivator(activator);
+        detachFromType(activator);
         detachFromGroup(activator);
         return activator;
     }
 
     public @Nullable Activator getActivator(@NotNull String name) {
-        return activatorsNames.get(name);
+        return activatorsByNames.get(name);
     }
 
     public @NotNull @UnmodifiableView Collection<String> getActivatorNames() {
-        return Collections.unmodifiableCollection(activatorsNames.keySet());
+        return Collections.unmodifiableCollection(activatorsByNames.keySet());
     }
 
     public @NotNull @UnmodifiableView Collection<String> getGroupNames() {
-        return Collections.unmodifiableCollection(activatorsGroups.keySet());
+        return Collections.unmodifiableCollection(activatorsByGroups.keySet());
     }
 
     public boolean saveGroup(@NotNull String name) {
-        Set<Activator> activators = activatorsGroups.get(name);
+        Set<Activator> activators = activatorsByGroups.get(name);
         if (activators == null) return false;
         Set<Activator> finalActivators = new HashSet<>(activators);
         platform.getServer().getScheduler().runTaskAsynchronously(plugin, () -> saveGroup(name, finalActivators, null));
@@ -222,12 +241,12 @@ public class ActivatorsManager {
         }
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
         if (removed != null) {
-            ConfigurationSection typeCfg = cfg.getConfigurationSection(types.get(removed.getClass()).getName());
+            ConfigurationSection typeCfg = cfg.getConfigurationSection(typeOf(removed).getName());
             if (typeCfg != null) typeCfg.set(removed.getLogic().getName(), null);
         }
         for (Activator activator : activators) {
             try {
-                String typeStr = Objects.requireNonNull(types.get(activator.getClass())).getName();
+                String typeStr = typeOf(activator).getName();
                 ConfigurationSection typeCfg = ConfigUtils.getSection(cfg, typeStr);
                 activator.saveActivator(typeCfg.createSection(activator.getLogic().getName()));
             } catch (Exception ex) {
@@ -242,21 +261,29 @@ public class ActivatorsManager {
     }
 
     public void activate(@NotNull ActivationContext context, @NotNull String id) {
-        Activator activator = activatorsNames.get(id);
+        Activator activator = activatorsByNames.get(id);
         if (activator != null) {
             context.initialize();
             activator.executeActivator(context);
         }
     }
 
-    public boolean activate(@NotNull ActivationContext context) {
-        ActivatorType type = types.get(context.getType());
-        if (type != null && !type.isEmpty()) {
-            context.initialize();
-            type.activate(context);
-            return true;
+    public static void executeLogic(@NotNull ActivationContext context, @NotNull Collection<? extends Activator> activators) {
+        if (activators.isEmpty()) return;
+        context.initialize();
+        for (Activator activator : activators) {
+            activator.executeLogic(context);
         }
-        return false;
+    }
+
+    public boolean activate(@NotNull ActivationContext context) {
+        Set<Activator> activators = activatorsByTypes.get(context.getType());
+        if (activators == null) return false;
+        context.initialize();
+        for (Activator activator : activators) {
+            activator.executeActivator(context);
+        }
+        return true;
     }
 
     public @NotNull Search search() {
@@ -266,27 +293,34 @@ public class ActivatorsManager {
     public final class Search {
         @NotNull
         public Collection<Activator> all() {
-            return Collections.unmodifiableCollection(activatorsNames.values());
+            return Collections.unmodifiableCollection(activatorsByNames.values());
         }
 
         @NotNull
         public Collection<Activator> byGroup(@NotNull String group) {
-            return Collections.unmodifiableCollection(activatorsGroups.getOrDefault(group, Set.of()));
+            return Collections.unmodifiableCollection(activatorsByGroups.getOrDefault(group, Set.of()));
         }
 
         @NotNull
         public Collection<Activator> byType(String typeStr) {
             ActivatorType type = types.get(typeStr);
             if (type == null) return Set.of();
-            return Collections.unmodifiableCollection(type.getActivators());
+            return Collections.unmodifiableCollection(activatorsByTypes.getOrDefault(type.getActivatorClass(), Set.of()));
+        }
+
+        @NotNull
+        @SuppressWarnings("unchecked")
+        public <T extends Activator> Collection<T> byType(@NotNull Class<T> type) {
+            return Collections.unmodifiableCollection((Set<T>) activatorsByTypes.getOrDefault(type, Set.of()));
         }
 
         @NotNull
         public Collection<Activator> byRawLocation(@NotNull World world, int x, int y, int z) {
             List<Activator> found = new ArrayList<>();
-            for (ActivatorType type : types.getTypes()) {
-                if (Locatable.class.isAssignableFrom(type.getActivatorClass())) {
-                    type.getActivators().stream().filter(act -> ((Locatable) act).isLocatedAt(world, x, y, z)).forEach(found::add);
+            for (var entry : activatorsByTypes.entrySet()) {
+                if (!Locatable.class.isAssignableFrom(entry.getKey())) continue;
+                for (Activator activator : entry.getValue()) {
+                    if (((Locatable) activator).isLocatedAt(world, x, y, z)) found.add(activator);
                 }
             }
             return Collections.unmodifiableCollection(found);
@@ -300,7 +334,7 @@ public class ActivatorsManager {
         @NotNull
         public Collection<Activator> query(@NotNull Predicate<Activator> predicate) {
             List<Activator> found = new ArrayList<>();
-            for (Activator activator : activatorsNames.values()) {
+            for (Activator activator : activatorsByNames.values()) {
                 if (predicate.test(activator)) found.add(activator);
             }
             return found;

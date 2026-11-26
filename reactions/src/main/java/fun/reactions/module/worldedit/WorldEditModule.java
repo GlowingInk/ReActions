@@ -18,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static fun.reactions.model.activators.type.ActivatorTypesRegistry.typeOf;
-
 public class WorldEditModule implements Module.WithActivatorTypes, Module.WithActions, Module.WithFlags { // TODO: Actions with WorldEdit API - placing blocks, working with schematics
     @Override
     public @NotNull Collection<String> requiredPlugins() {
@@ -39,8 +37,8 @@ public class WorldEditModule implements Module.WithActivatorTypes, Module.WithAc
     @Override
     public @NotNull Collection<ActivatorType> getActivatorTypes() {
         return List.of(
-                typeOf(WeSelectionActivator.class, "WE_SELECTION", WeSelectionActivator::create),
-                typeOf(WeChangeActivator.class, "WE_CHANGE", WeChangeActivator::create)
+                ActivatorType.of(WeSelectionActivator.class, "WE_SELECTION", WeSelectionActivator::create),
+                ActivatorType.of(WeChangeActivator.class, "WE_CHANGE", WeChangeActivator::create)
         );
     }
 

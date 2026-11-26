@@ -22,64 +22,79 @@
 
 package fun.reactions.module.basic.activators;
 
+import fun.reactions.ReActions;
+import fun.reactions.cfg.RaConfiguration;
 import fun.reactions.model.Logic;
 import fun.reactions.model.activators.ActivationContext;
 import fun.reactions.model.activators.Activator;
-import fun.reactions.util.Utils;
-import fun.reactions.util.item.ItemManager;
+import fun.reactions.model.environment.Variable;
+import fun.reactions.model.environment.variables.ItemVariable;
+import fun.reactions.util.item.ItemUtils;
 import fun.reactions.util.item.VirtualItem;
 import fun.reactions.util.parameter.Parameters;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemWearActivator extends Activator /*implements Manageable*/ {
-    // TODO: Store VirtualItem
-    private final String item;
-    // private final WearSlot slot;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    private ItemWearActivator(Logic base, String item/*, WearSlot slot*/) {
-        super(base);
-        this.item = item;
-        // this.slot = slot;
+public class ItemWearActivator extends ItemPossessionActivatorBase {
+    private ItemWearActivator(@NotNull Logic logic, @NotNull VirtualItem item) {
+        super(logic, item);
     }
 
-    public static ItemWearActivator create(Logic base, Parameters param) {
-        String item = param.getString("item", null);
-        // WearSlot slot = WearSlot.getByName(param.getParam("slot", "any"));
-        return new ItemWearActivator(base, item/*, slot*/);
+    public static ItemWearActivator create(Logic logic, Parameters params) {
+        return new ItemWearActivator(logic, logic.getPlatform().getItems().fromString(params.getString("item", "")));
     }
 
     @Override
     public boolean checkContext(@NotNull ActivationContext context) {
-        ItemManager items = logic.getPlatform().getItems();
-        if (item.isEmpty() || (items.asItemStack(item) == null)) {
-            logic.getPlatform().warnOnce("item_wear_invalid:" + logic.getName(), "Failed to parse item of activator {}", logic.getName());
-            return false;
+        return item.isSimilar(((Context) context).item);
+    }
+
+    public static final class Type extends ItemPossessionActivatorBase.Type<ItemWearActivator, Context> {
+        private static final List<EquipmentSlot> ARMOR_SLOTS = List.of(
+                EquipmentSlot.HEAD,
+                EquipmentSlot.CHEST,
+                EquipmentSlot.LEGS,
+                EquipmentSlot.FEET
+        );
+
+        public Type(@NotNull ReActions.Platform platform) {
+            super(platform, ItemWearActivator.class, "ITEM_WEAR");
         }
-        Context iw = (Context) context;
-        return iw.isItemWeared(items.fromString(item));
-    }
 
-    @Override
-    public void saveOptions(@NotNull ConfigurationSection cfg) {
-        cfg.set("item", item);
-        // cfg.set("wear-slot", this.slot.name());
-    }
+        @Override
+        public @NotNull Activator createActivator(@NotNull Logic logic, @NotNull Parameters params) {
+            return create(logic, params);
+        }
 
-    public String getItemStr() {
-        return this.item;
-    }
+        @Override
+        protected int recheck(@NotNull RaConfiguration config) {
+            return config.reactionsCfg().itemWearRecheck();
+        }
 
-    @Override
-    public boolean isValid() {
-        return !Utils.isStringEmpty(item);
+        @Override
+        protected @NotNull List<Context> contexts(@NotNull Player player, @NotNull VirtualItem item) {
+            for (EquipmentSlot slot : ARMOR_SLOTS) {
+                ItemStack armor = player.getInventory().getItem(slot);
+                if (item.isSimilar(armor)) return List.of(new Context(player, armor, slot));
+            }
+            return List.of();
+        }
     }
 
     public static class Context extends ActivationContext {
-        public Context(Player p) {
-            super(p);
+        private final ItemStack item;
+        private final EquipmentSlot slot;
+
+        public Context(@NotNull Player player, @NotNull ItemStack item, @NotNull EquipmentSlot slot) {
+            super(player);
+            this.item = item;
+            this.slot = slot;
         }
 
         @Override
@@ -87,11 +102,13 @@ public class ItemWearActivator extends Activator /*implements Manageable*/ {
             return ItemWearActivator.class;
         }
 
-        public boolean isItemWeared(VirtualItem item) { // TODO: Why is it there?
-            for (ItemStack armour : player.getInventory().getArmorContents())
-                if (item.isSimilar(armour)) return true;
-            return false;
+        @Override
+        protected @NotNull Map<String, Variable> prepareVariables() {
+            Map<String, Variable> vars = new HashMap<>();
+            vars.put("slot", Variable.value(slot.name()));
+            vars.put("item", new ItemVariable(item));
+            vars.put("item-str", Variable.lazy(() -> ItemUtils.toDisplayString(item)));
+            return vars;
         }
     }
 }
-

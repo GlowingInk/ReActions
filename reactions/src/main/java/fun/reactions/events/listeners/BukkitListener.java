@@ -38,10 +38,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static fun.reactions.module.basic.ContextManager.*;
-import static fun.reactions.module.basic.ItemContextManager.triggerItemHold;
-import static fun.reactions.module.basic.ItemContextManager.triggerItemWear;
 
-public class BukkitListener implements Listener {
+public class BukkitListener implements Listener { // TODO Move more stuff into Types
     private final ReActions.Platform platform;
     private final MoveListener moveListener;
 
@@ -108,9 +106,8 @@ public class BukkitListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         // TODO: That's not really good solution
         try {
-            var optVars = triggerMessage(event.getPlayer(),
-                    MessageActivator.Source.CHAT_INPUT,
-                    event.getMessage());
+            if (!(platform.getActivatorTypes().get(MessageActivator.class) instanceof MessageActivator.Type type)) return;
+            var optVars = type.trigger(event.getPlayer(), MessageActivator.Source.CHAT_INPUT, event.getMessage());
             if (optVars.isEmpty()) return;
             Variables vars = optVars.get();
             vars.changedBoolean(ActivationContext.CANCEL_EVENT).ifPresent(event::setCancelled);
@@ -298,8 +295,12 @@ public class BukkitListener implements Listener {
         if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!BlockUtils.isSign(event.getClickedBlock())) return;
         Sign sign = (Sign) event.getClickedBlock().getState();
-        if (triggerSign(event.getPlayer(), sign.getLines(), event.getClickedBlock().getLocation(), event.getAction() == Action.LEFT_CLICK_BLOCK))
+        if (
+                platform.getActivatorTypes().get(SignActivator.class) instanceof SignActivator.Type type &&
+                type.trigger(event.getPlayer(), sign.getLines(), event.getClickedBlock().getLocation(), event.getAction() == Action.LEFT_CLICK_BLOCK)
+        ) {
             event.setCancelled(true);
+        }
     }
 
     // TODO: Rework
@@ -393,5 +394,13 @@ public class BukkitListener implements Listener {
     public void onWeatherChange(WeatherChangeEvent event) {
         if (triggerWeatherChange(event.getWorld().getName(), event.toWeatherState()))
             event.setCancelled(true);
+    }
+
+    private void triggerItemHold(@NotNull Player player) {
+        ItemPossessionActivatorBase.Type.trigger(platform, ItemHoldActivator.class, player);
+    }
+
+    private void triggerItemWear(@NotNull Player player) {
+        ItemPossessionActivatorBase.Type.trigger(platform, ItemWearActivator.class, player);
     }
 }
