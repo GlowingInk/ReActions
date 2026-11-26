@@ -12,7 +12,7 @@ public class StructVariableTest {
     @DataProvider
     public Object[][] fromRawData() {
         return new Object[][] {
-                {"STONE", "STONE", "STONE"},
+                {"STONE", "STONE", ""},
                 {"x:1 y:2", "", "1"},
                 {"here x:1 y:2 z:{deep w:1}", "here", "1"}
         };
@@ -30,7 +30,7 @@ public class StructVariableTest {
         Variable var = StructVariable.fromRaw("here x:1 y:2 z:{deep w:1}");
         assertEquals(var.resolve("z"), "deep");
         assertEquals(var.resolve("z:w"), "1");
-        assertEquals(var.resolve("z:missing"), "deep"); // no such child, falls back to the node's own value
+        assertEquals(var.resolve("z:missing"), "");
 
         Variable leaf = StructVariable.fromRaw("STONE");
         assertTrue(leaf.children().isEmpty()); // no keys at all - collapses to a plain leaf

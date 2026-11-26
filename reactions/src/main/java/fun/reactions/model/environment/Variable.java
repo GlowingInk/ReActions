@@ -61,7 +61,7 @@ public interface Variable {
      * Resolve a colon-separated path against this variable, e.g. {@code block:location:world}
      * resolves {@code location:world} against the {@code block} variable's {@code location} child,
      * one path segment at a time, until either the path is exhausted or a segment has no matching
-     * child - in which case this variable's own {@link #get()} is returned as a fallback. The
+     * child - in which case an empty string is returned. The
      * segment {@code self} is reserved: it always returns this variable's own string form
      * ({@link #get()} for a leaf, {@link #asParameters()} for anything with children), regardless
      * of whether a real child happens to be named {@code self}.
@@ -72,8 +72,17 @@ public interface Variable {
         String key = index == -1 ? params : params.substring(0, index);
         if (key.equalsIgnoreCase("self")) return selfString();
         Variable next = child(key);
-        if (next == null) return get();
+        if (next == null) return "";
         return index == -1 ? next.get() : next.resolve(params.substring(index + 1));
+    }
+
+    default boolean has(@NotNull String path) {
+        if (path.isEmpty()) return true;
+        int index = path.indexOf(':');
+        String key = index == -1 ? path : path.substring(0, index);
+        if (key.equalsIgnoreCase("self")) return true;
+        Variable next = child(key);
+        return next != null && (index == -1 || next.has(path.substring(index + 1)));
     }
 
     private @NotNull String selfString() {

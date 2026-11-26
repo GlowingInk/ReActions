@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class BlockVariable extends ComputedVariable {
-    private static final List<String> CHILD_KEYS = List.of("x", "y", "z", "world", "type", "location");
+    private static final List<String> SNAPSHOT_KEYS = List.of("x", "y", "z", "world", "type", "location", "data");
 
     private final Block block;
 
@@ -40,8 +40,8 @@ public final class BlockVariable extends ComputedVariable {
     }
 
     @Override
-    protected @NotNull List<String> childKeys() {
-        return CHILD_KEYS;
+    protected @NotNull List<String> snapshotKeys() {
+        return SNAPSHOT_KEYS;
     }
 
     @Override
@@ -50,7 +50,7 @@ public final class BlockVariable extends ComputedVariable {
     }
 
     @Override
-    protected @Nullable Variable computeChild(@NotNull String key) {
+    protected @Nullable Variable lookupChild(@NotNull String key) {
         return switch (key) {
             case "x" -> Variable.value(Integer.toString(block.getX()));
             case "y" -> Variable.value(Integer.toString(block.getY()));
@@ -58,6 +58,7 @@ public final class BlockVariable extends ComputedVariable {
             case "world" -> Variable.value(block.getWorld().getName());
             case "type" -> Variable.value(block.getType());
             case "location" -> new LocationVariable(block);
+            case "data" -> Variable.value(block.getBlockData().getAsString(true));
             default -> null;
         };
     }

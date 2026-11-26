@@ -20,12 +20,12 @@ public class ComputedVariableTest {
         }
 
         @Override
-        protected @NotNull List<String> childKeys() {
+        protected @NotNull List<String> snapshotKeys() {
             return List.of("a", "b");
         }
 
         @Override
-        protected @Nullable Variable computeChild(@NotNull String key) {
+        protected @Nullable Variable lookupChild(@NotNull String key) {
             computeCount[0]++;
             return switch (key) {
                 case "a" -> Variable.value("1");
@@ -49,7 +49,7 @@ public class ComputedVariableTest {
         assertEquals(var.children().keySet(), Set.of("a", "b")); // forces "b" to be resolved too
         assertEquals(var.computeCount[0], 2); // "a" and "b", each only once
 
-        assertEquals(var.resolve("missing"), "self"); // unknown key falls back to get()
+        assertEquals(var.resolve("missing"), "");
     }
 
     @Test

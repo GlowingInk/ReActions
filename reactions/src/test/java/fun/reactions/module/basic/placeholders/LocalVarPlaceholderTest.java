@@ -54,8 +54,13 @@ public class LocalVarPlaceholderTest {
 
                 {"%[block]", "STONE"},
 
-                {"%[local:block:missing]", "STONE"},
-                {"%[block:missing]", "STONE"},
+                {"%[local:block:missing]", ""},
+                {"%[block:missing]", ""},
+
+                {"%[block?]", "true"},
+                {"%[block:location:world?]", "true"},
+                {"%[missing?]", "false"},
+                {"%[local:missing:x?]", "false"},
 
                 {"%[missing]", "%[missing]"},
                 {"%[local:missing]", "%[local:missing]"}

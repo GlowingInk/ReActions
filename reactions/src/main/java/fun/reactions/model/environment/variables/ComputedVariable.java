@@ -10,12 +10,12 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public abstract class ComputedVariable extends TrackedVariable {
+public abstract class ComputedVariable extends TrackedVariable { // TODO Changes with original objs are not reflected after restoring
     private @Nullable Map<String, Variable> childrenCache;
 
-    protected abstract @NotNull List<String> childKeys();
+    protected abstract @NotNull List<String> snapshotKeys();
 
-    protected abstract @Nullable Variable computeChild(@NotNull String key);
+    protected abstract @Nullable Variable lookupChild(@NotNull String key);
 
     protected abstract @NotNull ComputedVariable copy();
 
@@ -28,12 +28,12 @@ public abstract class ComputedVariable extends TrackedVariable {
 
     @Override
     public @Nullable Variable child(@NotNull String key) {
-        return childrenCache().computeIfAbsent(key, k -> computeChild(k.toLowerCase(Locale.ROOT)));
+        return childrenCache().computeIfAbsent(key, k -> lookupChild(k.toLowerCase(Locale.ROOT)));
     }
 
     @Override
     public @NotNull Map<String, Variable> children() {
-        for (String key : childKeys()) {
+        for (String key : snapshotKeys()) {
             child(key);
         }
         return childrenCache();

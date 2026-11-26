@@ -18,8 +18,8 @@ public class VariableTest {
                 {"x", "1"},
                 {"z", "deep"},
                 {"z:w", "1"},
-                {"missing", "here"},
-                {"z:missing", "deep"},
+                {"missing", ""},
+                {"z:missing", ""},
                 {"x:self", "1"}, // leaf, no children - falls back to get()
                 {"z:self", "w:1"} // structured node - returns its Parameters string form
         };

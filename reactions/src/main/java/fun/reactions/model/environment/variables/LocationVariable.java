@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public final class LocationVariable extends ComputedVariable {
-    private static final List<String> CHILD_KEYS = List.of("x", "y", "z", "world", "yaw", "pitch");
+    private static final List<String> SNAPSHOT_KEYS = List.of("x", "y", "z", "world", "yaw", "pitch");
 
     private final Location location;
     private final boolean hasDirection;
@@ -40,8 +40,8 @@ public final class LocationVariable extends ComputedVariable {
     }
 
     @Override
-    protected @NotNull List<String> childKeys() {
-        return CHILD_KEYS;
+    protected @NotNull List<String> snapshotKeys() {
+        return SNAPSHOT_KEYS;
     }
 
     @Override
@@ -50,7 +50,7 @@ public final class LocationVariable extends ComputedVariable {
     }
 
     @Override
-    protected @Nullable Variable computeChild(@NotNull String key) {
+    protected @Nullable Variable lookupChild(@NotNull String key) {
         return switch (key) {
             case "x" -> Variable.value(Integer.toString(location.getBlockX()));
             case "y" -> Variable.value(Integer.toString(location.getBlockY()));
